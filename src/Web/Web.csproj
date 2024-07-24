@@ -3,6 +3,11 @@
   <PropertyGroup>
     <RootNamespace>SharedCookbook.Web</RootNamespace>
     <AssemblyName>SharedCookbook.Web</AssemblyName>
+    <UserSecretsId>fe86d081-c3c0-44a9-bc88-35ea1c4fe7ba</UserSecretsId>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,18 +34,11 @@
     <PackageReference Include="FluentValidation.AspNetCore" />
   </ItemGroup>
 
-
-  <!-- Auto-generated Open API specification and Angular TypeScript clients -->
-  <PropertyGroup>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-  </PropertyGroup>
-
   <Target Name="NSwag" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' == 'Debug' And '$(SkipNSwag)' != 'True' ">
     <Exec ConsoleToMSBuild="true" ContinueOnError="true" WorkingDirectory="$(ProjectDir)" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" Command="$(NSwagExe_Net80) run config.nswag /variables:Configuration=$(Configuration)">
       <Output TaskParameter="ExitCode" PropertyName="NSwagExitCode" />
       <Output TaskParameter="ConsoleOutput" PropertyName="NSwagOutput" />
     </Exec>
-
     <Message Text="$(NSwagOutput)" Condition="'$(NSwagExitCode)' == '0'" Importance="low" />
     <Error Text="$(NSwagOutput)" Condition="'$(NSwagExitCode)' != '0'" />
   </Target>
