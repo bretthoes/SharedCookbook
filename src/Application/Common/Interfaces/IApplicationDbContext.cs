@@ -8,5 +8,23 @@ public interface IApplicationDbContext
 
     DbSet<TodoItem> TodoItems { get; }
 
+    public DbSet<Cookbook> Cookbooks { get; }
+
+    public DbSet<CookbookInvitation> CookbookInvitations { get; }
+
+    public DbSet<CookbookMember> CookbookMembers { get; }
+
+    public DbSet<Recipe> Recipes { get; }
+
+    public DbSet<RecipeComment> RecipeComments { get; }
+
+    public DbSet<RecipeDirection> RecipeDirections { get; }
+
+    public DbSet<RecipeIngredient> RecipeIngredients { get; }
+
+    public DbSet<RecipeNutrition> RecipeNutritions { get; }
+
+    public DbSet<RecipeRating> RecipeRatings { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
