@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using NSwag;
 using NSwag.Generation.Processors.Security;
+using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -60,6 +61,13 @@ public static class DependencyInjection
                 new Uri(keyVaultUri),
                 new DefaultAzureCredential());
         }
+
+        return services;
+    }
+
+    public static IServiceCollection AddUserSecrets(this IServiceCollection services, ConfigurationManager configuration)
+    {
+        configuration.AddUserSecrets(Assembly.GetExecutingAssembly(), true);
 
         return services;
     }
