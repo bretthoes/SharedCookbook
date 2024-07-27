@@ -31,12 +31,34 @@ public class CreateCookbookCommandHandler : IRequestHandler<CreateCookbookComman
             ImagePath = request.ImagePath,
         };
 
-        //entity.AddDomainEvent(new TodoItemCreatedEvent(entity));
-
         _context.Cookbooks.Add(entity);
+
+        AddCookbookCreator(request, entity);
+
+        //entity.AddDomainEvent(new TodoItemCreatedEvent(entity));
 
         await _context.SaveChangesAsync(cancellationToken);
 
         return entity.Id;
+    }
+
+    // Creates a CookbookMember entity for the creator of a new Cookbook.
+    // Contains permissions for all actions by default.
+    private void AddCookbookCreator(CreateCookbookCommand request, Cookbook cookbook)
+    {
+        var creatorMembership = new CookbookMember
+        {
+            PersonId = request.CreatorPersonId,
+            CookbookId = cookbook.Id,
+            CanAddRecipe = true,
+            CanDeleteRecipe = true,
+            CanEditCookbookDetails = true,
+            CanRemoveMember = true,
+            CanSendInvite = true,
+            CanUpdateRecipe = true,
+            Cookbook = cookbook
+        };
+
+        _context.CookbookMembers.Add(creatorMembership);
     }
 }

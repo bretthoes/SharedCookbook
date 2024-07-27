@@ -6,7 +6,7 @@ namespace SharedCookbook.Application.Cookbooks.Queries.GetCookbooksWithPaginatio
 
 public record GetCookbooksWithPaginationQuery : IRequest<PaginatedList<CookbookBriefDto>>
 {
-    public int CreatorPersonId { get; init; }
+    public int PersonId { get; init; } = 0;
     public int PageNumber { get; init; } = 1;
     public int PageSize { get; init; } = 10;
 }
@@ -25,8 +25,9 @@ public class GetCookbooksWithPaginationQueryHandler : IRequestHandler<GetCookboo
     public async Task<PaginatedList<CookbookBriefDto>> Handle(GetCookbooksWithPaginationQuery request, CancellationToken cancellationToken)
     {
         return await _context.Cookbooks
-            .Where(x => x.CreatorPersonId == request.CreatorPersonId)
-            .OrderBy(x => x.Title)
+            .Where(c => _context.CookbookMembers
+                .Any(cm => cm.PersonId == request.PersonId && cm.CookbookId == c.Id))
+            .OrderBy(c => c.Title)
             .ProjectTo<CookbookBriefDto>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(request.PageNumber, request.PageSize);
     }

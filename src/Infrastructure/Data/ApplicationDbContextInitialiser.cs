@@ -81,6 +81,8 @@ public class ApplicationDbContextInitialiser
             UserName = "brett",
             Email = "bretthoes@gmail.com",
             ImagePath = "",
+            EmailConfirmed = true,
+            PhoneNumberConfirmed = true,
         };
 
         var otherAdmin = new ApplicationUser
@@ -88,6 +90,8 @@ public class ApplicationDbContextInitialiser
             UserName = "test",
             Email = "test@test.com",
             ImagePath = "",
+            EmailConfirmed = true,
+            PhoneNumberConfirmed = true,
         };
 
         if (_userManager.Users.All(u => u.UserName != administrator.UserName))
@@ -160,6 +164,18 @@ public class ApplicationDbContextInitialiser
                     CanSendInvite = true,
                     CanUpdateRecipe = false,
                     PersonId = adminPerson?.Id ?? 0,
+                },
+                new()
+                {
+                    Cookbook = cookbooks[1],
+                    CookbookId = cookbooks[1].Id,
+                    CanAddRecipe = true,
+                    CanDeleteRecipe = false,
+                    CanEditCookbookDetails = false,
+                    CanRemoveMember = false,
+                    CanSendInvite = true,
+                    CanUpdateRecipe = false,
+                    PersonId = otherAdminPerson?.Id ?? 0,
                 },
             };
             await _context.CookbookMembers.AddRangeAsync(members);
