@@ -5,13 +5,6 @@ namespace SharedCookbook.Application.Images.Commands.CreateImage;
 
 public record CreateImageCommand(IFormFile File) : IRequest<string>;
 
-public class CreateImageCommandValidator : AbstractValidator<CreateImageCommand>
-{
-    public CreateImageCommandValidator()
-    {
-    }
-}
-
 public class CreateImageCommandHandler : IRequestHandler<CreateImageCommand, string>
 {
     private readonly IImageUploadService _uploadService;

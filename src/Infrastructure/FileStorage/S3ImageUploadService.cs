@@ -14,21 +14,11 @@ public class S3ImageUploadService(
     IOptions<ImageUploadOptions> options,
     ILogger<S3ImageUploadService> logger) : IImageUploadService
 {
-    private readonly string[] _extensions = [".jpg", ".png", ".jpeg"];
     public async Task<string> UploadFile(IFormFile file)
     {
         try
         {
-            if (file is null || file.Length == 0)
-            {
-                throw new ArgumentException("File to upload cannot be null or empty.");
-            }
-
             var extension = Path.GetExtension(file.FileName).ToLower();
-            if (!_extensions.Contains(extension))
-            {
-                throw new ArgumentException("Only JPG and PNG files are allowed.");
-            }
 
             using var newMemoryStream = new MemoryStream();
             file.CopyTo(newMemoryStream);
