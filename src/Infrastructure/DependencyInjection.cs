@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
+using SharedCookbook.Infrastructure.FileStorage;
+using SharedCookbook.Infrastructure.Data.Config;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -38,10 +40,7 @@ public static class DependencyInjection
         services.AddAuthorizationBuilder();
 
         services
-            .AddIdentityCore<ApplicationUser>(options =>
-            {
-                options.User.RequireUniqueEmail = true;
-            })
+            .AddIdentityCore<ApplicationUser>(options => options.User.RequireUniqueEmail = true)
             .AddRoles<IdentityRole<int>>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddApiEndpoints();
@@ -53,6 +52,10 @@ public static class DependencyInjection
 
         services.AddAuthorization(options =>
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator)));
+
+        services.AddScoped<IImageUploadService, S3ImageUploadService>();
+        services.Configure<ImageUploadOptions>(
+            configuration.GetSection(key: nameof(ImageUploadOptions)));
 
         return services;
     }

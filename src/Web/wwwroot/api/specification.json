@@ -169,6 +169,40 @@
         ]
       }
     },
+    "/api/Images": {
+      "post": {
+        "tags": [
+          "Images"
+        ],
+        "operationId": "CreateImage",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/TodoItems": {
       "get": {
         "tags": [

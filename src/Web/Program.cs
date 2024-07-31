@@ -9,6 +9,7 @@ builder.Services.AddUserSecrets(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddWebServices();
+builder.Services.AddAntiforgery();
 
 var app = builder.Build();
 
@@ -44,6 +45,8 @@ app.MapFallbackToFile("index.html");
 app.UseExceptionHandler(options => { });
 
 app.Map("/", () => Results.Redirect("/api"));
+
+app.UseAntiforgery();
 
 app.MapEndpoints();
 
