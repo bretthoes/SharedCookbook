@@ -14,7 +14,6 @@ public class Images : EndpointGroupBase
 
     public async Task<IResult> CreateImage(ISender sender, IFormFile file)
     {
-
         var result = await sender.Send(new CreateImageCommand(file));
 
         return string.IsNullOrWhiteSpace(result)
