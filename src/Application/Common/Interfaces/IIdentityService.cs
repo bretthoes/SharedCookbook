@@ -1,9 +1,12 @@
 ﻿using SharedCookbook.Application.Common.Models;
+using SharedCookbook.Application.Users.Queries.GetUser;
 
 namespace SharedCookbook.Application.Common.Interfaces;
 
 public interface IIdentityService
 {
+    Task<UserDto?> FindByIdAsync(string userId);
+
     Task<string?> GetUserNameAsync(string userId);
 
     Task<bool> IsInRoleAsync(string userId, string role);

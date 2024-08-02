@@ -8,7 +8,7 @@ public class Images : EndpointGroupBase
     {
         app.MapGroup(this)
             .DisableAntiforgery()
-            .RequireAuthorization()
+            //.RequireAuthorization()
             .MapPost(CreateImage);
     }
 
@@ -17,7 +17,7 @@ public class Images : EndpointGroupBase
         var result = await sender.Send(new CreateImageCommand(file));
 
         return string.IsNullOrWhiteSpace(result)
-            ? Results.BadRequest("Upload failed.") 
+            ? Results.BadRequest("Upload failed.")
             : Results.Ok(result);
     }
 }

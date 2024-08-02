@@ -11,7 +11,7 @@ public class Cookbooks : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .RequireAuthorization()
+            //.RequireAuthorization()
             .MapGet(GetCookbooksWithPagination)
             .MapPost(CreateCookbook)
             .MapPut(UpdateCookbook, "{id}")

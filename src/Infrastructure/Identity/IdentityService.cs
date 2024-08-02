@@ -2,7 +2,7 @@ using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using SharedCookbook.Application.Users.Queries.GetUser;
 
 namespace SharedCookbook.Infrastructure.Identity;
 
@@ -20,6 +20,25 @@ public class IdentityService : IIdentityService
         _userManager = userManager;
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
         _authorizationService = authorizationService;
+    }
+
+    public async Task<UserDto?> FindByIdAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        return user == null
+            ? null
+            : MapApplicationUserToUserDto(user);
+    }
+
+    // TODO use auto mapper
+    private static UserDto MapApplicationUserToUserDto(ApplicationUser user)
+    {
+        return new UserDto
+        {
+            Id = user.Id,
+            UserName = user.UserName,
+            Email = user.Email ?? string.Empty
+        };
     }
 
     public async Task<string?> GetUserNameAsync(string userId)
