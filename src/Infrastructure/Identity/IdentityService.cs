@@ -30,6 +30,14 @@ public class IdentityService : IIdentityService
             : MapApplicationUserToUserDto(user);
     }
 
+    public async Task<UserDto?> FindByEmailAsync(string email)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        return user == null
+            ? null
+            : MapApplicationUserToUserDto(user);
+    }
+
     // TODO use auto mapper
     private static UserDto MapApplicationUserToUserDto(ApplicationUser user)
     {
