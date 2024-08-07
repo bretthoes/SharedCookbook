@@ -6,7 +6,7 @@ namespace SharedCookbook.Application.Cookbooks.Queries.GetCookbooksWithPaginatio
 
 public record GetCookbooksWithPaginationQuery : IRequest<PaginatedList<CookbookBriefDto>>
 {
-    public int PersonId { get; init; } = 0;
+    public required int PersonId { get; init; }
     public int PageNumber { get; init; } = 1;
     public int PageSize { get; init; } = 10;
 }
