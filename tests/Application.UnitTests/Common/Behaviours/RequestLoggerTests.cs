@@ -24,7 +24,8 @@ public class RequestLoggerTests
     [Test]
     public async Task ShouldCallGetUserNameAsyncOnceIfAuthenticated()
     {
-        _user.Setup(x => x.Id).Returns(Guid.NewGuid().ToString());
+        var id = 1;
+        _user.Setup(x => x.Id).Returns(id);
 
         var requestLogger = new LoggingBehaviour<CreateTodoItemCommand>(_logger.Object, _user.Object, _identityService.Object);
 
