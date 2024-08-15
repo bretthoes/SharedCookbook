@@ -8,7 +8,7 @@ public class Images : EndpointGroupBase
     {
         app.MapGroup(this)
             .DisableAntiforgery()
-            //.RequireAuthorization()
+            .RequireAuthorization()
             .MapPost(CreateImage);
     }
 
