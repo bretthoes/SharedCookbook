@@ -14,7 +14,7 @@
         "operationId": "GetCookbooksWithPagination",
         "parameters": [
           {
-            "name": "PersonId",
+            "name": "PageNumber",
             "in": "query",
             "required": true,
             "schema": {
@@ -24,16 +24,6 @@
             "x-position": 1
           },
           {
-            "name": "PageNumber",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 2
-          },
-          {
             "name": "PageSize",
             "in": "query",
             "required": true,
@@ -41,7 +31,7 @@
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 3
+            "x-position": 2
           }
         ],
         "responses": {
