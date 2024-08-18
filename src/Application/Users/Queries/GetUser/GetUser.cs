@@ -21,6 +21,6 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserQuery, UserDto>
     public async Task<UserDto> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
         var user = await _identityService.FindByIdAsync(request.Id.ToString());
-        return user ?? throw new NotFoundException(nameof(UserDto), request.Id.ToString());
+        return user ?? throw new NotFoundException(request.Id.ToString(), nameof(UserDto));
     }
 }
