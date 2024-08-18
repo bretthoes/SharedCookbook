@@ -18,9 +18,13 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserQuery, UserDto>
         _mapper = mapper;
     }
 
+    // TODO why are we mapping in the service and not here? add comment if valid reason
     public async Task<UserDto> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
         var user = await _identityService.FindByIdAsync(request.Id.ToString());
-        return user ?? throw new NotFoundException(request.Id.ToString(), nameof(UserDto));
+
+        Guard.Against.NotFound(request.Id, user);
+
+        return user;
     }
 }
