@@ -1,5 +1,4 @@
 ﻿using SharedCookbook.Application.Common.Interfaces;
-using SharedCookbook.Domain.Events;
 
 namespace SharedCookbook.Application.Cookbooks.Commands.DeleteCookbook;
 
@@ -16,7 +15,7 @@ public class DeleteCookbookCommandHandler : IRequestHandler<DeleteCookbookComman
     public async Task Handle(DeleteCookbookCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.Cookbooks
-            .FindAsync(new object[] { request.Id }, cancellationToken);
+            .FindAsync([request.Id], cancellationToken);
 
         Guard.Against.NotFound(request.Id, entity);
 
