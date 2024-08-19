@@ -4,6 +4,10 @@ namespace SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
 
 public class RecipeBriefDto
 {
+    public required int RecipeId { get; set; }
+
+    public required string Title { get; set; }
+
     private class Mapping : Profile
     {
         public Mapping()
