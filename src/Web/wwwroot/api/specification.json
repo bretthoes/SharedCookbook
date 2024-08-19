@@ -193,6 +193,43 @@
         ]
       }
     },
+    "/api/Recipes/{Id}": {
+      "get": {
+        "tags": [
+          "Recipes"
+        ],
+        "operationId": "GetRecipe",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeDetailedDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/Recipes": {
       "get": {
         "tags": [
@@ -1264,6 +1301,653 @@
           }
         }
       },
+      "RecipeDetailedDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "cookbookId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "personId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "author": {
+            "type": "string",
+            "nullable": true
+          },
+          "summary": {
+            "type": "string",
+            "nullable": true
+          },
+          "imagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "videoPath": {
+            "type": "string",
+            "nullable": true
+          },
+          "preparationTimeInMinutes": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "cookingTimeInMinutes": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "bakingTimeInMinutes": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "servings": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "cookbook": {
+            "$ref": "#/components/schemas/Cookbook"
+          },
+          "nutrition": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RecipeNutrition"
+              }
+            ]
+          },
+          "cookbookNotifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CookbookNotification"
+            }
+          },
+          "ingredientCategories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IngredientCategory"
+            }
+          },
+          "recipeComments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeComment"
+            }
+          },
+          "recipeDirections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeDirection"
+            }
+          },
+          "recipeIngredients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeIngredient"
+            }
+          },
+          "recipeRatings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeRating"
+            }
+          }
+        }
+      },
+      "Cookbook": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "creatorPersonId": {
+                "type": "integer",
+                "format": "int32",
+                "nullable": true
+              },
+              "title": {
+                "type": "string"
+              },
+              "imagePath": {
+                "type": "string",
+                "nullable": true
+              },
+              "cookbookInvitations": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CookbookInvitation"
+                }
+              },
+              "cookbookMembers": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CookbookMember"
+                }
+              },
+              "cookbookNotifications": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CookbookNotification"
+                }
+              },
+              "recipes": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Recipe"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "CookbookInvitation": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "cookbookId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "senderPersonId": {
+                "type": "integer",
+                "format": "int32",
+                "nullable": true
+              },
+              "recipientPersonId": {
+                "type": "integer",
+                "format": "int32",
+                "nullable": true
+              },
+              "invitationStatus": {
+                "$ref": "#/components/schemas/CookbookInvitationStatus"
+              },
+              "responseDate": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+              },
+              "cookbook": {
+                "$ref": "#/components/schemas/Cookbook"
+              }
+            }
+          }
+        ]
+      },
+      "CookbookInvitationStatus": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Unknown",
+          "Sent",
+          "Accepted",
+          "Rejected"
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "BaseAuditableEntity": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseEntity"
+          },
+          {
+            "type": "object",
+            "x-abstract": true,
+            "additionalProperties": false,
+            "properties": {
+              "created": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "createdBy": {
+                "type": "string",
+                "nullable": true
+              },
+              "lastModified": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "lastModifiedBy": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "BaseEntity": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "domainEvents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BaseEvent"
+            }
+          }
+        }
+      },
+      "BaseEvent": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false
+      },
+      "CookbookMember": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "personId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "cookbookId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "canAddRecipe": {
+                "type": "boolean"
+              },
+              "canUpdateRecipe": {
+                "type": "boolean"
+              },
+              "canDeleteRecipe": {
+                "type": "boolean"
+              },
+              "canSendInvite": {
+                "type": "boolean"
+              },
+              "canRemoveMember": {
+                "type": "boolean"
+              },
+              "canEditCookbookDetails": {
+                "type": "boolean"
+              },
+              "cookbook": {
+                "$ref": "#/components/schemas/Cookbook"
+              }
+            }
+          }
+        ]
+      },
+      "CookbookNotification": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "senderPersonId": {
+                "type": "integer",
+                "format": "int32",
+                "nullable": true
+              },
+              "cookbookId": {
+                "type": "integer",
+                "format": "int32",
+                "nullable": true
+              },
+              "recipeId": {
+                "type": "integer",
+                "format": "int32",
+                "nullable": true
+              },
+              "actionType": {
+                "$ref": "#/components/schemas/CookbookNotificationActionType"
+              },
+              "cookbook": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Cookbook"
+                  }
+                ]
+              },
+              "recipe": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Recipe"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "CookbookNotificationActionType": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Unknown",
+          "Like",
+          "Comment",
+          "Share",
+          "Invite",
+          "Update",
+          "NewRecipe"
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "Recipe": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "cookbookId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "title": {
+                "type": "string"
+              },
+              "personId": {
+                "type": "integer",
+                "format": "int32",
+                "nullable": true
+              },
+              "summary": {
+                "type": "string",
+                "nullable": true
+              },
+              "imagePath": {
+                "type": "string",
+                "nullable": true
+              },
+              "videoPath": {
+                "type": "string",
+                "nullable": true
+              },
+              "preparationTimeInMinutes": {
+                "type": "integer",
+                "format": "int32",
+                "nullable": true
+              },
+              "cookingTimeInMinutes": {
+                "type": "integer",
+                "format": "int32",
+                "nullable": true
+              },
+              "bakingTimeInMinutes": {
+                "type": "integer",
+                "format": "int32",
+                "nullable": true
+              },
+              "servings": {
+                "type": "integer",
+                "format": "int32",
+                "nullable": true
+              },
+              "cookbook": {
+                "$ref": "#/components/schemas/Cookbook"
+              },
+              "nutrition": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/RecipeNutrition"
+                  }
+                ]
+              },
+              "cookbookNotifications": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CookbookNotification"
+                }
+              },
+              "ingredientCategories": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/IngredientCategory"
+                }
+              },
+              "recipeComments": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/RecipeComment"
+                }
+              },
+              "recipeDirections": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/RecipeDirection"
+                }
+              },
+              "recipeIngredients": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/RecipeIngredient"
+                }
+              },
+              "recipeRatings": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/RecipeRating"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "RecipeNutrition": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "recipeId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "calories": {
+                "type": "integer",
+                "format": "int32",
+                "nullable": true
+              },
+              "protein": {
+                "type": "integer",
+                "format": "int32",
+                "nullable": true
+              },
+              "fat": {
+                "type": "integer",
+                "format": "int32",
+                "nullable": true
+              },
+              "carbohydrates": {
+                "type": "integer",
+                "format": "int32",
+                "nullable": true
+              },
+              "sugar": {
+                "type": "integer",
+                "format": "int32",
+                "nullable": true
+              },
+              "fiber": {
+                "type": "integer",
+                "format": "int32",
+                "nullable": true
+              },
+              "sodium": {
+                "type": "integer",
+                "format": "int32",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "IngredientCategory": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "recipeId": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        ]
+      },
+      "RecipeComment": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "recipeId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "personId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "commentText": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "RecipeDirection": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "recipeId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "directionText": {
+                "type": "string"
+              },
+              "ordinal": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "imagePath": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "RecipeIngredient": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "recipeId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "ingredientName": {
+                "type": "string"
+              },
+              "ordinal": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "optional": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "RecipeRating": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "recipeId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "personId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "ratingValue": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        ]
+      },
       "PaginatedListOfRecipeBriefDto": {
         "type": "object",
         "additionalProperties": false,
@@ -1296,7 +1980,16 @@
       },
       "RecipeBriefDto": {
         "type": "object",
-        "additionalProperties": false
+        "additionalProperties": false,
+        "properties": {
+          "recipeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          }
+        }
       },
       "CreateRecipeCommand": {
         "type": "object",

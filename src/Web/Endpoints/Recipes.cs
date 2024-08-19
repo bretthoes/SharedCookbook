@@ -13,14 +13,14 @@ public class Recipes : EndpointGroupBase
     {
         app.MapGroup(this)
             .RequireAuthorization()
-            .MapGet(GetRecipe)
+            .MapGet(GetRecipe, "{Id}")
             .MapGet(GetRecipesWithPagination)
             .MapPost(CreateRecipe)
             .MapPut(UpdateRecipe, "{id}")
             .MapDelete(DeleteRecipe, "{id}");
     }
 
-    public Task<RecipeDetailedDto> GetRecipe(ISender sender, GetRecipeQuery query)
+    public Task<RecipeDetailedDto> GetRecipe(ISender sender, [AsParameters] GetRecipeQuery query)
     {
         return sender.Send(query);
     }
