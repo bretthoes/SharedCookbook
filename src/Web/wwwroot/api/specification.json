@@ -1224,10 +1224,6 @@
             "type": "string",
             "nullable": true
           },
-          "creatorName": {
-            "type": "string",
-            "nullable": true
-          },
           "membersCount": {
             "type": "integer",
             "format": "int32"

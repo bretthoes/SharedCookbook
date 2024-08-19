@@ -29,6 +29,7 @@ public class GetCookbooksWithPaginationQueryHandler : IRequestHandler<GetCookboo
             .Where(c => _context.CookbookMembers
                 .Any(cm => cm.PersonId == _user.Id && cm.CookbookId == c.Id))
             .OrderBy(c => c.Title)
+            .Include(c => c.CookbookMembers)
             .ProjectTo<CookbookBriefDto>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(request.PageNumber, request.PageSize);
     }
