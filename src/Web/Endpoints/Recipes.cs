@@ -2,6 +2,7 @@
 using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 using SharedCookbook.Application.Recipes.Commands.DeleteRecipe;
 using SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
+using SharedCookbook.Application.Recipes.Queries.GetRecipe;
 using SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
 
 namespace SharedCookbook.Web.Endpoints;
@@ -12,10 +13,16 @@ public class Recipes : EndpointGroupBase
     {
         app.MapGroup(this)
             .RequireAuthorization()
+            .MapGet(GetRecipe)
             .MapGet(GetRecipesWithPagination)
             .MapPost(CreateRecipe)
             .MapPut(UpdateRecipe, "{id}")
             .MapDelete(DeleteRecipe, "{id}");
+    }
+
+    public Task<RecipeDetailedDto> GetRecipe(ISender sender, GetRecipeQuery query)
+    {
+        return sender.Send(query);
     }
 
     public Task<PaginatedList<RecipeBriefDto>> GetRecipesWithPagination(ISender sender, [AsParameters] GetRecipesWithPaginationQuery query)
