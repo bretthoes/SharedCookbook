@@ -32,7 +32,7 @@ public class GetRecipeQueryHandler : IRequestHandler<GetRecipeQuery, RecipeDetai
 
         var dto = _mapper.Map<RecipeDetailedDto>(entity);
 
-        dto.Author = await GetUsername(entity.PersonId.ToString());
+        dto.Author = await GetUsername(entity.AuthorId.ToString());
 
         return dto;
     }

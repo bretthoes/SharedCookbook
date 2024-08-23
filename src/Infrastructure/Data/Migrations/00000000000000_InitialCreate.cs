@@ -354,7 +354,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     cookbook_id = table.Column<int>(type: "int", nullable: false),
                     title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    person_id = table.Column<int>(type: "int", nullable: true),
+                    author_id = table.Column<int>(type: "int", nullable: false),
                     summary = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     image_path = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     video_path = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
@@ -377,8 +377,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         principalColumn: "cookbook_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_recipe__person_id",
-                        column: x => x.person_id,
+                        name: "FK_recipe__author_id",
+                        column: x => x.author_id,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
@@ -642,9 +642,9 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 column: "cookbook_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_recipe_person_id",
+                name: "IX_recipe_author_id",
                 table: "recipe",
-                column: "person_id");
+                column: "author_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_recipe_comment__person_id",
