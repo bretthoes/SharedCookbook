@@ -9,7 +9,6 @@ public class RecipeDetailedDto
     public required string Title { get; set; }
 
     public int? PersonId { get; set; }
-
     public string? Author { get; set; }
 
     public string? Summary { get; set; }
@@ -26,15 +25,8 @@ public class RecipeDetailedDto
 
     public int? Servings { get; set; }
 
-    public required virtual Cookbook Cookbook { get; set; }
-
-    public virtual RecipeNutrition? Nutrition { get; set; }
-
-    public virtual ICollection<CookbookNotification> CookbookNotifications { get; set; } = [];
 
     public virtual ICollection<IngredientCategory> IngredientCategories { get; set; } = [];
-
-    public virtual ICollection<RecipeComment> RecipeComments { get; set; } = [];
 
     public virtual ICollection<RecipeDirection> RecipeDirections { get; set; } = [];
 
