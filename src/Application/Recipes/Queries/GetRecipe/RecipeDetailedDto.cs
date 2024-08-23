@@ -8,7 +8,7 @@ public class RecipeDetailedDto
 
     public required string Title { get; set; }
 
-    public int? PersonId { get; set; }
+    public required int AuthorId { get; set; }
 
     public string? Author { get; set; }
 
@@ -25,9 +25,6 @@ public class RecipeDetailedDto
     public int? BakingTimeInMinutes { get; set; }
 
     public int? Servings { get; set; }
-
-
-    public virtual ICollection<IngredientCategory> IngredientCategories { get; set; } = [];
 
     public virtual ICollection<RecipeDirection> RecipeDirections { get; set; } = [];
 
