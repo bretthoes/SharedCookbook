@@ -16,6 +16,8 @@ public interface IApplicationDbContext
 
     public DbSet<Recipe> Recipes { get; }
 
+    public DbSet<RecipeImage> RecipeImages { get; }
+
     public DbSet<RecipeDirection> RecipeDirections { get; }
 
     public DbSet<RecipeIngredient> RecipeIngredients { get; }

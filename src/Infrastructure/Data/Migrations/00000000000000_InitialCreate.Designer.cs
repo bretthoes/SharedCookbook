@@ -902,6 +902,51 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.ToTable("recipe_direction", (string)null);
                 });
 
+            modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeImage", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int")
+                    .HasColumnName("recipe_image_id");
+
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                b.Property<DateTimeOffset>("Created")
+                    .HasColumnType("datetimeoffset");
+
+                b.Property<string>("CreatedBy")
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<string>("ImageUrl")
+                    .IsRequired()
+                    .HasMaxLength(2048)
+                    .HasColumnType("nvarchar(2048)")
+                    .HasColumnName("image_url");
+
+                b.Property<DateTimeOffset>("LastModified")
+                    .HasColumnType("datetimeoffset");
+
+                b.Property<string>("LastModifiedBy")
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<int>("Ordinal")
+                    .HasColumnType("int")
+                    .HasColumnName("ordinal");
+
+                b.Property<int>("RecipeId")
+                    .HasColumnType("int")
+                    .HasColumnName("recipe_id");
+
+                b.HasKey("Id")
+                    .HasName("PK_recipe_image_id");
+
+                b.HasIndex(new[] { "RecipeId" }, "IX_recipe_image__recipe_id");
+
+                b.ToTable("recipe_image", (string)null);
+            });
+
+
+
             modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeIngredient", b =>
                 {
                     b.Property<int>("Id")
@@ -1321,6 +1366,16 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .HasConstraintName("FK_recipe_direction__recipe_id");
                 });
 
+            modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeImage", b =>
+            {
+                b.HasOne("SharedCookbook.Domain.Entities.Recipe", "Recipe")
+                    .WithMany("RecipeImages")
+                    .HasForeignKey("RecipeId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired()
+                    .HasConstraintName("FK_recipe_image__recipe_id");
+            });
+
             modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeIngredient", b =>
                 {
                     b.HasOne("SharedCookbook.Domain.Entities.Recipe", null)
@@ -1397,6 +1452,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Navigation("RecipeDirections");
 
                     b.Navigation("RecipeIngredients");
+
+                    b.Navigation("RecipeImages");
                 });
 
             modelBuilder.Entity("SharedCookbook.Domain.Entities.TodoList", b =>

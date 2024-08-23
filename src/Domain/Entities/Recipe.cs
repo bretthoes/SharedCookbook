@@ -33,4 +33,6 @@ public class Recipe : BaseAuditableEntity
     public virtual ICollection<RecipeDirection> Directions { get; set; } = [];
 
     public virtual ICollection<RecipeIngredient> Ingredients { get; set; } = [];
+
+    public virtual ICollection<RecipeImage> Images { get; set; } = [];
 }

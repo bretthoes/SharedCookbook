@@ -28,6 +28,8 @@ public class RecipeDetailedDto
 
     public virtual ICollection<RecipeDirection> Directions { get; set; } = [];
 
+    public virtual ICollection<RecipeImage> Images { get; set; } = [];
+
     public virtual ICollection<RecipeIngredient> Ingredients { get; set; } = [];
 
     private class Mapping : Profile

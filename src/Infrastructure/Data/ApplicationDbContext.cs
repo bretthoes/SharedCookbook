@@ -28,6 +28,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
 
     public DbSet<RecipeDirection> RecipeDirections => Set<RecipeDirection>();
 
+    public DbSet<RecipeImage> RecipeImages => Set<RecipeImage>();
+
     public DbSet<RecipeIngredient> RecipeIngredients => Set<RecipeIngredient>();
 
     public DbSet<RecipeNutrition> RecipeNutritions => Set<RecipeNutrition>();

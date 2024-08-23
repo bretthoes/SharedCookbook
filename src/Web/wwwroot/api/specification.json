@@ -1358,6 +1358,12 @@
               "$ref": "#/components/schemas/RecipeDirection"
             }
           },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeImage"
+            }
+          },
           "ingredients": {
             "type": "array",
             "items": {
@@ -1445,6 +1451,30 @@
         "type": "object",
         "x-abstract": true,
         "additionalProperties": false
+      },
+      "RecipeImage": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "recipeId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "imageUrl": {
+                "type": "string"
+              },
+              "ordinal": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        ]
       },
       "RecipeIngredient": {
         "allOf": [
