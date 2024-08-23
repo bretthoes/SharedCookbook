@@ -10,7 +10,7 @@ public class RecipeDetailedDto
 
     public required int AuthorId { get; set; }
 
-    public string? Author { get; set; }
+    public required string Author { get; set; }
 
     public string? Summary { get; set; }
 

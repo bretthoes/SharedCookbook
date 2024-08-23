@@ -30,15 +30,8 @@ public class GetRecipeQueryHandler : IRequestHandler<GetRecipeQuery, RecipeDetai
 
         var dto = _mapper.Map<RecipeDetailedDto>(entity);
 
-        dto.Author = await GetUsername(entity.AuthorId.ToString());
+        dto.Author = await _identityService.GetUserNameAsync(entity.AuthorId.ToString()) ?? string.Empty;
 
         return dto;
-    }
-
-    private async Task<string> GetUsername(string? id)
-    {
-        return !string.IsNullOrWhiteSpace(id) 
-            ? await _identityService.GetUserNameAsync(id) ?? string.Empty 
-            : string.Empty;
     }
 }
