@@ -203,8 +203,192 @@ public class ApplicationDbContextInitialiser
                     Cookbook = cookbook,
                     ImagePath = "assets/images/baked-salmon-loaf.jpg",
                     BakingTimeInMinutes = 90
+                },
+                new()
+                {
+                    CookbookId = cookbook!.Id,
+                    Title = "Beef Stroganoff",
+                    Cookbook = cookbook,
+                    ImagePath = "assets/images/beef_stroganoff.png",
+                    PreparationTimeInMinutes = 20,
+                    CookingTimeInMinutes = 40
+                },
+                new()
+                {
+                    CookbookId = cookbook!.Id,
+                    Title = "Spaghetti Carbonara",
+                    Cookbook = cookbook,
+                    ImagePath = "assets/images/spaghetti_carbonara.png",
+                    PreparationTimeInMinutes = 15,
+                    CookingTimeInMinutes = 20
+                },
+                new()
+                {
+                    CookbookId = cookbook!.Id,
+                    Title = "Vegetable Stir-Fry",
+                    Cookbook = cookbook,
+                    ImagePath = "assets/images/vegetable_stirfry.png",
+                    PreparationTimeInMinutes = 10,
+                    CookingTimeInMinutes = 15,
+                    Servings = 4
+                },
+                new()
+                {
+                    CookbookId = cookbook!.Id,
+                    Title = "Lasagna",
+                    Cookbook = cookbook,
+                    ImagePath = "assets/images/lasagna.png",
+                    PreparationTimeInMinutes = 45,
+                    BakingTimeInMinutes = 60,
+                    Servings = 6
+                },
+                new()
+                {
+                    CookbookId = cookbook!.Id,
+                    Title = "Chocolate Cake",
+                    Cookbook = cookbook,
+                    ImagePath = "assets/images/chocolate_cake.png",
+                    PreparationTimeInMinutes = 20,
+                    BakingTimeInMinutes = 30,
+                    Servings = 8
+                },
+                new()
+                {
+                    CookbookId = cookbook!.Id,
+                    Title = "Taco Salad",
+                    Cookbook = cookbook,
+                    ImagePath = "assets/images/taco_salad.png",
+                    PreparationTimeInMinutes = 15,
+                    Servings = 4
+                },
+                new()
+                {
+                    CookbookId = cookbook!.Id,
+                    Title = "Chicken Alfredo",
+                    Cookbook = cookbook,
+                    ImagePath = "assets/images/chicken_alfredo.png",
+                    PreparationTimeInMinutes = 25,
+                    CookingTimeInMinutes = 25,
+                    Servings = 4
+                },
+                new()
+                {
+                    CookbookId = cookbook!.Id,
+                    Title = "Minestrone Soup",
+                    Cookbook = cookbook,
+                    ImagePath = "assets/images/minestrone_soup.png",
+                    PreparationTimeInMinutes = 15,
+                    CookingTimeInMinutes = 40,
+                    Servings = 6
+                },
+                new()
+                {
+                    CookbookId = cookbook!.Id,
+                    Title = "Pumpkin Pie",
+                    Cookbook = cookbook,
+                    ImagePath = "assets/images/pumpkin_pie.png",
+                    PreparationTimeInMinutes = 20,
+                    BakingTimeInMinutes = 50,
+                    Servings = 8
+                },
+                new()
+                {
+                    CookbookId = cookbook!.Id,
+                    Title = "Shrimp Scampi",
+                    Cookbook = cookbook,
+                    ImagePath = "assets/images/shrimp_scampi.png",
+                    PreparationTimeInMinutes = 15,
+                    CookingTimeInMinutes = 10,
+                    Servings = 4
+                },
+                new()
+                {
+                    CookbookId = cookbook!.Id,
+                    Title = "Grilled Cheese Sandwich",
+                    Cookbook = cookbook,
+                    ImagePath = "assets/images/grilled_cheese.png",
+                    PreparationTimeInMinutes = 5,
+                    CookingTimeInMinutes = 5,
+                    Servings = 2
+                },
+                new()
+                {
+                    CookbookId = cookbook!.Id,
+                    Title = "Chicken Caesar Salad with Pecans and Extra Dates with Shredded Cheddar Cheese",
+                    Cookbook = cookbook,
+                    ImagePath = "assets/images/chicken_caesar_salad.png",
+                    PreparationTimeInMinutes = 20,
+                    Servings = 4
+                },
+                new()
+                {
+                    CookbookId = cookbook!.Id,
+                    Title = "Stuffed Bell Peppers",
+                    Cookbook = cookbook,
+                    ImagePath = "assets/images/stuffed_bell_peppers.png",
+                    PreparationTimeInMinutes = 25,
+                    BakingTimeInMinutes = 35,
+                    Servings = 4
+                },
+                new()
+                {
+                    CookbookId = cookbook!.Id,
+                    Title = "Beef Tacos",
+                    Cookbook = cookbook,
+                    ImagePath = "assets/images/beef_tacos.png",
+                    PreparationTimeInMinutes = 10,
+                    CookingTimeInMinutes = 15,
+                    Servings = 6
+                },
+                new()
+                {
+                    CookbookId = cookbook!.Id,
+                    Title = "Pancakes",
+                    Cookbook = cookbook,
+                    ImagePath = "assets/images/pancakes.png",
+                    PreparationTimeInMinutes = 10,
+                    CookingTimeInMinutes = 15,
+                    Servings = 4
+                },
+                new()
+                {
+                    CookbookId = cookbook!.Id,
+                    Title = "Roast Turkey",
+                    Cookbook = cookbook,
+                    ImagePath = "assets/images/roast_turkey.png",
+                    PreparationTimeInMinutes = 30,
+                    BakingTimeInMinutes = 180,
+                    Servings = 10
+                },
+                new()
+                {
+                    CookbookId = cookbook!.Id,
+                    Title = "Fettuccine Alfredo",
+                    Cookbook = cookbook,
+                    ImagePath = "assets/images/fettuccine_alfredo.png",
+                    PreparationTimeInMinutes = 15,
+                    CookingTimeInMinutes = 20,
+                    Servings = 4
+                },
+                new()
+                {
+                    CookbookId = cookbook!.Id,
+                    Title = "French Onion Soup",
+                    Cookbook = cookbook,
+                    ImagePath = "assets/images/french_onion_soup.png",
+                    PreparationTimeInMinutes = 15,
+                    CookingTimeInMinutes = 45,
+                    Servings = 4
+                },
+                new()
+                {
+                    CookbookId = cookbook!.Id,
+                    Title = "Secret Sauce",
+                    Cookbook = cookbook,
+                    ImagePath = "",
                 }
             };
+
             await _context.Recipes.AddRangeAsync(recipes);
             await _context.SaveChangesAsync();
 
