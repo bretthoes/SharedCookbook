@@ -1312,10 +1312,9 @@
           "title": {
             "type": "string"
           },
-          "personId": {
+          "authorId": {
             "type": "integer",
-            "format": "int32",
-            "nullable": true
+            "format": "int32"
           },
           "author": {
             "type": "string",
@@ -1353,19 +1352,13 @@
             "format": "int32",
             "nullable": true
           },
-          "ingredientCategories": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/IngredientCategory"
-            }
-          },
-          "recipeDirections": {
+          "directions": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/RecipeDirection"
             }
           },
-          "recipeIngredients": {
+          "ingredients": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/RecipeIngredient"
@@ -1373,7 +1366,7 @@
           }
         }
       },
-      "IngredientCategory": {
+      "RecipeDirection": {
         "allOf": [
           {
             "$ref": "#/components/schemas/BaseAuditableEntity"
@@ -1382,12 +1375,20 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "title": {
-                "type": "string"
-              },
               "recipeId": {
                 "type": "integer",
                 "format": "int32"
+              },
+              "directionText": {
+                "type": "string"
+              },
+              "ordinal": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "imagePath": {
+                "type": "string",
+                "nullable": true
               }
             }
           }
@@ -1444,34 +1445,6 @@
         "type": "object",
         "x-abstract": true,
         "additionalProperties": false
-      },
-      "RecipeDirection": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/BaseAuditableEntity"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "recipeId": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "directionText": {
-                "type": "string"
-              },
-              "ordinal": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "imagePath": {
-                "type": "string",
-                "nullable": true
-              }
-            }
-          }
-        ]
       },
       "RecipeIngredient": {
         "allOf": [

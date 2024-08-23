@@ -26,9 +26,9 @@ public class RecipeDetailedDto
 
     public int? Servings { get; set; }
 
-    public virtual ICollection<RecipeDirection> RecipeDirections { get; set; } = [];
+    public virtual ICollection<RecipeDirection> Directions { get; set; } = [];
 
-    public virtual ICollection<RecipeIngredient> RecipeIngredients { get; set; } = [];
+    public virtual ICollection<RecipeIngredient> Ingredients { get; set; } = [];
 
     private class Mapping : Profile
     {

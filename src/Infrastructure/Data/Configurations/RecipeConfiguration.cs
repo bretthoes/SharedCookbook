@@ -63,11 +63,11 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
             .WithOne()
             .HasForeignKey(cn => cn.RecipeId)
             .HasConstraintName("FK_ingredient_category__recipe_id");
-        builder.HasMany(r => r.RecipeDirections)
+        builder.HasMany(r => r.Directions)
             .WithOne()
             .HasForeignKey(rd => rd.RecipeId)
             .HasConstraintName("FK_recipe_direction__recipe_id");
-        builder.HasMany(r => r.RecipeIngredients)
+        builder.HasMany(r => r.Ingredients)
             .WithOne()
             .HasForeignKey(ri => ri.RecipeId)
             .HasConstraintName("FK_recipe_ingredient__recipe_id");
