@@ -495,6 +495,32 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "recipe_image",
+                columns: table => new
+                {
+                    recipe_image_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    recipe_id = table.Column<int>(type: "int", nullable: false),
+                    image_url = table.Column<string>(type: "nvarchar(2048)", maxLength: 2048, nullable: false),
+                    ordinal = table.Column<int>(type: "int", nullable: false),
+                    Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_recipe_image_id", x => x.recipe_image_id);
+                    table.ForeignKey(
+                        name: "FK_recipe_image__recipe_id",
+                        column: x => x.recipe_id,
+                        principalTable: "recipe",
+                        principalColumn: "recipe_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+
+            migrationBuilder.CreateTable(
                 name: "recipe_nutrition",
                 columns: table => new
                 {
@@ -590,6 +616,11 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 column: "recipe_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_recipe_image__recipe_id",
+                table: "recipe_image",
+                column: "recipe_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_recipe_ingredient__recipe_id",
                 table: "recipe_ingredient",
                 column: "recipe_id");
@@ -653,6 +684,9 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "recipe_ingredient");
+
+            migrationBuilder.DropTable(
+                name: "recipe_image");
 
             migrationBuilder.DropTable(
                 name: "recipe_nutrition");
