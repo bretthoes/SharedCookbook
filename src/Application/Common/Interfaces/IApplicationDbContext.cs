@@ -16,15 +16,11 @@ public interface IApplicationDbContext
 
     public DbSet<Recipe> Recipes { get; }
 
-    public DbSet<RecipeComment> RecipeComments { get; }
-
     public DbSet<RecipeDirection> RecipeDirections { get; }
 
     public DbSet<RecipeIngredient> RecipeIngredients { get; }
 
     public DbSet<RecipeNutrition> RecipeNutritions { get; }
-
-    public DbSet<RecipeRating> RecipeRatings { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

@@ -63,10 +63,6 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
             .WithOne()
             .HasForeignKey(cn => cn.RecipeId)
             .HasConstraintName("FK_ingredient_category__recipe_id");
-        builder.HasMany(r => r.RecipeComments)
-            .WithOne()
-            .HasForeignKey(rc => rc.RecipeId)
-            .HasConstraintName("FK_recipe_comment__recipe_id");
         builder.HasMany(r => r.RecipeDirections)
             .WithOne()
             .HasForeignKey(rd => rd.RecipeId)
@@ -75,10 +71,6 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
             .WithOne()
             .HasForeignKey(ri => ri.RecipeId)
             .HasConstraintName("FK_recipe_ingredient__recipe_id");
-        builder.HasMany(r => r.RecipeRatings)
-            .WithOne()
-            .HasForeignKey(rr => rr.RecipeId)
-            .HasConstraintName("FK_recipe_rating__recipe_id");
         builder.HasOne(r => r.Nutrition)
             .WithOne()
             .HasForeignKey<RecipeNutrition>(n => n.RecipeId)

@@ -33,8 +33,6 @@ public class RecipeDetailedDto
 
     public virtual ICollection<RecipeIngredient> RecipeIngredients { get; set; } = [];
 
-    public virtual ICollection<RecipeRating> RecipeRatings { get; set; } = [];
-
     private class Mapping : Profile
     {
         public Mapping()

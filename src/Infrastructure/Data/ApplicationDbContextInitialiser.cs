@@ -431,24 +431,6 @@ public class ApplicationDbContextInitialiser
             await _context.RecipeNutritions.AddRangeAsync(nutritions);
             await _context.SaveChangesAsync();
 
-            var ratings = new List<RecipeRating>()
-            {
-                new()
-                {
-                    RecipeId = recipe!.Id,
-                    RatingValue = 5,
-                    PersonId = adminPerson!.Id,
-                },
-                new()
-                {
-                    RecipeId = recipe!.Id,
-                    RatingValue = 4,
-                    PersonId = adminPerson!.Id,
-                }
-            };
-            await _context.RecipeRatings.AddRangeAsync(ratings);
-            await _context.SaveChangesAsync();
-
             var ingredients = new List<RecipeIngredient>()
             {
                 new()

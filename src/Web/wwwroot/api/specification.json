@@ -1370,12 +1370,6 @@
             "items": {
               "$ref": "#/components/schemas/RecipeIngredient"
             }
-          },
-          "recipeRatings": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/RecipeRating"
-            }
           }
         }
       },
@@ -1501,31 +1495,6 @@
               },
               "optional": {
                 "type": "boolean"
-              }
-            }
-          }
-        ]
-      },
-      "RecipeRating": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/BaseAuditableEntity"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "recipeId": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "personId": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "ratingValue": {
-                "type": "integer",
-                "format": "int32"
               }
             }
           }

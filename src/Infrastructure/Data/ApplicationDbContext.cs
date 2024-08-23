@@ -26,15 +26,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
 
     public DbSet<Recipe> Recipes => Set<Recipe>();
 
-    public DbSet<RecipeComment> RecipeComments => Set<RecipeComment>();
-
     public DbSet<RecipeDirection> RecipeDirections => Set<RecipeDirection>();
 
     public DbSet<RecipeIngredient> RecipeIngredients => Set<RecipeIngredient>();
 
     public DbSet<RecipeNutrition> RecipeNutritions => Set<RecipeNutrition>();
-
-    public DbSet<RecipeRating> RecipeRatings => Set<RecipeRating>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

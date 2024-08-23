@@ -18,8 +18,4 @@ public class ApplicationUser : IdentityUser<int>
     public virtual ICollection<CookbookInvitation> ReceivedInvitations { get; set; } = [];
 
     public virtual ICollection<Recipe> Recipes { get; set; } = [];
-
-    public virtual ICollection<RecipeComment> RecipeComments { get; set; } = [];
-
-    public virtual ICollection<RecipeRating> RecipeRatings { get; set; } = [];
 }

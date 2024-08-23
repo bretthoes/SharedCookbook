@@ -30,11 +30,7 @@ public class Recipe : BaseAuditableEntity
 
     public virtual ICollection<IngredientCategory> IngredientCategories { get; set; } = [];
 
-    public virtual ICollection<RecipeComment> RecipeComments { get; set; } = [];
-
     public virtual ICollection<RecipeDirection> RecipeDirections { get; set; } = [];
 
     public virtual ICollection<RecipeIngredient> RecipeIngredients { get; set; } = [];
-
-    public virtual ICollection<RecipeRating> RecipeRatings { get; set; } = [];
 }

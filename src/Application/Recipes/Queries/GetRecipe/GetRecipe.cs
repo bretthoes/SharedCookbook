@@ -22,10 +22,8 @@ public class GetRecipeQueryHandler : IRequestHandler<GetRecipeQuery, RecipeDetai
         var entity = await _context.Recipes
            .Include(r => r.Nutrition)
            .Include(r => r.IngredientCategories)
-           .Include(r => r.RecipeComments)
            .Include(r => r.RecipeDirections)
            .Include(r => r.RecipeIngredients)
-           .Include(r => r.RecipeRatings)
            .SingleOrDefaultAsync(r => r.Id == request.Id, cancellationToken);
 
         Guard.Against.NotFound(request.Id, entity);

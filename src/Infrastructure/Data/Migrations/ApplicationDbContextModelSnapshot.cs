@@ -483,51 +483,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.ToTable("recipe", (string)null);
                 });
 
-            modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeComment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("recipe_comment_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CommentText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("comment_text");
-
-                    b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("datetimeoffset")
-                        .HasColumnName("created");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTimeOffset>("LastModified")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PersonId")
-                        .HasColumnType("int")
-                        .HasColumnName("person_id");
-
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("int")
-                        .HasColumnName("recipe_id");
-
-                    b.HasKey("Id")
-                        .HasName("PK_recipe_comment_id");
-
-                    b.HasIndex(new[] { "PersonId" }, "IX_recipe_comment__person_id");
-
-                    b.HasIndex(new[] { "RecipeId" }, "IX_recipe_comment__recipe_id");
-
-                    b.ToTable("recipe_comment", (string)null);
-                });
-
             modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeDirection", b =>
                 {
                     b.Property<int>("Id")
@@ -685,50 +640,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.HasIndex(new[] { "RecipeId" }, "IX_recipe_nutrition__recipe_id");
 
                     b.ToTable("recipe_nutrition", (string)null);
-                });
-
-            modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeRating", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("recipe_rating_id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("datetimeoffset")
-                        .HasColumnName("created");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTimeOffset>("LastModified")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PersonId")
-                        .HasColumnType("int")
-                        .HasColumnName("person_id");
-
-                    b.Property<int>("RatingValue")
-                        .HasColumnType("int")
-                        .HasColumnName("rating_value");
-
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("int")
-                        .HasColumnName("recipe_id");
-
-                    b.HasKey("Id")
-                        .HasName("PK_recipe_rating_id");
-
-                    b.HasIndex(new[] { "PersonId" }, "IX_recipe_rating__person_id");
-
-                    b.HasIndex(new[] { "RecipeId" }, "IX_recipe_rating__recipe_id");
-
-                    b.ToTable("recipe_rating", (string)null);
                 });
 
             modelBuilder.Entity("SharedCookbook.Domain.Entities.TodoItem", b =>
@@ -1029,23 +940,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Navigation("Cookbook");
                 });
 
-            modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeComment", b =>
-                {
-                    b.HasOne("SharedCookbook.Infrastructure.Identity.ApplicationUser", null)
-                        .WithMany("RecipeComments")
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_recipe_comment__person_id");
-
-                    b.HasOne("SharedCookbook.Domain.Entities.Recipe", null)
-                        .WithMany("RecipeComments")
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_recipe_comment__recipe_id");
-                });
-
             modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeDirection", b =>
                 {
                     b.HasOne("SharedCookbook.Domain.Entities.Recipe", null)
@@ -1074,23 +968,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_recipe_nutrition__recipe_id");
-                });
-
-            modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeRating", b =>
-                {
-                    b.HasOne("SharedCookbook.Infrastructure.Identity.ApplicationUser", null)
-                        .WithMany("RecipeRatings")
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_recipe_rating__person_id");
-
-                    b.HasOne("SharedCookbook.Domain.Entities.Recipe", null)
-                        .WithMany("RecipeRatings")
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_recipe_rating__recipe_id");
                 });
 
             modelBuilder.Entity("SharedCookbook.Domain.Entities.TodoItem", b =>
@@ -1146,13 +1023,9 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
 
                     b.Navigation("Nutrition");
 
-                    b.Navigation("RecipeComments");
-
                     b.Navigation("RecipeDirections");
 
                     b.Navigation("RecipeIngredients");
-
-                    b.Navigation("RecipeRatings");
                 });
 
             modelBuilder.Entity("SharedCookbook.Domain.Entities.TodoList", b =>
@@ -1169,10 +1042,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Navigation("Cookbooks");
 
                     b.Navigation("ReceivedInvitations");
-
-                    b.Navigation("RecipeComments");
-
-                    b.Navigation("RecipeRatings");
 
                     b.Navigation("Recipes");
 

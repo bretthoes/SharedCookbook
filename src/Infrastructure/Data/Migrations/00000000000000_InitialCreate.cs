@@ -443,37 +443,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "recipe_comment",
-                columns: table => new
-                {
-                    recipe_comment_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    recipe_id = table.Column<int>(type: "int", nullable: false),
-                    person_id = table.Column<int>(type: "int", nullable: false),
-                    comment_text = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_recipe_comment_id", x => x.recipe_comment_id);
-                    table.ForeignKey(
-                        name: "FK_recipe_comment__person_id",
-                        column: x => x.person_id,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_recipe_comment__recipe_id",
-                        column: x => x.recipe_id,
-                        principalTable: "recipe",
-                        principalColumn: "recipe_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "recipe_direction",
                 columns: table => new
                 {
@@ -555,37 +524,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "recipe_rating",
-                columns: table => new
-                {
-                    recipe_rating_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    recipe_id = table.Column<int>(type: "int", nullable: false),
-                    person_id = table.Column<int>(type: "int", nullable: false),
-                    rating_value = table.Column<int>(type: "int", nullable: false),
-                    created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_recipe_rating_id", x => x.recipe_rating_id);
-                    table.ForeignKey(
-                        name: "FK_recipe_rating__person_id",
-                        column: x => x.person_id,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_recipe_rating__recipe_id",
-                        column: x => x.recipe_id,
-                        principalTable: "recipe",
-                        principalColumn: "recipe_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_cookbook_creator__person_id",
                 table: "cookbook",
@@ -647,16 +585,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 column: "author_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_recipe_comment__person_id",
-                table: "recipe_comment",
-                column: "person_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_recipe_comment__recipe_id",
-                table: "recipe_comment",
-                column: "recipe_id");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_recipe_direction__recipe_id",
                 table: "recipe_direction",
                 column: "recipe_id");
@@ -676,16 +604,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 table: "recipe_nutrition",
                 column: "recipe_id",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_recipe_rating__person_id",
-                table: "recipe_rating",
-                column: "person_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_recipe_rating__recipe_id",
-                table: "recipe_rating",
-                column: "recipe_id");
         }
 
         /// <inheritdoc />
@@ -731,9 +649,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 name: "ingredient_category");
 
             migrationBuilder.DropTable(
-                name: "recipe_comment");
-
-            migrationBuilder.DropTable(
                 name: "recipe_direction");
 
             migrationBuilder.DropTable(
@@ -741,9 +656,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "recipe_nutrition");
-
-            migrationBuilder.DropTable(
-                name: "recipe_rating");
 
             migrationBuilder.DropTable(
                 name: "recipe");
