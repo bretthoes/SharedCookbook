@@ -274,7 +274,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedListOfRecipeBriefDto"
+                  "$ref": "#/components/schemas/PaginatedListOfRecipeDetailedDto"
                 }
               }
             }
@@ -1254,8 +1254,7 @@
             "format": "int32"
           },
           "title": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "imagePath": {
             "type": "string",
@@ -1305,7 +1304,7 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "cookbookId": {
+          "id": {
             "type": "integer",
             "format": "int32"
           },
@@ -1317,8 +1316,7 @@
             "format": "int32"
           },
           "author": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "summary": {
             "type": "string",
@@ -1503,14 +1501,14 @@
           }
         ]
       },
-      "PaginatedListOfRecipeBriefDto": {
+      "PaginatedListOfRecipeDetailedDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "items": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/RecipeBriefDto"
+              "$ref": "#/components/schemas/RecipeDetailedDto"
             }
           },
           "pageNumber": {
@@ -1530,19 +1528,6 @@
           },
           "hasNextPage": {
             "type": "boolean"
-          }
-        }
-      },
-      "RecipeBriefDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "title": {
-            "type": "string"
           }
         }
       },

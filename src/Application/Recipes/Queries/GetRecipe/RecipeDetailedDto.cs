@@ -4,7 +4,7 @@ namespace SharedCookbook.Application.Recipes.Queries.GetRecipe;
 
 public class RecipeDetailedDto
 {
-    public required int CookbookId { get; set; }
+    public required int Id { get; set; }
 
     public required string Title { get; set; }
 

@@ -4,9 +4,9 @@ namespace SharedCookbook.Application.Cookbooks.Queries.GetCookbooksWithPaginatio
 
 public class CookbookBriefDto
 {
-    public int Id { get; init; }
+    public required int Id { get; init; }
 
-    public string? Title { get; set; }
+    public required string Title { get; set; }
 
     public string? ImagePath { get; set; }
 
