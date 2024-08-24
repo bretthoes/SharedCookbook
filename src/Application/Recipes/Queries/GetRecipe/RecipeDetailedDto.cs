@@ -26,11 +26,11 @@ public class RecipeDetailedDto
 
     public int? Servings { get; set; }
 
-    public virtual ICollection<RecipeDirection> Directions { get; set; } = [];
+    public virtual ICollection<RecipeDirectionDto> Directions { get; set; } = [];
 
-    public virtual ICollection<RecipeImage> Images { get; set; } = [];
+    public virtual ICollection<RecipeImageDto> Images { get; set; } = [];
 
-    public virtual ICollection<RecipeIngredient> Ingredients { get; set; } = [];
+    public virtual ICollection<RecipeIngredientDto> Ingredients { get; set; } = [];
 
     private class Mapping : Profile
     {
