@@ -20,8 +20,6 @@ public class GetRecipeQueryHandler : IRequestHandler<GetRecipeQuery, RecipeDetai
     public async Task<RecipeDetailedDto> Handle(GetRecipeQuery request, CancellationToken cancellationToken)
     {
         var entity = await _context.Recipes
-           .Include(r => r.Nutrition)
-           .Include(r => r.IngredientCategories)
            .Include(r => r.Directions)
            .Include(r => r.Ingredients)
            .SingleOrDefaultAsync(r => r.Id == request.Id, cancellationToken);
