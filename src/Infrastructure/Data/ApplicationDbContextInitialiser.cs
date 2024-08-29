@@ -416,6 +416,18 @@ public class ApplicationDbContextInitialiser
 
             var recipe = await _context.Recipes.FirstOrDefaultAsync();
 
+            var images = new List<RecipeImage>()
+            {
+                new()
+                {
+                    ImageUrl = "ad3bef7c-1d4f-46f2-839d-0c01a5e0c33e.png",
+                    RecipeId = recipe!.Id,
+                    Ordinal = 1
+                }
+            };
+            await _context.RecipeImages.AddRangeAsync(images);
+            await _context.SaveChangesAsync();
+
             var nutritions = new List<RecipeNutrition>()
             {
                 new()
