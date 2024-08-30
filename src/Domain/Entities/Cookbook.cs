@@ -6,7 +6,7 @@ public class Cookbook : BaseAuditableEntity
 
     public required string Title { get; set; }
 
-    public string? ImagePath { get; set; }
+    public string? Image { get; set; }
 
     public virtual ICollection<CookbookInvitation> CookbookInvitations { get; set; } = [];
 

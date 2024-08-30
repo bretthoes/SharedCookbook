@@ -10,7 +10,7 @@ public record CreateCookbookCommand : IRequest<int>
 
     public required string Title { get; set; }
 
-    public required string ImagePath { get; set; }
+    public required string Image { get; set; }
 }
 
 public class CreateCookbookCommandHandler : IRequestHandler<CreateCookbookCommand, int>
@@ -28,7 +28,7 @@ public class CreateCookbookCommandHandler : IRequestHandler<CreateCookbookComman
         {
             CreatorPersonId = request.CreatorPersonId,
             Title = request.Title,
-            ImagePath = request.ImagePath,
+            Image = request.Image,
         };
 
         _context.Cookbooks.Add(entity);

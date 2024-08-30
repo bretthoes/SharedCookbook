@@ -8,7 +8,7 @@ public class CookbookBriefDto
 
     public required string Title { get; set; }
 
-    public string? ImagePath { get; set; }
+    public string? Image { get; set; }
 
     public int MembersCount { get; set; }
 

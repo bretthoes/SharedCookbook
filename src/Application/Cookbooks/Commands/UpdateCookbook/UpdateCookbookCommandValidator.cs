@@ -7,7 +7,7 @@ public class UpdateCookbookCommandValidator : AbstractValidator<UpdateCookbookCo
         RuleFor(v => v.Title)
             .MaximumLength(200)
             .NotEmpty();
-        RuleFor(v => v.ImagePath)
+        RuleFor(v => v.Image)
             .NotEmpty();
     }
 }

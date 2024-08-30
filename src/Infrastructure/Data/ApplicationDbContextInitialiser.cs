@@ -85,7 +85,7 @@ public class ApplicationDbContextInitialiser
         {
             UserName = "brett",
             Email = "bretthoes@gmail.com",
-            ImagePath = "",
+            Image = "",
             EmailConfirmed = true,
             PhoneNumberConfirmed = true,
         };
@@ -94,7 +94,7 @@ public class ApplicationDbContextInitialiser
         {
             UserName = "test",
             Email = "test@test.com",
-            ImagePath = "",
+            Image = "",
             EmailConfirmed = true,
             PhoneNumberConfirmed = true,
         };
@@ -129,13 +129,13 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     Title = "My Cookbook",
-                    ImagePath = "a3449a45-3cb9-494e-bd69-21c04784b357spongebob_todo.jpg",
+                    Image = "a3449a45-3cb9-494e-bd69-21c04784b357spongebob_todo.jpg",
                     CreatorPersonId = adminPerson!.Id,
                 },
                 new()
                 {
                     Title = "Not My Cookbook",
-                    ImagePath = null,
+                    Image = null,
                     CreatorPersonId = otherAdminPerson!.Id,
                 },
             };
@@ -194,7 +194,7 @@ public class ApplicationDbContextInitialiser
                     AuthorId = adminPerson?.Id ?? 0,
                     Title = "Chicken Casserole",
                     Cookbook = cookbook,
-                    ImagePath = "assets/images/chicken_casserole.png",
+                    Thumbnail = "assets/images/chicken_casserole.png",
                     PreparationTimeInMinutes = 30,
                     CookingTimeInMinutes = 30,
                 },
@@ -204,7 +204,7 @@ public class ApplicationDbContextInitialiser
                     AuthorId = adminPerson?.Id ?? 0,
                     Title = "Salmon Loaf",
                     Cookbook = cookbook,
-                    ImagePath = "assets/images/baked-salmon-loaf.jpg",
+                    Thumbnail = "assets/images/baked-salmon-loaf.jpg",
                     BakingTimeInMinutes = 90
                 },
                 new()
@@ -213,7 +213,7 @@ public class ApplicationDbContextInitialiser
                     AuthorId = adminPerson?.Id ?? 0,
                     Title = "Beef Stroganoff",
                     Cookbook = cookbook,
-                    ImagePath = "assets/images/beef_stroganoff.png",
+                    Thumbnail = "assets/images/beef_stroganoff.png",
                     PreparationTimeInMinutes = 20,
                     CookingTimeInMinutes = 40
                 },
@@ -223,7 +223,7 @@ public class ApplicationDbContextInitialiser
                     AuthorId = adminPerson?.Id ?? 0,
                     Title = "Spaghetti Carbonara",
                     Cookbook = cookbook,
-                    ImagePath = "assets/images/spaghetti_carbonara.png",
+                    Thumbnail = "assets/images/spaghetti_carbonara.png",
                     PreparationTimeInMinutes = 15,
                     CookingTimeInMinutes = 20
                 },
@@ -233,7 +233,7 @@ public class ApplicationDbContextInitialiser
                     AuthorId = adminPerson?.Id ?? 0,
                     Title = "Vegetable Stir-Fry",
                     Cookbook = cookbook,
-                    ImagePath = "assets/images/vegetable_stirfry.png",
+                    Thumbnail = "assets/images/vegetable_stirfry.png",
                     PreparationTimeInMinutes = 10,
                     CookingTimeInMinutes = 15,
                     Servings = 4
@@ -244,7 +244,7 @@ public class ApplicationDbContextInitialiser
                     AuthorId = adminPerson?.Id ?? 0,
                     Title = "Lasagna",
                     Cookbook = cookbook,
-                    ImagePath = "assets/images/lasagna.png",
+                    Thumbnail = "assets/images/lasagna.png",
                     PreparationTimeInMinutes = 45,
                     BakingTimeInMinutes = 60,
                     Servings = 6
@@ -255,7 +255,7 @@ public class ApplicationDbContextInitialiser
                     AuthorId = adminPerson?.Id ?? 0,
                     Title = "Chocolate Cake",
                     Cookbook = cookbook,
-                    ImagePath = "assets/images/chocolate_cake.png",
+                    Thumbnail = "assets/images/chocolate_cake.png",
                     PreparationTimeInMinutes = 20,
                     BakingTimeInMinutes = 30,
                     Servings = 8
@@ -266,7 +266,7 @@ public class ApplicationDbContextInitialiser
                     AuthorId = adminPerson?.Id ?? 0,
                     Title = "Taco Salad",
                     Cookbook = cookbook,
-                    ImagePath = "assets/images/taco_salad.png",
+                    Thumbnail = "assets/images/taco_salad.png",
                     PreparationTimeInMinutes = 15,
                     Servings = 4
                 },
@@ -276,7 +276,7 @@ public class ApplicationDbContextInitialiser
                     AuthorId = adminPerson?.Id ?? 0,
                     Title = "Chicken Alfredo",
                     Cookbook = cookbook,
-                    ImagePath = "assets/images/chicken_alfredo.png",
+                    Thumbnail = "assets/images/chicken_alfredo.png",
                     PreparationTimeInMinutes = 25,
                     CookingTimeInMinutes = 25,
                     Servings = 4
@@ -287,7 +287,7 @@ public class ApplicationDbContextInitialiser
                     AuthorId = adminPerson?.Id ?? 0,
                     Title = "Minestrone Soup",
                     Cookbook = cookbook,
-                    ImagePath = "assets/images/minestrone_soup.png",
+                    Thumbnail = "assets/images/minestrone_soup.png",
                     PreparationTimeInMinutes = 15,
                     CookingTimeInMinutes = 40,
                     Servings = 6
@@ -298,7 +298,7 @@ public class ApplicationDbContextInitialiser
                     AuthorId = adminPerson?.Id ?? 0,
                     Title = "Pumpkin Pie",
                     Cookbook = cookbook,
-                    ImagePath = "assets/images/pumpkin_pie.png",
+                    Thumbnail = "assets/images/pumpkin_pie.png",
                     PreparationTimeInMinutes = 20,
                     BakingTimeInMinutes = 50,
                     Servings = 8
@@ -309,7 +309,7 @@ public class ApplicationDbContextInitialiser
                     AuthorId = adminPerson?.Id ?? 0,
                     Title = "Shrimp Scampi",
                     Cookbook = cookbook,
-                    ImagePath = "assets/images/shrimp_scampi.png",
+                    Thumbnail = "assets/images/shrimp_scampi.png",
                     PreparationTimeInMinutes = 15,
                     CookingTimeInMinutes = 10,
                     Servings = 4
@@ -320,7 +320,7 @@ public class ApplicationDbContextInitialiser
                     AuthorId = adminPerson?.Id ?? 0,
                     Title = "Grilled Cheese Sandwich",
                     Cookbook = cookbook,
-                    ImagePath = "assets/images/grilled_cheese.png",
+                    Thumbnail = "assets/images/grilled_cheese.png",
                     PreparationTimeInMinutes = 5,
                     CookingTimeInMinutes = 5,
                     Servings = 2
@@ -331,7 +331,7 @@ public class ApplicationDbContextInitialiser
                     AuthorId = adminPerson?.Id ?? 0,
                     Title = "Chicken Caesar Salad with Pecans and Extra Dates with Shredded Cheddar Cheese",
                     Cookbook = cookbook,
-                    ImagePath = "assets/images/chicken_caesar_salad.png",
+                    Thumbnail = "assets/images/chicken_caesar_salad.png",
                     PreparationTimeInMinutes = 20,
                     Servings = 4
                 },
@@ -341,7 +341,7 @@ public class ApplicationDbContextInitialiser
                     AuthorId = adminPerson?.Id ?? 0,
                     Title = "Stuffed Bell Peppers",
                     Cookbook = cookbook,
-                    ImagePath = "assets/images/stuffed_bell_peppers.png",
+                    Thumbnail = "assets/images/stuffed_bell_peppers.png",
                     PreparationTimeInMinutes = 25,
                     BakingTimeInMinutes = 35,
                     Servings = 4
@@ -352,7 +352,7 @@ public class ApplicationDbContextInitialiser
                     AuthorId = adminPerson?.Id ?? 0,
                     Title = "Beef Tacos",
                     Cookbook = cookbook,
-                    ImagePath = "assets/images/beef_tacos.png",
+                    Thumbnail = "assets/images/beef_tacos.png",
                     PreparationTimeInMinutes = 10,
                     CookingTimeInMinutes = 15,
                     Servings = 6
@@ -363,7 +363,7 @@ public class ApplicationDbContextInitialiser
                     AuthorId = adminPerson?.Id ?? 0,
                     Title = "Pancakes",
                     Cookbook = cookbook,
-                    ImagePath = "assets/images/pancakes.png",
+                    Thumbnail = "assets/images/pancakes.png",
                     PreparationTimeInMinutes = 10,
                     CookingTimeInMinutes = 15,
                     Servings = 4
@@ -374,7 +374,7 @@ public class ApplicationDbContextInitialiser
                     AuthorId = adminPerson?.Id ?? 0,
                     Title = "Roast Turkey",
                     Cookbook = cookbook,
-                    ImagePath = "assets/images/roast_turkey.png",
+                    Thumbnail = "assets/images/roast_turkey.png",
                     PreparationTimeInMinutes = 30,
                     BakingTimeInMinutes = 180,
                     Servings = 10
@@ -385,7 +385,7 @@ public class ApplicationDbContextInitialiser
                     AuthorId = adminPerson?.Id ?? 0,
                     Title = "Fettuccine Alfredo",
                     Cookbook = cookbook,
-                    ImagePath = "assets/images/fettuccine_alfredo.png",
+                    Thumbnail = "assets/images/fettuccine_alfredo.png",
                     PreparationTimeInMinutes = 15,
                     CookingTimeInMinutes = 20,
                     Servings = 4
@@ -396,7 +396,7 @@ public class ApplicationDbContextInitialiser
                     AuthorId = adminPerson?.Id ?? 0,
                     Title = "French Onion Soup",
                     Cookbook = cookbook,
-                    ImagePath = "assets/images/french_onion_soup.png",
+                    Thumbnail = "assets/images/french_onion_soup.png",
                     PreparationTimeInMinutes = 15,
                     CookingTimeInMinutes = 45,
                     Servings = 4
@@ -407,7 +407,7 @@ public class ApplicationDbContextInitialiser
                     AuthorId = adminPerson?.Id ?? 0,
                     Title = "Secret Sauce",
                     Cookbook = cookbook,
-                    ImagePath = "",
+                    Thumbnail = "",
                 }
             };
 
@@ -420,7 +420,7 @@ public class ApplicationDbContextInitialiser
             {
                 new()
                 {
-                    ImageUrl = "ad3bef7c-1d4f-46f2-839d-0c01a5e0c33e.png",
+                    Name = "ad3bef7c-1d4f-46f2-839d-0c01a5e0c33e.png",
                     RecipeId = recipe!.Id,
                     Ordinal = 1
                 }

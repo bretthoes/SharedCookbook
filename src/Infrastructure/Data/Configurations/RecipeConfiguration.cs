@@ -32,9 +32,9 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
             .IsRequired();
         builder.Property(r => r.Summary)
             .HasColumnName("summary");
-        builder.Property(r => r.ImagePath)
+        builder.Property(r => r.Thumbnail)
             .HasMaxLength(255)
-            .HasColumnName("image_path");
+            .HasColumnName("thumbnail");
         builder.Property(r => r.VideoPath)
             .HasMaxLength(255)
             .HasColumnName("video_path");

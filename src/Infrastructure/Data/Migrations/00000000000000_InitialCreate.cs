@@ -46,7 +46,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                     LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
                     AccessFailedCount = table.Column<int>(type: "int", nullable: false),
-                    ImagePath = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Image = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                 },
                 constraints: table =>
                 {
@@ -257,7 +257,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     creator_person_id = table.Column<int>(type: "int", nullable: true),
                     title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    image_path = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    image = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
@@ -356,7 +356,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     author_id = table.Column<int>(type: "int", nullable: false),
                     summary = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    image_path = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    thumbnail = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     video_path = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     preparation_time_in_minutes = table.Column<int>(type: "int", nullable: true),
                     cooking_time_in_minutes = table.Column<int>(type: "int", nullable: true),
@@ -501,7 +501,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     recipe_image_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     recipe_id = table.Column<int>(type: "int", nullable: false),
-                    image_url = table.Column<string>(type: "nvarchar(2048)", maxLength: 2048, nullable: false),
+                    name = table.Column<string>(type: "nvarchar(2048)", maxLength: 2048, nullable: false),
                     ordinal = table.Column<int>(type: "int", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),

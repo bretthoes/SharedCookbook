@@ -545,10 +545,10 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("creator_person_id");
 
-                    b.Property<string>("ImagePath")
+                    b.Property<string>("Image")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)")
-                        .HasColumnName("image_path");
+                        .HasColumnName("image");
 
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("datetimeoffset");
@@ -806,10 +806,10 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImagePath")
+                    b.Property<string>("Thumbnail")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
-                        .HasColumnName("image_path");
+                        .HasColumnName("thumbnail");
 
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("datetimeoffset");
@@ -917,11 +917,11 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 b.Property<string>("CreatedBy")
                     .HasColumnType("nvarchar(max)");
 
-                b.Property<string>("ImageUrl")
+                b.Property<string>("Name")
                     .IsRequired()
                     .HasMaxLength(2048)
                     .HasColumnType("nvarchar(2048)")
-                    .HasColumnName("image_url");
+                    .HasColumnName("name");
 
                 b.Property<DateTimeOffset>("LastModified")
                     .HasColumnType("datetimeoffset");
@@ -1157,7 +1157,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ImagePath")
+                    b.Property<string>("Image")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 

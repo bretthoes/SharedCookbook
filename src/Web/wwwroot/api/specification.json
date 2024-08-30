@@ -1256,7 +1256,7 @@
           "title": {
             "type": "string"
           },
-          "imagePath": {
+          "image": {
             "type": "string",
             "nullable": true
           },
@@ -1277,7 +1277,7 @@
           "title": {
             "type": "string"
           },
-          "imagePath": {
+          "image": {
             "type": "string"
           }
         }
@@ -1294,7 +1294,7 @@
             "type": "string",
             "nullable": true
           },
-          "imagePath": {
+          "image": {
             "type": "string",
             "nullable": true
           }
@@ -1322,7 +1322,7 @@
             "type": "string",
             "nullable": true
           },
-          "imagePath": {
+          "thumbnail": {
             "type": "string",
             "nullable": true
           },
@@ -1399,7 +1399,7 @@
             "type": "integer",
             "format": "int32"
           },
-          "imageUrl": {
+          "name": {
             "type": "string"
           },
           "ordinal": {

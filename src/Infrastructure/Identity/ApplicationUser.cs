@@ -5,7 +5,7 @@ namespace SharedCookbook.Infrastructure.Identity;
 
 public class ApplicationUser : IdentityUser<int>
 {
-    public string? ImagePath { get; set; }
+    public string? Image { get; set; }
 
     public virtual ICollection<Cookbook> Cookbooks { get; set; } = [];
 

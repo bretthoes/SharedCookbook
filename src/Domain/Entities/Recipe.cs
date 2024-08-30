@@ -10,7 +10,7 @@ public class Recipe : BaseAuditableEntity
 
     public string? Summary { get; set; }
 
-    public string? ImagePath { get; set; }
+    public string? Thumbnail { get; set; }
 
     public string? VideoPath { get; set; }
 

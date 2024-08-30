@@ -23,9 +23,9 @@ public class RecipeImageConfiguration : IEntityTypeConfiguration<RecipeImage>
             .HasColumnName("recipe_id")
             .IsRequired();
 
-        builder.Property(ri => ri.ImageUrl)
+        builder.Property(ri => ri.Name)
             .HasMaxLength(2048)
-            .HasColumnName("image_url")
+            .HasColumnName("name")
             .IsRequired();
 
         builder.Property(ri => ri.Ordinal)

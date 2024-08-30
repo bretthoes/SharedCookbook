@@ -6,7 +6,7 @@ public record UpdateCookbookCommand : IRequest<int>
 {
     public int Id { get; set; }
     public string? Title { get; set; }
-    public string? ImagePath { get; set; }
+    public string? Image { get; set; }
 }
 
 public class UpdateCookbookCommandHandler : IRequestHandler<UpdateCookbookCommand, int>
@@ -26,7 +26,7 @@ public class UpdateCookbookCommandHandler : IRequestHandler<UpdateCookbookComman
         Guard.Against.NotFound(request.Id, entity);
 
         if (!string.IsNullOrWhiteSpace(request.Title)) entity.Title = request.Title;
-        if (!string.IsNullOrWhiteSpace(request.ImagePath)) entity.ImagePath = request.ImagePath;
+        if (!string.IsNullOrWhiteSpace(request.Image)) entity.Image = request.Image;
 
         return await _context.SaveChangesAsync(cancellationToken);
     }

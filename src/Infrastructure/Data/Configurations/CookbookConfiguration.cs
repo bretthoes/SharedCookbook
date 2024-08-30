@@ -26,8 +26,8 @@ public class CookbookConfiguration : IEntityTypeConfiguration<Cookbook>
             .HasColumnName("title")
             .HasMaxLength(255)
             .IsRequired();
-        builder.Property(c => c.ImagePath)
-            .HasColumnName("image_path")
+        builder.Property(c => c.Image)
+            .HasColumnName("image")
             .HasMaxLength(255);
 
         builder.HasOne<Identity.ApplicationUser>()
