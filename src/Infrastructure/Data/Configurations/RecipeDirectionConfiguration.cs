@@ -23,16 +23,16 @@ public class RecipeDirectionConfiguration : IEntityTypeConfiguration<RecipeDirec
         builder.Property(rd => rd.RecipeId)
             .HasColumnName("recipe_id")
             .IsRequired();
-        builder.Property(rd => rd.DirectionText)
+        builder.Property(rd => rd.Text)
             .HasMaxLength(255)
-            .HasColumnName("instruction")
+            .HasColumnName("text")
             .IsRequired();
         builder.Property(rd => rd.Ordinal)
             .HasColumnName("ordinal")
             .IsRequired();
-        builder.Property(rd => rd.ImagePath)
+        builder.Property(rd => rd.Image)
             .HasMaxLength(255)
-            .HasColumnName("image_path");
+            .HasColumnName("image");
 
         builder.HasOne<Recipe>()
             .WithMany(p => p.Directions)

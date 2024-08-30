@@ -497,29 +497,29 @@ public class ApplicationDbContextInitialiser
                 {
                     RecipeId = recipe!.Id,
                     Ordinal = 1,
-                    ImagePath = null,
-                    DirectionText = "Preheat the oven to 350 degrees F (175 degrees C).",
+                    Image = null,
+                    Text = "Preheat the oven to 350 degrees F (175 degrees C).",
                 },
                 new()
                 {
                     RecipeId = recipe!.Id,
                     Ordinal = 2,
-                    ImagePath = null,
-                    DirectionText = "Combine salmon, crushed crackers, milk, egg, melted butter, salt, and pepper in a mixing bowl. Mix thoroughly.",
+                    Image = null,
+                    Text = "Combine salmon, crushed crackers, milk, egg, melted butter, salt, and pepper in a mixing bowl. Mix thoroughly.",
                 },
                 new()
                 {
                     RecipeId = recipe!.Id,
                     Ordinal = 3,
-                    ImagePath = null,
-                    DirectionText = "Press the salmon mixture into a lightly greased 9x5-inch loaf pan.",
+                    Image = null,
+                    Text = "Press the salmon mixture into a lightly greased 9x5-inch loaf pan.",
                 },
                 new()
                 {
                     RecipeId = recipe!.Id,
                     Ordinal = 4,
-                    ImagePath = null,
-                    DirectionText = "Bake in the preheated oven for 45 minutes or until done.",
+                    Image = null,
+                    Text = "Bake in the preheated oven for 45 minutes or until done.",
                 }
             };
             await _context.RecipeDirections.AddRangeAsync(directions);

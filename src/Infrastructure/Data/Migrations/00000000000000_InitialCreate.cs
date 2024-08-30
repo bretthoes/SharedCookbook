@@ -449,9 +449,9 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     recipe_direction_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     recipe_id = table.Column<int>(type: "int", nullable: false),
-                    instruction = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    text = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     ordinal = table.Column<int>(type: "int", nullable: false),
-                    image_path = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    image = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
