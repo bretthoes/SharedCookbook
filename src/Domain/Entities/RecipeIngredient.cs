@@ -4,7 +4,7 @@ public class RecipeIngredient : BaseAuditableEntity
 {
     public required int RecipeId { get; set; }
 
-    public required string IngredientName { get; set; }
+    public required string Name { get; set; }
 
     public required int Ordinal { get; set; }
 

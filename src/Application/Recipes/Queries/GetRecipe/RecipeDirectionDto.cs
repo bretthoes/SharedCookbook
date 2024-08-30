@@ -6,11 +6,11 @@ public class RecipeDirectionDto
 {
     public required int Id { get; set; }
 
-    public required string DirectionText { get; set; }
+    public required string Text { get; set; }
 
     public required int Ordinal { get; set; }
 
-    public string? ImagePath { get; set; }
+    public string? Image { get; set; }
 
     private class Mapping : Profile
     {

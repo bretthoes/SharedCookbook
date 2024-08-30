@@ -475,7 +475,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     recipe_ingredient_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     recipe_id = table.Column<int>(type: "int", nullable: false),
-                    ingredient_name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     ordinal = table.Column<int>(type: "int", nullable: false),
                     optional = table.Column<bool>(type: "bit", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),

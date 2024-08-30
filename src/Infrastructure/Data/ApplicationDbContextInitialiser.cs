@@ -448,42 +448,42 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     RecipeId = recipe!.Id,
-                    IngredientName = "1 can salmon",
+                    Name = "1 can salmon",
                     Ordinal = 1,
                     Optional = false,
                 },
                 new()
                 {
                     RecipeId = recipe!.Id,
-                    IngredientName = "1/2 cup crushed saltine crackers",
+                    Name = "1/2 cup crushed saltine crackers",
                     Ordinal = 2,
                     Optional = false,
                 },
                 new()
                 {
                     RecipeId = recipe!.Id,
-                    IngredientName = "1/2 cup milk",
+                    Name = "1/2 cup milk",
                     Ordinal = 3,
                     Optional = false,
                 },
                 new()
                 {
                     RecipeId = recipe!.Id,
-                    IngredientName = "1 large egg, beaten",
+                    Name = "1 large egg, beaten",
                     Ordinal = 4,
                     Optional = false,
                 },
                 new()
                 {
                     RecipeId = recipe!.Id,
-                    IngredientName = "2 tablespoons melted butter",
+                    Name = "2 tablespoons melted butter",
                     Ordinal = 5,
                     Optional = false,
                 },
                 new()
                 {
                     RecipeId = recipe!.Id,
-                    IngredientName = "salt and pepper to taste",
+                    Name = "salt and pepper to taste",
                     Ordinal = 6,
                     Optional = true,
                 }

@@ -23,9 +23,9 @@ public class RecipeIngredientConfiguration : IEntityTypeConfiguration<RecipeIngr
         builder.Property(ri => ri.RecipeId)
             .HasColumnName("recipe_id")
             .IsRequired();
-        builder.Property(ri => ri.IngredientName)
+        builder.Property(ri => ri.Name)
             .HasMaxLength(255)
-            .HasColumnName("ingredient_name")
+            .HasColumnName("name")
             .IsRequired();
         builder.Property(ri => ri.Ordinal)
             .HasColumnName("ordinal")
