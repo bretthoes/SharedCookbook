@@ -23,9 +23,10 @@ public class GetCookbooksWithPaginationQueryHandler : IRequestHandler<GetCookboo
         _user = user;
     }
 
-    public async Task<PaginatedList<CookbookBriefDto>> Handle(GetCookbooksWithPaginationQuery request, CancellationToken cancellationToken)
+    public Task<PaginatedList<CookbookBriefDto>> Handle(GetCookbooksWithPaginationQuery request, CancellationToken cancellationToken)
     {
-        return await _context.Cookbooks
+        // TODO select dto directly to avoid using Include
+        return _context.Cookbooks
             .Where(c => _context.CookbookMembers
                 .Any(cm => cm.PersonId == _user.Id && cm.CookbookId == c.Id))
             .OrderBy(c => c.Title)

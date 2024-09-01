@@ -19,6 +19,7 @@ public class GetRecipeQueryHandler : IRequestHandler<GetRecipeQuery, RecipeDetai
 
     public async Task<RecipeDetailedDto> Handle(GetRecipeQuery request, CancellationToken cancellationToken)
     {
+        // TODO select dto directly to avoid using Include.
         var entity = await _context.Recipes
             .AsNoTracking()
             .Include(r => r.Directions)
