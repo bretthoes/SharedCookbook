@@ -8,30 +8,59 @@ public class GetRecipeQueryHandler : IRequestHandler<GetRecipeQuery, RecipeDetai
 {
     private readonly IApplicationDbContext _context;
     private readonly IIdentityService _identityService;
-    private readonly IMapper _mapper;
 
-    public GetRecipeQueryHandler(IApplicationDbContext context, IIdentityService identityService, IMapper mapper)
+    public GetRecipeQueryHandler(IApplicationDbContext context, IIdentityService identityService)
     {
         _context = context;
         _identityService = identityService;
-        _mapper = mapper;
     }
 
     public async Task<RecipeDetailedDto> Handle(GetRecipeQuery request, CancellationToken cancellationToken)
     {
-        // TODO select dto directly to avoid using Include.
-        var entity = await _context.Recipes
+        var dto = await _context.Recipes
             .AsNoTracking()
-            .Include(r => r.Directions)
-            .Include(r => r.Images)
-            .Include(r => r.Ingredients)
-            .SingleOrDefaultAsync(r => r.Id == request.Id, cancellationToken);
+            .Where(r => r.Id == request.Id)
+            .Select(r => new RecipeDetailedDto
+            {
+                Id = r.Id,
+                Title = r.Title,
+                AuthorId = r.AuthorId,
+                Summary = r.Summary,
+                Thumbnail = r.Thumbnail,
+                VideoPath = r.VideoPath,
+                PreparationTimeInMinutes = r.PreparationTimeInMinutes,
+                CookingTimeInMinutes = r.CookingTimeInMinutes,
+                BakingTimeInMinutes = r.BakingTimeInMinutes,
+                Servings = r.Servings,
+                Directions = r.Directions.Select(d => new RecipeDirectionDto
+                {
+                    Id = d.Id,
+                    Text = d.Text,
+                    Ordinal = d.Ordinal,
+                    Image = d.Image
+                }).ToList(),
+                Images = r.Images.Select(i => new RecipeImageDto
+                {
+                    Id = i.Id,
+                    Name = i.Name,
+                    Ordinal = i.Ordinal
+                    
+                }).ToList(),
+                Ingredients = r.Ingredients.Select(i => new RecipeIngredientDto
+                {
+                    Id = i.Id,
+                    Name = i.Name,
+                    Ordinal = i.Ordinal,
+                    Optional = i.Optional
+                }).ToList()
+            })
+            .SingleOrDefaultAsync(cancellationToken);
 
-        Guard.Against.NotFound(request.Id, entity);
+        Guard.Against.NotFound(request.Id, dto);
 
-        var dto = _mapper.Map<RecipeDetailedDto>(entity);
-
-        dto.Author = await _identityService.GetUserNameAsync(entity.AuthorId.ToString()) ?? string.Empty;
+        // Map the author name separately since author cannot be accessed through a relationship.
+        // this is a byproduct of not having the ApplicationUser object in the domain layer.
+        dto.Author = await _identityService.GetUserNameAsync(dto.AuthorId.ToString()) ?? string.Empty;
 
         return dto;
     }

@@ -13,25 +13,27 @@ public record GetCookbooksWithPaginationQuery : IRequest<PaginatedList<CookbookB
 public class GetCookbooksWithPaginationQueryHandler : IRequestHandler<GetCookbooksWithPaginationQuery, PaginatedList<CookbookBriefDto>>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
     private readonly IUser _user;
 
-    public GetCookbooksWithPaginationQueryHandler(IApplicationDbContext context, IUser user, IMapper mapper)
+    public GetCookbooksWithPaginationQueryHandler(IApplicationDbContext context, IUser user)
     {
         _context = context;
-        _mapper = mapper;
         _user = user;
     }
 
     public Task<PaginatedList<CookbookBriefDto>> Handle(GetCookbooksWithPaginationQuery request, CancellationToken cancellationToken)
     {
-        // TODO select dto directly to avoid using Include
         return _context.Cookbooks
+            .AsNoTracking()
             .Where(c => _context.CookbookMembers
                 .Any(cm => cm.PersonId == _user.Id && cm.CookbookId == c.Id))
             .OrderBy(c => c.Title)
-            .Include(c => c.CookbookMembers)
-            .ProjectTo<CookbookBriefDto>(_mapper.ConfigurationProvider)
-            .PaginatedListAsync(request.PageNumber, request.PageSize);
+            .Select(c => new CookbookBriefDto
+            {
+                Id = c.Id,
+                Title = c.Title,
+                Image = c.Image,
+                MembersCount = c.CookbookMembers.Count
+            }).PaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
     }
 }

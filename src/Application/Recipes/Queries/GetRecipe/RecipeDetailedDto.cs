@@ -8,9 +8,9 @@ public class RecipeDetailedDto
 
     public required string Title { get; set; }
 
-    public required int AuthorId { get; set; }
+    public int AuthorId { get; set; }
 
-    public required string Author { get; set; }
+    public string? Author { get; set; }
 
     public string? Summary { get; set; }
 
