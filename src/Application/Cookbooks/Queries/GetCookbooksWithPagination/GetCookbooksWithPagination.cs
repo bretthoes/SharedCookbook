@@ -34,6 +34,7 @@ public class GetCookbooksWithPaginationQueryHandler : IRequestHandler<GetCookboo
                 Title = c.Title,
                 Image = c.Image,
                 MembersCount = c.CookbookMembers.Count
-            }).PaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
+            })
+            .PaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
     }
 }

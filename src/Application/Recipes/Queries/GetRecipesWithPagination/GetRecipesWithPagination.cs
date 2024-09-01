@@ -30,6 +30,6 @@ public class GetRecipesWithPaginationQueryHandler : IRequestHandler<GetRecipesWi
             .Where(r => r.CookbookId == request.CookbookId)
             .OrderBy(c => c.Title)
             .ProjectTo<RecipeBriefDto>(_mapper.ConfigurationProvider)
-            .PaginatedListAsync(request.PageNumber, request.PageSize);
+            .PaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
     }
 }

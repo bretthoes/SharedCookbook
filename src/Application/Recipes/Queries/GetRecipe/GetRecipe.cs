@@ -19,7 +19,6 @@ public class GetRecipeQueryHandler : IRequestHandler<GetRecipeQuery, RecipeDetai
     {
         var dto = await _context.Recipes
             .AsNoTracking()
-            .Where(r => r.Id == request.Id)
             .Select(r => new RecipeDetailedDto
             {
                 Id = r.Id,
@@ -54,7 +53,7 @@ public class GetRecipeQueryHandler : IRequestHandler<GetRecipeQuery, RecipeDetai
                     Optional = i.Optional
                 }).ToList()
             })
-            .SingleOrDefaultAsync(cancellationToken);
+            .SingleOrDefaultAsync(r => r.Id == request.Id, cancellationToken);
 
         Guard.Against.NotFound(request.Id, dto);
 

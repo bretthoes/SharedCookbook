@@ -1316,7 +1316,8 @@
             "format": "int32"
           },
           "author": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "summary": {
             "type": "string",
