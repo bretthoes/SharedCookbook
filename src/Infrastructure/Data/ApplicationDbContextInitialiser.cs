@@ -423,6 +423,12 @@ public class ApplicationDbContextInitialiser
                     Name = "ad3bef7c-1d4f-46f2-839d-0c01a5e0c33e.png",
                     RecipeId = recipe!.Id,
                     Ordinal = 1
+                },
+                new()
+                {
+                    Name = "ad3bef7c-1d4f-46f2-839d-0c01a5e0c33d.png",
+                    RecipeId = recipe!.Id,
+                    Ordinal = 2
                 }
             };
             await _context.RecipeImages.AddRangeAsync(images);
