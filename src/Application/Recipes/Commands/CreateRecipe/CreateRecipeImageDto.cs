@@ -12,7 +12,7 @@ public class CreateRecipeImageDto
     {
         public Mapping()
         {
-            CreateMap<RecipeImage, CreateRecipeImageDto>();
+            CreateMap<CreateRecipeImageDto, RecipeImage>();
         }
     }
 }

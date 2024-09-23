@@ -14,7 +14,7 @@ public class CreateRecipeIngredientDto
     {
         public Mapping()
         {
-            CreateMap<RecipeIngredient, CreateRecipeIngredientDto>();
+            CreateMap<CreateRecipeIngredientDto, RecipeIngredient>();
         }
     }
 }
