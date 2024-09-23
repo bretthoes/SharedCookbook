@@ -22,7 +22,7 @@ public class Recipe : BaseAuditableEntity
 
     public int? Servings { get; set; }
 
-    public required virtual Cookbook Cookbook { get; set; }
+    public virtual Cookbook? Cookbook { get; set; }
 
     public virtual RecipeNutrition? Nutrition { get; set; }
 
