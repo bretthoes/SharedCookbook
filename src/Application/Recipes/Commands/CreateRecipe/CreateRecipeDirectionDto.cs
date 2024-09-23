@@ -4,7 +4,6 @@ namespace SharedCookbook.Application.Recipes.Queries.GetRecipe;
 
 public class CreateRecipeDirectionDto
 {
-    public int RecipeId { get; set; }
     public required string Text { get; set; }
 
     public required int Ordinal { get; set; }
