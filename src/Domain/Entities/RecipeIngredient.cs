@@ -2,7 +2,7 @@
 
 public class RecipeIngredient : BaseAuditableEntity
 {
-    public required int RecipeId { get; set; }
+    public int RecipeId { get; set; }
 
     public required string Name { get; set; }
 
