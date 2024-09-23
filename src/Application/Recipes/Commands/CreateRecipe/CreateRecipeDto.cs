@@ -7,6 +7,8 @@ public class CreateRecipeDto
 
     public required string Title { get; set; }
 
+    public required int CookbookId { get; set; }
+
     public int? AuthorId { get; set; }
 
     public string? Author { get; set; }
