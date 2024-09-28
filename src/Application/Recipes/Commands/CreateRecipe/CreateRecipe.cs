@@ -1,4 +1,5 @@
-﻿using SharedCookbook.Application.Common.Interfaces;
+﻿using SharedCookbook.Application.Common.Exceptions;
+using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Application.Recipes.Queries.GetRecipe;
 using SharedCookbook.Domain.Entities;
 using SharedCookbook.Domain.Events;
@@ -7,18 +8,7 @@ namespace SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 
 public record CreateRecipeCommand : IRequest<int>
 {
-    public required string Title { get; set; }
-    public required int CookbookId { get; set; }
-    public string? Summary { get; set; }
-    public string? Thumbnail { get; set; }
-    public string? VideoPath { get; set; }
-    public int? PreparationTimeInMinutes { get; set; }
-    public int? CookingTimeInMinutes { get; set; }
-    public int? BakingTimeInMinutes { get; set; }
-    public int? Servings { get; set; }
-    public ICollection<CreateRecipeDirectionDto> Directions { get; set; } = [];
-    public ICollection<CreateRecipeImageDto> Images { get; set; } = [];
-    public ICollection<CreateRecipeIngredientDto> Ingredients { get; set; } = [];
+    public required CreateRecipeDto Recipe { get; set; }
 }
 
 public class CreateRecipeCommandHandler : IRequestHandler<CreateRecipeCommand, int>
@@ -38,19 +28,19 @@ public class CreateRecipeCommandHandler : IRequestHandler<CreateRecipeCommand, i
     {
         var entity = new Recipe
         {
-            Title = request.Title,
-            CookbookId = request.CookbookId,
-            AuthorId = _user.Id ?? 0,
-            Summary = request.Summary,
-            Thumbnail = request.Thumbnail,
-            VideoPath = request.VideoPath,
-            PreparationTimeInMinutes = request.PreparationTimeInMinutes,
-            CookingTimeInMinutes = request.CookingTimeInMinutes,
-            BakingTimeInMinutes = request.BakingTimeInMinutes,
-            Servings = request.Servings,
-            Directions = _mapper.Map<ICollection<RecipeDirection>>(request.Directions),
-            Images = _mapper.Map<ICollection<RecipeImage>>(request.Images),
-            Ingredients = _mapper.Map<ICollection<RecipeIngredient>>(request.Ingredients)
+            Title = request.Recipe.Title,
+            CookbookId = request.Recipe.CookbookId,
+            AuthorId = _user.Id ?? throw new ForbiddenAccessException(),
+            Summary = request.Recipe.Summary,
+            Thumbnail = request.Recipe.Thumbnail,
+            VideoPath = request.Recipe.VideoPath,
+            PreparationTimeInMinutes = request.Recipe.PreparationTimeInMinutes,
+            CookingTimeInMinutes = request.Recipe.CookingTimeInMinutes,
+            BakingTimeInMinutes = request.Recipe.BakingTimeInMinutes,
+            Servings = request.Recipe.Servings,
+            Directions = _mapper.Map<ICollection<RecipeDirection>>(request.Recipe.Directions),
+            Images = _mapper.Map<ICollection<RecipeImage>>(request.Recipe.Images),
+            Ingredients = _mapper.Map<ICollection<RecipeIngredient>>(request.Recipe.Ingredients)
         };
 
         entity.AddDomainEvent(new RecipeCreatedEvent(entity));
@@ -67,21 +57,25 @@ public class CreateRecipeCommandValidator : AbstractValidator<CreateRecipeComman
 {
     public CreateRecipeCommandValidator()
     {
-        RuleFor(x => x.Title)
+        RuleFor(x => x.Recipe.Title)
             .MinimumLength(3)
             .MaximumLength(255)
             .WithMessage("New recipe title must be at least 3 characters and less than 255.");
 
-        RuleFor(x => x.CookbookId)
+        RuleFor(x => x.Recipe.CookbookId)
             .GreaterThanOrEqualTo(1)
             .WithMessage("New recipe must be in a valid cookbook (CookbookId >= 0).");
 
-        RuleFor(x => x.Directions)
+        RuleFor(x => x.Recipe.Directions)
             .NotEmpty()
-            .WithMessage("New recipe must include directions.");
+            .WithMessage("New recipe must include directions.")
+            .Must(directions => directions.Count < 20)
+            .WithMessage("New recipe must have fewer than 20 directions.");
 
-        RuleFor(x => x.Ingredients)
+        RuleFor(x => x.Recipe.Ingredients)
             .NotEmpty()
-            .WithMessage("New recipe must include ingredients.");
+            .WithMessage("New recipe must include ingredients.")
+            .Must(directions => directions.Count < 40)
+            .WithMessage("New recipe must have fewer than 40 directions.");
     }
 }

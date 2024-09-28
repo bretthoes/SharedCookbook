@@ -6,9 +6,10 @@ public class CreateRecipeIngredientDto
 {
     public required string Name { get; set; }
 
+    public required bool Optional { get; set; }
+
     public required int Ordinal { get; set; }
 
-    public required bool Optional { get; set; }
 
     private class Mapping : Profile
     {

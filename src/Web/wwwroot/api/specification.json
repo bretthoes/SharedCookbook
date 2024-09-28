@@ -1476,6 +1476,15 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
+          "recipe": {
+            "$ref": "#/components/schemas/CreateRecipeDto"
+          }
+        }
+      },
+      "CreateRecipeDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
           "title": {
             "type": "string"
           },
@@ -1539,10 +1548,6 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "recipeId": {
-            "type": "integer",
-            "format": "int32"
-          },
           "text": {
             "type": "string"
           },
@@ -1576,12 +1581,12 @@
           "name": {
             "type": "string"
           },
+          "optional": {
+            "type": "boolean"
+          },
           "ordinal": {
             "type": "integer",
             "format": "int32"
-          },
-          "optional": {
-            "type": "boolean"
           }
         }
       },

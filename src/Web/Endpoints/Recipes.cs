@@ -1,4 +1,5 @@
-﻿using SharedCookbook.Application.Common.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using SharedCookbook.Application.Common.Models;
 using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 using SharedCookbook.Application.Recipes.Commands.DeleteRecipe;
 using SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
@@ -30,7 +31,7 @@ public class Recipes : EndpointGroupBase
         return sender.Send(query);
     }
 
-    public Task<int> CreateRecipe(ISender sender, CreateRecipeCommand command)
+    public Task<int> CreateRecipe(ISender sender, [FromBody] CreateRecipeCommand command)
     {
         return sender.Send(command);
     }
