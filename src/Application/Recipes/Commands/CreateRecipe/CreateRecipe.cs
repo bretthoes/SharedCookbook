@@ -1,6 +1,5 @@
 ﻿using SharedCookbook.Application.Common.Exceptions;
 using SharedCookbook.Application.Common.Interfaces;
-using SharedCookbook.Application.Recipes.Queries.GetRecipe;
 using SharedCookbook.Domain.Entities;
 using SharedCookbook.Domain.Events;
 
