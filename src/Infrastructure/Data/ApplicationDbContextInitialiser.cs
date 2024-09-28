@@ -14,7 +14,7 @@ public static class InitialiserExtensions
 {
     public static async Task InitialiseDatabaseAsync(this WebApplication app)
     {
-        using var scope = app.Services.CreateScope();
+        await using var scope = app.Services.CreateAsyncScope();
 
         var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitialiser>();
 
