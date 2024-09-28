@@ -35,7 +35,7 @@ public class CreateCookbookCommandHandler : IRequestHandler<CreateCookbookComman
 
         AddCookbookCreator(request, entity);
 
-        //entity.AddDomainEvent(new TodoItemCreatedEvent(entity));
+        entity.AddDomainEvent(new CookbookCreatedEvent(entity));
 
         await _context.SaveChangesAsync(cancellationToken);
 
