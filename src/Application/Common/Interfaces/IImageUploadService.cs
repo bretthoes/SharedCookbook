@@ -3,5 +3,5 @@
 namespace SharedCookbook.Application.Common.Interfaces;
 public interface IImageUploadService
 {
-    Task<string> UploadFile(IFormFile file);
+    Task<string[]> UploadFiles(IFormFileCollection file);
 }

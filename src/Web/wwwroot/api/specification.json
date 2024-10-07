@@ -164,17 +164,17 @@
         "tags": [
           "Images"
         ],
-        "operationId": "CreateImage",
+        "operationId": "CreateImages",
         "requestBody": {
           "content": {
             "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "file": {
-                    "type": "string",
-                    "format": "binary",
-                    "nullable": true
+                  "files": {
+                    "type": "array",
+                    "nullable": true,
+                    "items": {}
                   }
                 }
               }
@@ -183,14 +183,19 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       }
     },
     "/api/Recipes/{Id}": {

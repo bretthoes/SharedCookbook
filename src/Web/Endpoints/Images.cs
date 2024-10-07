@@ -9,15 +9,11 @@ public class Images : EndpointGroupBase
         app.MapGroup(this)
             .DisableAntiforgery()
             .RequireAuthorization()
-            .MapPost(CreateImage);
+            .MapPost(CreateImages);
     }
 
-    public async Task<IResult> CreateImage(ISender sender, IFormFile file)
+    public Task<string[]> CreateImages(ISender sender, IFormFileCollection files)
     {
-        var result = await sender.Send(new CreateImageCommand(file));
-
-        return string.IsNullOrWhiteSpace(result)
-            ? Results.BadRequest("Upload failed.")
-            : Results.Ok(result);
+        return sender.Send(new CreateImagesCommand(files));
     }
 }
