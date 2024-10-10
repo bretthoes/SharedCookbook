@@ -9,6 +9,7 @@ using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Infrastructure.Data.Config;
 
 namespace SharedCookbook.Infrastructure.FileStorage;
+
 public class S3ImageUploadService : IImageUploadService
 {
     private readonly IOptions<ImageUploadOptions> _options;
@@ -24,25 +25,17 @@ public class S3ImageUploadService : IImageUploadService
 
     public async Task<string[]> UploadFiles(IFormFileCollection files)
     {
-        try
-        {
-            using var client = CreateS3Client();
-            using var fileTransferUtility = new TransferUtility(client);
+        using var client = CreateS3Client();
+        using var fileTransferUtility = new TransferUtility(client);
 
-            var uploadedFileKeys = new string[files.Count];
-            for (int i = 0; i < uploadedFileKeys.Length; i++)
-            {
-                var key = await UploadSingleFile(files[i], fileTransferUtility);
-                uploadedFileKeys[i] = key;
-            }
-
-            return uploadedFileKeys;
-        }
-        catch (Exception e)
+        var uploadedFileKeys = new string[files.Count];
+        for (int i = 0; i < uploadedFileKeys.Length; i++)
         {
-            _logger.LogError(e, "{Message}", e.Message);
-            return Array.Empty<string>();
+            var key = await UploadSingleFile(files[i], fileTransferUtility);
+            uploadedFileKeys[i] = key;
         }
+
+        return uploadedFileKeys;
     }
 
     private AmazonS3Client CreateS3Client()
