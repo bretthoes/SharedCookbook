@@ -18,5 +18,5 @@ public class CookbookMember : BaseAuditableEntity
 
     public required bool CanEditCookbookDetails { get; set; }
 
-    public required virtual Cookbook Cookbook { get; set; }
+    public virtual Cookbook? Cookbook { get; set; }
 }

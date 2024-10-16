@@ -1280,15 +1280,12 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "creatorPersonId": {
-            "type": "integer",
-            "format": "int32"
-          },
           "title": {
             "type": "string"
           },
           "image": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           }
         }
       },

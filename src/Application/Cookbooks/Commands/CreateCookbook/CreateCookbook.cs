@@ -6,34 +6,34 @@ namespace SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
 
 public record CreateCookbookCommand : IRequest<int>
 {
-    public int CreatorPersonId { get; set; }
-
     public required string Title { get; set; }
 
-    public required string Image { get; set; }
+    public string? Image { get; set; }
 }
 
 public class CreateCookbookCommandHandler : IRequestHandler<CreateCookbookCommand, int>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IUser _user;
 
-    public CreateCookbookCommandHandler(IApplicationDbContext context)
+    public CreateCookbookCommandHandler(IApplicationDbContext context, IUser user)
     {
         _context = context;
+        _user = user;
     }
 
     public async Task<int> Handle(CreateCookbookCommand request, CancellationToken cancellationToken)
     {
         var entity = new Cookbook
         {
-            CreatorPersonId = request.CreatorPersonId,
+            CreatorPersonId = _user.Id,
             Title = request.Title,
             Image = request.Image,
         };
 
         _context.Cookbooks.Add(entity);
 
-        AddCookbookCreator(request, entity);
+        _context.CookbookMembers.Add(GetCreatorMembership(entity));
 
         entity.AddDomainEvent(new CookbookCreatedEvent(entity));
 
@@ -44,11 +44,11 @@ public class CreateCookbookCommandHandler : IRequestHandler<CreateCookbookComman
 
     // Creates a CookbookMember entity for the creator of a new Cookbook.
     // Contains permissions for all actions by default.
-    private void AddCookbookCreator(CreateCookbookCommand request, Cookbook cookbook)
+    private static CookbookMember GetCreatorMembership(Cookbook cookbook)
     {
-        var creatorMembership = new CookbookMember
+        return new CookbookMember
         {
-            PersonId = request.CreatorPersonId,
+            PersonId = cookbook.CreatorPersonId ?? throw new UnauthorizedAccessException(),
             CookbookId = cookbook.Id,
             CanAddRecipe = true,
             CanDeleteRecipe = true,
@@ -56,9 +56,7 @@ public class CreateCookbookCommandHandler : IRequestHandler<CreateCookbookComman
             CanRemoveMember = true,
             CanSendInvite = true,
             CanUpdateRecipe = true,
-            Cookbook = cookbook
+            Cookbook = cookbook,
         };
-
-        _context.CookbookMembers.Add(creatorMembership);
     }
 }
