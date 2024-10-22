@@ -76,5 +76,10 @@ public class CreateRecipeCommandValidator : AbstractValidator<CreateRecipeComman
             .WithMessage("New recipe must include ingredients.")
             .Must(directions => directions.Count < 40)
             .WithMessage("New recipe must have fewer than 40 directions.");
+
+        RuleFor(x => x.Recipe.Images)
+            .Must(images => images.Count <= 6)
+            .WithMessage("New recipe can only have up to 6 images.");
+
     }
 }
