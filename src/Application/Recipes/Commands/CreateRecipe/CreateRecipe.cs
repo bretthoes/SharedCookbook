@@ -71,11 +71,29 @@ public class CreateRecipeCommandValidator : AbstractValidator<CreateRecipeComman
             .Must(directions => directions.Count < 20)
             .WithMessage("New recipe must have fewer than 20 directions.");
 
+        RuleForEach(x => x.Recipe.Directions)
+            .ChildRules(ingredient =>
+            {
+                ingredient.RuleFor(i => i.Text)
+                    .MinimumLength(3)
+                    .MaximumLength(255)
+                    .WithMessage("Each direction's text must be at least 3 characters and less than 255.");
+            });
+
         RuleFor(x => x.Recipe.Ingredients)
             .NotEmpty()
             .WithMessage("New recipe must include ingredients.")
             .Must(directions => directions.Count < 40)
             .WithMessage("New recipe must have fewer than 40 directions.");
+
+        RuleForEach(x => x.Recipe.Ingredients)
+            .ChildRules(ingredient =>
+            {
+                ingredient.RuleFor(i => i.Name)
+                    .MinimumLength(3)
+                    .MaximumLength(255)
+                    .WithMessage("Each ingredient's name must be at least 3 characters and less than 255.");
+            });
 
         RuleFor(x => x.Recipe.Images)
             .Must(images => images.Count <= 6)
