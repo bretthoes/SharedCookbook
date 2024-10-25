@@ -17,6 +17,7 @@ public class CustomExceptionHandler : IExceptionHandler
                 { typeof(NotFoundException), HandleNotFoundException },
                 { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException },
                 { typeof(ForbiddenAccessException), HandleForbiddenAccessException },
+                { typeof(ConflictException), HandleConflictException },
             };
     }
 
@@ -68,7 +69,7 @@ public class CustomExceptionHandler : IExceptionHandler
         await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
         {
             Status = StatusCodes.Status401Unauthorized,
-            Title = "Unauthorized",
+            Title = "User lacks valid authentication for this request.",
             Type = "https://tools.ietf.org/html/rfc7235#section-3.1"
         });
     }
@@ -80,8 +81,23 @@ public class CustomExceptionHandler : IExceptionHandler
         await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
         {
             Status = StatusCodes.Status403Forbidden,
-            Title = "Forbidden",
+            Title = "User lacks permission for this request.",
             Type = "https://tools.ietf.org/html/rfc7231#section-6.5.3"
+        });
+    }
+
+    private async Task HandleConflictException(HttpContext httpContext, Exception ex)
+    {
+        var exception = (ConflictException)ex;
+
+        httpContext.Response.StatusCode = StatusCodes.Status409Conflict;
+
+        await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
+        {
+            Status = StatusCodes.Status409Conflict,
+            Title = "Request not completed due to conflict.",
+            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.8",
+            Detail = exception.Message,
         });
     }
 }
