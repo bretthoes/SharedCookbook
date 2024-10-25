@@ -12,5 +12,5 @@ public class CookbookInvitation : BaseAuditableEntity
 
     public DateTime? ResponseDate { get; set; }
 
-    public required virtual Cookbook Cookbook { get; set; }
+    public virtual Cookbook? Cookbook { get; set; }
 }

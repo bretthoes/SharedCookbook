@@ -44,8 +44,7 @@ public class CookbookInvitationConfiguration : IEntityTypeConfiguration<Cookbook
         builder.HasOne(ci => ci.Cookbook)
             .WithMany(c => c.CookbookInvitations)
             .HasForeignKey(ci => ci.CookbookId)
-            .HasConstraintName("FK_cookbook_invitation__cookbook_id")
-            .IsRequired();
+            .HasConstraintName("FK_cookbook_invitation__cookbook_id");
         builder.HasOne<Identity.ApplicationUser>()
             .WithMany(p => p.ReceivedInvitations)
             .HasForeignKey(ci => ci.RecipientPersonId)
