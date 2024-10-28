@@ -38,7 +38,6 @@ public class IdentityService : IIdentityService
             : MapApplicationUserToUserDto(user);
     }
 
-    // TODO use auto mapper
     private static UserDto MapApplicationUserToUserDto(ApplicationUser user)
     {
         return new UserDto
