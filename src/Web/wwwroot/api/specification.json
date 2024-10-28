@@ -356,6 +356,168 @@
         ]
       }
     },
+    "/api/Memberships/{id}": {
+      "get": {
+        "tags": [
+          "Memberships"
+        ],
+        "operationId": "GetMembership",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MembershipDetailedDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Memberships"
+        ],
+        "operationId": "PatchMembership",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchMembershipCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Memberships"
+        ],
+        "operationId": "DeleteMembership",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/Memberships": {
+      "get": {
+        "tags": [
+          "Memberships"
+        ],
+        "operationId": "GetMembershipsWithPagination",
+        "parameters": [
+          {
+            "name": "CookbookId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOfMembershipBriefDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/Recipes/{Id}": {
       "get": {
         "tags": [
@@ -2042,6 +2204,86 @@
           },
           "newStatus": {
             "$ref": "#/components/schemas/CookbookInvitationStatus"
+          }
+        }
+      },
+      "MembershipDetailedDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "memberName": {
+            "type": "string",
+            "nullable": true
+          },
+          "canAddRecipe": {
+            "type": "boolean"
+          },
+          "canUpdateRecipe": {
+            "type": "boolean"
+          },
+          "canDeleteRecipe": {
+            "type": "boolean"
+          },
+          "canSendInvite": {
+            "type": "boolean"
+          },
+          "canRemoveMember": {
+            "type": "boolean"
+          },
+          "canEditCookbookDetails": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PaginatedListOfMembershipBriefDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MembershipBriefDto"
+            }
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
+      "MembershipBriefDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "memberName": {
+            "type": "string"
+          },
+          "isCreator": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PatchMembershipCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
