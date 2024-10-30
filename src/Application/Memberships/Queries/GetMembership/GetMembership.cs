@@ -3,9 +3,9 @@ using SharedCookbook.Domain.Entities;
 
 namespace SharedCookbook.Application.Memberships.Queries.GetMembership;
 
-public record GetMembershipQuery(int Id) : IRequest<MembershipDetailedDto>;
+public record GetMembershipQuery(int Id) : IRequest<MembershipDto>;
 
-public class GetMembershipQueryHandler : IRequestHandler<GetMembershipQuery, MembershipDetailedDto>
+public class GetMembershipQueryHandler : IRequestHandler<GetMembershipQuery, MembershipDto>
 {
     private readonly IApplicationDbContext _context;
     private readonly IIdentityService _identityService;
@@ -16,12 +16,12 @@ public class GetMembershipQueryHandler : IRequestHandler<GetMembershipQuery, Mem
         _identityService = identityService;
     }
 
-    public async Task<MembershipDetailedDto> Handle(GetMembershipQuery request, CancellationToken cancellationToken)
+    public async Task<MembershipDto> Handle(GetMembershipQuery request, CancellationToken cancellationToken)
     {
         var entity = await _context.CookbookMembers.FindAsync([request.Id], cancellationToken) 
             ?? throw new NotFoundException(request.Id.ToString(), nameof(CookbookMember));
 
-        var dto = new MembershipDetailedDto() {
+        var dto = new MembershipDto() {
             CanAddRecipe = entity.CanAddRecipe,
             IsCreator = entity.IsCreator,
             CanUpdateRecipe = entity.CanUpdateRecipe,
@@ -29,10 +29,8 @@ public class GetMembershipQueryHandler : IRequestHandler<GetMembershipQuery, Mem
             CanRemoveMember = entity.CanRemoveMember,
             CanSendInvite = entity.CanSendInvite,
             CanEditCookbookDetails = entity.CanEditCookbookDetails,
-            MemberName = await _identityService.GetUserNameAsync(entity.PersonId.ToString()) ?? string.Empty
+            Name = await _identityService.GetUserNameAsync(entity.PersonId.ToString()) ?? string.Empty
         };
-        // TODO update query to also check if user is the creator of the cookbook; inclue this property in dto.
-        // NOTE the creator will always be the lowest Id member in the cookbook.
 
         Guard.Against.NotFound(request.Id, dto);
 

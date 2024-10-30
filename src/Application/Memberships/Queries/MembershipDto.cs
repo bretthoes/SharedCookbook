@@ -1,8 +1,12 @@
 namespace SharedCookbook.Application.Memberships.Queries;
 
-public class MembershipDetailedDto
+public class MembershipDto
 {
-    public string? MemberName { get; set; }
+    public int Id { get; set; }
+
+    public int PersonId { get; set; }
+
+    public string Name { get; set; } = string.Empty;
 
     public required bool IsCreator { get; set; }
 

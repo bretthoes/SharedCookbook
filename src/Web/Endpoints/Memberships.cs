@@ -20,12 +20,12 @@ public class Memberships : EndpointGroupBase
             .MapDelete(DeleteMembership, "{id}");
     }
 
-    public Task<MembershipDetailedDto> GetMembership(ISender sender, [AsParameters] GetMembershipQuery query)
+    public Task<MembershipDto> GetMembership(ISender sender, [AsParameters] GetMembershipQuery query)
     {
         return sender.Send(query);
     }
 
-    public Task<PaginatedList<MembershipBriefDto>> GetMembershipsWithPagination(ISender sender, [AsParameters] GetMembershipsWithPaginationQuery query)
+    public Task<PaginatedList<MembershipDto>> GetMembershipsWithPagination(ISender sender, [AsParameters] GetMembershipsWithPaginationQuery query)
     {
         return sender.Send(query);
     }
