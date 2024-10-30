@@ -23,6 +23,7 @@ public class GetMembershipQueryHandler : IRequestHandler<GetMembershipQuery, Mem
 
         var dto = new MembershipDetailedDto() {
             CanAddRecipe = entity.CanAddRecipe,
+            IsCreator = entity.IsCreator,
             CanUpdateRecipe = entity.CanUpdateRecipe,
             CanDeleteRecipe = entity.CanDeleteRecipe,
             CanRemoveMember = entity.CanRemoveMember,

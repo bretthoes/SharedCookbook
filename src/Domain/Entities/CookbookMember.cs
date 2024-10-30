@@ -6,6 +6,8 @@ public class CookbookMember : BaseAuditableEntity
 
     public required int CookbookId { get; set; }
 
+    public required bool IsCreator { get; set; }
+
     public required bool CanAddRecipe { get; set; }
 
     public required bool CanUpdateRecipe { get; set; }

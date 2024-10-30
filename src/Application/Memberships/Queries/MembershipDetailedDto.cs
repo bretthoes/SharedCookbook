@@ -4,6 +4,8 @@ public class MembershipDetailedDto
 {
     public string? MemberName { get; set; }
 
+    public required bool IsCreator { get; set; }
+
     public required bool CanAddRecipe { get; set; }
 
     public required bool CanUpdateRecipe { get; set; }

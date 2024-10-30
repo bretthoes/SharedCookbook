@@ -263,6 +263,10 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("IsCreator")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_creator");
+
                     b.Property<bool>("CanAddRecipe")
                         .HasColumnType("bit")
                         .HasColumnName("can_add_recipe");

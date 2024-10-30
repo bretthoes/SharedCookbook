@@ -24,12 +24,27 @@ public class GetMembershipsWithPaginationQueryHandler : IRequestHandler<GetMembe
         _mapper = mapper;
     }
 
-    public Task<PaginatedList<MembershipBriefDto>> Handle(GetMembershipsWithPaginationQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedList<MembershipBriefDto>> Handle(GetMembershipsWithPaginationQuery request, CancellationToken cancellationToken)
     {
-        // TODO need to map name for each entity as well; use a join to users
-        return _context.CookbookMembers
-            .Where(r => r.CookbookId == request.CookbookId)
-            .ProjectTo<MembershipBriefDto>(_mapper.ConfigurationProvider)
+        var cookbookMembers = await _context.CookbookMembers
+            .AsNoTracking()
+            .Where(member => member.CookbookId == request.CookbookId)
+            .Select(member => new MembershipBriefDto
+            {
+                Id = member.Id,
+                UserId = member.PersonId,
+                IsCreator = member.IsCreator
+            })
             .PaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
+
+        var userNames = await _identityService
+            .GetUserNamesAsync(cookbookMembers.Items.Select(m => m.UserId).Distinct());
+
+        foreach (var member in cookbookMembers.Items)
+        {
+            member.Name = userNames[member.UserId];
+        }
+
+        return cookbookMembers;
     }
 }

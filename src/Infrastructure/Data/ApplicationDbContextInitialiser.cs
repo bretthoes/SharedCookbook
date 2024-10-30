@@ -149,6 +149,7 @@ public class ApplicationDbContextInitialiser
                 {
                     Cookbook = cookbook!,
                     CookbookId = cookbook!.Id,
+                    IsCreator = true,
                     CanAddRecipe = true,
                     CanDeleteRecipe = true,
                     CanEditCookbookDetails = true,
@@ -161,6 +162,7 @@ public class ApplicationDbContextInitialiser
                 {
                     Cookbook = cookbooks[1],
                     CookbookId = cookbooks[1].Id,
+                    IsCreator = false,
                     CanAddRecipe = true,
                     CanDeleteRecipe = false,
                     CanEditCookbookDetails = false,
@@ -173,6 +175,7 @@ public class ApplicationDbContextInitialiser
                 {
                     Cookbook = cookbooks[1],
                     CookbookId = cookbooks[1].Id,
+                    IsCreator = false,
                     CanAddRecipe = true,
                     CanDeleteRecipe = false,
                     CanEditCookbookDetails = false,

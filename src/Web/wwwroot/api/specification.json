@@ -385,12 +385,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       },
       "patch": {
         "tags": [
@@ -425,12 +420,7 @@
           "200": {
             "description": ""
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       },
       "delete": {
         "tags": [
@@ -453,12 +443,7 @@
           "200": {
             "description": ""
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       }
     },
     "/api/Memberships": {
@@ -510,12 +495,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       }
     },
     "/api/Recipes/{Id}": {
@@ -1777,6 +1757,9 @@
                 "type": "integer",
                 "format": "int32"
               },
+              "isCreator": {
+                "type": "boolean"
+              },
               "canAddRecipe": {
                 "type": "boolean"
               },
@@ -2215,6 +2198,9 @@
             "type": "string",
             "nullable": true
           },
+          "isCreator": {
+            "type": "boolean"
+          },
           "canAddRecipe": {
             "type": "boolean"
           },
@@ -2269,7 +2255,15 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "memberName": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
             "type": "string"
           },
           "isCreator": {

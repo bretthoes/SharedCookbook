@@ -11,6 +11,8 @@ public interface IIdentityService
 
     Task<string?> GetUserNameAsync(string userId);
 
+    Task<Dictionary<int, string>> GetUserNamesAsync(IEnumerable<int> userIds);
+
     Task<bool> IsInRoleAsync(string userId, string role);
 
     Task<bool> AuthorizeAsync(string userId, string policyName);

@@ -33,7 +33,7 @@ public class CreateCookbookCommandHandler : IRequestHandler<CreateCookbookComman
 
         _context.Cookbooks.Add(entity);
 
-        _context.CookbookMembers.Add(GetCreatorMembership(entity));
+        _context.CookbookMembers.Add(GetNewCreatorMembership(entity));
 
         entity.AddDomainEvent(new CookbookCreatedEvent(entity));
 
@@ -44,12 +44,13 @@ public class CreateCookbookCommandHandler : IRequestHandler<CreateCookbookComman
 
     // Creates a CookbookMember entity for the creator of a new Cookbook.
     // Contains permissions for all actions by default.
-    private static CookbookMember GetCreatorMembership(Cookbook cookbook)
+    private static CookbookMember GetNewCreatorMembership(Cookbook cookbook)
     {
         return new CookbookMember
         {
             PersonId = cookbook.CreatorPersonId ?? throw new UnauthorizedAccessException(),
             CookbookId = cookbook.Id,
+            IsCreator = true,
             CanAddRecipe = true,
             CanDeleteRecipe = true,
             CanEditCookbookDetails = true,

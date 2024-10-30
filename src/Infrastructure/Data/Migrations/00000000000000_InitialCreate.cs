@@ -317,6 +317,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     person_id = table.Column<int>(type: "int", nullable: false),
                     cookbook_id = table.Column<int>(type: "int", nullable: false),
+                    is_creator = table.Column<bool>(type: "bit", nullable: false),
                     can_add_recipe = table.Column<bool>(type: "bit", nullable: false),
                     can_update_recipe = table.Column<bool>(type: "bit", nullable: false),
                     can_delete_recipe = table.Column<bool>(type: "bit", nullable: false),

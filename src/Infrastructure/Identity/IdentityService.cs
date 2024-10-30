@@ -3,6 +3,7 @@ using SharedCookbook.Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using SharedCookbook.Application.Users.Queries.GetUser;
+using Microsoft.EntityFrameworkCore;
 
 namespace SharedCookbook.Infrastructure.Identity;
 
@@ -21,6 +22,16 @@ public class IdentityService : IIdentityService
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
         _authorizationService = authorizationService;
     }
+
+    public async Task<Dictionary<int, string>> GetUserNamesAsync(IEnumerable<int> userIds)
+    {
+        var users = await _userManager.Users
+            .Where(u => userIds.Contains(u.Id))
+            .ToListAsync();
+
+        return users.ToDictionary(u => u.Id, u => u.UserName ?? string.Empty);
+    }
+
 
     public async Task<UserDto?> FindByIdAsync(string userId)
     {

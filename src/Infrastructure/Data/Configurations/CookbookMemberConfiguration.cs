@@ -29,6 +29,9 @@ public class CookbookMemberConfiguration : IEntityTypeConfiguration<CookbookMemb
         builder.Property(cm => cm.CookbookId)
             .HasColumnName("cookbook_id")
             .IsRequired();
+        builder.Property(cm => cm.IsCreator)
+            .HasColumnName("is_creator")
+            .IsRequired();
         builder.Property(cm => cm.CanAddRecipe)
             .HasColumnName("can_add_recipe")
             .IsRequired();
