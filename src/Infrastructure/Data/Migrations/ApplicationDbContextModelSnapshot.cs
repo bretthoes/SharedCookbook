@@ -450,11 +450,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("AuthorId")
-                        .HasColumnType("int")
-                        .HasColumnName("author_id")
-                        .IsRequired();
-
                     b.Property<int?>("PreparationTimeInMinutes")
                         .HasColumnType("int")
                         .HasColumnName("preparation_time_in_minutes");
@@ -480,7 +475,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.HasKey("Id")
                         .HasName("PK_recipe_id");
 
-                    b.HasIndex("AuthorId");
+                    b.HasIndex("CreatedBy");
 
                     b.HasIndex(new[] { "CookbookId" }, "IX_recipe__cookbook_id");
 

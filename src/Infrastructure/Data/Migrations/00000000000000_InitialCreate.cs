@@ -601,9 +601,9 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 column: "cookbook_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_recipe_author_id",
+                name: "IX_recipe__created_by",
                 table: "recipe",
-                column: "author_id");
+                column: "CreatedBy");
 
             migrationBuilder.CreateIndex(
                 name: "IX_recipe_direction__recipe_id",

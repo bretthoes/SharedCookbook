@@ -561,7 +561,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.HasKey("Id")
                         .HasName("PK_cookbook_id");
 
-                    b.HasIndex(new[] { "CreatorPersonId" }, "IX_cookbook_creator__person_id");
+                    b.HasIndex(new[] { "CreatedBy" }, "IX_cookbook_creator__created_by");
 
                     b.ToTable("cookbook", (string)null);
                 });
@@ -605,10 +605,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("response_date");
 
-                    b.Property<int?>("SenderPersonId")
-                        .HasColumnType("int")
-                        .HasColumnName("sender_person_id");
-
                     b.HasKey("Id")
                         .HasName("PK_cookbook_invitation_id");
 
@@ -616,7 +612,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
 
                     b.HasIndex(new[] { "RecipientPersonId" }, "IX_cookbook_invitation_recipient__person_id");
 
-                    b.HasIndex(new[] { "SenderPersonId" }, "IX_cookbook_invitation_sender__person_id");
+                    b.HasIndex(new[] { "CreatedBy" }, "IX_cookbook_invitation_sender__created_by");
 
                     b.ToTable("cookbook_invitation", (string)null);
                 });
@@ -674,16 +670,12 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PersonId")
-                        .HasColumnType("int")
-                        .HasColumnName("person_id");
-
                     b.HasKey("Id")
                         .HasName("PK_cookbook_member_id");
 
                     b.HasIndex(new[] { "CookbookId" }, "IX_cookbook_member__cookbook_id");
 
-                    b.HasIndex(new[] { "PersonId" }, "IX_cookbook_member__person_id");
+                    b.HasIndex(new[] { "CreatedBy" }, "IX_cookbook_member__created_by");
 
                     b.ToTable("cookbook_member", (string)null);
                 });
@@ -724,10 +716,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("recipe_id");
 
-                    b.Property<int?>("SenderPersonId")
-                        .HasColumnType("int")
-                        .HasColumnName("sender_person_id");
-
                     b.HasKey("Id")
                         .HasName("PK_cookbook_notification_id");
 
@@ -735,7 +723,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
 
                     b.HasIndex(new[] { "RecipeId" }, "IX_cookbook_notification__recipe_id");
 
-                    b.HasIndex(new[] { "SenderPersonId" }, "IX_cookbook_notification__sender_person_id");
+                    b.HasIndex(new[] { "CreatedBy" }, "IX_cookbook_notification__created_by");
 
                     b.ToTable("cookbook_notification", (string)null);
                 });
@@ -817,11 +805,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("AuthorId")
-                        .HasColumnType("int")
-                        .HasColumnName("author_id")
-                        .IsRequired();
-
                     b.Property<int?>("PreparationTimeInMinutes")
                         .HasColumnType("int")
                         .HasColumnName("preparation_time_in_minutes");
@@ -847,7 +830,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.HasKey("Id")
                         .HasName("PK_recipe_id");
 
-                    b.HasIndex("AuthorId");
+                    b.HasIndex("CreatedBy");
 
                     b.HasIndex(new[] { "CookbookId" }, "IX_recipe__cookbook_id");
 
@@ -1282,8 +1265,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
 
                     b.HasOne("SharedCookbook.Infrastructure.Identity.ApplicationUser", null)
                         .WithMany("SentInvitations")
-                        .HasForeignKey("SenderPersonId")
-                        .HasConstraintName("FK_cookbook_invitation__sender_person_id");
+                        .HasForeignKey("CreatedBy")
+                        .HasConstraintName("FK_cookbook_invitation__created_by");
 
                     b.Navigation("Cookbook");
                 });
