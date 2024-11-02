@@ -178,8 +178,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("LastModifiedBy")
+                        .HasColumnType("int");
 
                     b.Property<int>("ListId")
                         .HasColumnType("int");
@@ -222,8 +222,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("LastModifiedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -549,8 +549,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("LastModifiedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -594,8 +594,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("LastModifiedBy")
+                        .HasColumnType("int");
 
                     b.Property<int?>("RecipientPersonId")
                         .HasColumnType("int")
@@ -667,8 +667,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("LastModifiedBy")
+                        .HasColumnType("int");
 
                     b.HasKey("Id")
                         .HasName("PK_cookbook_member_id");
@@ -709,8 +709,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("LastModifiedBy")
+                        .HasColumnType("int");
 
                     b.Property<int?>("RecipeId")
                         .HasColumnType("int")
@@ -746,8 +746,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("LastModifiedBy")
+                        .HasColumnType("int");
 
                     b.Property<int>("RecipeId")
                         .HasColumnType("int")
@@ -802,8 +802,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("LastModifiedBy")
+                        .HasColumnType("int");
 
                     b.Property<int?>("PreparationTimeInMinutes")
                         .HasColumnType("int")
@@ -830,7 +830,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.HasKey("Id")
                         .HasName("PK_recipe_id");
 
-                    b.HasIndex("CreatedBy");
+                    b.HasIndex(new[] { "CreatedBy" }, "IX_recipe__created_by");
 
                     b.HasIndex(new[] { "CookbookId" }, "IX_recipe__cookbook_id");
 
@@ -866,8 +866,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("LastModifiedBy")
+                        .HasColumnType("int");
 
                     b.Property<int>("Ordinal")
                         .HasColumnType("int")
@@ -909,8 +909,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 b.Property<DateTimeOffset>("LastModified")
                     .HasColumnType("datetimeoffset");
 
-                b.Property<string>("LastModifiedBy")
-                    .HasColumnType("nvarchar(max)");
+                b.Property<int>("LastModifiedBy")
+                    .HasColumnType("int");
 
                 b.Property<int>("Ordinal")
                     .HasColumnType("int")
@@ -954,8 +954,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("LastModifiedBy")
+                        .HasColumnType("int");
 
                     b.Property<bool>("Optional")
                         .HasColumnType("bit")
@@ -1011,8 +1011,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("LastModifiedBy")
+                        .HasColumnType("int");
 
                     b.Property<int?>("Protein")
                         .HasColumnType("int")
@@ -1061,8 +1061,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("LastModifiedBy")
+                        .HasColumnType("int");
 
                     b.Property<int>("ListId")
                         .HasColumnType("int");
@@ -1105,8 +1105,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("LastModifiedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
