@@ -14,14 +14,12 @@ public class CookbookConfiguration : IEntityTypeConfiguration<Cookbook>
             .HasName("PK_cookbook_id");
 
         builder.HasIndex(
-            c => c.CreatorPersonId, 
-            "IX_cookbook_creator__person_id");
+            c => c.CreatedBy, 
+            "IX_cookbook_creator__created_by");
 
         builder.Property(c => c.Id)
             .HasColumnName("cookbook_id")
             .IsRequired();
-        builder.Property(c => c.CreatorPersonId)
-            .HasColumnName("creator_person_id");
         builder.Property(c => c.Title)
             .HasColumnName("title")
             .HasMaxLength(255)
@@ -32,8 +30,8 @@ public class CookbookConfiguration : IEntityTypeConfiguration<Cookbook>
 
         builder.HasOne<Identity.ApplicationUser>()
             .WithMany(p => p.Cookbooks)
-            .HasForeignKey(c => c.CreatorPersonId)
-            .HasConstraintName("FK_cookbook__creator_person_id");
+            .HasForeignKey(c => c.CreatedBy)
+            .HasConstraintName("FK_cookbook__created_by");
         builder.HasMany(c => c.CookbookInvitations)
             .WithOne(ci => ci.Cookbook)
             .HasForeignKey(ci => ci.CookbookId);

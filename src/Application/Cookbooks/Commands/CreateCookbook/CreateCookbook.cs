@@ -26,7 +26,6 @@ public class CreateCookbookCommandHandler : IRequestHandler<CreateCookbookComman
     {
         var entity = new Cookbook
         {
-            CreatorPersonId = _user.Id,
             Title = request.Title,
             Image = request.Image,
         };
@@ -48,7 +47,6 @@ public class CreateCookbookCommandHandler : IRequestHandler<CreateCookbookComman
     {
         return new CookbookMember
         {
-            PersonId = cookbook.CreatorPersonId ?? throw new UnauthorizedAccessException(),
             CookbookId = cookbook.Id,
             IsCreator = true,
             CanAddRecipe = true,

@@ -13,13 +13,11 @@ public record CreateRecipeCommand : IRequest<int>
 public class CreateRecipeCommandHandler : IRequestHandler<CreateRecipeCommand, int>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IUser _user;
     private readonly IMapper _mapper;
 
-    public CreateRecipeCommandHandler(IApplicationDbContext context, IUser user, IMapper mapper)
+    public CreateRecipeCommandHandler(IApplicationDbContext context, IMapper mapper)
     {
         _context = context;
-        _user = user;
         _mapper = mapper;
     }
 
@@ -29,7 +27,6 @@ public class CreateRecipeCommandHandler : IRequestHandler<CreateRecipeCommand, i
         {
             Title = request.Recipe.Title,
             CookbookId = request.Recipe.CookbookId,
-            AuthorId = _user.Id ?? throw new ForbiddenAccessException(),
             Summary = request.Recipe.Summary,
             Thumbnail = request.Recipe.Thumbnail,
             VideoPath = request.Recipe.VideoPath,

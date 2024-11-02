@@ -48,7 +48,7 @@ public class CreateInvitationCommandHandler : IRequestHandler<CreateInvitationCo
     private async Task ValidateInvitation(int cookbookId, int recipientId, CancellationToken token)
     {
         var recipientIsAlreadyMember = await _context.CookbookMembers
-            .AnyAsync(member => member.PersonId == recipientId
+            .AnyAsync(member => member.CreatedBy == recipientId
                 && member.CookbookId == cookbookId,
                 token);
         if (recipientIsAlreadyMember) throw new ConflictException("Recipient is already a member of this cookbook.");
@@ -66,7 +66,7 @@ public class CreateInvitationCommandHandler : IRequestHandler<CreateInvitationCo
         var entity = new CookbookInvitation
         {
             CookbookId = cookbookId,
-            SenderPersonId = _user.Id,
+            CreatedBy = _user.Id,
             RecipientPersonId = recipientId,
             InvitationStatus = CookbookInvitationStatus.Sent,
             ResponseDate = null,

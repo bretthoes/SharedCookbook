@@ -2,8 +2,6 @@
 
 public class CookbookMember : BaseAuditableEntity
 {
-    public required int PersonId { get; set; }
-
     public required int CookbookId { get; set; }
 
     public required bool IsCreator { get; set; }

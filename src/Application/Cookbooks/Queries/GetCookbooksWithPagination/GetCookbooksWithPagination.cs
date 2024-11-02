@@ -26,7 +26,7 @@ public class GetCookbooksWithPaginationQueryHandler : IRequestHandler<GetCookboo
         return _context.Cookbooks
             .AsNoTracking()
             .Where(c => _context.CookbookMembers
-                .Any(cm => cm.PersonId == _user.Id && cm.CookbookId == c.Id))
+                .Any(cm => cm.CreatedBy == _user.Id && cm.CookbookId == c.Id))
             .OrderBy(c => c.Title)
             .Select(c => new CookbookBriefDto
             {

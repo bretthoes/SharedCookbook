@@ -129,13 +129,13 @@ public class ApplicationDbContextInitialiser
                 {
                     Title = "My Cookbook",
                     Image = "a3449a45-3cb9-494e-bd69-21c04784b357spongebob_todo.jpg",
-                    CreatorPersonId = adminPerson!.Id,
+                    CreatedBy = adminPerson!.Id,
                 },
                 new()
                 {
                     Title = "Not My Cookbook",
                     Image = null,
-                    CreatorPersonId = otherAdminPerson!.Id,
+                    CreatedBy = otherAdminPerson!.Id,
                 },
             };
             await _context.Cookbooks.AddRangeAsync(cookbooks);
@@ -156,7 +156,7 @@ public class ApplicationDbContextInitialiser
                     CanRemoveMember = true,
                     CanSendInvite = true,
                     CanUpdateRecipe = true,
-                    PersonId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                 },
                 new()
                 {
@@ -169,7 +169,7 @@ public class ApplicationDbContextInitialiser
                     CanRemoveMember = false,
                     CanSendInvite = true,
                     CanUpdateRecipe = false,
-                    PersonId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                 },
                 new()
                 {
@@ -182,7 +182,7 @@ public class ApplicationDbContextInitialiser
                     CanRemoveMember = false,
                     CanSendInvite = true,
                     CanUpdateRecipe = false,
-                    PersonId = otherAdminPerson?.Id ?? 0,
+                    CreatedBy = otherAdminPerson?.Id ?? 0,
                 },
             };
             await _context.CookbookMembers.AddRangeAsync(members);
@@ -193,7 +193,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    AuthorId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                     Title = "Chicken Casserole",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/chicken_casserole.png",
@@ -203,7 +203,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    AuthorId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                     Title = "Salmon Loaf",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/baked-salmon-loaf.jpg",
@@ -212,7 +212,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    AuthorId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                     Title = "Beef Stroganoff",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/beef_stroganoff.png",
@@ -222,7 +222,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    AuthorId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                     Title = "Spaghetti Carbonara",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/spaghetti_carbonara.png",
@@ -232,7 +232,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    AuthorId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                     Title = "Vegetable Stir-Fry",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/vegetable_stirfry.png",
@@ -243,7 +243,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    AuthorId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                     Title = "Lasagna",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/lasagna.png",
@@ -254,7 +254,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    AuthorId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                     Title = "Chocolate Cake",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/chocolate_cake.png",
@@ -265,7 +265,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    AuthorId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                     Title = "Taco Salad",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/taco_salad.png",
@@ -275,7 +275,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    AuthorId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                     Title = "Chicken Alfredo",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/chicken_alfredo.png",
@@ -286,7 +286,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    AuthorId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                     Title = "Minestrone Soup",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/minestrone_soup.png",
@@ -297,7 +297,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    AuthorId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                     Title = "Pumpkin Pie",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/pumpkin_pie.png",
@@ -308,7 +308,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    AuthorId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                     Title = "Shrimp Scampi",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/shrimp_scampi.png",
@@ -319,7 +319,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    AuthorId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                     Title = "Grilled Cheese Sandwich",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/grilled_cheese.png",
@@ -330,7 +330,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    AuthorId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                     Title = "Chicken Caesar Salad with Pecans and Extra Dates with Shredded Cheddar Cheese",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/chicken_caesar_salad.png",
@@ -340,7 +340,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    AuthorId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                     Title = "Stuffed Bell Peppers",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/stuffed_bell_peppers.png",
@@ -351,7 +351,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    AuthorId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                     Title = "Beef Tacos",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/beef_tacos.png",
@@ -362,7 +362,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    AuthorId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                     Title = "Pancakes",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/pancakes.png",
@@ -373,7 +373,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    AuthorId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                     Title = "Roast Turkey",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/roast_turkey.png",
@@ -384,7 +384,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    AuthorId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                     Title = "Fettuccine Alfredo",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/fettuccine_alfredo.png",
@@ -395,7 +395,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    AuthorId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                     Title = "French Onion Soup",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/french_onion_soup.png",
@@ -406,7 +406,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    AuthorId = adminPerson?.Id ?? 0,
+                    CreatedBy = adminPerson?.Id ?? 0,
                     Title = "Secret Sauce",
                     Cookbook = cookbook,
                     Thumbnail = "",

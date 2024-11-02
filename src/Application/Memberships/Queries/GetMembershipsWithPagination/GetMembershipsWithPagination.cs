@@ -33,7 +33,7 @@ public class GetMembershipsWithPaginationQueryHandler : IRequestHandler<GetMembe
             .Select(member => new MembershipDto
             {
                 Id = member.Id,
-                PersonId = member.PersonId,
+                PersonId = member.CreatedBy ?? 0,
                 IsCreator = member.IsCreator,
                 CanAddRecipe = member.CanAddRecipe,
                 CanUpdateRecipe = member.CanUpdateRecipe,

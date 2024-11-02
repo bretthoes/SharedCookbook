@@ -6,8 +6,6 @@ public class Recipe : BaseAuditableEntity
 
     public required string Title { get; set; }
 
-    public required int AuthorId { get; set; }
-
     public string? Summary { get; set; }
 
     public string? Thumbnail { get; set; }

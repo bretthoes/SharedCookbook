@@ -2,8 +2,6 @@
 
 public class Cookbook : BaseAuditableEntity
 {
-    public int? CreatorPersonId { get; set; }
-
     public required string Title { get; set; }
 
     public string? Image { get; set; }

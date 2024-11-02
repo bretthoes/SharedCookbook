@@ -5,11 +5,11 @@ namespace SharedCookbook.Application.Common.Interfaces;
 
 public interface IIdentityService
 {
-    Task<UserDto?> FindByIdAsync(string userId);
+    Task<UserDto?> FindByIdAsync(int? userId);
 
     Task<UserDto?> FindByEmailAsync(string email);
 
-    Task<string?> GetUserNameAsync(string userId);
+    Task<string?> GetUserNameAsync(int? userId);
 
     Task<Dictionary<int, string>> GetUserNamesAsync(IEnumerable<int> userIds);
 

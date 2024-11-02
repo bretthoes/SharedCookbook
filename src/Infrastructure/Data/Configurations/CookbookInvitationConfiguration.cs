@@ -18,10 +18,10 @@ public class CookbookInvitationConfiguration : IEntityTypeConfiguration<Cookbook
             "IX_cookbook_invitation__cookbook_id");
         builder.HasIndex(
             ci => ci.RecipientPersonId,
-            "IX_cookbook_invitation_recipient__person_id");
+            "IX_cookbook_invitation__recipient_person_id");
         builder.HasIndex(
-            ci => ci.SenderPersonId,
-            "IX_cookbook_invitation_sender__person_id");
+            ci => ci.CreatedBy,
+            "IX_cookbook_invitation__created_by");
 
         builder.Property(ci => ci.Id)
             .HasColumnName("cookbook_invitation_id")
@@ -29,8 +29,6 @@ public class CookbookInvitationConfiguration : IEntityTypeConfiguration<Cookbook
         builder.Property(ci => ci.CookbookId)
             .HasColumnName("cookbook_id")
             .IsRequired();
-        builder.Property(ci => ci.SenderPersonId)
-            .HasColumnName("sender_person_id");
         builder.Property(ci => ci.RecipientPersonId)
             .HasColumnName("recipient_person_id");
         builder.Property(ci => ci.InvitationStatus)
@@ -51,7 +49,7 @@ public class CookbookInvitationConfiguration : IEntityTypeConfiguration<Cookbook
             .HasConstraintName("FK_cookbook_invitation__recipient_person_id");
         builder.HasOne<Identity.ApplicationUser>()
             .WithMany(p => p.SentInvitations)
-            .HasForeignKey(ci => ci.SenderPersonId)
-            .HasConstraintName("FK_cookbook_invitation__sender_person_id");
+            .HasForeignKey(ci => ci.CreatedBy)
+            .HasConstraintName("FK_cookbook_invitation__created_by");
     }
 }

@@ -23,7 +23,7 @@ public class GetRecipeQueryHandler : IRequestHandler<GetRecipeQuery, RecipeDetai
             {
                 Id = r.Id,
                 Title = r.Title,
-                AuthorId = r.AuthorId,
+                AuthorId = r.CreatedBy ?? 0,
                 Summary = r.Summary,
                 Thumbnail = r.Thumbnail,
                 VideoPath = r.VideoPath,
@@ -59,7 +59,7 @@ public class GetRecipeQueryHandler : IRequestHandler<GetRecipeQuery, RecipeDetai
 
         // Map the author name separately since author cannot be accessed through a relationship.
         // this is a byproduct of not having the ApplicationUser object in the domain layer.
-        dto.Author = await _identityService.GetUserNameAsync(dto.AuthorId.ToString()) ?? string.Empty;
+        dto.Author = await _identityService.GetUserNameAsync(dto.AuthorId) ?? string.Empty;
 
         return dto;
     }
