@@ -17,14 +17,11 @@ public class CookbookMemberConfiguration : IEntityTypeConfiguration<CookbookMemb
             cm => cm.CookbookId, 
             "IX_cookbook_member__cookbook_id");
         builder.HasIndex(
-            cm => cm.PersonId, 
-            "IX_cookbook_member__person_id");
+            cm => cm.CreatedBy, 
+            "IX_cookbook_member__created_by");
 
         builder.Property(cm => cm.Id)
             .HasColumnName("cookbook_member_id")
-            .IsRequired();
-        builder.Property(cm => cm.PersonId)
-            .HasColumnName("person_id")
             .IsRequired();
         builder.Property(cm => cm.CookbookId)
             .HasColumnName("cookbook_id")
@@ -53,8 +50,8 @@ public class CookbookMemberConfiguration : IEntityTypeConfiguration<CookbookMemb
 
         builder.HasOne<Identity.ApplicationUser>()
             .WithMany(p => p.CookbookMemberships)
-            .HasForeignKey(d => d.PersonId)
-            .HasConstraintName("FK_cookbook_member__person_id")
+            .HasForeignKey(d => d.CreatedBy)
+            .HasConstraintName("FK_cookbook_member__created_by")
             .OnDelete(DeleteBehavior.Cascade)
             .IsRequired();
         builder.HasOne(cm => cm.Cookbook)

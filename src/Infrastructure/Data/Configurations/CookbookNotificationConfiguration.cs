@@ -14,8 +14,8 @@ public class CookbookNotificationConfiguration : IEntityTypeConfiguration<Cookbo
             .HasName("PK_cookbook_notification_id");
 
         builder.HasIndex(
-            cn => cn.SenderPersonId,
-            "IX_cookbook_notification__sender_person_id");
+            cn => cn.CreatedBy,
+            "IX_cookbook_notification__created_by");
         builder.HasIndex(
             cn => cn.CookbookId,
             "IX_cookbook_notification__cookbook_id");
@@ -26,8 +26,6 @@ public class CookbookNotificationConfiguration : IEntityTypeConfiguration<Cookbo
         builder.Property(cn => cn.Id)
             .HasColumnName("cookbook_notification_id")
             .IsRequired();
-        builder.Property(cn => cn.SenderPersonId)
-            .HasColumnName("sender_person_id");
         builder.Property(cn => cn.CookbookId)
             .HasColumnName("cookbook_id");
         builder.Property(cn => cn.RecipeId)
@@ -51,7 +49,7 @@ public class CookbookNotificationConfiguration : IEntityTypeConfiguration<Cookbo
             .HasConstraintName("FK_cookbook_notification__recipe_id");
         builder.HasOne<Identity.ApplicationUser>()
             .WithMany(p => p.CookbookNotifications)
-            .HasForeignKey(cn => cn.SenderPersonId)
-            .HasConstraintName("FK_cookbook_notification__sender_person_id");
+            .HasForeignKey(cn => cn.CreatedBy)
+            .HasConstraintName("FK_cookbook_notification__created_by");
     }
 }

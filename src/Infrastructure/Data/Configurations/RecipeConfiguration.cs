@@ -27,9 +27,6 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
             .HasMaxLength(255)
             .HasColumnName("title")
             .IsRequired();
-        builder.Property(r => r.AuthorId)
-            .HasColumnName("author_id")
-            .IsRequired();
         builder.Property(r => r.Summary)
             .HasColumnName("summary");
         builder.Property(r => r.Thumbnail)
@@ -53,8 +50,8 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
             .IsRequired();
         builder.HasOne<Identity.ApplicationUser>()
             .WithMany(a => a.Recipes)
-            .HasForeignKey(r => r.AuthorId)
-            .HasConstraintName("FK_recipe__author_id");
+            .HasForeignKey(r => r.CreatedBy)
+            .HasConstraintName("FK_recipe__created_by");
         builder.HasMany(r => r.CookbookNotifications)
             .WithOne(cn => cn.Recipe)
             .HasForeignKey(cn => cn.RecipeId)

@@ -254,7 +254,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 {
                     cookbook_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    creator_person_id = table.Column<int>(type: "int", nullable: true),
                     title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     image = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
@@ -266,8 +265,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 {
                     table.PrimaryKey("PK_cookbook_id", x => x.cookbook_id);
                     table.ForeignKey(
-                        name: "FK_cookbook__creator_person_id",
-                        column: x => x.creator_person_id,
+                        name: "FK_cookbook__created_by",
+                        column: x => x.CreatedBy,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
@@ -279,7 +278,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     cookbook_invitation_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     cookbook_id = table.Column<int>(type: "int", nullable: false),
-                    sender_person_id = table.Column<int>(type: "int", nullable: true),
                     recipient_person_id = table.Column<int>(type: "int", nullable: true),
                     invitation_status = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     response_date = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -303,8 +301,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_cookbook_invitation__sender_person_id",
-                        column: x => x.sender_person_id,
+                        name: "FK_cookbook_invitation__created_by",
+                        column: x => x.CreatedBy,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
@@ -315,7 +313,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 {
                     cookbook_member_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    person_id = table.Column<int>(type: "int", nullable: false),
                     cookbook_id = table.Column<int>(type: "int", nullable: false),
                     is_creator = table.Column<bool>(type: "bit", nullable: false),
                     can_add_recipe = table.Column<bool>(type: "bit", nullable: false),
@@ -339,8 +336,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         principalColumn: "cookbook_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_cookbook_member__person_id",
-                        column: x => x.person_id,
+                        name: "FK_cookbook_member__created_by",
+                        column: x => x.CreatedBy,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -354,7 +351,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     cookbook_id = table.Column<int>(type: "int", nullable: false),
                     title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    author_id = table.Column<int>(type: "int", nullable: false),
                     summary = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     thumbnail = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     video_path = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
@@ -377,8 +373,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         principalColumn: "cookbook_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_recipe__author_id",
-                        column: x => x.author_id,
+                        name: "FK_recipe__created_by",
+                        column: x => x.CreatedBy,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
@@ -389,7 +385,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 {
                     cookbook_notification_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    sender_person_id = table.Column<int>(type: "int", nullable: true),
                     cookbook_id = table.Column<int>(type: "int", nullable: true),
                     recipe_id = table.Column<int>(type: "int", nullable: true),
                     action_type = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
@@ -412,8 +407,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         principalTable: "recipe",
                         principalColumn: "recipe_id");
                     table.ForeignKey(
-                        name: "FK_cookbook_notification__sender_person_id",
-                        column: x => x.sender_person_id,
+                        name: "FK_cookbook_notification__created_by",
+                        column: x => x.CreatedBy,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
@@ -551,9 +546,9 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_cookbook_creator__person_id",
+                name: "IX_cookbook_creator__created_by",
                 table: "cookbook",
-                column: "creator_person_id");
+                column: "CreatedBy");
 
             migrationBuilder.CreateIndex(
                 name: "IX_cookbook_invitation__cookbook_id",
@@ -566,9 +561,9 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 column: "recipient_person_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_cookbook_invitation_sender__person_id",
+                name: "IX_cookbook_invitation__created_by",
                 table: "cookbook_invitation",
-                column: "sender_person_id");
+                column: "CreatedBy");
 
             migrationBuilder.CreateIndex(
                 name: "IX_cookbook_member__cookbook_id",
@@ -576,9 +571,9 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 column: "cookbook_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_cookbook_member__person_id",
+                name: "IX_cookbook_member__created_by",
                 table: "cookbook_member",
-                column: "person_id");
+                column: "CreatedBy");
 
             migrationBuilder.CreateIndex(
                 name: "IX_cookbook_notification__cookbook_id",
@@ -591,9 +586,9 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 column: "recipe_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_cookbook_notification__sender_person_id",
+                name: "IX_cookbook_notification__created_by",
                 table: "cookbook_notification",
-                column: "sender_person_id");
+                column: "CreatedBy");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ingredient__category_recipe_id",

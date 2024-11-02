@@ -541,10 +541,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CreatorPersonId")
-                        .HasColumnType("int")
-                        .HasColumnName("creator_person_id");
-
                     b.Property<string>("Image")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)")
