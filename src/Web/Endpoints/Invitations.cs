@@ -19,7 +19,7 @@ public class Invitations : EndpointGroupBase
             .MapDelete(DeleteInvitation, "{id}");
     }
 
-    public Task<PaginatedList<CookbookInvitation>> GetInvitationsWithPagination(ISender sender, [AsParameters] GetInvitationsWithPaginationQuery query)
+    public Task<PaginatedList<InvitationDto>> GetInvitationsWithPagination(ISender sender, [AsParameters] GetInvitationsWithPaginationQuery query)
     {
         return sender.Send(query);
     }

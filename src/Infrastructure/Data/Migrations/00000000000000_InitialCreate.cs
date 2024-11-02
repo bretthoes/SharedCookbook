@@ -61,7 +61,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Colour_Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
                     LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -189,7 +189,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     Reminder = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Done = table.Column<bool>(type: "bit", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
                     LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -258,7 +258,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     image = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
                     LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -284,7 +284,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     invitation_status = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     response_date = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
                     LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -325,7 +325,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     can_remove_member = table.Column<bool>(type: "bit", nullable: false),
                     can_edit_cookbook_details = table.Column<bool>(type: "bit", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
                     LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -363,7 +363,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     baking_time_in_minutes = table.Column<int>(type: "int", nullable: true),
                     Servings = table.Column<int>(type: "int", nullable: true),
                     Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
                     LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -394,7 +394,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     recipe_id = table.Column<int>(type: "int", nullable: true),
                     action_type = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
                     LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -427,7 +427,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     recipe_id = table.Column<int>(type: "int", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
                     LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -453,7 +453,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     ordinal = table.Column<int>(type: "int", nullable: false),
                     image = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
                     LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -479,7 +479,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     ordinal = table.Column<int>(type: "int", nullable: false),
                     optional = table.Column<bool>(type: "bit", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
                     LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -504,7 +504,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     name = table.Column<string>(type: "nvarchar(2048)", maxLength: 2048, nullable: false),
                     ordinal = table.Column<int>(type: "int", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
                     LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -535,7 +535,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     fiber = table.Column<int>(type: "int", nullable: true),
                     sodium = table.Column<int>(type: "int", nullable: true),
                     Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
                     LastModified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },

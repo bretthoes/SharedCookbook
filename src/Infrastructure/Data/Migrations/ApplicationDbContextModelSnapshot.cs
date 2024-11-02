@@ -167,8 +167,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<int?>("CreatorPersonId")
                         .HasColumnType("int")
@@ -215,8 +215,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("InvitationStatus")
                         .IsRequired()
@@ -298,8 +298,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("datetimeoffset");
@@ -344,8 +344,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .HasColumnType("datetimeoffset")
                         .HasColumnName("created");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("datetimeoffset");
@@ -385,8 +385,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("datetimeoffset");
@@ -436,8 +436,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Thumbnail")
                         .HasMaxLength(255)
@@ -499,8 +499,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -547,8 +547,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 b.Property<DateTimeOffset>("Created")
                     .HasColumnType("datetimeoffset");
 
-                b.Property<string>("CreatedBy")
-                    .HasColumnType("nvarchar(max)");
+                b.Property<int>("CreatedBy")
+                    .HasColumnType("int");
 
                 b.Property<string>("Name")
                     .IsRequired()
@@ -591,8 +591,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -646,8 +646,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<int?>("Fat")
                         .HasColumnType("int")
@@ -701,8 +701,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<bool>("Done")
                         .HasColumnType("bit");
@@ -748,8 +748,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("datetimeoffset");
