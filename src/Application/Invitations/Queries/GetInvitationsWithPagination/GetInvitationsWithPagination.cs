@@ -31,3 +31,19 @@ public class GetInvitationsWithPaginationQueryHandler : IRequestHandler<GetInvit
             .PaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
     }
 }
+
+// TODO move
+public class InvitationDto
+{
+    public int Id { get; set; }
+
+    public required string SenderName { get; set; }
+
+    public required string CookbookTitle { get; set; }
+
+    public string? CookbookImage { get; set; }
+
+    public DateTimeOffset Created { get; set; }
+
+    public string? CreatedBy { get; set; }
+}
