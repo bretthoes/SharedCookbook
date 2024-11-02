@@ -42,16 +42,23 @@ public class GetMembershipsWithPaginationQueryHandler : IRequestHandler<GetMembe
                 CanRemoveMember = member.CanRemoveMember,
                 CanEditCookbookDetails = member.CanEditCookbookDetails,
             })
-            .PaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
+            .Skip(request.PageNumber - 1)
+            .Take(request.PageSize).OrderBy(x => x.Id)
+            .ToListAsync(cancellationToken);
+
+        var count = await _context.CookbookMembers
+            .AsNoTracking()
+            .Where(member => member.CookbookId == request.CookbookId)
+            .CountAsync(cancellationToken);
 
         var userNames = await _identityService
-            .GetUserNamesAsync(cookbookMembers.Items.Select(m => m.PersonId).Distinct());
+            .GetUserNamesAsync(cookbookMembers.Select(m => m.PersonId).Distinct());
 
-        foreach (var member in cookbookMembers.Items)
+        foreach (var member in cookbookMembers)
         {
             member.Name = userNames[member.PersonId];
         }
 
-        return cookbookMembers;
+        return new PaginatedList<MembershipDto>(cookbookMembers, count, request.PageNumber, request.PageSize);
     }
 }

@@ -380,12 +380,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MembershipDetailedDto"
+                  "$ref": "#/components/schemas/MembershipDto"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       },
       "patch": {
         "tags": [
@@ -420,7 +425,12 @@
           "200": {
             "description": ""
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -443,7 +453,12 @@
           "200": {
             "description": ""
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/Memberships": {
@@ -490,12 +505,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedListOfMembershipBriefDto"
+                  "$ref": "#/components/schemas/PaginatedListOfMembershipDto"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/Recipes/{Id}": {
@@ -2190,13 +2210,20 @@
           }
         }
       },
-      "MembershipDetailedDto": {
+      "MembershipDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "memberName": {
-            "type": "string",
-            "nullable": true
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "personId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
           },
           "isCreator": {
             "type": "boolean"
@@ -2221,14 +2248,14 @@
           }
         }
       },
-      "PaginatedListOfMembershipBriefDto": {
+      "PaginatedListOfMembershipDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "items": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/MembershipBriefDto"
+              "$ref": "#/components/schemas/MembershipDto"
             }
           },
           "pageNumber": {
@@ -2247,26 +2274,6 @@
             "type": "boolean"
           },
           "hasNextPage": {
-            "type": "boolean"
-          }
-        }
-      },
-      "MembershipBriefDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "userId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "name": {
-            "type": "string"
-          },
-          "isCreator": {
             "type": "boolean"
           }
         }
