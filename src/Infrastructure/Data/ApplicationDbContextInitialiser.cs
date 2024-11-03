@@ -103,6 +103,7 @@ public class ApplicationDbContextInitialiser
     }
 }
 
+    // TODO refactor, using bogus maybe
     public async Task TrySeedAsync()
     {
         await CreateAdminUserIfNotExists("brett", "bretthoes@gmail.com");
@@ -132,7 +133,7 @@ public class ApplicationDbContextInitialiser
             await _context.Cookbooks.AddRangeAsync(cookbooks);
             await _context.SaveChangesAsync();
 
-            var cookbook = cookbooks[0];//await _context.Cookbooks.FirstOrDefaultAsync();
+            var cookbook = cookbooks[0];
 
             var members = new List<CookbookMember>
             {
