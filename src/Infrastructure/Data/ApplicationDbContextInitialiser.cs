@@ -132,49 +132,49 @@ public class ApplicationDbContextInitialiser
             await _context.Cookbooks.AddRangeAsync(cookbooks);
             await _context.SaveChangesAsync();
 
-            var cookbook = await _context.Cookbooks.FirstOrDefaultAsync();
+            var cookbook = cookbooks[0];//await _context.Cookbooks.FirstOrDefaultAsync();
 
-            // var members = new List<CookbookMember>
-            // {
-            //     new()
-            //     {
-            //         CookbookId = cookbook!.Id,
-            //         IsCreator = true,
-            //         CanAddRecipe = true,
-            //         CanDeleteRecipe = true,
-            //         CanEditCookbookDetails = true,
-            //         CanRemoveMember = true,
-            //         CanSendInvite = true,
-            //         CanUpdateRecipe = true,
-            //         //CreatedBy = adminId,
-            //     },
-            //     new()
-            //     {
-            //         CookbookId = cookbooks[1].Id,
-            //         IsCreator = false,
-            //         CanAddRecipe = true,
-            //         CanDeleteRecipe = false,
-            //         CanEditCookbookDetails = false,
-            //         CanRemoveMember = false,
-            //         CanSendInvite = true,
-            //         CanUpdateRecipe = false,
-            //         //CreatedBy = adminId,
-            //     },
-            //     new()
-            //     {
-            //         CookbookId = cookbooks[1].Id,
-            //         IsCreator = false,
-            //         CanAddRecipe = true,
-            //         CanDeleteRecipe = false,
-            //         CanEditCookbookDetails = false,
-            //         CanRemoveMember = false,
-            //         CanSendInvite = true,
-            //         CanUpdateRecipe = false,
-            //         //CreatedBy = otherAdminId,
-            //     },
-            // };
-            // await _context.CookbookMembers.AddRangeAsync(members);
-            // await _context.SaveChangesAsync();
+            var members = new List<CookbookMember>
+            {
+                new()
+                {
+                    CookbookId = cookbook!.Id,
+                    IsCreator = true,
+                    CanAddRecipe = true,
+                    CanDeleteRecipe = true,
+                    CanEditCookbookDetails = true,
+                    CanRemoveMember = true,
+                    CanSendInvite = true,
+                    CanUpdateRecipe = true,
+                    CreatedBy = adminId,
+                },
+                new()
+                {
+                    CookbookId = cookbooks[1].Id,
+                    IsCreator = false,
+                    CanAddRecipe = true,
+                    CanDeleteRecipe = false,
+                    CanEditCookbookDetails = false,
+                    CanRemoveMember = false,
+                    CanSendInvite = true,
+                    CanUpdateRecipe = false,
+                    CreatedBy = adminId,
+                },
+                new()
+                {
+                    CookbookId = cookbooks[1].Id,
+                    IsCreator = false,
+                    CanAddRecipe = true,
+                    CanDeleteRecipe = false,
+                    CanEditCookbookDetails = false,
+                    CanRemoveMember = false,
+                    CanSendInvite = true,
+                    CanUpdateRecipe = false,
+                    CreatedBy = otherAdminId,
+                },
+            };
+            await _context.CookbookMembers.AddRangeAsync(members);
+            await _context.SaveChangesAsync();
 
             var recipes = new List<Recipe>
             {
