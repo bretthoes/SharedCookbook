@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Xml.Serialization;
 
 namespace SharedCookbook.Infrastructure.Data;
 
@@ -69,73 +70,63 @@ public class ApplicationDbContextInitialiser
         }
     }
 
+    public async Task CreateAdminUserIfNotExists(string username, string email, string password = "Admin123!")
+{
+    var roleName = Roles.Administrator;
+
+    // Ensure the Administrator role exists
+    if (await _roleManager.FindByNameAsync(roleName) == null)
+    {
+        var administratorRole = new IdentityRole<int>(roleName);
+        await _roleManager.CreateAsync(administratorRole);
+    }
+
+    // Check if the user already exists by username or email
+    var existingUser = await _userManager.FindByNameAsync(username) ?? await _userManager.FindByEmailAsync(email);
+    if (existingUser == null)
+    {
+        var adminUser = new ApplicationUser
+        {
+            UserName = username,
+            Email = email,
+            Image = "",
+            EmailConfirmed = true,
+            PhoneNumberConfirmed = true,
+        };
+
+        // Create the admin user and assign the Administrator role
+        var createResult = await _userManager.CreateAsync(adminUser, password);
+        if (createResult.Succeeded)
+        {
+            await _userManager.AddToRoleAsync(adminUser, roleName);
+        }
+    }
+}
+
     public async Task TrySeedAsync()
     {
-        // Default roles
-        var administratorRole = new IdentityRole<int>(Roles.Administrator);
-
-        if (_roleManager.Roles.All(r => r.Name != administratorRole.Name))
-        {
-            await _roleManager.CreateAsync(administratorRole);
-        }
-
-        // Default users
-        var administrator = new ApplicationUser
-        {
-            UserName = "brett",
-            Email = "bretthoes@gmail.com",
-            Image = "",
-            EmailConfirmed = true,
-            PhoneNumberConfirmed = true,
-        };
-
-        var otherAdmin = new ApplicationUser
-        {
-            UserName = "test",
-            Email = "test@test.com",
-            Image = "",
-            EmailConfirmed = true,
-            PhoneNumberConfirmed = true,
-        };
-
-        if (_userManager.Users.All(u => u.UserName != administrator.UserName))
-        {
-            await _userManager.CreateAsync(administrator, "Admin123!");
-            if (!string.IsNullOrWhiteSpace(administratorRole.Name))
-            {
-                await _userManager.AddToRolesAsync(administrator, new[] { administratorRole.Name });
-            }
-        }
-
-        if (_userManager.Users.All(u => u.UserName != otherAdmin.UserName))
-        {
-            await _userManager.CreateAsync(otherAdmin, "Admin123!");
-            if (!string.IsNullOrWhiteSpace(administratorRole.Name))
-            {
-                await _userManager.AddToRolesAsync(otherAdmin, new[] { administratorRole.Name });
-            }
-        }
+        await CreateAdminUserIfNotExists("brett", "bretthoes@gmail.com");
+        await CreateAdminUserIfNotExists("test", "test@test.com");
 
         // Default data
         // Seed, if necessary
         if (!_context.Cookbooks.Any())
         {
-            var adminPerson = await _context.People.FirstOrDefaultAsync(p => p.Email == administrator.Email);
-            var otherAdminPerson = await _context.People.FirstOrDefaultAsync(p => p.Email == otherAdmin.Email);
-
+            var adminId = await _userManager.Users.MinAsync(x => x.Id);
+            var otherAdminId = await _userManager.Users.MaxAsync(x => x.Id);
             var cookbooks = new List<Cookbook>
             {
                 new()
                 {
                     Title = "My Cookbook",
                     Image = "a3449a45-3cb9-494e-bd69-21c04784b357spongebob_todo.jpg",
-                    CreatedBy = adminPerson!.Id,
+                    CreatedBy = adminId,
                 },
                 new()
                 {
                     Title = "Not My Cookbook",
                     Image = null,
-                    CreatedBy = otherAdminPerson!.Id,
+                    CreatedBy = otherAdminId,
                 },
             };
             await _context.Cookbooks.AddRangeAsync(cookbooks);
@@ -143,57 +134,54 @@ public class ApplicationDbContextInitialiser
 
             var cookbook = await _context.Cookbooks.FirstOrDefaultAsync();
 
-            var members = new List<CookbookMember>
-            {
-                new()
-                {
-                    Cookbook = cookbook!,
-                    CookbookId = cookbook!.Id,
-                    IsCreator = true,
-                    CanAddRecipe = true,
-                    CanDeleteRecipe = true,
-                    CanEditCookbookDetails = true,
-                    CanRemoveMember = true,
-                    CanSendInvite = true,
-                    CanUpdateRecipe = true,
-                    CreatedBy = adminPerson?.Id ?? 0,
-                },
-                new()
-                {
-                    Cookbook = cookbooks[1],
-                    CookbookId = cookbooks[1].Id,
-                    IsCreator = false,
-                    CanAddRecipe = true,
-                    CanDeleteRecipe = false,
-                    CanEditCookbookDetails = false,
-                    CanRemoveMember = false,
-                    CanSendInvite = true,
-                    CanUpdateRecipe = false,
-                    CreatedBy = adminPerson?.Id ?? 0,
-                },
-                new()
-                {
-                    Cookbook = cookbooks[1],
-                    CookbookId = cookbooks[1].Id,
-                    IsCreator = false,
-                    CanAddRecipe = true,
-                    CanDeleteRecipe = false,
-                    CanEditCookbookDetails = false,
-                    CanRemoveMember = false,
-                    CanSendInvite = true,
-                    CanUpdateRecipe = false,
-                    CreatedBy = otherAdminPerson?.Id ?? 0,
-                },
-            };
-            await _context.CookbookMembers.AddRangeAsync(members);
-            await _context.SaveChangesAsync();
+            // var members = new List<CookbookMember>
+            // {
+            //     new()
+            //     {
+            //         CookbookId = cookbook!.Id,
+            //         IsCreator = true,
+            //         CanAddRecipe = true,
+            //         CanDeleteRecipe = true,
+            //         CanEditCookbookDetails = true,
+            //         CanRemoveMember = true,
+            //         CanSendInvite = true,
+            //         CanUpdateRecipe = true,
+            //         //CreatedBy = adminId,
+            //     },
+            //     new()
+            //     {
+            //         CookbookId = cookbooks[1].Id,
+            //         IsCreator = false,
+            //         CanAddRecipe = true,
+            //         CanDeleteRecipe = false,
+            //         CanEditCookbookDetails = false,
+            //         CanRemoveMember = false,
+            //         CanSendInvite = true,
+            //         CanUpdateRecipe = false,
+            //         //CreatedBy = adminId,
+            //     },
+            //     new()
+            //     {
+            //         CookbookId = cookbooks[1].Id,
+            //         IsCreator = false,
+            //         CanAddRecipe = true,
+            //         CanDeleteRecipe = false,
+            //         CanEditCookbookDetails = false,
+            //         CanRemoveMember = false,
+            //         CanSendInvite = true,
+            //         CanUpdateRecipe = false,
+            //         //CreatedBy = otherAdminId,
+            //     },
+            // };
+            // await _context.CookbookMembers.AddRangeAsync(members);
+            // await _context.SaveChangesAsync();
 
             var recipes = new List<Recipe>
             {
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    CreatedBy = adminPerson?.Id ?? 0,
+                    CreatedBy = adminId,
                     Title = "Chicken Casserole",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/chicken_casserole.png",
@@ -203,7 +191,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    CreatedBy = adminPerson?.Id ?? 0,
+                    CreatedBy = adminId,
                     Title = "Salmon Loaf",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/baked-salmon-loaf.jpg",
@@ -212,7 +200,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    CreatedBy = adminPerson?.Id ?? 0,
+                    CreatedBy = adminId,
                     Title = "Beef Stroganoff",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/beef_stroganoff.png",
@@ -222,7 +210,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    CreatedBy = adminPerson?.Id ?? 0,
+                    CreatedBy = adminId,
                     Title = "Spaghetti Carbonara",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/spaghetti_carbonara.png",
@@ -232,7 +220,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    CreatedBy = adminPerson?.Id ?? 0,
+                    CreatedBy = adminId,
                     Title = "Vegetable Stir-Fry",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/vegetable_stirfry.png",
@@ -243,7 +231,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    CreatedBy = adminPerson?.Id ?? 0,
+                    CreatedBy = adminId,
                     Title = "Lasagna",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/lasagna.png",
@@ -254,7 +242,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    CreatedBy = adminPerson?.Id ?? 0,
+                    CreatedBy = adminId,
                     Title = "Chocolate Cake",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/chocolate_cake.png",
@@ -265,7 +253,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    CreatedBy = adminPerson?.Id ?? 0,
+                    CreatedBy = adminId,
                     Title = "Taco Salad",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/taco_salad.png",
@@ -275,7 +263,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    CreatedBy = adminPerson?.Id ?? 0,
+                    CreatedBy = adminId,
                     Title = "Chicken Alfredo",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/chicken_alfredo.png",
@@ -286,7 +274,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    CreatedBy = adminPerson?.Id ?? 0,
+                    CreatedBy = adminId,
                     Title = "Minestrone Soup",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/minestrone_soup.png",
@@ -297,7 +285,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    CreatedBy = adminPerson?.Id ?? 0,
+                    CreatedBy = adminId,
                     Title = "Pumpkin Pie",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/pumpkin_pie.png",
@@ -308,7 +296,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    CreatedBy = adminPerson?.Id ?? 0,
+                    CreatedBy = adminId,
                     Title = "Shrimp Scampi",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/shrimp_scampi.png",
@@ -319,7 +307,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    CreatedBy = adminPerson?.Id ?? 0,
+                    CreatedBy = adminId,
                     Title = "Grilled Cheese Sandwich",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/grilled_cheese.png",
@@ -330,7 +318,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    CreatedBy = adminPerson?.Id ?? 0,
+                    CreatedBy = adminId,
                     Title = "Chicken Caesar Salad with Pecans and Extra Dates with Shredded Cheddar Cheese",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/chicken_caesar_salad.png",
@@ -340,7 +328,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    CreatedBy = adminPerson?.Id ?? 0,
+                    CreatedBy = adminId,
                     Title = "Stuffed Bell Peppers",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/stuffed_bell_peppers.png",
@@ -351,7 +339,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    CreatedBy = adminPerson?.Id ?? 0,
+                    CreatedBy = adminId,
                     Title = "Beef Tacos",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/beef_tacos.png",
@@ -362,7 +350,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    CreatedBy = adminPerson?.Id ?? 0,
+                    CreatedBy = adminId,
                     Title = "Pancakes",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/pancakes.png",
@@ -373,7 +361,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    CreatedBy = adminPerson?.Id ?? 0,
+                    CreatedBy = adminId,
                     Title = "Roast Turkey",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/roast_turkey.png",
@@ -384,7 +372,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    CreatedBy = adminPerson?.Id ?? 0,
+                    CreatedBy = adminId,
                     Title = "Fettuccine Alfredo",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/fettuccine_alfredo.png",
@@ -395,7 +383,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    CreatedBy = adminPerson?.Id ?? 0,
+                    CreatedBy = adminId,
                     Title = "French Onion Soup",
                     Cookbook = cookbook,
                     Thumbnail = "assets/images/french_onion_soup.png",
@@ -406,7 +394,7 @@ public class ApplicationDbContextInitialiser
                 new()
                 {
                     CookbookId = cookbook!.Id,
-                    CreatedBy = adminPerson?.Id ?? 0,
+                    CreatedBy = adminId,
                     Title = "Secret Sauce",
                     Cookbook = cookbook,
                     Thumbnail = "",
