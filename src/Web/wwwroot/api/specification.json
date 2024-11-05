@@ -211,6 +211,15 @@
         "operationId": "GetInvitationsWithPagination",
         "parameters": [
           {
+            "name": "Status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/CookbookInvitationStatus"
+            },
+            "x-position": 1
+          },
+          {
             "name": "PageNumber",
             "in": "query",
             "required": true,
@@ -218,7 +227,7 @@
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 1
+            "x-position": 2
           },
           {
             "name": "PageSize",
@@ -228,7 +237,7 @@
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 2
+            "x-position": 3
           }
         ],
         "responses": {
@@ -1601,6 +1610,10 @@
             "type": "string",
             "nullable": true
           },
+          "senderEmail": {
+            "type": "string",
+            "nullable": true
+          },
           "cookbookTitle": {
             "type": "string"
           },
@@ -1618,6 +1631,22 @@
             "nullable": true
           }
         }
+      },
+      "CookbookInvitationStatus": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Unknown",
+          "Sent",
+          "Accepted",
+          "Rejected"
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ]
       },
       "CreateInvitationCommand": {
         "type": "object",
@@ -1644,22 +1673,6 @@
             "$ref": "#/components/schemas/CookbookInvitationStatus"
           }
         }
-      },
-      "CookbookInvitationStatus": {
-        "type": "integer",
-        "description": "",
-        "x-enumNames": [
-          "Unknown",
-          "Sent",
-          "Accepted",
-          "Rejected"
-        ],
-        "enum": [
-          0,
-          1,
-          2,
-          3
-        ]
       },
       "MembershipDto": {
         "type": "object",
