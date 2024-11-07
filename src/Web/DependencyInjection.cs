@@ -3,10 +3,10 @@ using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Infrastructure.Data;
 using SharedCookbook.Web.Services;
 using Microsoft.AspNetCore.Mvc;
-
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using System.Reflection;
+using SharedCookbook.Infrastructure;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -17,6 +17,7 @@ public static class DependencyInjection
         services.AddDatabaseDeveloperPageExceptionFilter();
 
         services.AddScoped<IUser, CurrentUser>();
+        services.AddScoped<IIdentityUserRepository, IdentityUserRepository>();
 
         services.AddHttpContextAccessor();
 

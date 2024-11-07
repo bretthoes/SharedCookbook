@@ -394,12 +394,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       },
       "patch": {
         "tags": [
@@ -434,12 +429,7 @@
           "200": {
             "description": ""
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       },
       "delete": {
         "tags": [
@@ -462,12 +452,7 @@
           "200": {
             "description": ""
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       }
     },
     "/api/Memberships": {
@@ -514,17 +499,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedListOfMembershipDto"
+                  "$ref": "#/components/schemas/PaginatedListOfMembershipWithUserDto"
                 }
               }
             }
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       }
     },
     "/api/Recipes/{Id}": {
@@ -1712,14 +1692,14 @@
           }
         }
       },
-      "PaginatedListOfMembershipDto": {
+      "PaginatedListOfMembershipWithUserDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "items": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/MembershipDto"
+              "$ref": "#/components/schemas/MembershipWithUserDto"
             }
           },
           "pageNumber": {
@@ -1738,6 +1718,45 @@
             "type": "boolean"
           },
           "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
+      "MembershipWithUserDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "isCreator": {
+            "type": "boolean"
+          },
+          "canAddRecipe": {
+            "type": "boolean"
+          },
+          "canUpdateRecipe": {
+            "type": "boolean"
+          },
+          "canDeleteRecipe": {
+            "type": "boolean"
+          },
+          "canSendInvite": {
+            "type": "boolean"
+          },
+          "canRemoveMember": {
+            "type": "boolean"
+          },
+          "canEditCookbookDetails": {
             "type": "boolean"
           }
         }
