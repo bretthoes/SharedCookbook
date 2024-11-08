@@ -23,26 +23,6 @@ public class IdentityService : IIdentityService
         _authorizationService = authorizationService;
     }
 
-    public async Task<Dictionary<int, string>> GetUserNamesAsync(IEnumerable<int> userIds)
-    {
-        var users = await _userManager.Users
-            .Where(u => userIds.Contains(u.Id))
-            .ToListAsync();
-
-        return users.ToDictionary(u => u.Id, u => u.UserName ?? string.Empty);
-    }
-
-
-    public async Task<UserDto?> FindByIdAsync(int? userId)
-    {
-        if (userId is null) return null;
-
-        var user = await _userManager.FindByIdAsync(userId?.ToString() ?? string.Empty);
-        return user == null
-            ? null
-            : MapApplicationUserToUserDto(user);
-    }
-
     public async Task<UserDto?> FindByEmailAsync(string email)
     {
         var user = await _userManager.FindByEmailAsync(email);

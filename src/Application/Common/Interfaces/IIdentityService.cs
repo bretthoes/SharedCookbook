@@ -5,13 +5,9 @@ namespace SharedCookbook.Application.Common.Interfaces;
 
 public interface IIdentityService
 {
-    Task<UserDto?> FindByIdAsync(int? userId);
-
     Task<UserDto?> FindByEmailAsync(string email);
 
     Task<string?> GetUserNameAsync(int? userId);
-
-    Task<Dictionary<int, string>> GetUserNamesAsync(IEnumerable<int> userIds);
 
     Task<bool> IsInRoleAsync(string userId, string role);
 
