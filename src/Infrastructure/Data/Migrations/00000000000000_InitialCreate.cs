@@ -556,7 +556,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 column: "cookbook_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_cookbook_invitation_recipient__person_id",
+                name: "IX_cookbook_invitation__recipient_person_id",
                 table: "cookbook_invitation",
                 column: "recipient_person_id");
 

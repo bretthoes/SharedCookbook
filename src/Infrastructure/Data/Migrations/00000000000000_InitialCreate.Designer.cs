@@ -610,9 +610,9 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
 
                     b.HasIndex(new[] { "CookbookId" }, "IX_cookbook_invitation__cookbook_id");
 
-                    b.HasIndex(new[] { "RecipientPersonId" }, "IX_cookbook_invitation_recipient__person_id");
+                    b.HasIndex(new[] { "RecipientPersonId" }, "IX_cookbook_invitation__recipient_person_id");
 
-                    b.HasIndex(new[] { "CreatedBy" }, "IX_cookbook_invitation_sender__created_by");
+                    b.HasIndex(new[] { "CreatedBy" }, "IX_cookbook_invitation__created_by");
 
                     b.ToTable("cookbook_invitation", (string)null);
                 });
@@ -1304,8 +1304,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
 
                     b.HasOne("SharedCookbook.Infrastructure.Identity.ApplicationUser", null)
                         .WithMany("CookbookNotifications")
-                        .HasForeignKey("SenderPersonId")
-                        .HasConstraintName("FK_cookbook_notification__sender_person_id");
+                        .HasForeignKey("CreatedBy")
+                        .HasConstraintName("FK_cookbook_notification__created_by");
 
                     b.Navigation("Cookbook");
 

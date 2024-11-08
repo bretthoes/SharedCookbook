@@ -15,29 +15,18 @@ public record GetInvitationsWithPaginationQuery : IRequest<PaginatedList<Invitat
 public class GetInvitationsWithPaginationQueryHandler : IRequestHandler<GetInvitationsWithPaginationQuery, PaginatedList<InvitationDto>>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IIdentityUserRepository _repository;
     private readonly IUser _user;
 
-    public GetInvitationsWithPaginationQueryHandler(IApplicationDbContext context, IUser user)
+    public GetInvitationsWithPaginationQueryHandler(IApplicationDbContext context, IIdentityUserRepository repository, IUser user)
     {
         _context = context;
+        _repository = repository;
         _user = user;
     }
 
     public Task<PaginatedList<InvitationDto>> Handle(GetInvitationsWithPaginationQuery query, CancellationToken cancellationToken)
     {
-        return _context.CookbookInvitations
-            .AsNoTracking()
-            .Where(invitation => invitation.RecipientPersonId == _user.Id && invitation.InvitationStatus == query.Status)
-            .Select(invitation => new InvitationDto {
-                Id = invitation.Id,
-                Created = invitation.Created,
-                CreatedBy = invitation.CreatedBy,
-                CookbookTitle = invitation.Cookbook == null ? "" : invitation.Cookbook.Title,
-                CookbookImage = invitation.Cookbook == null ? "" : invitation.Cookbook.Image,
-            })
-            .OrderByDescending(c => c.Created)
-            .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
-
-            
+        return _repository.GetInvitations(query, cancellationToken);
     }
 }

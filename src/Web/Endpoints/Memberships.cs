@@ -13,7 +13,7 @@ public class Memberships : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            //.RequireAuthorization()
+            .RequireAuthorization()
             .MapGet(GetMembership, "{id}")
             .MapGet(GetMembershipsWithPagination)
             .MapPatch(PatchMembership, "{id}")

@@ -23,7 +23,7 @@ public class GetMembershipsWithPaginationQueryHandler : IRequestHandler<GetMembe
 
     public Task<PaginatedList<MembershipDto>> Handle(GetMembershipsWithPaginationQuery request, CancellationToken cancellationToken)
     {
-        return _identityService.GetMembershipsWithUserDetailsAsync(request, cancellationToken);
+        return _identityService.GetMemberships(request, cancellationToken);
     }
 }
 

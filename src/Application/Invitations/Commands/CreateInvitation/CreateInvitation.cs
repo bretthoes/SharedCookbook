@@ -5,7 +5,6 @@ using SharedCookbook.Application.Users.Queries.GetUser;
 using SharedCookbook.Domain.Entities;
 using SharedCookbook.Domain.Enums;
 using SharedCookbook.Domain.Events;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace SharedCookbook.Application.Invitations.Commands.CreateInvitation;
 
