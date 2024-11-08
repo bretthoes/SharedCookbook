@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Xml.Serialization;
+using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Infrastructure.Data;
 
@@ -175,6 +175,20 @@ public class ApplicationDbContextInitialiser
                 },
             };
             await _context.CookbookMembers.AddRangeAsync(members);
+            await _context.SaveChangesAsync();
+
+            var invitations = new List<CookbookInvitation>() 
+            {
+                new()
+                { 
+                    CookbookId = cookbook!.Id,
+                    InvitationStatus = CookbookInvitationStatus.Sent,
+                    RecipientPersonId = adminId,
+                    CreatedBy = otherAdminId,
+                    ResponseDate = null
+                }
+            };
+            await _context.CookbookInvitations.AddRangeAsync(invitations);
             await _context.SaveChangesAsync();
 
             var recipes = new List<Recipe>
