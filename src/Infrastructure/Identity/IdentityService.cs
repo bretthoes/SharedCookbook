@@ -3,7 +3,6 @@ using SharedCookbook.Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using SharedCookbook.Application.Users.Queries.GetUser;
-using Microsoft.EntityFrameworkCore;
 
 namespace SharedCookbook.Infrastructure.Identity;
 
