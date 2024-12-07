@@ -4,6 +4,7 @@ using SharedCookbook.Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SharedCookbook.Domain.Enums;
@@ -16,13 +17,26 @@ public static class InitialiserExtensions
     {
         await using var scope = app.Services.CreateAsyncScope();
 
+        var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+        var dbSettings = configuration.GetSection("DatabaseSettings");
+        
+        var shouldInitialize = dbSettings.GetValue<bool>("InitializeDatabase");
+        var shouldSeed = dbSettings.GetValue<bool>("SeedDatabase");
+
         var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitialiser>();
 
-        await initialiser.InitialiseAsync();
+        if (shouldInitialize)
+        {
+            await initialiser.InitialiseAsync();
+        }
 
-        await initialiser.SeedAsync();
+        if (shouldSeed)
+        {
+            await initialiser.SeedAsync();
+        }
     }
 }
+
 
 public class ApplicationDbContextInitialiser
 {
