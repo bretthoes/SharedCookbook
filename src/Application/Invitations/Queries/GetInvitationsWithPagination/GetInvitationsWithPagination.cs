@@ -16,13 +16,11 @@ public class GetInvitationsWithPaginationQueryHandler : IRequestHandler<GetInvit
 {
     private readonly IApplicationDbContext _context;
     private readonly IIdentityUserRepository _repository;
-    private readonly IUser _user;
 
-    public GetInvitationsWithPaginationQueryHandler(IApplicationDbContext context, IIdentityUserRepository repository, IUser user)
+    public GetInvitationsWithPaginationQueryHandler(IApplicationDbContext context, IIdentityUserRepository repository)
     {
         _context = context;
         _repository = repository;
-        _user = user;
     }
 
     public Task<PaginatedList<InvitationDto>> Handle(GetInvitationsWithPaginationQuery query, CancellationToken cancellationToken)
