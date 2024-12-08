@@ -32,30 +32,12 @@ public class CreateCookbookCommandHandler : IRequestHandler<CreateCookbookComman
 
         _context.Cookbooks.Add(entity);
 
-        _context.CookbookMembers.Add(GetNewCreatorMembership(entity));
+        _context.CookbookMembers.Add(CookbookMember.GetNewCreatorMembership(entity.Id));
 
         entity.AddDomainEvent(new CookbookCreatedEvent(entity));
 
         await _context.SaveChangesAsync(cancellationToken);
 
         return entity.Id;
-    }
-
-    // Creates a CookbookMember entity for the creator of a new Cookbook.
-    // Contains permissions for all actions by default.
-    private static CookbookMember GetNewCreatorMembership(Cookbook cookbook)
-    {
-        return new CookbookMember
-        {
-            CookbookId = cookbook.Id,
-            IsCreator = true,
-            CanAddRecipe = true,
-            CanDeleteRecipe = true,
-            CanEditCookbookDetails = true,
-            CanRemoveMember = true,
-            CanSendInvite = true,
-            CanUpdateRecipe = true,
-            Cookbook = cookbook,
-        };
     }
 }

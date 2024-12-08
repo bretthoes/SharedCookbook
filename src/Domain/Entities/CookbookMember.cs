@@ -19,4 +19,34 @@ public class CookbookMember : BaseAuditableEntity
     public required bool CanEditCookbookDetails { get; set; }
 
     public virtual Cookbook? Cookbook { get; set; }
+    
+    public static CookbookMember GetNewCreatorMembership(int cookbookId)
+    {
+        return new()
+        {
+            CookbookId = cookbookId,
+            IsCreator = true,
+            CanAddRecipe = true,
+            CanDeleteRecipe = true,
+            CanEditCookbookDetails = true,
+            CanRemoveMember = true,
+            CanSendInvite = true,
+            CanUpdateRecipe = true,
+        };
+    }
+
+    public static CookbookMember GetDefaultMembership(int cookbookId)
+    {
+        return new()
+        {
+            CookbookId = cookbookId,
+            IsCreator = false,
+            CanAddRecipe = true,
+            CanUpdateRecipe = false,
+            CanDeleteRecipe = false,
+            CanSendInvite = true,
+            CanRemoveMember = false,
+            CanEditCookbookDetails = false
+        };
+    }
 }
