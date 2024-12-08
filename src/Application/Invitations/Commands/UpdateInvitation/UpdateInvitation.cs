@@ -5,7 +5,7 @@ namespace SharedCookbook.Application.Invitations.Commands.UpdateInvitation;
 
 public record UpdateInvitationCommand : IRequest<int>
 {
-    public int Id { get; set; }
+    public int Id { get; init; }
 
     public CookbookInvitationStatus NewStatus { get; set; }
 }
@@ -26,8 +26,17 @@ public class UpdateInvitationCommandHandler : IRequestHandler<UpdateInvitationCo
 
         Guard.Against.NotFound(command.Id, entity);
 
-        if (command.NewStatus != CookbookInvitationStatus.Unknown) entity.InvitationStatus = command.NewStatus;
+        if (command.NewStatus == CookbookInvitationStatus.Accepted)
+        {
+            entity.Accept();
+        }
+        else if (command.NewStatus != CookbookInvitationStatus.Unknown)
+        {
+            entity.InvitationStatus = command.NewStatus;
+        }
 
-        return await _context.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
+        return entity.Id;
     }
+
 }

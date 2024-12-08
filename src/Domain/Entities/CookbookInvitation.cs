@@ -11,4 +11,12 @@ public class CookbookInvitation : BaseAuditableEntity
     public DateTime? ResponseDate { get; set; }
 
     public virtual Cookbook? Cookbook { get; set; }
+    
+    public void Accept()
+    {
+        if (InvitationStatus == CookbookInvitationStatus.Accepted) return;
+
+        InvitationStatus = CookbookInvitationStatus.Accepted;
+        AddDomainEvent(new InvitationAcceptedEvent(this));
+    }
 }
