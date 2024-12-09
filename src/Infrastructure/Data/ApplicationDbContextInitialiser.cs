@@ -61,6 +61,7 @@ public class ApplicationDbContextInitialiser
     {
         try
         {
+            _logger.LogInformation("Initialising database...");
             await _context.Database.EnsureDeletedAsync();
             await _context.Database.MigrateAsync();
         }
@@ -75,6 +76,7 @@ public class ApplicationDbContextInitialiser
     {
         try
         {
+            _logger.LogInformation("Seeding database...");
             await TrySeedAsync();
         }
         catch (Exception ex)
