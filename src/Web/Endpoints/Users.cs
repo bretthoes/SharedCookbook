@@ -1,5 +1,4 @@
-﻿using SharedCookbook.Application.Users.Queries.GetUser;
-using SharedCookbook.Infrastructure.Identity;
+﻿using SharedCookbook.Infrastructure.Identity;
 
 namespace SharedCookbook.Web.Endpoints;
 

@@ -1,14 +1,14 @@
-﻿using Azure.Identity;
-using SharedCookbook.Application.Common.Interfaces;
-using SharedCookbook.Infrastructure.Data;
-using SharedCookbook.Web.Services;
+﻿using System.Reflection;
+using Azure.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NSwag;
 using NSwag.Generation.Processors.Security;
-using System.Reflection;
+using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Infrastructure;
+using SharedCookbook.Infrastructure.Data;
+using SharedCookbook.Web.Services;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace SharedCookbook.Web;
 
 public static class DependencyInjection
 {
@@ -34,12 +34,12 @@ public static class DependencyInjection
 
         services.AddEndpointsApiExplorer();
 
-        services.AddOpenApiDocument((configure, sp) =>
+        services.AddOpenApiDocument((configure, _) =>
         {
             configure.Title = "SharedCookbook API";
 
             // Add JWT
-            configure.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
+            configure.AddSecurity("JWT", [], new OpenApiSecurityScheme
             {
                 Type = OpenApiSecuritySchemeType.ApiKey,
                 Name = "Authorization",

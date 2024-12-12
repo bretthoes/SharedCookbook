@@ -6,7 +6,7 @@ namespace SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
 
 public record GetRecipesWithPaginationQuery : IRequest<PaginatedList<RecipeBriefDto>>
 {
-    public required int CookbookId { get; set; }
+    public required int CookbookId { get; init; }
     public int PageNumber { get; init; } = 1;
     public int PageSize { get; init; } = 10;
 }
@@ -14,13 +14,11 @@ public record GetRecipesWithPaginationQuery : IRequest<PaginatedList<RecipeBrief
 public class GetRecipesWithPaginationQueryHandler : IRequestHandler<GetRecipesWithPaginationQuery, PaginatedList<RecipeBriefDto>>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IIdentityService _identityService;
     private readonly IMapper _mapper;
 
     public GetRecipesWithPaginationQueryHandler(IApplicationDbContext context, IIdentityService identityService, IMapper mapper)
     {
         _context = context;
-        _identityService = identityService;
         _mapper = mapper;
     }
 

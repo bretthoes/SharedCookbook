@@ -4,9 +4,9 @@ namespace SharedCookbook.Application.Cookbooks.Commands.UpdateCookbook;
 
 public record UpdateCookbookCommand : IRequest<int>
 {
-    public int Id { get; set; }
-    public string? Title { get; set; }
-    public string? Image { get; set; }
+    public int Id { get; init; }
+    public string? Title { get; init; }
+    public string? Image { get; init; }
 }
 
 public class UpdateCookbookCommandHandler : IRequestHandler<UpdateCookbookCommand, int>
@@ -21,7 +21,7 @@ public class UpdateCookbookCommandHandler : IRequestHandler<UpdateCookbookComman
     public async Task<int> Handle(UpdateCookbookCommand request, CancellationToken cancellationToken)
     {
         var entity = await _context.Cookbooks
-            .FindAsync(new object[] { request.Id }, cancellationToken);
+            .FindAsync([request.Id], cancellationToken);
 
         Guard.Against.NotFound(request.Id, entity);
 

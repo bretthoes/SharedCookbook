@@ -7,7 +7,7 @@ public record UpdateInvitationCommand : IRequest<int>
 {
     public int Id { get; init; }
 
-    public CookbookInvitationStatus NewStatus { get; set; }
+    public CookbookInvitationStatus NewStatus { get; init; }
 }
 
 public class UpdateInvitationCommandHandler : IRequestHandler<UpdateInvitationCommand, int>

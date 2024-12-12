@@ -1,5 +1,4 @@
 ﻿using SharedCookbook.Application.Common.Interfaces;
-using SharedCookbook.Application.Common.Mappings;
 using SharedCookbook.Application.Common.Models;
 using SharedCookbook.Domain.Enums;
 
@@ -14,12 +13,10 @@ public record GetInvitationsWithPaginationQuery : IRequest<PaginatedList<Invitat
 
 public class GetInvitationsWithPaginationQueryHandler : IRequestHandler<GetInvitationsWithPaginationQuery, PaginatedList<InvitationDto>>
 {
-    private readonly IApplicationDbContext _context;
     private readonly IIdentityUserRepository _repository;
 
     public GetInvitationsWithPaginationQueryHandler(IApplicationDbContext context, IIdentityUserRepository repository)
     {
-        _context = context;
         _repository = repository;
     }
 

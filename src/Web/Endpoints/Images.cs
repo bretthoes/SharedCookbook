@@ -1,4 +1,4 @@
-﻿using SharedCookbook.Application.Images.Commands.CreateImage;
+﻿using SharedCookbook.Application.Images.Commands.CreateImages;
 
 namespace SharedCookbook.Web.Endpoints;
 

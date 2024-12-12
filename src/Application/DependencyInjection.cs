@@ -1,7 +1,8 @@
 ﻿using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 using SharedCookbook.Application.Common.Behaviours;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace SharedCookbook.Application;
 
 public static class DependencyInjection
 {

@@ -1,5 +1,4 @@
-﻿using SharedCookbook.Application.Common.Exceptions;
-using SharedCookbook.Application.Common.Interfaces;
+﻿using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Domain.Entities;
 using SharedCookbook.Domain.Events;
 
@@ -7,7 +6,7 @@ namespace SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 
 public record CreateRecipeCommand : IRequest<int>
 {
-    public required CreateRecipeDto Recipe { get; set; }
+    public required CreateRecipeDto Recipe { get; init; }
 }
 
 public class CreateRecipeCommandHandler : IRequestHandler<CreateRecipeCommand, int>

@@ -1,16 +1,17 @@
-﻿using SharedCookbook.Application.Common.Interfaces;
-using SharedCookbook.Domain.Constants;
-using SharedCookbook.Infrastructure.Data;
-using SharedCookbook.Infrastructure.Data.Interceptors;
-using SharedCookbook.Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
-using SharedCookbook.Infrastructure.FileStorage;
+using Microsoft.Extensions.DependencyInjection;
+using SharedCookbook.Application.Common.Interfaces;
+using SharedCookbook.Domain.Constants;
+using SharedCookbook.Infrastructure.Data;
 using SharedCookbook.Infrastructure.Data.Config;
+using SharedCookbook.Infrastructure.Data.Interceptors;
+using SharedCookbook.Infrastructure.FileStorage;
+using SharedCookbook.Infrastructure.Identity;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace SharedCookbook.Infrastructure;
 
 public static class DependencyInjection
 {

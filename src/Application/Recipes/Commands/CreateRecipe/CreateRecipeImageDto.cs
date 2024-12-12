@@ -1,6 +1,6 @@
 ﻿using SharedCookbook.Domain.Entities;
 
-namespace SharedCookbook.Application.Recipes.Queries.GetRecipe;
+namespace SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 
 public class CreateRecipeImageDto
 {

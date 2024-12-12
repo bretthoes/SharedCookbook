@@ -6,11 +6,11 @@ public class CookbookBriefDto
 {
     public required int Id { get; init; }
 
-    public required string Title { get; set; }
+    public required string Title { get; init; }
 
-    public string? Image { get; set; }
+    public string? Image { get; init; }
 
-    public int MembersCount { get; set; }
+    public int MembersCount { get; init; }
 
     private class Mapping : Profile
     {

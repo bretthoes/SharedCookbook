@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using SharedCookbook.Application.Common.Interfaces;
 
-namespace SharedCookbook.Application.Images.Commands.CreateImage;
+namespace SharedCookbook.Application.Images.Commands.CreateImages;
 
 public record CreateImagesCommand(IFormFileCollection Files) : IRequest<string[]>;
 

@@ -1,10 +1,10 @@
 ﻿using SharedCookbook.Application.Common.Interfaces;
 
-namespace SharedCookbook.Application.Memberships.Commands.UpdateMembership;
+namespace SharedCookbook.Application.Memberships.Commands.PatchMembership;
 
 public record PatchMembershipCommand : IRequest<int>
 {
-    public int Id { get; set; }
+    public int Id { get; init; }
 
 }
 

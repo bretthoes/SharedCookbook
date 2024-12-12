@@ -1,5 +1,4 @@
 ﻿using SharedCookbook.Application.Common.Interfaces;
-using SharedCookbook.Domain.Events;
 
 namespace SharedCookbook.Application.Memberships.Commands.DeleteMembership;
 

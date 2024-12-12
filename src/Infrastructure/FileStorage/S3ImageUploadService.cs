@@ -13,14 +13,12 @@ namespace SharedCookbook.Infrastructure.FileStorage;
 public class S3ImageUploadService : IImageUploadService
 {
     private readonly IOptions<ImageUploadOptions> _options;
-    private readonly ILogger<S3ImageUploadService> _logger;
 
     public S3ImageUploadService(
         IOptions<ImageUploadOptions> options,
         ILogger<S3ImageUploadService> logger)
     {
         _options = options;
-        _logger = logger;
     }
 
     public async Task<string[]> UploadFiles(IFormFileCollection files)

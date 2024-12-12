@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
-
-namespace SharedCookbook.Application.Recipes.Commands.UpdateCookbook;
+﻿namespace SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
 
 public class UpdateRecipeCommandValidator : AbstractValidator<UpdateRecipeCommand>
 {

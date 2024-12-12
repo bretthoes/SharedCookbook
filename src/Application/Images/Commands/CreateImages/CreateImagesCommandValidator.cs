@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace SharedCookbook.Application.Images.Commands.CreateImage;
+namespace SharedCookbook.Application.Images.Commands.CreateImages;
 
 public class CreateImagesCommandValidator : AbstractValidator<CreateImagesCommand>
 {

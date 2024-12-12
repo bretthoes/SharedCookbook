@@ -4,7 +4,7 @@ public record MembershipDto
 {
     public int Id { get; set; }
 
-    public string? Name { get; set; }
+    public string? Name { get; init; }
 
     public string? Email { get; set; }
 

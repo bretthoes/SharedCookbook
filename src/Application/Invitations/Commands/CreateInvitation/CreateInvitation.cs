@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using SharedCookbook.Application.Common.Exceptions;
+﻿using SharedCookbook.Application.Common.Exceptions;
 using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Application.Users.Queries.GetUser;
 using SharedCookbook.Domain.Entities;
@@ -10,9 +9,9 @@ namespace SharedCookbook.Application.Invitations.Commands.CreateInvitation;
 
 public record CreateInvitationCommand : IRequest<int>
 {
-    public required int CookbookId { get; set; }
+    public required int CookbookId { get; init; }
 
-    public required string Email { get; set; }
+    public required string Email { get; init; }
 }
 
 public class CreateInvitationCommandHandler : IRequestHandler<CreateInvitationCommand, int>

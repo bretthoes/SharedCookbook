@@ -1,4 +1,7 @@
+using SharedCookbook.Application;
+using SharedCookbook.Infrastructure;
 using SharedCookbook.Infrastructure.Data;
+using SharedCookbook.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,7 +45,7 @@ app.MapRazorPages();
 
 app.MapFallbackToFile("index.html");
 
-app.UseExceptionHandler(options => { });
+app.UseExceptionHandler(_ => { });
 
 app.Map("/", () => Results.Redirect("/api"));
 
@@ -52,4 +55,4 @@ app.MapEndpoints();
 
 app.Run();
 
-public partial class Program { }
+public abstract partial class Program { }

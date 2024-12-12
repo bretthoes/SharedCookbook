@@ -21,7 +21,7 @@ public class GetMembershipQueryHandler : IRequestHandler<GetMembershipQuery, Mem
         var entity = await _context.CookbookMembers.FindAsync([request.Id], cancellationToken) 
             ?? throw new NotFoundException(request.Id.ToString(), nameof(CookbookMember));
 
-        var dto = new MembershipDto() // TODO update to get email; use the identity user repository
+        var dto = new MembershipDto
         {
             CanAddRecipe = entity.CanAddRecipe,
             IsCreator = entity.IsCreator,

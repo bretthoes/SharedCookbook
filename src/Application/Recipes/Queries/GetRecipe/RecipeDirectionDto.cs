@@ -4,13 +4,13 @@ namespace SharedCookbook.Application.Recipes.Queries.GetRecipe;
 
 public class RecipeDirectionDto
 {
-    public required int Id { get; set; }
+    public required int Id { get; init; }
 
-    public required string Text { get; set; }
+    public required string Text { get; init; }
 
-    public required int Ordinal { get; set; }
+    public required int Ordinal { get; init; }
 
-    public string? Image { get; set; }
+    public string? Image { get; init; }
 
     private class Mapping : Profile
     {

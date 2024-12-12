@@ -1,7 +1,7 @@
 
 using SharedCookbook.Application.Common.Models;
 using SharedCookbook.Application.Memberships.Commands.DeleteMembership;
-using SharedCookbook.Application.Memberships.Commands.UpdateMembership;
+using SharedCookbook.Application.Memberships.Commands.PatchMembership;
 using SharedCookbook.Application.Memberships.Queries;
 using SharedCookbook.Application.Memberships.Queries.GetMembership;
 using SharedCookbook.Application.Memberships.Queries.GetMembershipsWithPagination;
