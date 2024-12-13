@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Domain.Constants;
 using SharedCookbook.Infrastructure.Data;
-using SharedCookbook.Infrastructure.Data.Config;
+using SharedCookbook.Infrastructure.Data.Options;
 using SharedCookbook.Infrastructure.Data.Interceptors;
 using SharedCookbook.Infrastructure.FileStorage;
 using SharedCookbook.Infrastructure.Identity;

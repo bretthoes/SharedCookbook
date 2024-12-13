@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SharedCookbook.Application.Common.Interfaces;
-using SharedCookbook.Infrastructure.Data.Config;
+using SharedCookbook.Infrastructure.Data.Options;
 
 namespace SharedCookbook.Infrastructure.FileStorage;
 
