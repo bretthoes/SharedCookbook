@@ -1,6 +1,5 @@
 ﻿using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Domain.Entities;
-using SharedCookbook.Domain.Events;
 
 namespace SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
 
@@ -15,7 +14,7 @@ public class CreateCookbookCommandHandler : IRequestHandler<CreateCookbookComman
 {
     private readonly IApplicationDbContext _context;
 
-    public CreateCookbookCommandHandler(IApplicationDbContext context, IUser user)
+    public CreateCookbookCommandHandler(IApplicationDbContext context)
     {
         _context = context;
     }
@@ -26,11 +25,10 @@ public class CreateCookbookCommandHandler : IRequestHandler<CreateCookbookComman
         {
             Title = request.Title,
             Image = request.Image,
+            CookbookMembers = [CookbookMember.GetNewCreatorMembership()]
         };
-
-        _context.Cookbooks.Add(entity);
-
-        entity.AddDomainEvent(new CookbookCreatedEvent(entity));
+        
+        await _context.Cookbooks.AddAsync(entity, cancellationToken);
 
         await _context.SaveChangesAsync(cancellationToken);
 

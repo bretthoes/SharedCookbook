@@ -2,7 +2,7 @@
 
 public class CookbookMember : BaseAuditableEntity
 {
-    public required int CookbookId { get; set; }
+    public int CookbookId { get; set; }
 
     public required bool IsCreator { get; set; }
 
@@ -20,11 +20,10 @@ public class CookbookMember : BaseAuditableEntity
 
     public virtual Cookbook? Cookbook { get; set; }
     
-    public static CookbookMember GetNewCreatorMembership(int cookbookId)
+    public static CookbookMember GetNewCreatorMembership()
     {
         return new()
         {
-            CookbookId = cookbookId,
             IsCreator = true,
             CanAddRecipe = true,
             CanDeleteRecipe = true,
