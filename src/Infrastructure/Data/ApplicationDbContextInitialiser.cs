@@ -86,7 +86,7 @@ public class ApplicationDbContextInitialiser
         }
     }
 
-    public async Task CreateAdminUserIfNotExists(string username, string email, string password = "Admin123!")
+    public async Task CreateAdminUserIfNotExists(string email, string password = "Admin123!")
 {
     var roleName = Roles.Administrator;
 
@@ -97,13 +97,13 @@ public class ApplicationDbContextInitialiser
         await _roleManager.CreateAsync(administratorRole);
     }
 
-    // Check if the user already exists by username or email
-    var existingUser = await _userManager.FindByNameAsync(username) ?? await _userManager.FindByEmailAsync(email);
+    // Check if the user already exists
+    var existingUser = await _userManager.FindByEmailAsync(email);
     if (existingUser == null)
     {
         var adminUser = new ApplicationUser
         {
-            UserName = username,
+            UserName = email,
             Email = email,
             Image = "",
             EmailConfirmed = true,
@@ -122,8 +122,8 @@ public class ApplicationDbContextInitialiser
     // TODO refactor, using bogus maybe
     public async Task TrySeedAsync()
     {
-        await CreateAdminUserIfNotExists("brett", "bretthoes@gmail.com");
-        await CreateAdminUserIfNotExists("test", "test@test.com");
+        await CreateAdminUserIfNotExists("bretthoes@gmail.com");
+        await CreateAdminUserIfNotExists("test@test.com");
 
         // Default data
         // Seed, if necessary
