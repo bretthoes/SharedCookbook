@@ -2,7 +2,7 @@
 using SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
 using SharedCookbook.Domain.Entities;
 
-namespace SharedCookbook.Application.FunctionalTests.TodoItems.Commands;
+namespace SharedCookbook.Application.FunctionalTests.TodoLists.Commands;
 
 using static Testing;
 
