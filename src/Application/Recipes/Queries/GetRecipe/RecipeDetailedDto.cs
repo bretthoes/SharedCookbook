@@ -31,12 +31,4 @@ public class RecipeDetailedDto
     public virtual ICollection<RecipeImageDto> Images { get; init; } = [];
 
     public virtual ICollection<RecipeIngredientDto> Ingredients { get; init; } = [];
-
-    private class Mapping : Profile
-    {
-        public Mapping()
-        {
-            CreateMap<Recipe, RecipeDetailedDto>();
-        }
-    }
 }

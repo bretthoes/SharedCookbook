@@ -11,13 +11,4 @@ public class CookbookBriefDto
     public string? Image { get; init; }
 
     public int MembersCount { get; init; }
-
-    private class Mapping : Profile
-    {
-        public Mapping()
-        {
-            CreateMap<Cookbook, CookbookBriefDto>()
-                .ForMember(dest => dest.MembersCount, opt => opt.MapFrom(src => src.CookbookMembers.Count));
-        }
-    }
 }

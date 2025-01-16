@@ -9,12 +9,4 @@ public class RecipeImageDto
     public required string Name { get; init; }
 
     public required int Ordinal { get; init; }
-
-    private class Mapping : Profile
-    {
-        public Mapping()
-        {
-            CreateMap<RecipeImage, RecipeImageDto>();
-        }
-    }
 }

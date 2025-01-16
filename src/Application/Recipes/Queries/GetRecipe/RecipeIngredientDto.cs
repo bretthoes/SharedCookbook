@@ -11,12 +11,4 @@ public class RecipeIngredientDto
     public required int Ordinal { get; init; }
 
     public required bool Optional { get; init; }
-
-    private class Mapping : Profile
-    {
-        public Mapping()
-        {
-            CreateMap<RecipeIngredient, RecipeIngredientDto>();
-        }
-    }
 }
