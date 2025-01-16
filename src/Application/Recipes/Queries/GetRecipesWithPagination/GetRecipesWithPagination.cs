@@ -14,20 +14,22 @@ public record GetRecipesWithPaginationQuery : IRequest<PaginatedList<RecipeBrief
 public class GetRecipesWithPaginationQueryHandler : IRequestHandler<GetRecipesWithPaginationQuery, PaginatedList<RecipeBriefDto>>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
-    public GetRecipesWithPaginationQueryHandler(IApplicationDbContext context, IIdentityService identityService, IMapper mapper)
+    public GetRecipesWithPaginationQueryHandler(IApplicationDbContext context, IIdentityService identityService)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public Task<PaginatedList<RecipeBriefDto>> Handle(GetRecipesWithPaginationQuery request, CancellationToken cancellationToken)
     {
         return _context.Recipes
-            .Where(r => r.CookbookId == request.CookbookId)
-            .OrderBy(c => c.Title)
-            .ProjectTo<RecipeBriefDto>(_mapper.ConfigurationProvider)
+            .Where(recipe => recipe.CookbookId == request.CookbookId)
+            .OrderBy(recipe => recipe.Title)
+            .Select(recipe => new RecipeBriefDto
+            {
+                Id = recipe.Id,
+                Title = recipe.Title,
+            })
             .PaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
     }
 }

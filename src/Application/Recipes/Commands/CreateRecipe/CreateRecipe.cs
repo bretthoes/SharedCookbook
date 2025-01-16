@@ -12,12 +12,10 @@ public record CreateRecipeCommand : IRequest<int>
 public class CreateRecipeCommandHandler : IRequestHandler<CreateRecipeCommand, int>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
-    public CreateRecipeCommandHandler(IApplicationDbContext context, IMapper mapper)
+    public CreateRecipeCommandHandler(IApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async Task<int> Handle(CreateRecipeCommand request, CancellationToken cancellationToken)
@@ -33,9 +31,23 @@ public class CreateRecipeCommandHandler : IRequestHandler<CreateRecipeCommand, i
             CookingTimeInMinutes = request.Recipe.CookingTimeInMinutes,
             BakingTimeInMinutes = request.Recipe.BakingTimeInMinutes,
             Servings = request.Recipe.Servings,
-            Directions = _mapper.Map<ICollection<RecipeDirection>>(request.Recipe.Directions),
-            Images = _mapper.Map<ICollection<RecipeImage>>(request.Recipe.Images),
-            Ingredients = _mapper.Map<ICollection<RecipeIngredient>>(request.Recipe.Ingredients)
+            Directions = request.Recipe.Directions.Select(direction => new RecipeDirection
+            {
+                Text = direction.Text,
+                Ordinal = direction.Ordinal,
+                Image = direction.Image,
+            }).ToList(),
+            Images = request.Recipe.Images.Select(image => new RecipeImage
+            {
+                Name = image.Name,
+                Ordinal = image.Ordinal,
+            }).ToList(),
+            Ingredients = request.Recipe.Ingredients.Select(ingredient => new RecipeIngredient
+            {
+                Name = ingredient.Name,
+                Ordinal = ingredient.Ordinal,
+                Optional = ingredient.Optional,
+            }).ToList()
         };
 
         entity.AddDomainEvent(new RecipeCreatedEvent(entity));
