@@ -2,7 +2,12 @@
 
 namespace SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
 
-public record UpdateRecipeCommand(int Id) : IRequest<int>;
+public record UpdateRecipeCommand : IRequest<int>
+{
+    public int Id { get; init; }
+    
+    public string? Title { get; init; }
+}
 
 public class UpdateRecipeCommandHandler : IRequestHandler<UpdateRecipeCommand, int>
 {
@@ -13,8 +18,17 @@ public class UpdateRecipeCommandHandler : IRequestHandler<UpdateRecipeCommand, i
         _context = context;
     }
 
-    public Task<int> Handle(UpdateRecipeCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(UpdateRecipeCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var entity = await _context.Recipes
+            .FindAsync([request.Id], cancellationToken);
+
+        Guard.Against.NotFound(request.Id, entity);
+
+        if (!string.IsNullOrWhiteSpace(request.Title)) entity.Title = request.Title;
+
+        await _context.SaveChangesAsync(cancellationToken);
+        
+        return entity.Id;
     }
 }
