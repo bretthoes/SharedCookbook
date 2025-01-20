@@ -19,6 +19,8 @@ dotnet watch run
 
 Navigate to https://localhost:5001. The application will automatically reload if you change any of the source files.
 
+Can ping API at `/health` endpoint as well.
+
 ## Test
 
 The solution contains unit, integration, and functional tests.
