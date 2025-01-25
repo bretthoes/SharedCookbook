@@ -1,4 +1,5 @@
-﻿namespace SharedCookbook.Infrastructure.Data.Options;
+﻿namespace SharedCookbook.Infrastructure.FileStorage;
+
 public class ImageUploadOptions
 {
     public required string BucketName { get; init; }
