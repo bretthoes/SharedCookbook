@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -6,8 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Domain.Constants;
 using SharedCookbook.Infrastructure.Data;
-using SharedCookbook.Infrastructure.Data.Options;
 using SharedCookbook.Infrastructure.Data.Interceptors;
+using SharedCookbook.Infrastructure.Email;
 using SharedCookbook.Infrastructure.FileStorage;
 using SharedCookbook.Infrastructure.Identity;
 
@@ -41,7 +42,12 @@ public static class DependencyInjection
         services.AddAuthorizationBuilder();
 
         services
-            .AddIdentityCore<ApplicationUser>(options => options.User.RequireUniqueEmail = true)
+            .AddIdentityCore<ApplicationUser>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+                options.SignIn.RequireConfirmedEmail = true;
+                options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
+            })
             .AddRoles<IdentityRole<int>>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddApiEndpoints();
@@ -52,9 +58,13 @@ public static class DependencyInjection
         services.AddAuthorization(options =>
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator)));
 
-        services.AddScoped<IImageUploadService, S3ImageUploadService>();
+        services.AddTransient<IImageUploadService, S3ImageUploadService>();
         services.Configure<ImageUploadOptions>(
             configuration.GetSection(key: nameof(ImageUploadOptions)));
+
+        services.AddTransient<IEmailSender, EmailSender>();
+        services.Configure<SmtpOptions>(
+            configuration.GetSection(key: nameof(SmtpOptions)));
 
         return services;
     }
