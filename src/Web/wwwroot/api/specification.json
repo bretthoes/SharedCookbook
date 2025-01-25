@@ -527,26 +527,6 @@
         ]
       }
     },
-    "/api/Ping": {
-      "get": {
-        "tags": [
-          "Ping"
-        ],
-        "operationId": "HealthCheck",
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/Recipes/{Id}": {
       "get": {
         "tags": [
