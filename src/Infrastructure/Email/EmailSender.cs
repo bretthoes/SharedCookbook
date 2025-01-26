@@ -3,27 +3,32 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
+using Org.BouncyCastle.Crypto.Digests;
+using RestSharp;
+using RestSharp.Authenticators;
+using Parameter = RestSharp.Parameter;
 
 namespace SharedCookbook.Infrastructure.Email;
 
-public class EmailSender(IOptions<SmtpOptions> options) : IEmailSender
+public class EmailSender(IOptions<EmailApiOptions> options) : IEmailSender
 {
-    private readonly SmtpOptions _options = options.Value;
+    private readonly EmailApiOptions _options = options.Value;
 
     public async Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
-        using var body = new TextPart(TextFormat.Html);
-        body.Text = htmlMessage;
-
-        using var message = new MimeMessage();
-        message.From.Add(new MailboxAddress(_options.FromAddressName, _options.FromAddress));
-        message.To.Add(new MailboxAddress(null, email));
-        message.Subject = subject;
-        message.Body = body;
-
-        using var client = new SmtpClient();
-        await client.ConnectAsync(_options.Host, _options.Port);
-        await client.SendAsync(message);
-        await client.DisconnectAsync(true);
+        var options = new RestClientOptions(_options.BaseUrl) {
+            Authenticator = new HttpBasicAuthenticator("api", _options.ApiKey)
+        };
+        var client = new RestClient(options);
+        
+        var request = new RestRequest();
+        request.AddParameter ("domain", _options.Domain, ParameterType.UrlSegment);
+        request.Resource = "{domain}/messages";
+        request.AddParameter ("from", _options.From);
+        request.AddParameter ("to", email);
+        request.AddParameter ("subject", subject);
+        request.AddParameter ("html", htmlMessage);
+        request.Method = Method.Post;
+        var result = await client.ExecuteAsync(request);
     }
 }

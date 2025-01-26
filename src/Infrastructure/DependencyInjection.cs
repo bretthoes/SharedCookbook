@@ -63,8 +63,8 @@ public static class DependencyInjection
             configuration.GetSection(key: nameof(ImageUploadOptions)));
 
         services.AddTransient<IEmailSender, EmailSender>();
-        services.Configure<SmtpOptions>(
-            configuration.GetSection(key: nameof(SmtpOptions)));
+        services.Configure<EmailApiOptions>(
+            configuration.GetSection(key: nameof(EmailApiOptions)));
 
         return services;
     }
