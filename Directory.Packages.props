@@ -46,6 +46,8 @@
     </PackageVersion>
     <PackageVersion Include="NUnit3TestAdapter" Version="4.6.0" />
     <PackageVersion Include="Respawn" Version="6.2.1" />
+    <PackageVersion Include="RestSharp" Version="112.1.0" />
+    <PackageVersion Include="RestSharp.Authenticators" Version="1.1.1" />
     <PackageVersion Include="Testcontainers.MsSql" Version="4.1.0" />
   </ItemGroup>
 </Project>
