@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Domain.Constants;
 using SharedCookbook.Infrastructure.Data;
@@ -16,32 +17,32 @@ namespace SharedCookbook.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+    public static void AddInfrastructureServices(this IHostApplicationBuilder builder)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
         Guard.Against.NullOrWhiteSpace(connectionString, message: "Connection string 'DefaultConnection' not found.");
 
-        services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
-        services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
+        builder.Services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
+        builder.Services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
 
-        services.AddDbContext<ApplicationDbContext>((sp, options) =>
+        builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
 
             options.UseSqlServer(connectionString);
         });
 
-        services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+        builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
-        services.AddScoped<ApplicationDbContextInitialiser>();
+        builder.Services.AddScoped<ApplicationDbContextInitialiser>();
 
-        services.AddAuthentication()
+        builder.Services.AddAuthentication()
             .AddBearerToken(IdentityConstants.BearerScheme);
 
-        services.AddAuthorizationBuilder();
+        builder.Services.AddAuthorizationBuilder();
 
-        services
+        builder.Services
             .AddIdentityCore<ApplicationUser>(options =>
             {
                 options.User.RequireUniqueEmail = true;
@@ -52,20 +53,18 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddApiEndpoints();
 
-        services.AddSingleton(TimeProvider.System);
-        services.AddTransient<IIdentityService, IdentityService>();
+        builder.Services.AddSingleton(TimeProvider.System);
+        builder.Services.AddTransient<IIdentityService, IdentityService>();
 
-        services.AddAuthorization(options =>
+        builder.Services.AddAuthorization(options =>
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator)));
 
-        services.AddTransient<IImageUploadService, S3ImageUploadService>();
-        services.Configure<ImageUploadOptions>(
-            configuration.GetSection(key: nameof(ImageUploadOptions)));
+        builder.Services.AddTransient<IImageUploadService, S3ImageUploadService>();
+        builder.Services.Configure<ImageUploadOptions>(
+            builder.Configuration.GetSection(key: nameof(ImageUploadOptions)));
 
-        services.AddTransient<IEmailSender, EmailSender>();
-        services.Configure<EmailApiOptions>(
-            configuration.GetSection(key: nameof(EmailApiOptions)));
-
-        return services;
+        builder.Services.AddTransient<IEmailSender, EmailSender>();
+        builder.Services.Configure<EmailApiOptions>(
+            builder.Configuration.GetSection(key: nameof(EmailApiOptions)));
     }
 }

@@ -12,29 +12,29 @@ namespace SharedCookbook.Web;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddWebServices(this IServiceCollection services)
+    public static void AddWebServices(this IHostApplicationBuilder builder)
     {
-        services.AddDatabaseDeveloperPageExceptionFilter();
+        builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-        services.AddScoped<IUser, CurrentUser>();
-        services.AddScoped<IIdentityUserRepository, IdentityUserRepository>();
+        builder.Services.AddScoped<IUser, CurrentUser>();
+        builder.Services.AddScoped<IIdentityUserRepository, IdentityUserRepository>();
 
-        services.AddHttpContextAccessor();
+        builder.Services.AddHttpContextAccessor();
 
-        services.AddHealthChecks()
+        builder.Services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>();
 
-        services.AddExceptionHandler<CustomExceptionHandler>();
+        builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
-        services.AddRazorPages();
+        builder.Services.AddRazorPages();
 
         // Customise default API behaviour
-        services.Configure<ApiBehaviorOptions>(options =>
+        builder.Services.Configure<ApiBehaviorOptions>(options =>
             options.SuppressModelStateInvalidFilter = true);
 
-        services.AddEndpointsApiExplorer();
+        builder.Services.AddEndpointsApiExplorer();
 
-        services.AddOpenApiDocument((configure, _) =>
+        builder.Services.AddOpenApiDocument((configure, _) =>
         {
             configure.Title = "SharedCookbook API";
 
@@ -49,27 +49,23 @@ public static class DependencyInjection
 
             configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
         });
-
-        return services;
+        
+        builder.Services.AddAntiforgery();
     }
 
-    public static IServiceCollection AddKeyVaultIfConfigured(this IServiceCollection services, ConfigurationManager configuration)
+    public static void AddKeyVaultIfConfigured(this IHostApplicationBuilder builder)
     {
-        var keyVaultUri = configuration["AZURE_KEY_VAULT_ENDPOINT"];
+        var keyVaultUri = builder.Configuration["AZURE_KEY_VAULT_ENDPOINT"];
         if (!string.IsNullOrWhiteSpace(keyVaultUri))
         {
-            configuration.AddAzureKeyVault(
+            builder.Configuration.AddAzureKeyVault(
                 new Uri(keyVaultUri),
                 new DefaultAzureCredential());
         }
-
-        return services;
     }
 
-    public static IServiceCollection AddUserSecrets(this IServiceCollection services, ConfigurationManager configuration)
+    public static void AddUserSecrets(this IHostApplicationBuilder builder)
     {
-        configuration.AddUserSecrets(Assembly.GetExecutingAssembly(), true);
-
-        return services;
+        builder.Configuration.AddUserSecrets(Assembly.GetExecutingAssembly(), true);
     }
 }
