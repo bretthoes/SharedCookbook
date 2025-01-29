@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Azure.Identity;
+﻿using Azure.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NSwag;
 using NSwag.Generation.Processors.Security;
@@ -20,13 +19,10 @@ public static class DependencyInjection
         builder.Services.AddScoped<IIdentityUserRepository, IdentityUserRepository>();
 
         builder.Services.AddHttpContextAccessor();
-
         builder.Services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>();
 
         builder.Services.AddExceptionHandler<CustomExceptionHandler>();
-
-        builder.Services.AddRazorPages();
 
         // Customise default API behaviour
         builder.Services.Configure<ApiBehaviorOptions>(options =>
@@ -34,12 +30,12 @@ public static class DependencyInjection
 
         builder.Services.AddEndpointsApiExplorer();
 
-        builder.Services.AddOpenApiDocument((configure, _) =>
+        builder.Services.AddOpenApiDocument((configure, sp) =>
         {
             configure.Title = "SharedCookbook API";
 
             // Add JWT
-            configure.AddSecurity("JWT", [], new OpenApiSecurityScheme
+            configure.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
             {
                 Type = OpenApiSecuritySchemeType.ApiKey,
                 Name = "Authorization",
@@ -49,8 +45,6 @@ public static class DependencyInjection
 
             configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
         });
-        
-        builder.Services.AddAntiforgery();
     }
 
     public static void AddKeyVaultIfConfigured(this IHostApplicationBuilder builder)
@@ -62,10 +56,5 @@ public static class DependencyInjection
                 new Uri(keyVaultUri),
                 new DefaultAzureCredential());
         }
-    }
-
-    public static void AddUserSecrets(this IHostApplicationBuilder builder)
-    {
-        builder.Configuration.AddUserSecrets(Assembly.GetExecutingAssembly(), true);
     }
 }

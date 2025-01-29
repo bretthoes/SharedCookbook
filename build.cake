@@ -1,23 +1,25 @@
+
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
-var webPath = "./src/Web";
-var webUrl = "https://localhost:44447/";
+var webServerPath = "./src/Web";
+var webClientPath = "./src/Web/ClientApp";
+var webUrl = "https://localhost:5001/";
+
 IProcess webProcess = null;
 
 Task("Build")
     .Does(() => {
         Information("Building project...");
-        DotNetBuild("./CleanArchitecture.sln", new DotNetBuildSettings {
+        DotNetBuild("./SharedCookbook.sln", new DotNetBuildSettings {
             Configuration = configuration
         });
     });
 
-Task("StartWeb")
-    .IsDependentOn("Build")
+Task("Run")
     .Does(() => {
         Information("Starting web project...");
         var processSettings = new ProcessSettings {
-            Arguments = $"run --project {webPath} --configuration {configuration}",
+            Arguments = $"run --project {webServerPath} --configuration {configuration} --no-build --no-restore",
             RedirectStandardOutput = true,
             RedirectStandardError = true
         };
@@ -55,30 +57,35 @@ Task("StartWeb")
 
 Task("Test")
     .ContinueOnError()
-    .IsDependentOn("StartWeb")
     .Does(() => {
         Information("Testing project...");
-        DotNetTest("./CleanArchitecture.sln", new DotNetTestSettings {
+
+        var testSettings = new DotNetTestSettings {
             Configuration = configuration,
             NoBuild = true
-        });
+        };
+
+
+        DotNetTest("./SharedCookbook.sln", testSettings);
     });
 
-Task("StopWeb")
-    .IsDependentOn("Test")
-    .Does(() => {
+Teardown(context =>
+{
         if (webProcess != null) {
             Information("Stopping web project...");
             webProcess.Kill();
             webProcess.WaitForExit();
             Information("Web project stopped.");
         }
-    });
+});
 
 Task("Default")
     .IsDependentOn("Build")
-    .IsDependentOn("StartWeb")
-    .IsDependentOn("Test")
-    .IsDependentOn("StopWeb");
+    .IsDependentOn("Run")
+    .IsDependentOn("Test");
+
+Task("Basic")
+    .IsDependentOn("Build")
+    .IsDependentOn("Test");
 
 RunTarget(target);

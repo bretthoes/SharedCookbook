@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Domain.Entities;
-
-namespace SharedCookbook.Application.Recipes.Queries.GetRecipe;
+﻿namespace SharedCookbook.Application.Recipes.Queries.GetRecipe;
 
 public class RecipeDetailedDto
 {
@@ -8,7 +6,7 @@ public class RecipeDetailedDto
 
     public required string Title { get; init; }
 
-    public int AuthorId { get; init; }
+    public string? AuthorId { get; init; }
 
     public string? Author { get; set; }
 

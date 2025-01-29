@@ -1,8 +1,6 @@
 ﻿using SharedCookbook.Application.Cookbooks.Queries.GetCookbooksWithPagination;
-using SharedCookbook.Domain.Entities;
-using SharedCookbook.Domain.ValueObjects;
 
-namespace SharedCookbook.Application.FunctionalTests.TodoLists.Queries;
+namespace SharedCookbook.Application.FunctionalTests.Cookbooks.Queries;
 
 using static Testing;
 

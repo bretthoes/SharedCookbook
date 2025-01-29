@@ -1,7 +1,4 @@
-﻿using SharedCookbook.Application.Common.Interfaces;
-using SharedCookbook.Domain.Events;
-
-namespace SharedCookbook.Application.Invitations.Commands.DeleteInvitation;
+﻿namespace SharedCookbook.Application.Invitations.Commands.DeleteInvitation;
 
 public record DeleteInvitationCommand(int Id) : IRequest;
 public class DeleteInvitationCommandHandler : IRequestHandler<DeleteInvitationCommand>

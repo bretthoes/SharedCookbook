@@ -1,4 +1,3 @@
-
 using SharedCookbook.Application.Common.Models;
 using SharedCookbook.Application.Memberships.Commands.DeleteMembership;
 using SharedCookbook.Application.Memberships.Commands.PatchMembership;

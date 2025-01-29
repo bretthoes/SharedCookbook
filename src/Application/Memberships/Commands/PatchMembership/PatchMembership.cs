@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Application.Common.Interfaces;
-
-namespace SharedCookbook.Application.Memberships.Commands.PatchMembership;
+﻿namespace SharedCookbook.Application.Memberships.Commands.PatchMembership;
 
 public record PatchMembershipCommand : IRequest<int>
 {

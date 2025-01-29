@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Application.Common.Interfaces;
-
-namespace SharedCookbook.Application.Recipes.Queries.GetRecipe;
+﻿namespace SharedCookbook.Application.Recipes.Queries.GetRecipe;
 
 public record GetRecipeQuery(int Id) : IRequest<RecipeDetailedDto>;
 
@@ -23,7 +21,7 @@ public class GetRecipeQueryHandler : IRequestHandler<GetRecipeQuery, RecipeDetai
             {
                 Id = r.Id,
                 Title = r.Title,
-                AuthorId = r.CreatedBy ?? 0,
+                AuthorId = r.CreatedBy,
                 Summary = r.Summary,
                 Thumbnail = r.Thumbnail,
                 VideoPath = r.VideoPath,
@@ -59,7 +57,7 @@ public class GetRecipeQueryHandler : IRequestHandler<GetRecipeQuery, RecipeDetai
 
         // Map the author name separately since author cannot be accessed through a relationship.
         // this is a byproduct of not having the ApplicationUser object in the domain layer.
-        dto.Author = await _identityService.GetUserNameAsync(dto.AuthorId) ?? string.Empty;
+        dto.Author = await _identityService.GetUserNameAsync(dto.AuthorId ?? string.Empty);
 
         return dto;
     }

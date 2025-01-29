@@ -20,8 +20,7 @@ public static class DependencyInjection
     public static void AddInfrastructureServices(this IHostApplicationBuilder builder)
     {
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-        Guard.Against.NullOrWhiteSpace(connectionString, message: "Connection string 'DefaultConnection' not found.");
+        Guard.Against.Null(connectionString, message: "Connection string 'DefaultConnection' not found.");
 
         builder.Services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         builder.Services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
@@ -29,11 +28,12 @@ public static class DependencyInjection
         builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
-
-            options.UseSqlServer(connectionString);
+            options.UseNpgsql(connectionString);
         });
 
-        builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+
+        builder.Services.AddScoped<IApplicationDbContext>(provider =>
+            provider.GetRequiredService<ApplicationDbContext>());
 
         builder.Services.AddScoped<ApplicationDbContextInitialiser>();
 
@@ -43,22 +43,14 @@ public static class DependencyInjection
         builder.Services.AddAuthorizationBuilder();
 
         builder.Services
-            .AddIdentityCore<ApplicationUser>(options =>
-            {
-                options.User.RequireUniqueEmail = true;
-                options.SignIn.RequireConfirmedEmail = true;
-                options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
-            })
-            .AddRoles<IdentityRole<int>>()
+            .AddIdentityCore<ApplicationUser>()
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddApiEndpoints();
 
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddTransient<IIdentityService, IdentityService>();
-
-        builder.Services.AddAuthorization(options =>
-            options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator)));
-
+        
         builder.Services.AddTransient<IImageUploadService, S3ImageUploadService>();
         builder.Services.Configure<ImageUploadOptions>(
             builder.Configuration.GetSection(key: nameof(ImageUploadOptions)));
@@ -66,5 +58,8 @@ public static class DependencyInjection
         builder.Services.AddTransient<IEmailSender, EmailSender>();
         builder.Services.Configure<EmailApiOptions>(
             builder.Configuration.GetSection(key: nameof(EmailApiOptions)));
+
+        builder.Services.AddAuthorizationBuilder()
+            .AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator));
     }
 }

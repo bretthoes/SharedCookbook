@@ -1,5 +1,4 @@
-﻿using SharedCookbook.Application.Common.Exceptions;
-using SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
+﻿using System.ComponentModel.DataAnnotations;
 using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 using SharedCookbook.Domain.Entities;
 
@@ -21,8 +20,8 @@ public class CreateRecipeTests : BaseTestFixture
             }
         };
 
-        await FluentActions.Invoking(() =>
-            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+        await FluentActions.Invoking((() =>
+            SendAsync(command))).Should().ThrowAsync<ValidationException>();
     }
 
     [Test]

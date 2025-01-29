@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Application.Common.Interfaces;
-
-namespace SharedCookbook.Application.Recipes.Commands.DeleteRecipe;
+﻿namespace SharedCookbook.Application.Recipes.Commands.DeleteRecipe;
 
 public record DeleteRecipeCommand(int Id) : IRequest;
 public class DeleteRecipeCommandHandler : IRequestHandler<DeleteRecipeCommand>

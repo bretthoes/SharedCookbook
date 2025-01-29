@@ -1,7 +1,4 @@
-﻿using SharedCookbook.Application.Common.Interfaces;
-using SharedCookbook.Domain.Entities;
-
-namespace SharedCookbook.Application.Memberships.Queries.GetMembership;
+﻿namespace SharedCookbook.Application.Memberships.Queries.GetMembership;
 
 public record GetMembershipQuery(int Id) : IRequest<MembershipDto>;
 
@@ -30,7 +27,7 @@ public class GetMembershipQueryHandler : IRequestHandler<GetMembershipQuery, Mem
             CanRemoveMember = entity.CanRemoveMember,
             CanSendInvite = entity.CanSendInvite,
             CanEditCookbookDetails = entity.CanEditCookbookDetails,
-            Name = await _identityService.GetUserNameAsync(entity.CreatedBy ?? 0) ?? string.Empty
+            Name = await _identityService.GetUserNameAsync(entity.CreatedBy ?? string.Empty)
         };
 
         Guard.Against.NotFound(request.Id, dto);

@@ -2,8 +2,8 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SharedCookbook.Infrastructure.Data;
 
 #nullable disable
@@ -17,57 +17,54 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.7")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
+                        .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -76,22 +73,23 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -100,19 +98,20 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.ToTable("AspNetUserClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -121,13 +120,13 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
+                    b.Property<string>("RoleId")
+                        .HasColumnType("text");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -136,19 +135,19 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
@@ -159,42 +158,38 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("cookbook_id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CreatorPersonId")
-                        .HasColumnType("int")
-                        .HasColumnName("creator_person_id");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
 
                     b.Property<string>("Image")
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("image");
 
                     b.Property<DateTimeOffset>("LastModified")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("LastModifiedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("title");
 
                     b.HasKey("Id")
                         .HasName("PK_cookbook_id");
 
-                    b.HasIndex(new[] { "CreatorPersonId" }, "IX_cookbook_creator__person_id");
+                    b.HasIndex(new[] { "CreatedBy" }, "IX_cookbook_creator__created_by");
 
                     b.ToTable("cookbook", (string)null);
                 });
@@ -203,39 +198,39 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("cookbook_invitation_id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CookbookId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("cookbook_id");
 
                     b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
 
                     b.Property<string>("InvitationStatus")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("invitation_status");
 
                     b.Property<DateTimeOffset>("LastModified")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("LastModifiedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
 
-                    b.Property<int?>("RecipientPersonId")
-                        .HasColumnType("int")
+                    b.Property<string>("RecipientPersonId")
+                        .HasColumnType("text")
                         .HasColumnName("recipient_person_id");
 
                     b.Property<DateTime?>("ResponseDate")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("response_date");
 
                     b.HasKey("Id")
@@ -243,9 +238,9 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
 
                     b.HasIndex(new[] { "CookbookId" }, "IX_cookbook_invitation__cookbook_id");
 
-                    b.HasIndex(new[] { "RecipientPersonId" }, "IX_cookbook_invitation__recipient_person_id");
-
                     b.HasIndex(new[] { "CreatedBy" }, "IX_cookbook_invitation__created_by");
+
+                    b.HasIndex(new[] { "RecipientPersonId" }, "IX_cookbook_invitation__recipient_person_id");
 
                     b.ToTable("cookbook_invitation", (string)null);
                 });
@@ -254,65 +249,62 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("cookbook_member_id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsCreator")
-                        .HasColumnType("bit")
-                        .HasColumnName("is_creator");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("CanAddRecipe")
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasColumnName("can_add_recipe");
 
                     b.Property<bool>("CanDeleteRecipe")
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasColumnName("can_delete_recipe");
 
                     b.Property<bool>("CanEditCookbookDetails")
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasColumnName("can_edit_cookbook_details");
 
                     b.Property<bool>("CanRemoveMember")
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasColumnName("can_remove_member");
 
                     b.Property<bool>("CanSendInvite")
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasColumnName("can_send_invite");
 
                     b.Property<bool>("CanUpdateRecipe")
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasColumnName("can_update_recipe");
 
                     b.Property<int>("CookbookId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("cookbook_id");
 
                     b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsCreator")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_creator");
 
                     b.Property<DateTimeOffset>("LastModified")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("LastModifiedBy")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PersonId")
-                        .HasColumnType("int")
-                        .HasColumnName("person_id");
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
 
                     b.HasKey("Id")
                         .HasName("PK_cookbook_member_id");
 
                     b.HasIndex(new[] { "CookbookId" }, "IX_cookbook_member__cookbook_id");
 
-                    b.HasIndex(new[] { "PersonId" }, "IX_cookbook_member__person_id");
+                    b.HasIndex(new[] { "CreatedBy" }, "IX_cookbook_member__created_by");
 
                     b.ToTable("cookbook_member", (string)null);
                 });
@@ -321,36 +313,36 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("cookbook_notification_id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ActionType")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("action_type");
 
                     b.Property<int?>("CookbookId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("cookbook_id");
 
                     b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("datetimeoffset")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created");
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
 
                     b.Property<DateTimeOffset>("LastModified")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("LastModifiedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
 
                     b.Property<int?>("RecipeId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("recipe_id");
 
                     b.HasKey("Id")
@@ -358,9 +350,9 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
 
                     b.HasIndex(new[] { "CookbookId" }, "IX_cookbook_notification__cookbook_id");
 
-                    b.HasIndex(new[] { "RecipeId" }, "IX_cookbook_notification__recipe_id");
-
                     b.HasIndex(new[] { "CreatedBy" }, "IX_cookbook_notification__created_by");
+
+                    b.HasIndex(new[] { "RecipeId" }, "IX_cookbook_notification__recipe_id");
 
                     b.ToTable("cookbook_notification", (string)null);
                 });
@@ -369,31 +361,31 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ingredient_category_id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
 
                     b.Property<DateTimeOffset>("LastModified")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("LastModifiedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
 
                     b.Property<int>("RecipeId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("recipe_id");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("title");
 
                     b.HasKey("Id")
@@ -408,66 +400,66 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("recipe_id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("BakingTimeInMinutes")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("baking_time_in_minutes");
 
                     b.Property<int>("CookbookId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("cookbook_id");
 
                     b.Property<int?>("CookingTimeInMinutes")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("cooking_time_in_minutes");
 
                     b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Thumbnail")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("thumbnail");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
 
                     b.Property<DateTimeOffset>("LastModified")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("LastModifiedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
 
                     b.Property<int?>("PreparationTimeInMinutes")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("preparation_time_in_minutes");
 
                     b.Property<int?>("Servings")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Summary")
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("text")
                         .HasColumnName("summary");
+
+                    b.Property<string>("Thumbnail")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("thumbnail");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("title");
 
                     b.Property<string>("VideoPath")
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("video_path");
 
                     b.HasKey("Id")
                         .HasName("PK_recipe_id");
 
-                    b.HasIndex(new[] { "CreatedBy" }, "IX_recipe__created_by");
+                    b.HasIndex("CreatedBy");
 
                     b.HasIndex(new[] { "CookbookId" }, "IX_recipe__cookbook_id");
 
@@ -478,41 +470,41 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("recipe_direction_id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Image")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("image");
+
+                    b.Property<DateTimeOffset>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Ordinal")
+                        .HasColumnType("integer")
+                        .HasColumnName("ordinal");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_id");
 
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("text");
-
-                    b.Property<string>("Image")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasColumnName("image");
-
-                    b.Property<DateTimeOffset>("LastModified")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<int>("LastModifiedBy")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Ordinal")
-                        .HasColumnType("int")
-                        .HasColumnName("ordinal");
-
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("int")
-                        .HasColumnName("recipe_id");
 
                     b.HasKey("Id")
                         .HasName("PK_recipe_direction_id");
@@ -523,86 +515,85 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 });
 
             modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeImage", b =>
-            {
-                b.Property<int>("Id")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnType("int")
-                    .HasColumnName("recipe_image_id");
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_image_id");
 
-                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                b.Property<DateTimeOffset>("Created")
-                    .HasColumnType("datetimeoffset");
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
 
-                b.Property<int>("CreatedBy")
-                    .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
 
-                b.Property<string>("Name")
-                    .IsRequired()
-                    .HasMaxLength(2048)
-                    .HasColumnType("nvarchar(2048)")
-                    .HasColumnName("name");
+                    b.Property<DateTimeOffset>("LastModified")
+                        .HasColumnType("timestamp with time zone");
 
-                b.Property<DateTimeOffset>("LastModified")
-                    .HasColumnType("datetimeoffset");
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
 
-                b.Property<int>("LastModifiedBy")
-                    .HasColumnType("int");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)")
+                        .HasColumnName("name");
 
-                b.Property<int>("Ordinal")
-                    .HasColumnType("int")
-                    .HasColumnName("ordinal");
+                    b.Property<int>("Ordinal")
+                        .HasColumnType("integer")
+                        .HasColumnName("ordinal");
 
-                b.Property<int>("RecipeId")
-                    .HasColumnType("int")
-                    .HasColumnName("recipe_id");
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_id");
 
-                b.HasKey("Id")
-                    .HasName("PK_recipe_image_id");
+                    b.HasKey("Id")
+                        .HasName("PK_recipe_image_id");
 
-                b.HasIndex(new[] { "RecipeId" }, "IX_recipe_image__recipe_id");
+                    b.HasIndex(new[] { "RecipeId" }, "IX_recipe_image__recipe_id");
 
-                b.ToTable("recipe_image", (string)null);
-            });
-
+                    b.ToTable("recipe_image", (string)null);
+                });
 
             modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeIngredient", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("recipe_ingredient_id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("name");
 
-                    b.Property<DateTimeOffset>("LastModified")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<int>("LastModifiedBy")
-                        .HasColumnType("int");
-
                     b.Property<bool>("Optional")
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasColumnName("optional");
 
                     b.Property<int>("Ordinal")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ordinal");
 
                     b.Property<int>("RecipeId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("recipe_id");
 
                     b.HasKey("Id")
@@ -617,53 +608,53 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("recipe_nutrition_id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("Calories")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("calories");
 
                     b.Property<int?>("Carbohydrates")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("carbohydrates");
 
                     b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
 
                     b.Property<int?>("Fat")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("fat");
 
                     b.Property<int?>("Fiber")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("fiber");
 
                     b.Property<DateTimeOffset>("LastModified")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("LastModifiedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
 
                     b.Property<int?>("Protein")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("protein");
 
                     b.Property<int>("RecipeId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("recipe_id");
 
                     b.Property<int?>("Sodium")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("sodium");
 
                     b.Property<int?>("Sugar")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("sugar");
 
                     b.HasKey("Id")
@@ -677,141 +668,57 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.ToTable("recipe_nutrition", (string)null);
                 });
 
-            modelBuilder.Entity("SharedCookbook.Domain.Entities.TodoItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Done")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset>("LastModified")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<int>("LastModifiedBy")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ListId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Priority")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("Reminder")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ListId");
-
-                    b.ToTable("TodoItems");
-                });
-
-            modelBuilder.Entity("SharedCookbook.Domain.Entities.TodoList", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTimeOffset>("LastModified")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<int>("LastModifiedBy")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TodoLists");
-                });
-
             modelBuilder.Entity("SharedCookbook.Infrastructure.Identity.ApplicationUser", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Image")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
 
@@ -820,22 +727,21 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+                        .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.HasOne("SharedCookbook.Infrastructure.Identity.ApplicationUser", null)
                         .WithMany()
@@ -844,7 +750,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.HasOne("SharedCookbook.Infrastructure.Identity.ApplicationUser", null)
                         .WithMany()
@@ -853,9 +759,9 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -868,7 +774,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.HasOne("SharedCookbook.Infrastructure.Identity.ApplicationUser", null)
                         .WithMany()
@@ -881,8 +787,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 {
                     b.HasOne("SharedCookbook.Infrastructure.Identity.ApplicationUser", null)
                         .WithMany("Cookbooks")
-                        .HasForeignKey("CreatorPersonId")
-                        .HasConstraintName("FK_cookbook__creator_person_id");
+                        .HasForeignKey("CreatedBy")
+                        .HasConstraintName("FK_cookbook__created_by");
                 });
 
             modelBuilder.Entity("SharedCookbook.Domain.Entities.CookbookInvitation", b =>
@@ -895,14 +801,14 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .HasConstraintName("FK_cookbook_invitation__cookbook_id");
 
                     b.HasOne("SharedCookbook.Infrastructure.Identity.ApplicationUser", null)
-                        .WithMany("ReceivedInvitations")
-                        .HasForeignKey("RecipientPersonId")
-                        .HasConstraintName("FK_cookbook_invitation__recipient_person_id");
-
-                    b.HasOne("SharedCookbook.Infrastructure.Identity.ApplicationUser", null)
                         .WithMany("SentInvitations")
                         .HasForeignKey("CreatedBy")
                         .HasConstraintName("FK_cookbook_invitation__created_by");
+
+                    b.HasOne("SharedCookbook.Infrastructure.Identity.ApplicationUser", null)
+                        .WithMany("ReceivedInvitations")
+                        .HasForeignKey("RecipientPersonId")
+                        .HasConstraintName("FK_cookbook_invitation__recipient_person_id");
 
                     b.Navigation("Cookbook");
                 });
@@ -918,10 +824,10 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
 
                     b.HasOne("SharedCookbook.Infrastructure.Identity.ApplicationUser", null)
                         .WithMany("CookbookMemberships")
-                        .HasForeignKey("PersonId")
+                        .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK_cookbook_member__person_id");
+                        .HasConstraintName("FK_cookbook_member__created_by");
 
                     b.Navigation("Cookbook");
                 });
@@ -933,15 +839,15 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .HasForeignKey("CookbookId")
                         .HasConstraintName("FK_cookbook_notification__cookbook_id");
 
-                    b.HasOne("SharedCookbook.Domain.Entities.Recipe", "Recipe")
-                        .WithMany("CookbookNotifications")
-                        .HasForeignKey("RecipeId")
-                        .HasConstraintName("FK_cookbook_notification__recipe_id");
-
                     b.HasOne("SharedCookbook.Infrastructure.Identity.ApplicationUser", null)
                         .WithMany("CookbookNotifications")
                         .HasForeignKey("CreatedBy")
                         .HasConstraintName("FK_cookbook_notification__created_by");
+
+                    b.HasOne("SharedCookbook.Domain.Entities.Recipe", "Recipe")
+                        .WithMany("CookbookNotifications")
+                        .HasForeignKey("RecipeId")
+                        .HasConstraintName("FK_cookbook_notification__recipe_id");
 
                     b.Navigation("Cookbook");
 
@@ -969,8 +875,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
 
                     b.HasOne("SharedCookbook.Infrastructure.Identity.ApplicationUser", null)
                         .WithMany("Recipes")
-                        .HasForeignKey("PersonId")
-                        .HasConstraintName("FK_recipe__person_id");
+                        .HasForeignKey("CreatedBy")
+                        .HasConstraintName("FK_recipe__created_by");
 
                     b.Navigation("Cookbook");
                 });
@@ -978,7 +884,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
             modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeDirection", b =>
                 {
                     b.HasOne("SharedCookbook.Domain.Entities.Recipe", null)
-                        .WithMany("RecipeDirections")
+                        .WithMany("Directions")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -986,19 +892,19 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 });
 
             modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeImage", b =>
-            {
-                b.HasOne("SharedCookbook.Domain.Entities.Recipe", "Recipe")
-                    .WithMany("RecipeImages")
-                    .HasForeignKey("RecipeId")
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .IsRequired()
-                    .HasConstraintName("FK_recipe_image__recipe_id");
-            });
+                {
+                    b.HasOne("SharedCookbook.Domain.Entities.Recipe", null)
+                        .WithMany("Images")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_recipe_image__recipe_id");
+                });
 
             modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeIngredient", b =>
                 {
                     b.HasOne("SharedCookbook.Domain.Entities.Recipe", null)
-                        .WithMany("RecipeIngredients")
+                        .WithMany("Ingredients")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -1013,40 +919,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_recipe_nutrition__recipe_id");
-                });
-
-            modelBuilder.Entity("SharedCookbook.Domain.Entities.TodoItem", b =>
-                {
-                    b.HasOne("SharedCookbook.Domain.Entities.TodoList", "List")
-                        .WithMany("Items")
-                        .HasForeignKey("ListId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("List");
-                });
-
-            modelBuilder.Entity("SharedCookbook.Domain.Entities.TodoList", b =>
-                {
-                    b.OwnsOne("SharedCookbook.Domain.ValueObjects.Colour", "Colour", b1 =>
-                        {
-                            b1.Property<int>("TodoListId")
-                                .HasColumnType("int");
-
-                            b1.Property<string>("Code")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("TodoListId");
-
-                            b1.ToTable("TodoLists");
-
-                            b1.WithOwner()
-                                .HasForeignKey("TodoListId");
-                        });
-
-                    b.Navigation("Colour")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("SharedCookbook.Domain.Entities.Cookbook", b =>
@@ -1064,20 +936,15 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 {
                     b.Navigation("CookbookNotifications");
 
+                    b.Navigation("Directions");
+
+                    b.Navigation("Images");
+
                     b.Navigation("IngredientCategories");
 
+                    b.Navigation("Ingredients");
+
                     b.Navigation("Nutrition");
-
-                    b.Navigation("RecipeDirections");
-
-                    b.Navigation("RecipeIngredients");
-
-                    b.Navigation("RecipeImages");
-                });
-
-            modelBuilder.Entity("SharedCookbook.Domain.Entities.TodoList", b =>
-                {
-                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("SharedCookbook.Infrastructure.Identity.ApplicationUser", b =>

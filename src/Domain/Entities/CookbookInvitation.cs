@@ -4,7 +4,7 @@ public class CookbookInvitation : BaseAuditableEntity
 {
     public required int CookbookId { get; set; }
 
-    public int? RecipientPersonId { get; set; }
+    public string? RecipientPersonId { get; set; }
 
     public required CookbookInvitationStatus InvitationStatus { get; set; }
 

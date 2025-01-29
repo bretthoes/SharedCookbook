@@ -1,28 +1,22 @@
-﻿using SharedCookbook.Domain.Entities;
-
-namespace SharedCookbook.Application.Common.Interfaces;
+﻿namespace SharedCookbook.Application.Common.Interfaces;
 
 public interface IApplicationDbContext
 {
-    DbSet<TodoList> TodoLists { get; }
+    DbSet<Cookbook> Cookbooks { get; }
 
-    DbSet<TodoItem> TodoItems { get; }
+    DbSet<CookbookInvitation> CookbookInvitations { get; }
 
-    public DbSet<Cookbook> Cookbooks { get; }
+    DbSet<CookbookMember> CookbookMembers { get; }
 
-    public DbSet<CookbookInvitation> CookbookInvitations { get; }
+    DbSet<Recipe> Recipes { get; }
 
-    public DbSet<CookbookMember> CookbookMembers { get; }
+    DbSet<RecipeImage> RecipeImages { get; }
 
-    public DbSet<Recipe> Recipes { get; }
+    DbSet<RecipeDirection> RecipeDirections { get; }
 
-    public DbSet<RecipeImage> RecipeImages { get; }
+    DbSet<RecipeIngredient> RecipeIngredients { get; }
 
-    public DbSet<RecipeDirection> RecipeDirections { get; }
-
-    public DbSet<RecipeIngredient> RecipeIngredients { get; }
-
-    public DbSet<RecipeNutrition> RecipeNutritions { get; }
+    DbSet<RecipeNutrition> RecipeNutritions { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

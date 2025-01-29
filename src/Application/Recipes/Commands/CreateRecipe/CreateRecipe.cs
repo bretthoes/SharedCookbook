@@ -1,8 +1,4 @@
-﻿using SharedCookbook.Application.Common.Interfaces;
-using SharedCookbook.Domain.Entities;
-using SharedCookbook.Domain.Events;
-
-namespace SharedCookbook.Application.Recipes.Commands.CreateRecipe;
+﻿namespace SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 
 public record CreateRecipeCommand : IRequest<int>
 {

@@ -1,7 +1,4 @@
-﻿using SharedCookbook.Application.Common.Interfaces;
-using SharedCookbook.Domain.Entities;
-
-namespace SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
+﻿namespace SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
 
 public record CreateCookbookCommand : IRequest<int>
 {

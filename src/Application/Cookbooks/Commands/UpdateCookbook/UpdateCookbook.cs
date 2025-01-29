@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Application.Common.Interfaces;
-
-namespace SharedCookbook.Application.Cookbooks.Commands.UpdateCookbook;
+﻿namespace SharedCookbook.Application.Cookbooks.Commands.UpdateCookbook;
 
 public record UpdateCookbookCommand : IRequest<int>
 {

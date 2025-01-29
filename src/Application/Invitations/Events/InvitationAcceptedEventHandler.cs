@@ -1,7 +1,3 @@
-using SharedCookbook.Application.Common.Interfaces;
-using SharedCookbook.Domain.Entities;
-using SharedCookbook.Domain.Events;
-
 namespace SharedCookbook.Application.Invitations.Events;
 
 public class InvitationAcceptedEventHandler : INotificationHandler<InvitationAcceptedEvent>

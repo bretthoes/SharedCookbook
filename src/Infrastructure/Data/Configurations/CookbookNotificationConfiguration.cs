@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SharedCookbook.Domain.Entities;
+using SharedCookbook.Infrastructure.Identity;
 
 namespace SharedCookbook.Infrastructure.Data.Configurations;
 
@@ -47,7 +48,7 @@ public class CookbookNotificationConfiguration : IEntityTypeConfiguration<Cookbo
             .WithMany(r => r.CookbookNotifications)
             .HasForeignKey(cn => cn.RecipeId)
             .HasConstraintName("FK_cookbook_notification__recipe_id");
-        builder.HasOne<Identity.ApplicationUser>()
+        builder.HasOne<ApplicationUser>()
             .WithMany(p => p.CookbookNotifications)
             .HasForeignKey(cn => cn.CreatedBy)
             .HasConstraintName("FK_cookbook_notification__created_by");

@@ -742,6 +742,7 @@
               }
             }
           },
+          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -796,6 +797,7 @@
               }
             }
           },
+          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -827,6 +829,7 @@
               }
             }
           },
+          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -853,6 +856,7 @@
           {
             "name": "userId",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string",
               "nullable": true
@@ -862,6 +866,7 @@
           {
             "name": "code",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string",
               "nullable": true
@@ -900,6 +905,7 @@
               }
             }
           },
+          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -924,6 +930,7 @@
               }
             }
           },
+          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -958,6 +965,7 @@
               }
             }
           },
+          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -992,6 +1000,7 @@
               }
             }
           },
+          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -1077,6 +1086,7 @@
               }
             }
           },
+          "required": true,
           "x-position": 1
         },
         "responses": {
@@ -1102,34 +1112,6 @@
           },
           "404": {
             "description": ""
-          }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
-      }
-    },
-    "/api/WeatherForecasts": {
-      "get": {
-        "tags": [
-          "WeatherForecasts"
-        ],
-        "operationId": "GetWeatherForecasts",
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
-                  }
-                }
-              }
-            }
           }
         },
         "security": [
@@ -1282,8 +1264,7 @@
             "format": "date-time"
           },
           "createdBy": {
-            "type": "integer",
-            "format": "int32",
+            "type": "string",
             "nullable": true
           }
         }
@@ -1421,8 +1402,8 @@
             "type": "string"
           },
           "authorId": {
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "nullable": true
           },
           "author": {
             "type": "string",
@@ -1933,28 +1914,6 @@
             "nullable": true
           },
           "oldPassword": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
-      "WeatherForecast": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "date": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "temperatureC": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "temperatureF": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "summary": {
             "type": "string",
             "nullable": true
           }

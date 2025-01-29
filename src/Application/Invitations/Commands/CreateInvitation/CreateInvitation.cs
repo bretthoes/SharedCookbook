@@ -1,9 +1,6 @@
 ﻿using SharedCookbook.Application.Common.Exceptions;
-using SharedCookbook.Application.Common.Interfaces;
-using SharedCookbook.Application.Users.Queries.GetUser;
-using SharedCookbook.Domain.Entities;
+using SharedCookbook.Application.Common.Models;
 using SharedCookbook.Domain.Enums;
-using SharedCookbook.Domain.Events;
 
 namespace SharedCookbook.Application.Invitations.Commands.CreateInvitation;
 
@@ -36,14 +33,14 @@ public class CreateInvitationCommandHandler : IRequestHandler<CreateInvitationCo
         return await SaveInvitation(command.CookbookId, recipientId, cancellationToken);
     }
 
-    private async Task<int> GetRecipientId(string email)
+    private async Task<string> GetRecipientId(string email)
     {
         var recipient = await _identityService.FindByEmailAsync(email);
 
         return recipient?.Id ?? throw new NotFoundException(email, nameof(UserDto));
     }
 
-    private async Task ValidateInvitation(int cookbookId, int recipientId, CancellationToken token)
+    private async Task ValidateInvitation(int cookbookId, string recipientId, CancellationToken token)
     {
         var recipientIsAlreadyMember = await _context.CookbookMembers
             .AnyAsync(member => member.CreatedBy == recipientId
@@ -59,7 +56,7 @@ public class CreateInvitationCommandHandler : IRequestHandler<CreateInvitationCo
         if (recipientHasPendingInvite) throw new ConflictException("Recipient has already been invited.");
     }
 
-    private async Task<int> SaveInvitation(int cookbookId, int recipientId, CancellationToken token)
+    private async Task<int> SaveInvitation(int cookbookId, string recipientId, CancellationToken token)
     {
         var entity = new CookbookInvitation
         {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SharedCookbook.Domain.Entities;
+using SharedCookbook.Infrastructure.Identity;
 
 namespace SharedCookbook.Infrastructure.Data.Configurations;
 
@@ -48,7 +49,7 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
             .HasForeignKey(r => r.CookbookId)
             .HasConstraintName("FK_recipe__cookbook_id")
             .IsRequired();
-        builder.HasOne<Identity.ApplicationUser>()
+        builder.HasOne<ApplicationUser>()
             .WithMany(a => a.Recipes)
             .HasForeignKey(r => r.CreatedBy)
             .HasConstraintName("FK_recipe__created_by");

@@ -1,5 +1,4 @@
-﻿using SharedCookbook.Application.Common.Interfaces;
-using SharedCookbook.Application.Common.Models;
+﻿using SharedCookbook.Application.Common.Models;
 
 namespace SharedCookbook.Application.Memberships.Queries.GetMembershipsWithPagination;
 

@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Application.Common.Interfaces;
-
-namespace SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
+﻿namespace SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
 
 public record UpdateRecipeCommand : IRequest<int>
 {

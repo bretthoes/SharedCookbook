@@ -8,11 +8,10 @@ using static Testing;
 
 public class DeleteCookbookTests : BaseTestFixture
 {
-    [Test]
     public async Task ShouldRequireValidCookbookId()
     {
         var command = new DeleteCookbookCommand(Id: 99);
-        await FluentActions.Invoking(() => SendAsync(command)).Should().ThrowAsync<NotFoundException>();
+        await FluentActions.Invoking((() => SendAsync(command))).Should().ThrowAsync<NotFoundException>();
     }
 
     [Test]

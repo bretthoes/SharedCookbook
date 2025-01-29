@@ -1,8 +1,8 @@
-﻿using SharedCookbook.Application.Common.Behaviours;
-using SharedCookbook.Application.Common.Interfaces;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
+using SharedCookbook.Application.Common.Behaviours;
+using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
 
 namespace SharedCookbook.Application.UnitTests.Common.Behaviours;
@@ -24,14 +24,13 @@ public class RequestLoggerTests
     [Test]
     public async Task ShouldCallGetUserNameAsyncOnceIfAuthenticated()
     {
-        var id = 1;
-        _user.Setup(x => x.Id).Returns(id);
+        _user.Setup(x => x.Id).Returns(Guid.NewGuid().ToString());
 
         var requestLogger = new LoggingBehaviour<CreateCookbookCommand>(_logger.Object, _user.Object, _identityService.Object);
 
         await requestLogger.Process(new CreateCookbookCommand { Title = "title" }, new CancellationToken());
 
-        _identityService.Verify(i => i.GetUserNameAsync(It.IsAny<int>()), Times.Once);
+        _identityService.Verify(i => i.GetUserNameAsync(It.IsAny<string>()), Times.Once);
     }
 
     [Test]
@@ -41,6 +40,6 @@ public class RequestLoggerTests
 
         await requestLogger.Process(new CreateCookbookCommand { Title = "title" }, new CancellationToken());
 
-        _identityService.Verify(i => i.GetUserNameAsync(It.IsAny<int>()), Times.Never);
+        _identityService.Verify(i => i.GetUserNameAsync(It.IsAny<string>()), Times.Never);
     }
 }

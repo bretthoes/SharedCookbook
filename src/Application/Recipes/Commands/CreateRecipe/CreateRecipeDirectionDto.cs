@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Domain.Entities;
-
-namespace SharedCookbook.Application.Recipes.Commands.CreateRecipe;
+﻿namespace SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 
 public class CreateRecipeDirectionDto
 {

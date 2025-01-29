@@ -14,5 +14,5 @@ public record InvitationDto
 
     public DateTimeOffset Created { get; init; }
 
-    public int? CreatedBy { get; init; }
+    public string? CreatedBy { get; init; }
 }

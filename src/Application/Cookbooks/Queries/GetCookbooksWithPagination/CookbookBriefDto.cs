@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Domain.Entities;
-
-namespace SharedCookbook.Application.Cookbooks.Queries.GetCookbooksWithPagination;
+﻿namespace SharedCookbook.Application.Cookbooks.Queries.GetCookbooksWithPagination;
 
 public class CookbookBriefDto
 {

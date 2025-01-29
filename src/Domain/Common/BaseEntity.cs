@@ -8,10 +8,9 @@ public abstract class BaseEntity
     // Using non-generic integer types for simplicity
     public int Id { get; set; }
 
-    private readonly List<BaseEvent> _domainEvents = [];
+    private readonly List<BaseEvent> _domainEvents = new();
 
-    [NotMapped]
-    public IReadOnlyCollection<BaseEvent> DomainEvents => _domainEvents.AsReadOnly();
+    [NotMapped] public IReadOnlyCollection<BaseEvent> DomainEvents => _domainEvents.AsReadOnly();
 
     public void AddDomainEvent(BaseEvent domainEvent)
     {

@@ -12,8 +12,8 @@ public class UpdateCookbookTests : BaseTestFixture
     [Test]
     public async Task ShouldRequireValidCookbookId()
     {
-        var command = new UpdateCookbookCommand() { Id = 99, Title = "New Title" };
-        await FluentActions.Invoking(() => SendAsync(command)).Should().ThrowAsync<NotFoundException>();
+        var command = new UpdateCookbookCommand { Id = 99, Title = "New Title" };
+        await FluentActions.Invoking((() => SendAsync(command))).Should().ThrowAsync<NotFoundException>();
     }
 
     [Test]
@@ -35,10 +35,10 @@ public class UpdateCookbookTests : BaseTestFixture
             Title = "Other List"
         };
 
-        (await FluentActions.Invoking(() =>
-            SendAsync(command))
+        (await FluentActions.Invoking((() =>
+                    SendAsync(command)))
                 .Should().ThrowAsync<ValidationException>().Where(ex => ex.Errors.ContainsKey("Title")))
-                .And.Errors["Title"].Should().Contain("'Title' must be unique.");
+            .And.Errors["Title"].Should().Contain("'Title must be unique.");
     }
 
     [Test]
@@ -59,7 +59,7 @@ public class UpdateCookbookTests : BaseTestFixture
 
         await SendAsync(command);
 
-        var cookbook = await FindAsync<TodoList>(cookbookId);
+        var cookbook = await FindAsync<Cookbook>(cookbookId);
 
         cookbook.Should().NotBeNull();
         cookbook!.Title.Should().Be(command.Title);

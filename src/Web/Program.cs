@@ -7,8 +7,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.AddKeyVaultIfConfigured();
-builder.AddUserSecrets();
-
 builder.AddApplicationServices();
 builder.AddInfrastructureServices();
 builder.AddWebServices();
@@ -28,7 +26,7 @@ else
 
 app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
-app.MapStaticAssets();
+app.UseStaticFiles();
 
 app.UseSwaggerUi(settings =>
 {
@@ -36,22 +34,13 @@ app.UseSwaggerUi(settings =>
     settings.DocumentPath = "/api/specification.json";
 });
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
 
-app.MapRazorPages();
-
-app.MapFallbackToFile("index.html");
-
-app.UseExceptionHandler(_ => { });
+app.UseExceptionHandler(options => { });
 
 app.Map("/", () => Results.Redirect("/api"));
-
-app.UseAntiforgery();
 
 app.MapEndpoints();
 
 app.Run();
 
-public abstract partial class Program { }
+public abstract partial class Program;

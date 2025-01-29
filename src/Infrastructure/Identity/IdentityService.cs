@@ -1,8 +1,7 @@
-using SharedCookbook.Application.Common.Interfaces;
-using SharedCookbook.Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using SharedCookbook.Application.Users.Queries.GetUser;
+using SharedCookbook.Application.Common.Interfaces;
+using SharedCookbook.Application.Common.Models;
 
 namespace SharedCookbook.Infrastructure.Identity;
 
@@ -21,7 +20,7 @@ public class IdentityService : IIdentityService
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
         _authorizationService = authorizationService;
     }
-
+    
     public async Task<UserDto?> FindByEmailAsync(string email)
     {
         var user = await _userManager.FindByEmailAsync(email);
@@ -30,26 +29,14 @@ public class IdentityService : IIdentityService
             : MapApplicationUserToUserDto(user);
     }
 
-    private static UserDto MapApplicationUserToUserDto(ApplicationUser user)
+    public async Task<string?> GetUserNameAsync(string userId)
     {
-        return new UserDto
-        {
-            Id = user.Id,
-            UserName = user.UserName,
-            Email = user.Email ?? string.Empty
-        };
-    }
-
-    public async Task<string?> GetUserNameAsync(int? userId)
-    {
-        if (!userId.HasValue) return null;
-
-        var user = await _userManager.FindByIdAsync(userId.ToString() ?? string.Empty);
+        var user = await _userManager.FindByIdAsync(userId);
 
         return user?.UserName;
     }
 
-    public async Task<(Result Result, int UserId)> CreateUserAsync(string userName, string password)
+    public async Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password)
     {
         var user = new ApplicationUser
         {
@@ -97,5 +84,15 @@ public class IdentityService : IIdentityService
         var result = await _userManager.DeleteAsync(user);
 
         return result.ToApplicationResult();
+    }
+    
+    private static UserDto MapApplicationUserToUserDto(ApplicationUser user)
+    {
+        return new UserDto
+        {
+            Id = user.Id,
+            UserName = user.UserName,
+            Email = user.Email ?? string.Empty
+        };
     }
 }

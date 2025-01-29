@@ -13,7 +13,7 @@ public class UpdateRecipeTests : BaseTestFixture
     public async Task ShouldRequireValidRecipeId()
     {
         var command = new UpdateRecipeCommand { Id = 99 };
-        await FluentActions.Invoking(() => SendAsync(command)).Should().ThrowAsync<NotFoundException>();
+        await FluentActions.Invoking((() => SendAsync(command))).Should().ThrowAsync<NotFoundException>();
     }
 
     [Test]

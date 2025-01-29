@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SharedCookbook.Domain.Entities;
+using SharedCookbook.Infrastructure.Identity;
 
 namespace SharedCookbook.Infrastructure.Data.Configurations;
 
@@ -48,7 +49,7 @@ public class CookbookMemberConfiguration : IEntityTypeConfiguration<CookbookMemb
             .HasColumnName("can_edit_cookbook_details")
             .IsRequired();
 
-        builder.HasOne<Identity.ApplicationUser>()
+        builder.HasOne<ApplicationUser>()
             .WithMany(p => p.CookbookMemberships)
             .HasForeignKey(d => d.CreatedBy)
             .HasConstraintName("FK_cookbook_member__created_by")

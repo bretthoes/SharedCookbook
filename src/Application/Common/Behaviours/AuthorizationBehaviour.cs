@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-using SharedCookbook.Application.Common.Exceptions;
-using SharedCookbook.Application.Common.Interfaces;
+﻿using SharedCookbook.Application.Common.Exceptions;
 using SharedCookbook.Application.Common.Security;
 
 namespace SharedCookbook.Application.Common.Behaviours;
@@ -20,9 +18,9 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        var authorizeAttributes = request.GetType().GetCustomAttributes<AuthorizeAttribute>().ToList();
+        var authorizeAttributes = request.GetType().GetCustomAttributes<AuthorizeAttribute>();
 
-        if (authorizeAttributes.Count == 0)
+        if (!authorizeAttributes.Any())
         {
             return await next();
         }
@@ -34,9 +32,9 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
         }
 
         // Role-based authorization
-        var authorizeAttributesWithRoles = authorizeAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Roles)).ToList();
+        var authorizeAttributesWithRoles = authorizeAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Roles));
 
-        if (authorizeAttributesWithRoles.Count != 0)
+        if (authorizeAttributesWithRoles.Any())
         {
             var authorized = false;
 
@@ -44,7 +42,7 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
             {
                 foreach (var role in roles)
                 {
-                    var isInRole = _user.Id is not null && await _identityService.IsInRoleAsync(_user.Id.ToString()!, role.Trim());
+                    var isInRole = await _identityService.IsInRoleAsync(_user.Id, role.Trim());
                     if (!isInRole)
                     {
                         continue;
@@ -63,8 +61,8 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
         }
 
         // Policy-based authorization
-        var authorizeAttributesWithPolicies = authorizeAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Policy)).ToList();
-        if (authorizeAttributesWithPolicies.Count == 0)
+        var authorizeAttributesWithPolicies = authorizeAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Policy));
+        if (!authorizeAttributesWithPolicies.Any())
         {
             return await next();
         }
@@ -72,7 +70,7 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
         {
             foreach (var policy in authorizeAttributesWithPolicies.Select(a => a.Policy))
             {
-                var authorized =  _user.Id is not null && await _identityService.AuthorizeAsync(_user.Id.ToString()!, policy);
+                var authorized = await _identityService.AuthorizeAsync(_user.Id, policy);
 
                 if (!authorized)
                 {

@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Domain.Entities;
-
-namespace SharedCookbook.Application.Recipes.Queries.GetRecipe;
+﻿namespace SharedCookbook.Application.Recipes.Queries.GetRecipe;
 
 public class RecipeDirectionDto
 {

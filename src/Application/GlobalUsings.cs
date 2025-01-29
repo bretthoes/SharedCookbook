@@ -1,4 +1,9 @@
 ﻿global using Ardalis.GuardClauses;
 global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Logging;
 global using FluentValidation;
 global using MediatR;
+global using SharedCookbook.Application.Common.Interfaces;
+global using SharedCookbook.Domain.Entities;
+global using SharedCookbook.Domain.Events;
+global using System.Reflection;

@@ -2,7 +2,7 @@
 using SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
 using SharedCookbook.Domain.Entities;
 
-namespace SharedCookbook.Application.FunctionalTests.TodoLists.Commands;
+namespace SharedCookbook.Application.FunctionalTests.Cookbooks.Commands;
 
 using static Testing;
 
@@ -16,8 +16,8 @@ public class CreateCookbookTests : BaseTestFixture
             Title = null!
         };
 
-        await FluentActions.Invoking(() =>
-            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+        await FluentActions.Invoking((() =>
+            SendAsync(command))).Should().ThrowAsync<ValidationException>();
     }
 
     [Test]

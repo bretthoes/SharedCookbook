@@ -1,5 +1,4 @@
-﻿using SharedCookbook.Application.Common.Interfaces;
-using SharedCookbook.Application.Common.Models;
+﻿using SharedCookbook.Application.Common.Models;
 using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;

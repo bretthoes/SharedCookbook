@@ -3,10 +3,8 @@ using SharedCookbook.Domain.Entities;
 
 namespace SharedCookbook.Infrastructure.Identity;
 
-public class ApplicationUser : IdentityUser<int>
+public class ApplicationUser : IdentityUser
 {
-    public string? Image { get; set; }
-
     public virtual ICollection<Cookbook> Cookbooks { get; set; } = [];
 
     public virtual ICollection<CookbookMember> CookbookMemberships { get; set; } = [];

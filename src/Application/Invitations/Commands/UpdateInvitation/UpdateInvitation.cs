@@ -1,5 +1,4 @@
-﻿using SharedCookbook.Application.Common.Interfaces;
-using SharedCookbook.Domain.Enums;
+﻿using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.Invitations.Commands.UpdateInvitation;
 

@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Application.Common.Interfaces;
-
-namespace SharedCookbook.Application.Memberships.Commands.DeleteMembership;
+﻿namespace SharedCookbook.Application.Memberships.Commands.DeleteMembership;
 
 public record DeleteMembershipCommand(int Id) : IRequest;
 public class DeleteMembershipCommandHandler : IRequestHandler<DeleteMembershipCommand>

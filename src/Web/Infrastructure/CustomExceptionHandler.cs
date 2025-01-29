@@ -11,31 +11,31 @@ public class CustomExceptionHandler : IExceptionHandler
     public CustomExceptionHandler()
     {
         // Register known exception types and handlers.
-        _exceptionHandlers = new()
-            {
-                { typeof(ValidationException), HandleValidationException },
-                { typeof(NotFoundException), HandleNotFoundException },
-                { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException },
-                { typeof(ForbiddenAccessException), HandleForbiddenAccessException },
-                { typeof(ConflictException), HandleConflictException },
-            };
+        _exceptionHandlers = new Dictionary<Type, Func<HttpContext, Exception, Task>>
+        {
+            { typeof(ValidationException), HandleValidationException },
+            { typeof(NotFoundException), HandleNotFoundException },
+            { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException },
+            { typeof(ForbiddenAccessException), HandleForbiddenAccessException },
+        };
     }
 
-    public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
+    public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception,
+        CancellationToken cancellationToken)
     {
         var exceptionType = exception.GetType();
 
-        if (!_exceptionHandlers.TryGetValue(exceptionType, out Func<HttpContext, Exception, Task>? handler))
+        if (!_exceptionHandlers.TryGetValue(exceptionType, out Func<HttpContext, Exception, Task>? value))
         {
             return false;
         }
 
-        await handler.Invoke(httpContext, exception);
+        await value.Invoke(httpContext, exception);
         return true;
 
     }
 
-    private async Task HandleValidationException(HttpContext httpContext, Exception ex)
+    private static async Task HandleValidationException(HttpContext httpContext, Exception ex)
     {
         var exception = (ValidationException)ex;
 
@@ -70,7 +70,7 @@ public class CustomExceptionHandler : IExceptionHandler
         await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
         {
             Status = StatusCodes.Status401Unauthorized,
-            Title = "User lacks valid authentication for this request.",
+            Title = "Unauthorized",
             Type = "https://tools.ietf.org/html/rfc7235#section-3.1"
         });
     }
@@ -82,23 +82,8 @@ public class CustomExceptionHandler : IExceptionHandler
         await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
         {
             Status = StatusCodes.Status403Forbidden,
-            Title = "User lacks permission for this request.",
+            Title = "Forbidden",
             Type = "https://tools.ietf.org/html/rfc7231#section-6.5.3"
-        });
-    }
-
-    private static async Task HandleConflictException(HttpContext httpContext, Exception ex)
-    {
-        var exception = (ConflictException)ex;
-
-        httpContext.Response.StatusCode = StatusCodes.Status409Conflict;
-
-        await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
-        {
-            Status = StatusCodes.Status409Conflict,
-            Title = "Request not completed due to conflict.",
-            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.8",
-            Detail = exception.Message,
         });
     }
 }
