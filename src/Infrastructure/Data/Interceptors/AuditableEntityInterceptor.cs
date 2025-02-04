@@ -40,18 +40,20 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
 
         foreach (var entry in context.ChangeTracker.Entries<BaseAuditableEntity>())
         {
-            if (entry.State is EntityState.Added or EntityState.Modified || entry.HasChangedOwnedEntities())
+            if (entry.State is not (EntityState.Added or EntityState.Modified) && !entry.HasChangedOwnedEntities())
             {
-                var utcNow = _dateTime.GetUtcNow();
-                if (entry.State == EntityState.Added)
-                {
-                    entry.Entity.CreatedBy = _user.Id;
-                    entry.Entity.Created = utcNow;
-                }
-
-                entry.Entity.LastModifiedBy = _user.Id;
-                entry.Entity.LastModified = utcNow;
+                continue;
             }
+
+            var utcNow = _dateTime.GetUtcNow();
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedBy ??= _user.Id;
+                entry.Entity.Created = utcNow;
+            }
+
+            entry.Entity.LastModifiedBy = _user.Id;
+            entry.Entity.LastModified = utcNow;
         }
     }
 }
@@ -62,5 +64,5 @@ public static class Extensions
         entry.References.Any(r =>
             r.TargetEntry != null &&
             r.TargetEntry.Metadata.IsOwned() &&
-            (r.TargetEntry.State == EntityState.Added || r.TargetEntry.State == EntityState.Modified));
+            r.TargetEntry.State is EntityState.Added or EntityState.Modified);
 }
