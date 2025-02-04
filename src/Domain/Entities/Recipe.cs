@@ -20,17 +20,17 @@ public class Recipe : BaseAuditableEntity
 
     public int? Servings { get; set; }
 
-    public virtual Cookbook? Cookbook { get; set; }
+    public Cookbook? Cookbook { get; set; }
 
-    public virtual RecipeNutrition? Nutrition { get; set; }
+    public RecipeNutrition? Nutrition { get; set; }
 
-    public virtual ICollection<CookbookNotification> CookbookNotifications { get; set; } = [];
+    public ICollection<CookbookNotification> CookbookNotifications { get; set; } = [];
 
-    public virtual ICollection<IngredientCategory> IngredientCategories { get; set; } = [];
+    public ICollection<IngredientCategory> IngredientCategories { get; set; } = [];
 
-    public virtual ICollection<RecipeDirection> Directions { get; set; } = [];
+    public ICollection<RecipeDirection> Directions { get; set; } = [];
 
-    public virtual ICollection<RecipeIngredient> Ingredients { get; set; } = [];
+    public ICollection<RecipeIngredient> Ingredients { get; set; } = [];
 
-    public virtual ICollection<RecipeImage> Images { get; set; } = [];
+    public ICollection<RecipeImage> Images { get; set; } = [];
 }

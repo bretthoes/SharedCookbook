@@ -8,7 +8,7 @@ public class CookbookNotification : BaseAuditableEntity
 
     public required CookbookNotificationActionType ActionType { get; set; }
 
-    public virtual Cookbook? Cookbook { get; set; }
+    public Cookbook? Cookbook { get; set; }
 
-    public virtual Recipe? Recipe { get; set; }
+    public Recipe? Recipe { get; set; }
 }

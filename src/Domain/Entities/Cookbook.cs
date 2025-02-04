@@ -6,11 +6,11 @@ public class Cookbook : BaseAuditableEntity
 
     public string? Image { get; set; }
 
-    public virtual ICollection<CookbookInvitation> CookbookInvitations { get; set; } = [];
+    public ICollection<CookbookInvitation> CookbookInvitations { get; set; } = [];
 
-    public virtual ICollection<CookbookMember> CookbookMembers { get; set; } = [];
+    public ICollection<CookbookMember> CookbookMembers { get; set; } = [];
 
-    public virtual ICollection<CookbookNotification> CookbookNotifications { get; set; } = [];
+    public ICollection<CookbookNotification> CookbookNotifications { get; set; } = [];
 
-    public virtual ICollection<Recipe> Recipes { get; set; } = [];
+    public ICollection<Recipe> Recipes { get; set; } = [];
 }
