@@ -1,9 +1,8 @@
-﻿using SharedCookbook.Application.Common.Mappings;
-using SharedCookbook.Application.Common.Models;
+﻿using SharedCookbook.Application.Common.Models;
 
 namespace SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
 
-public record GetRecipesWithPaginationQuery : IRequest<PaginatedList<RecipeBriefDto>>
+public abstract record GetRecipesWithPaginationQuery : IRequest<PaginatedList<RecipeBriefDto>>
 {
     public required int CookbookId { get; init; }
     public int PageNumber { get; init; } = 1;
@@ -19,16 +18,11 @@ public class GetRecipesWithPaginationQueryHandler : IRequestHandler<GetRecipesWi
         _context = context;
     }
 
-    public Task<PaginatedList<RecipeBriefDto>> Handle(GetRecipesWithPaginationQuery request, CancellationToken cancellationToken)
-    {
-        return _context.Recipes
-            .Where(recipe => recipe.CookbookId == request.CookbookId)
-            .OrderBy(recipe => recipe.Title)
-            .Select(recipe => new RecipeBriefDto
-            {
-                Id = recipe.Id,
-                Title = recipe.Title,
-            })
-            .PaginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
-    }
+    public Task<PaginatedList<RecipeBriefDto>> Handle(GetRecipesWithPaginationQuery request,
+        CancellationToken cancellationToken)
+        => _context.Recipes.QueryRecipesInCookbook(
+            request.CookbookId,
+            request.PageNumber,
+            request.PageSize,
+            cancellationToken);
 }
