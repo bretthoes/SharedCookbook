@@ -2,7 +2,7 @@
 
 namespace SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
 
-public abstract record GetRecipesWithPaginationQuery : IRequest<PaginatedList<RecipeBriefDto>>
+public record GetRecipesWithPaginationQuery : IRequest<PaginatedList<RecipeBriefDto>>
 {
     public required int CookbookId { get; init; }
     public int PageNumber { get; init; } = 1;
