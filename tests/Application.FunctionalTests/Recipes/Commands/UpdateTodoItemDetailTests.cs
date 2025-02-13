@@ -12,7 +12,7 @@ public class UpdateRecipeTests : BaseTestFixture
     [Test]
     public async Task ShouldRequireValidRecipeId()
     {
-        var command = new UpdateRecipeCommand { Id = 99 };
+        var command = new UpdateRecipeCommand(new Recipe{ Title = "", Id = 99 });
         await FluentActions.Invoking((() => SendAsync(command))).Should().ThrowAsync<NotFoundException>();
     }
 
@@ -33,19 +33,14 @@ public class UpdateRecipeTests : BaseTestFixture
                 CookbookId = cookbookId,
             }
         });
-
-        var command = new UpdateRecipeCommand
-        {
-            Id = recipeId,
-            Title = "New Recipe Title",
-        };
+        var command = new UpdateRecipeCommand(new Recipe{ Title = "New Recipe Title", Id = recipeId });
 
         await SendAsync(command);
 
         var item = await FindAsync<Recipe>(recipeId);
 
         item.Should().NotBeNull();
-        item!.Title.Should().Be(command.Title);
+        item!.Title.Should().Be(command.Recipe.Title);
         item.LastModifiedBy.Should().NotBeNull();
         item.LastModifiedBy.Should().Be(userId);
         item.LastModified.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(10));
