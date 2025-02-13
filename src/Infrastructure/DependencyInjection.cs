@@ -41,6 +41,12 @@ public static class DependencyInjection
         builder.Services.AddAuthentication()
             .AddBearerToken(IdentityConstants.BearerScheme);
 
+        builder.Services.Configure<IdentityOptions>(opts =>
+        {
+            opts.SignIn.RequireConfirmedEmail = true;
+            opts.User.RequireUniqueEmail = true;
+        });
+
         builder.Services.AddAuthorizationBuilder();
 
         builder.Services
