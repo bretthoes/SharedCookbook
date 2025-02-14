@@ -5,6 +5,7 @@ namespace SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
 public record GetRecipesWithPaginationQuery : IRequest<PaginatedList<RecipeBriefDto>>
 {
     public required int CookbookId { get; init; }
+    public string? Search { get; init; }
     public int PageNumber { get; init; } = 1;
     public int PageSize { get; init; } = 10;
 }
@@ -22,6 +23,7 @@ public class GetRecipesWithPaginationQueryHandler : IRequestHandler<GetRecipesWi
         CancellationToken cancellationToken)
         => _context.Recipes.QueryRecipesInCookbook(
             request.CookbookId,
+            request.Search,
             request.PageNumber,
             request.PageSize,
             cancellationToken);

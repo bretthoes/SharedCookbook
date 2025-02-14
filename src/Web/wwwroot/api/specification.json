@@ -582,6 +582,15 @@
             "x-position": 1
           },
           {
+            "name": "Search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
             "name": "PageNumber",
             "in": "query",
             "required": true,
@@ -589,7 +598,7 @@
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 2
+            "x-position": 3
           },
           {
             "name": "PageSize",
@@ -599,7 +608,7 @@
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 3
+            "x-position": 4
           }
         ],
         "responses": {
