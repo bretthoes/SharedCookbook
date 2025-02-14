@@ -1,13 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RestSharp;
 using RestSharp.Authenticators;
 
 namespace SharedCookbook.Infrastructure.Email;
 
-public class EmailSender(IOptions<EmailApiOptions> options) : IEmailSender
+public class EmailSender(IOptions<EmailApiOptions> options, ILogger<EmailSender> logger) : IEmailSender
 {
     private readonly EmailApiOptions _options = options.Value;
+    
 
     public async Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
@@ -18,7 +20,7 @@ public class EmailSender(IOptions<EmailApiOptions> options) : IEmailSender
             Authenticator = authenticator
         };
 
-        var client = new RestClient(options);
+        using var client = new RestClient(options);
 
         var request = new RestRequest
         {
@@ -33,6 +35,15 @@ public class EmailSender(IOptions<EmailApiOptions> options) : IEmailSender
         request.AddParameter("subject", subject);
         request.AddParameter("html", htmlMessage);
 
-        await client.ExecuteAsync(request);
+        var response = await client.ExecuteAsync(request);
+        
+        if (!response.IsSuccessful)
+        {
+         logger.LogError(
+             "SharedCookbook Email failed to send: {StatusCode} {Content} {Exception}",
+             response.StatusCode,
+             response.Content,
+             response.ErrorException?.Message);
+        }
     }
 }
