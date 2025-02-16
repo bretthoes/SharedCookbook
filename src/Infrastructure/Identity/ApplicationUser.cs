@@ -5,6 +5,8 @@ namespace SharedCookbook.Infrastructure.Identity;
 
 public class ApplicationUser : IdentityUser
 {
+    public string? DisplayName { get; set; }
+    
     public virtual ICollection<Cookbook> Cookbooks { get; set; } = [];
 
     public virtual ICollection<CookbookMember> CookbookMemberships { get; set; } = [];
