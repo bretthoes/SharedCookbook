@@ -35,6 +35,15 @@ public class IdentityService : IIdentityService
 
         return user?.UserName;
     }
+    
+    public async Task<string?> GetDisplayNameAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        return !string.IsNullOrWhiteSpace(user?.DisplayName)
+            ? user.DisplayName
+            : user?.UserName;
+    }
 
     public async Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password)
     {
@@ -77,6 +86,19 @@ public class IdentityService : IIdentityService
         var user = await _userManager.FindByIdAsync(userId);
 
         return user != null ? await DeleteUserAsync(user) : Result.Success();
+    }
+
+    public async Task<Result> UpdateUserAsync(string userId, string displayName)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        
+        if (user is null) return Result.Failure(["User not found."]);
+
+        user.DisplayName = displayName;
+
+        var result = await _userManager.UpdateAsync(user);
+
+        return result.ToApplicationResult();
     }
 
     public async Task<Result> DeleteUserAsync(ApplicationUser user)
