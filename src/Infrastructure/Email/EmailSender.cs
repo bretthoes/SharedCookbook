@@ -38,12 +38,10 @@ public class EmailSender(IOptions<EmailApiOptions> options, ILogger<EmailSender>
         var response = await client.ExecuteAsync(request);
         
         if (!response.IsSuccessful)
-        {
-         logger.LogError(
-             "SharedCookbook Email failed to send: {StatusCode} {Content} {Exception}",
-             response.StatusCode,
-             response.Content,
-             response.ErrorException?.Message);
-        }
+            logger.LogError(
+                "SharedCookbook Email failed to send: {StatusCode} {Content} {Exception}",
+                 response.StatusCode,
+                 response.Content,
+                 response.ErrorException?.Message);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using SharedCookbook.Application.Images.Commands.CreateImages;
+using SharedCookbook.Application.Images.Commands.ParseRecipe;
 
 namespace SharedCookbook.Web.Endpoints;
 
@@ -9,11 +10,17 @@ public class Images : EndpointGroupBase
         app.MapGroup(this)
             .DisableAntiforgery()
             .RequireAuthorization()
-            .MapPost(CreateImages);
+            .MapPost(CreateImages)
+            .MapPost(ParseRecipe);
     }
 
     public Task<string[]> CreateImages(ISender sender, IFormFileCollection files)
     {
         return sender.Send(new CreateImagesCommand(files));
+    }
+    
+    public Task<RecipeFormInputs> ParseRecipe(ISender sender, IFormFile file)
+    {
+        return sender.Send(new ParseRecipeCommand(file));
     }
 }
