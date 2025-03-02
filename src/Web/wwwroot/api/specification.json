@@ -203,6 +203,47 @@
         ]
       }
     },
+    "/api/Images/parse-recipe": {
+      "post": {
+        "tags": [
+          "Images"
+        ],
+        "operationId": "PostApiImagesParseRecipe",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecipeFormInputs"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/Invitations": {
       "get": {
         "tags": [
@@ -1233,6 +1274,83 @@
           "title": {
             "type": "string",
             "nullable": true
+          },
+          "image": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "RecipeFormInputs": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string",
+            "nullable": true
+          },
+          "preparationTimeInMinutes": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "cookingTimeInMinutes": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "bakingTimeInMinutes": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "servings": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Ingredient"
+            }
+          },
+          "directions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Direction"
+            }
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Ingredient": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "optional": {
+            "type": "boolean",
+            "nullable": true
+          }
+        }
+      },
+      "Direction": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "type": "string"
           },
           "image": {
             "type": "string",

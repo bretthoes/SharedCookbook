@@ -12,6 +12,7 @@ using SharedCookbook.Infrastructure.Data.Interceptors;
 using SharedCookbook.Infrastructure.Email;
 using SharedCookbook.Infrastructure.FileStorage;
 using SharedCookbook.Infrastructure.Identity;
+using SharedCookbook.Infrastructure.OpticalCharacterRecognition;
 
 namespace SharedCookbook.Infrastructure;
 
@@ -65,6 +66,9 @@ public static class DependencyInjection
         builder.Services.AddTransient<IEmailSender, EmailSender>();
         builder.Services.Configure<EmailApiOptions>(
             builder.Configuration.GetSection(key: nameof(EmailApiOptions)));
+        
+        builder.Services.AddTransient<IOcrService, TesseractOcrService>();
+        
 
         builder.Services.AddAuthorizationBuilder()
             .AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator));
