@@ -11,7 +11,7 @@ public class Images : EndpointGroupBase
             .DisableAntiforgery()
             .RequireAuthorization()
             .MapPost(CreateImages)
-            .MapPost(ParseRecipe);
+            .MapPost("/parse-recipe", ParseRecipe);
     }
 
     public Task<string[]> CreateImages(ISender sender, IFormFileCollection files)
