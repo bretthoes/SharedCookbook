@@ -231,7 +231,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RecipeFormInputs"
+                  "$ref": "#/components/schemas/CreateRecipeDto"
                 }
               }
             }
@@ -1281,14 +1281,26 @@
           }
         }
       },
-      "RecipeFormInputs": {
+      "CreateRecipeDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "title": {
             "type": "string"
           },
+          "cookbookId": {
+            "type": "integer",
+            "format": "int32"
+          },
           "summary": {
+            "type": "string",
+            "nullable": true
+          },
+          "thumbnail": {
+            "type": "string",
+            "nullable": true
+          },
+          "videoPath": {
             "type": "string",
             "nullable": true
           },
@@ -1312,27 +1324,57 @@
             "format": "int32",
             "nullable": true
           },
-          "ingredients": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Ingredient"
-            }
-          },
           "directions": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Direction"
+              "$ref": "#/components/schemas/CreateRecipeDirectionDto"
             }
           },
           "images": {
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/CreateRecipeImageDto"
+            }
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateRecipeIngredientDto"
             }
           }
         }
       },
-      "Ingredient": {
+      "CreateRecipeDirectionDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "ordinal": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "image": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CreateRecipeImageDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "ordinal": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "CreateRecipeIngredientDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -1340,21 +1382,11 @@
             "type": "string"
           },
           "optional": {
-            "type": "boolean",
-            "nullable": true
-          }
-        }
-      },
-      "Direction": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "text": {
-            "type": "string"
+            "type": "boolean"
           },
-          "image": {
-            "type": "string",
-            "nullable": true
+          "ordinal": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -1720,115 +1752,6 @@
         "properties": {
           "recipe": {
             "$ref": "#/components/schemas/CreateRecipeDto"
-          }
-        }
-      },
-      "CreateRecipeDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "title": {
-            "type": "string"
-          },
-          "cookbookId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "summary": {
-            "type": "string",
-            "nullable": true
-          },
-          "thumbnail": {
-            "type": "string",
-            "nullable": true
-          },
-          "videoPath": {
-            "type": "string",
-            "nullable": true
-          },
-          "preparationTimeInMinutes": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "cookingTimeInMinutes": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "bakingTimeInMinutes": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "servings": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "directions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateRecipeDirectionDto"
-            }
-          },
-          "images": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateRecipeImageDto"
-            }
-          },
-          "ingredients": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateRecipeIngredientDto"
-            }
-          }
-        }
-      },
-      "CreateRecipeDirectionDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "text": {
-            "type": "string"
-          },
-          "ordinal": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "image": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
-      "CreateRecipeImageDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "ordinal": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
-      "CreateRecipeIngredientDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "optional": {
-            "type": "boolean"
-          },
-          "ordinal": {
-            "type": "integer",
-            "format": "int32"
           }
         }
       },
