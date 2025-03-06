@@ -52,26 +52,37 @@ public class ParseRecipeCommandHandler(IOcrService ocrService)
     private static List<CreateRecipeDirectionDto> ParseDirections(string text)
     {
         var directions = new List<CreateRecipeDirectionDto>();
-        var directionsRegex = new Regex(@"^(Steps|Directions|Instructions):", 
-            RegexOptions.IgnoreCase | RegexOptions.Multiline);
-        var directionsMatch = directionsRegex.Match(text);
-
-        if (!directionsMatch.Success) return directions;
-
-        string[] directionLines = text[directionsMatch.Index..]
-            .Split('\n')
-            .Skip(1) // Skip header
+    
+        string[] lines = text.Split('\n')
             .Select(line => line.Trim())
             .Where(line => !string.IsNullOrWhiteSpace(line))
             .ToArray();
 
-        return directionLines.Select(step => new CreateRecipeDirectionDto
+        bool isDirections = false;
+        foreach (var line in lines)
         {
-            Text = step,
-            Image = null,
-            Ordinal = 0
-        }).ToList();
+            if (line.Equals("Directions", StringComparison.OrdinalIgnoreCase) || 
+                line.Equals("Steps", StringComparison.OrdinalIgnoreCase) || 
+                line.Equals("Instructions", StringComparison.OrdinalIgnoreCase))
+            {
+                isDirections = true;
+                continue;
+            }
+
+            if (isDirections)
+            {
+                directions.Add(new CreateRecipeDirectionDto
+                {
+                    Text = line,
+                    Image = null,
+                    Ordinal = directions.Count + 1
+                });
+            }
+        }
+
+        return directions;
     }
+
 
     private static CreateRecipeDto CreateRecipeDto(
         string title,
