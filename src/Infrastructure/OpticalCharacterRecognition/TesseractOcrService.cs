@@ -6,12 +6,16 @@ namespace SharedCookbook.Infrastructure.OpticalCharacterRecognition;
 
 public class TesseractOcrService : IOcrService
 {
-    private const string DataPath = "./tessdata";
+    private static readonly string DataPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "tessdata");
     private const string Language = "eng";
+    
     public async Task<string> ExtractText(IFormFile file)
     {
+        if (!Directory.Exists(DataPath)) 
+            throw new DirectoryNotFoundException($"Tessdata folder not found at path: {DataPath}");
+        
+        using var engine = new TesseractEngine(DataPath, Language, EngineMode.Default);
         await using var stream = file.OpenReadStream();
-        using var engine = new TesseractEngine(@DataPath, Language, EngineMode.Default);
         using var img = Pix.LoadFromMemory(await ReadStreamAsync(stream));
         using var page = engine.Process(img);
 
