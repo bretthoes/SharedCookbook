@@ -13,6 +13,7 @@ using SharedCookbook.Infrastructure.Email;
 using SharedCookbook.Infrastructure.FileStorage;
 using SharedCookbook.Infrastructure.Identity;
 using SharedCookbook.Infrastructure.OpticalCharacterRecognition;
+using SharedCookbook.Infrastructure.RecipeUrlParser;
 
 namespace SharedCookbook.Infrastructure;
 
@@ -62,6 +63,10 @@ public static class DependencyInjection
         builder.Services.AddTransient<IImageUploadService, S3ImageUploadService>();
         builder.Services.Configure<ImageUploadOptions>(
             builder.Configuration.GetSection(key: nameof(ImageUploadOptions)));
+        
+        builder.Services.AddScoped<IRecipeUrlParser, RecipeUrlParser.RecipeUrlParser>();
+        builder.Services.Configure<RecipeUrlParserOptions>(
+            builder.Configuration.GetSection(key: nameof(RecipeUrlParserOptions)));
 
         builder.Services.AddTransient<IEmailSender, EmailSender>();
         builder.Services.Configure<EmailApiOptions>(
