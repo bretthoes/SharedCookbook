@@ -1,13 +1,11 @@
 ﻿using System.Net;
+using SharedCookbook.Application.Common;
+using SharedCookbook.Application.Common.Extensions;
 
 namespace SharedCookbook.Application.Recipes.Commands.ParseRecipeFromImage;
 
 public class ParseRecipeFromImageCommandValidator : AbstractValidator<ParseRecipeFromImageCommand>
 {
-    private static readonly string[] AllowedExtensions = [".jpg", ".png", ".jpeg"];
-    private const long MaxFileSize = 2 * 1024 * 1024; // 2 MB
-
-
     public ParseRecipeFromImageCommandValidator()
     {
         RuleFor(f => f.File)
@@ -17,19 +15,15 @@ public class ParseRecipeFromImageCommandValidator : AbstractValidator<ParseRecip
             .WithErrorCode(HttpStatusCode.BadRequest.ToString());
         
         RuleFor(f => f.File.Length)
-            .LessThanOrEqualTo(MaxFileSize)
-            .WithMessage($"File size should not exceed {MaxFileSize / 1024 / 1024} MB.")
+            .LessThanOrEqualTo(ImageUtilities.MaxFileSizeBytes)
+            .WithMessage($"File size should not exceed {ImageUtilities.MaxFileSizeMegabytes} MB.")
             .WithErrorCode(HttpStatusCode.RequestEntityTooLarge.ToString());
         
         RuleFor(f => f.File.FileName)
-            .Must(HaveValidExtension)
-            .WithMessage($"File must have one of the following extensions: {string.Join(", ", AllowedExtensions)}.")
+            .Must(f => f.HasValidImageExtension())
+            .WithMessage($"File must have one of the following extensions: {
+                string.Join(", ", ImageUtilities.AllowedExtensions)
+            }.")
             .WithErrorCode(HttpStatusCode.UnsupportedMediaType.ToString());
-    }
-
-    private static bool HaveValidExtension(string fileName)
-    {
-        var extension = Path.GetExtension(fileName).ToLowerInvariant();
-        return AllowedExtensions.Contains(extension);
     }
 }

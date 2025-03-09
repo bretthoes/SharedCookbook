@@ -1,14 +1,11 @@
 ﻿using System.Net;
+using SharedCookbook.Application.Common;
+using SharedCookbook.Application.Common.Extensions;
 
 namespace SharedCookbook.Application.Images.Commands.CreateImages;
 
 public class CreateImagesCommandValidator : AbstractValidator<CreateImagesCommand>
 {
-    private static readonly string[] AllowedExtensions = [".jpg", ".png", ".jpeg"];
-    private const long MaxFileSize = 2 * 1024 * 1024; // 2 MB
-    private const byte FileLimit = 6;
-
-
     public CreateImagesCommandValidator()
     {
         RuleFor(f => f.Files)
@@ -18,27 +15,23 @@ public class CreateImagesCommandValidator : AbstractValidator<CreateImagesComman
             .WithErrorCode(HttpStatusCode.BadRequest.ToString());
 
         RuleFor(f => f.Files.Count)
-            .LessThanOrEqualTo(FileLimit)
-            .WithMessage($"Cannot upload more than {FileLimit} files at once.")
+            .LessThanOrEqualTo(ImageUtilities.MaxFileUploadCount)
+            .WithMessage($"Cannot upload more than {ImageUtilities.MaxFileUploadCount} files at once.")
             .WithErrorCode(HttpStatusCode.BadRequest.ToString());
 
         RuleForEach(f => f.Files).ChildRules(file =>
         {
             file.RuleFor(f => f.Length)
-                .LessThanOrEqualTo(MaxFileSize)
-                .WithMessage($"File size should not exceed {MaxFileSize / 1024 / 1024} MB.")
+                .LessThanOrEqualTo(ImageUtilities.MaxFileSizeBytes)
+                .WithMessage($"File size should not exceed {ImageUtilities.MaxFileSizeMegabytes} MB.")
                 .WithErrorCode(HttpStatusCode.RequestEntityTooLarge.ToString());
 
             file.RuleFor(f => f.FileName)
-                .Must(HaveValidExtension)
-                .WithMessage($"File must have one of the following extensions: {string.Join(", ", AllowedExtensions)}.")
+                .Must(f => f.HasValidImageExtension())
+                .WithMessage($"File must have one of the following extensions: {
+                    string.Join(", ", ImageUtilities.AllowedExtensions)
+                }.")
                 .WithErrorCode(HttpStatusCode.UnsupportedMediaType.ToString());
         });
-    }
-
-    private bool HaveValidExtension(string fileName)
-    {
-        var extension = Path.GetExtension(fileName).ToLowerInvariant();
-        return AllowedExtensions.Contains(extension);
     }
 }

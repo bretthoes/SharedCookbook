@@ -9,5 +9,9 @@ namespace SharedCookbook.Application.Common.Extensions
             
             return false;
         }
+
+        public static bool HasValidImageExtension(this string fileName)
+            => ImageUtilities.AllowedExtensions
+                .Contains(Path.GetExtension(fileName).ToLowerInvariant());
     }
 }

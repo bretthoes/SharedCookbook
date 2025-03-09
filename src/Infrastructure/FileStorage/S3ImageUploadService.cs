@@ -5,6 +5,7 @@ using Amazon.S3.Transfer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using SharedCookbook.Application.Common;
 using SharedCookbook.Application.Common.Interfaces;
 
 namespace SharedCookbook.Infrastructure.FileStorage;
@@ -22,7 +23,7 @@ public class S3ImageUploadService : IImageUploadService
 
     public async Task<string[]> UploadFiles(IFormFileCollection files)
     {
-        using var client = CreateS3Client();
+        using var client = GetS3Client();
         using var fileTransferUtility = new TransferUtility(client);
 
         var uploadedFileKeys = new string[files.Count];
@@ -35,16 +36,16 @@ public class S3ImageUploadService : IImageUploadService
         return uploadedFileKeys;
     }
 
-    private AmazonS3Client CreateS3Client()
-    {
-        var credentials = new BasicAWSCredentials(_options.Value.AwsAccessKeyId, _options.Value.AwsSecretAccessKey);
-        return new AmazonS3Client(credentials, RegionEndpoint.USEast2);
-    }
+    private AmazonS3Client GetS3Client()
+        => new AmazonS3Client(GetCredentials(), RegionEndpoint.USEast2);
+    
+    private BasicAWSCredentials GetCredentials()
+        => new BasicAWSCredentials(_options.Value.AwsAccessKeyId, _options.Value.AwsSecretAccessKey);
 
     private async Task<string> UploadSingleFile(IFormFile file, TransferUtility fileTransferUtility)
     {
         var extension = Path.GetExtension(file.FileName).ToLower();
-        var key = GetUniqueFileName(extension);
+        var key = ImageUtilities.GetUniqueFileName(extension);
 
         await using var newMemoryStream = new MemoryStream();
         await file.CopyToAsync(newMemoryStream);
@@ -56,18 +57,11 @@ public class S3ImageUploadService : IImageUploadService
     }
 
     private TransferUtilityUploadRequest CreateUploadRequest(Stream fileStream, string key)
-    {
-        return new TransferUtilityUploadRequest
+        => new TransferUtilityUploadRequest
         {
             InputStream = fileStream,
             Key = key,
             BucketName = _options.Value.BucketName,
             CannedACL = S3CannedACL.PublicRead
         };
-    }
-
-    private static string GetUniqueFileName(string extension)
-    {
-        return $"{Guid.NewGuid()}{extension}";
-    }
 }
