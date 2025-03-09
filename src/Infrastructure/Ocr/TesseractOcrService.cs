@@ -2,7 +2,7 @@
 using SharedCookbook.Application.Common.Interfaces;
 using Tesseract;
 
-namespace SharedCookbook.Infrastructure.OpticalCharacterRecognition;
+namespace SharedCookbook.Infrastructure.Ocr;
 
 public class TesseractOcrService : IOcrService
 {

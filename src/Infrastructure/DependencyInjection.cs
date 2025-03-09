@@ -12,7 +12,7 @@ using SharedCookbook.Infrastructure.Data.Interceptors;
 using SharedCookbook.Infrastructure.Email;
 using SharedCookbook.Infrastructure.FileStorage;
 using SharedCookbook.Infrastructure.Identity;
-using SharedCookbook.Infrastructure.OpticalCharacterRecognition;
+using SharedCookbook.Infrastructure.Ocr;
 using SharedCookbook.Infrastructure.RecipeUrlParser;
 
 namespace SharedCookbook.Infrastructure;
