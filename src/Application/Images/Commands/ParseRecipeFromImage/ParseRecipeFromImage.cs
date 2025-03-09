@@ -2,14 +2,14 @@
 using Microsoft.AspNetCore.Http;
 using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 
-namespace SharedCookbook.Application.Images.Commands.ParseRecipe;
+namespace SharedCookbook.Application.Images.Commands.ParseRecipeFromImage;
 
-public record ParseRecipeCommand(IFormFile File) : IRequest<CreateRecipeDto>;
+public record ParseRecipeFromImageCommand(IFormFile File) : IRequest<CreateRecipeDto>;
 
-public class ParseRecipeCommandHandler(IOcrService ocrService)
-    : IRequestHandler<ParseRecipeCommand, CreateRecipeDto>
+public class ParseRecipeFromImageCommandHandler(IOcrService ocrService)
+    : IRequestHandler<ParseRecipeFromImageCommand, CreateRecipeDto>
 {
-    public async Task<CreateRecipeDto> Handle(ParseRecipeCommand request, CancellationToken cancellationToken)
+    public async Task<CreateRecipeDto> Handle(ParseRecipeFromImageCommand request, CancellationToken cancellationToken)
     {
         string extractedText = await ocrService.ExtractText(request.File);
         return ParseRecipeFromText(extractedText);

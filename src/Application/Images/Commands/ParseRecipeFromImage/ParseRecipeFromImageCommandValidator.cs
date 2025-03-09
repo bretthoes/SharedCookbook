@@ -1,14 +1,14 @@
 ﻿using System.Net;
 
-namespace SharedCookbook.Application.Images.Commands.ParseRecipe;
+namespace SharedCookbook.Application.Images.Commands.ParseRecipeFromImage;
 
-public class ParseRecipeCommandValidator : AbstractValidator<ParseRecipeCommand>
+public class ParseRecipeFromImageCommandValidator : AbstractValidator<ParseRecipeFromImageCommand>
 {
     private static readonly string[] AllowedExtensions = [".jpg", ".png", ".jpeg"];
     private const long MaxFileSize = 2 * 1024 * 1024; // 2 MB
 
 
-    public ParseRecipeCommandValidator()
+    public ParseRecipeFromImageCommandValidator()
     {
         RuleFor(f => f.File)
             .NotNull()
