@@ -13,19 +13,4 @@ public static class CookbookMemberExtensions
     public static IQueryable<MembershipDto> OrderByName(
         this IQueryable<MembershipDto> query)
         => query.OrderByDescending(dto => dto.Name);
-
-    public static MembershipDto MapToJoinedDto(this CookbookMember member, ApplicationUser user)
-        => new MembershipDto
-        {
-            Id = member.Id,
-            IsCreator = member.IsCreator,
-            CanAddRecipe = member.CanAddRecipe,
-            CanUpdateRecipe = member.CanUpdateRecipe,
-            CanDeleteRecipe = member.CanDeleteRecipe,
-            CanSendInvite = member.CanSendInvite,
-            CanRemoveMember = member.CanRemoveMember,
-            CanEditCookbookDetails = member.CanEditCookbookDetails,
-            Name = user.UserName,
-            Email = user.Email
-        };
 }

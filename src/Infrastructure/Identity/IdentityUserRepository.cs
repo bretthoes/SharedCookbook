@@ -44,7 +44,19 @@ public class IdentityUserRepository : IIdentityUserRepository
                 _context.People,
                 member => member.CreatedBy,
                 user => user.Id,
-                (member, user) => member.MapToJoinedDto(user))
+                (member, user) => new MembershipDto
+                {
+                    Id = member.Id,
+                    IsCreator = member.IsCreator,
+                    CanAddRecipe = member.CanAddRecipe,
+                    CanUpdateRecipe = member.CanUpdateRecipe,
+                    CanDeleteRecipe = member.CanDeleteRecipe,
+                    CanSendInvite = member.CanSendInvite,
+                    CanRemoveMember = member.CanRemoveMember,
+                    CanEditCookbookDetails = member.CanEditCookbookDetails,
+                    Name = user.UserName,
+                    Email = user.Email
+                })
             .OrderByName()
             .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
     }
@@ -60,7 +72,22 @@ public class IdentityUserRepository : IIdentityUserRepository
                 _context.People,
                 invitation => invitation.CreatedBy,
                 user => user.Id,
-                (invitation, user) => invitation.MapToJoinedDto(user))
+                (invitation, user) => new InvitationDto
+                {
+                    Id = invitation.Id,
+                    Created = invitation.Created,
+                    CreatedBy = invitation.CreatedBy,
+                    CookbookTitle = invitation.Cookbook == null
+                        ? ""
+                        : invitation.Cookbook.Title,
+                    CookbookImage = invitation.Cookbook == null
+                        ? ""
+                        : invitation.Cookbook.Image,
+                    SenderName = !string.IsNullOrWhiteSpace(user.DisplayName) 
+                        ? user.DisplayName 
+                        : user.UserName ?? user.Email,
+                    SenderEmail = user.Email
+                })
             .OrderByMostRecentlyCreated()
             .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
     }
