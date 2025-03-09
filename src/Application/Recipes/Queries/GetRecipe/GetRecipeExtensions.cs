@@ -2,16 +2,20 @@ namespace SharedCookbook.Application.Recipes.Queries.GetRecipe;
 
 internal static class RecipeQueryExtensions
 {
-    public static async Task<RecipeDetailedDto?> FindRecipeDtoById(this DbSet<Recipe> db,
+    public static async Task<RecipeDetailedDto?> QueryRecipeDetailedDto(this IQueryable<Recipe> query,
         int id,
         CancellationToken cancellationToken)
-        => (await db.FindRecipe(id, cancellationToken))?
+        => (await query
+            .AsNoTracking()
+            .IncludeRecipeDetails()
+            .SingleAsync(recipe => recipe.Id == id, cancellationToken))
             .ProjectToDetailedDto();
 
-    private static ValueTask<Recipe?> FindRecipe(this DbSet<Recipe> db,
-        int id,
-        CancellationToken cancellationToken)
-        => db.FindAsync(keyValues: [id], cancellationToken);
+    private static IQueryable<Recipe> IncludeRecipeDetails(this IQueryable<Recipe> query)
+        => query
+            .Include(recipe => recipe.Directions)
+            .Include(recipe => recipe.Images)
+            .Include(recipe => recipe.Ingredients);
 
     private static RecipeDetailedDto ProjectToDetailedDto(this Recipe recipe)
         => new()

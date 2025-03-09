@@ -8,7 +8,7 @@ public class GetRecipeQueryHandler(IApplicationDbContext context, IIdentityServi
     public async Task<RecipeDetailedDto> Handle(GetRecipeQuery request, CancellationToken cancellationToken)
     {
         var dto = await context.Recipes
-            .FindRecipeDtoById(request.Id, cancellationToken);
+            .QueryRecipeDetailedDto(request.Id, cancellationToken);
  
         Guard.Against.NotFound(request.Id, dto);
 
