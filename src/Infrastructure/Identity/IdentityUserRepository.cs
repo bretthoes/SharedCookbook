@@ -6,8 +6,9 @@ using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPaginatio
 using SharedCookbook.Application.Memberships.Queries;
 using SharedCookbook.Application.Memberships.Queries.GetMembershipsWithPagination;
 using SharedCookbook.Infrastructure.Data;
+using SharedCookbook.Infrastructure.Identity.IdentityUserRepositoryExtensions;
 
-namespace SharedCookbook.Infrastructure;
+namespace SharedCookbook.Infrastructure.Identity;
 
 /// <summary>
 /// Repository for handling queries that involve the AspNetUsers table,
@@ -15,12 +16,12 @@ namespace SharedCookbook.Infrastructure;
 /// in the Infrastructure layer (and accessed through an interface in the
 /// Application layer) to avoid directly referencing the IdentityUser in
 /// the Application project. 
-///
-/// Note:
+/// </summary>
+/// <remarks>
 /// This repository should be limited to read-only operations, as modifying
 /// AspNetUsers should be handled exclusively by Identity services provided
 /// by ASP.NET.
-/// </summary>
+/// </remarks>
 public class IdentityUserRepository : IIdentityUserRepository
 {
     private readonly ApplicationDbContext _context;
@@ -37,26 +38,14 @@ public class IdentityUserRepository : IIdentityUserRepository
         CancellationToken cancellationToken)
     {
         return await _context.CookbookMembers
-            .Where(member => member.CookbookId == query.CookbookId)
+            .AsNoTracking()
+            .HasCookbookId(query.CookbookId)
             .Join(
                 _context.People,
                 member => member.CreatedBy,
                 user => user.Id,
-                (member, user) => new MembershipDto
-                {
-                    Id = member.Id,
-                    IsCreator = member.IsCreator,
-                    CanAddRecipe = member.CanAddRecipe,
-                    CanUpdateRecipe = member.CanUpdateRecipe,
-                    CanDeleteRecipe = member.CanDeleteRecipe,
-                    CanSendInvite = member.CanSendInvite,
-                    CanRemoveMember = member.CanRemoveMember,
-                    CanEditCookbookDetails = member.CanEditCookbookDetails,
-                    Name = user.UserName,
-                    Email = user.Email
-                })
-            .AsNoTracking()
-            .OrderByDescending(c => c.Name)
+                (member, user) => member.MapToJoinedDto(user))
+            .OrderByName()
             .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
     }
 
@@ -66,29 +55,13 @@ public class IdentityUserRepository : IIdentityUserRepository
     {
         return _context.CookbookInvitations
             .AsNoTracking()
-            .Where(invitation => invitation.RecipientPersonId == _user.Id 
-                && invitation.InvitationStatus == query.Status)
+            .GetInvitationsForUserByStatus(_user.Id, query.Status)
             .Join(
                 _context.People,
                 invitation => invitation.CreatedBy,
                 user => user.Id,
-                (invitation, user) => new InvitationDto
-                {
-                    Id = invitation.Id,
-                    Created = invitation.Created,
-                    CreatedBy = invitation.CreatedBy,
-                    CookbookTitle = invitation.Cookbook == null
-                        ? ""
-                        : invitation.Cookbook.Title,
-                    CookbookImage = invitation.Cookbook == null
-                        ? ""
-                        : invitation.Cookbook.Image,
-                    SenderName = !string.IsNullOrWhiteSpace(user.DisplayName) 
-                        ? user.DisplayName 
-                        : user.UserName ?? user.Email,
-                    SenderEmail = user.Email
-                })
-            .OrderByDescending(c => c.Created)
+                (invitation, user) => invitation.MapToJoinedDto(user))
+            .OrderByMostRecentlyCreated()
             .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
     }
 }

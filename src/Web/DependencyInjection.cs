@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using SharedCookbook.Application.Common.Interfaces;
-using SharedCookbook.Infrastructure;
 using SharedCookbook.Infrastructure.Data;
+using SharedCookbook.Infrastructure.Identity;
 using SharedCookbook.Web.Services;
 
 namespace SharedCookbook.Web;
