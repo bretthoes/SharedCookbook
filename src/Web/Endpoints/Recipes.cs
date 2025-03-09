@@ -2,6 +2,8 @@
 using SharedCookbook.Application.Common.Models;
 using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 using SharedCookbook.Application.Recipes.Commands.DeleteRecipe;
+using SharedCookbook.Application.Recipes.Commands.ParseRecipeFromImage;
+using SharedCookbook.Application.Recipes.Commands.ParseRecipeFromUrl;
 using SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
 using SharedCookbook.Application.Recipes.Queries.GetRecipe;
 using SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
@@ -13,39 +15,53 @@ public class Recipes : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .RequireAuthorization()
-            .MapGet(GetRecipe, "{Id}")
+            //.RequireAuthorization()
+            .MapGet(GetRecipe, pattern: "{Id}")
             .MapGet(GetRecipesWithPagination)
             .MapPost(CreateRecipe)
-            .MapPut(UpdateRecipe, "{id}")
-            .MapDelete(DeleteRecipe, "{id}");
+            .MapPut(UpdateRecipe, pattern: "{id}")
+            .MapDelete(DeleteRecipe, pattern: "{id}")
+            .MapPost(ParseRecipeFromUrl, pattern: "/parse-recipe-url")
+            .MapPost(ParseRecipeFromImage, pattern: "/parse-recipe-img");
     }
 
-    public Task<RecipeDetailedDto> GetRecipe(ISender sender, [AsParameters] GetRecipeQuery query)
+    private static Task<RecipeDetailedDto> GetRecipe(ISender sender, [AsParameters] GetRecipeQuery query)
     {
         return sender.Send(query);
     }
 
-    public Task<PaginatedList<RecipeBriefDto>> GetRecipesWithPagination(ISender sender, [AsParameters] GetRecipesWithPaginationQuery query)
+    private static Task<PaginatedList<RecipeBriefDto>> GetRecipesWithPagination(
+        ISender sender,
+        [AsParameters] GetRecipesWithPaginationQuery query)
     {
         return sender.Send(query);
     }
 
-    public Task<int> CreateRecipe(ISender sender, [FromBody] CreateRecipeCommand command)
+    private static Task<int> CreateRecipe(ISender sender, [FromBody] CreateRecipeCommand command)
     {
         return sender.Send(command);
     }
 
-    public async Task<IResult> UpdateRecipe(ISender sender, int id, [FromBody] UpdateRecipeCommand command)
+    private static async Task<IResult> UpdateRecipe(ISender sender, int id, [FromBody] UpdateRecipeCommand command)
     {
         if (id != command.Recipe.Id) return Results.BadRequest();
         await sender.Send(command);
         return Results.NoContent();
     }
 
-    public async Task<IResult> DeleteRecipe(ISender sender, int id)
+    private static async Task<IResult> DeleteRecipe(ISender sender, int id)
     {
         await sender.Send(new DeleteRecipeCommand(id));
         return Results.NoContent();
+    }
+
+    private static Task<CreateRecipeDto> ParseRecipeFromImage(ISender sender, IFormFile file)
+    {
+        return sender.Send(new ParseRecipeFromImageCommand(file));
+    }
+
+    private static Task<CreateRecipeDto> ParseRecipeFromUrl(ISender sender, ParseRecipeFromUrlCommand command)
+    {
+        return sender.Send(command);
     }
 }

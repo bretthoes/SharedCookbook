@@ -1,6 +1,6 @@
 ﻿using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 
-namespace SharedCookbook.Application.Images.Commands.ParseImageFromUrl;
+namespace SharedCookbook.Application.Recipes.Commands.ParseRecipeFromUrl;
 
 public record ParseRecipeFromUrlCommand(string Url) : IRequest<CreateRecipeDto>;
 

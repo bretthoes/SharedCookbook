@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace SharedCookbook.Application.Images.Commands.ParseRecipeFromImage;
+namespace SharedCookbook.Application.Recipes.Commands.ParseRecipeFromImage;
 
 public class ParseRecipeFromImageCommandValidator : AbstractValidator<ParseRecipeFromImageCommand>
 {

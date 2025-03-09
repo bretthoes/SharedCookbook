@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 
-namespace SharedCookbook.Application.Images.Commands.ParseRecipeFromImage;
+namespace SharedCookbook.Application.Recipes.Commands.ParseRecipeFromImage;
 
 public record ParseRecipeFromImageCommand(IFormFile File) : IRequest<CreateRecipeDto>;
 

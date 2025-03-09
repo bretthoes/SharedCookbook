@@ -6,39 +6,6 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/parse-recipe-img": {
-      "post": {
-        "operationId": "PostParseRecipeImg",
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "file": {
-                    "type": "string",
-                    "format": "binary",
-                    "nullable": true
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateRecipeDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/Cookbooks": {
       "get": {
         "tags": [
@@ -228,39 +195,12 @@
               }
             }
           }
-        }
-      }
-    },
-    "/api/Images/parse-recipe-url": {
-      "post": {
-        "tags": [
-          "Images"
-        ],
-        "operationId": "PostApiImagesParseRecipeUrl",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ParseRecipeFromUrlCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
         },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateRecipeDto"
-                }
-              }
-            }
+        "security": [
+          {
+            "JWT": []
           }
-        }
+        ]
       }
     },
     "/api/Invitations": {
@@ -616,12 +556,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       }
     },
     "/api/Recipes": {
@@ -682,12 +617,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       },
       "post": {
         "tags": [
@@ -718,12 +648,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       }
     },
     "/api/Recipes/{id}": {
@@ -760,12 +685,7 @@
           "200": {
             "description": ""
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       },
       "delete": {
         "tags": [
@@ -788,12 +708,75 @@
           "200": {
             "description": ""
           }
+        }
+      }
+    },
+    "/api/Recipes/parse-recipe-url": {
+      "post": {
+        "tags": [
+          "Recipes"
+        ],
+        "operationId": "ParseRecipeFromUrl",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParseRecipeFromUrlCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
         },
-        "security": [
-          {
-            "JWT": []
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateRecipeDto"
+                }
+              }
+            }
           }
-        ]
+        }
+      }
+    },
+    "/api/Recipes/parse-recipe-img": {
+      "post": {
+        "tags": [
+          "Recipes"
+        ],
+        "operationId": "ParseRecipeFromImage",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateRecipeDto"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/Users/update": {
@@ -1218,115 +1201,6 @@
   },
   "components": {
     "schemas": {
-      "CreateRecipeDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "title": {
-            "type": "string"
-          },
-          "cookbookId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "summary": {
-            "type": "string",
-            "nullable": true
-          },
-          "thumbnail": {
-            "type": "string",
-            "nullable": true
-          },
-          "videoPath": {
-            "type": "string",
-            "nullable": true
-          },
-          "preparationTimeInMinutes": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "cookingTimeInMinutes": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "bakingTimeInMinutes": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "servings": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "directions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateRecipeDirectionDto"
-            }
-          },
-          "images": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateRecipeImageDto"
-            }
-          },
-          "ingredients": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateRecipeIngredientDto"
-            }
-          }
-        }
-      },
-      "CreateRecipeDirectionDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "text": {
-            "type": "string"
-          },
-          "ordinal": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "image": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
-      "CreateRecipeImageDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "ordinal": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
-      "CreateRecipeIngredientDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "optional": {
-            "type": "boolean"
-          },
-          "ordinal": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
       "PaginatedListOfCookbookBriefDto": {
         "type": "object",
         "additionalProperties": false,
@@ -1406,15 +1280,6 @@
           "image": {
             "type": "string",
             "nullable": true
-          }
-        }
-      },
-      "ParseRecipeFromUrlCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "url": {
-            "type": "string"
           }
         }
       },
@@ -1780,6 +1645,115 @@
         "properties": {
           "recipe": {
             "$ref": "#/components/schemas/CreateRecipeDto"
+          }
+        }
+      },
+      "CreateRecipeDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "cookbookId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "summary": {
+            "type": "string",
+            "nullable": true
+          },
+          "thumbnail": {
+            "type": "string",
+            "nullable": true
+          },
+          "videoPath": {
+            "type": "string",
+            "nullable": true
+          },
+          "preparationTimeInMinutes": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "cookingTimeInMinutes": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "bakingTimeInMinutes": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "servings": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "directions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateRecipeDirectionDto"
+            }
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateRecipeImageDto"
+            }
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateRecipeIngredientDto"
+            }
+          }
+        }
+      },
+      "CreateRecipeDirectionDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "ordinal": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "image": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CreateRecipeImageDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "ordinal": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "CreateRecipeIngredientDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "optional": {
+            "type": "boolean"
+          },
+          "ordinal": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -2283,6 +2257,15 @@
             }
           }
         ]
+      },
+      "ParseRecipeFromUrlCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "url": {
+            "type": "string"
+          }
+        }
       },
       "UpdateUserCommand": {
         "type": "object",
