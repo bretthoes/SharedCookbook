@@ -24,9 +24,9 @@ public class RecipeDetailedDto
 
     public int? Servings { get; init; }
 
-    public virtual ICollection<RecipeDirectionDto> Directions { get; init; } = [];
+    public virtual ICollection<RecipeDirection> Directions { get; init; } = [];
 
-    public virtual ICollection<RecipeImageDto> Images { get; init; } = [];
+    public virtual ICollection<RecipeImage> Images { get; init; } = [];
 
-    public virtual ICollection<RecipeIngredientDto> Ingredients { get; init; } = [];
+    public virtual ICollection<RecipeIngredient> Ingredients { get; init; } = [];
 }

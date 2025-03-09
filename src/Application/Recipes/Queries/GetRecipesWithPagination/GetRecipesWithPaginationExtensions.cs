@@ -3,7 +3,7 @@ using SharedCookbook.Application.Common.Models;
 
 namespace SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
 
-internal static class RecipeQueryExtensions
+internal static class GetRecipesWithPaginationExtensions
 {
     public static Task<PaginatedList<RecipeBriefDto>> QueryRecipesInCookbook(this IQueryable<Recipe> recipes,
         int cookbookId,
@@ -16,7 +16,7 @@ internal static class RecipeQueryExtensions
                 .HasCookbookId(cookbookId)
                 .TitleContains(search)
                 .OrderByTitle()
-                .ProjectToDtos()
+                .ProjectToBriefDtos()
                 .PaginatedListAsync(page, pageSize, cancellationToken);
 
     private static IQueryable<Recipe> HasCookbookId(this IQueryable<Recipe> query, int cookbookId)
@@ -33,7 +33,7 @@ internal static class RecipeQueryExtensions
                         .Trim()
                         .ToLower()));
 
-    private static IQueryable<RecipeBriefDto> ProjectToDtos(this IQueryable<Recipe> query)
+    private static IQueryable<RecipeBriefDto> ProjectToBriefDtos(this IQueryable<Recipe> query)
         => query
             .Select(recipe => new RecipeBriefDto
             {

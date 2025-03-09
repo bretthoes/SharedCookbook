@@ -556,7 +556,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/Recipes": {
@@ -617,7 +622,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -648,7 +658,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/Recipes/{id}": {
@@ -685,7 +700,12 @@
           "200": {
             "description": ""
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -708,7 +728,12 @@
           "200": {
             "description": ""
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/Recipes/parse-recipe-url": {
@@ -740,7 +765,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/Recipes/parse-recipe-img": {
@@ -776,7 +806,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/Users/update": {
@@ -1521,80 +1556,153 @@
           "directions": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/RecipeDirectionDto"
+              "$ref": "#/components/schemas/RecipeDirection"
             }
           },
           "images": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/RecipeImageDto"
+              "$ref": "#/components/schemas/RecipeImage"
             }
           },
           "ingredients": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/RecipeIngredientDto"
+              "$ref": "#/components/schemas/RecipeIngredient"
             }
           }
         }
       },
-      "RecipeDirectionDto": {
+      "RecipeDirection": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "recipeId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "text": {
+                "type": "string"
+              },
+              "ordinal": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "image": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "BaseAuditableEntity": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseEntity"
+          },
+          {
+            "type": "object",
+            "x-abstract": true,
+            "additionalProperties": false,
+            "properties": {
+              "created": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "createdBy": {
+                "type": "string",
+                "nullable": true
+              },
+              "lastModified": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "lastModifiedBy": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "BaseEntity": {
         "type": "object",
+        "x-abstract": true,
         "additionalProperties": false,
         "properties": {
           "id": {
             "type": "integer",
             "format": "int32"
           },
-          "text": {
-            "type": "string"
-          },
-          "ordinal": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "image": {
-            "type": "string",
-            "nullable": true
+          "domainEvents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BaseEvent"
+            }
           }
         }
       },
-      "RecipeImageDto": {
+      "BaseEvent": {
         "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "name": {
-            "type": "string"
-          },
-          "ordinal": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
+        "x-abstract": true,
+        "additionalProperties": false
       },
-      "RecipeIngredientDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
+      "RecipeImage": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
           },
-          "name": {
-            "type": "string"
-          },
-          "ordinal": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "optional": {
-            "type": "boolean"
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "recipeId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "name": {
+                "type": "string"
+              },
+              "ordinal": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
           }
-        }
+        ]
+      },
+      "RecipeIngredient": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "recipeId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "name": {
+                "type": "string"
+              },
+              "ordinal": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "optional": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
       },
       "PaginatedListOfRecipeBriefDto": {
         "type": "object",
@@ -1945,58 +2053,6 @@
           }
         ]
       },
-      "BaseAuditableEntity": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/BaseEntity"
-          },
-          {
-            "type": "object",
-            "x-abstract": true,
-            "additionalProperties": false,
-            "properties": {
-              "created": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "createdBy": {
-                "type": "string",
-                "nullable": true
-              },
-              "lastModified": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "lastModifiedBy": {
-                "type": "string",
-                "nullable": true
-              }
-            }
-          }
-        ]
-      },
-      "BaseEntity": {
-        "type": "object",
-        "x-abstract": true,
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "domainEvents": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/BaseEvent"
-            }
-          }
-        }
-      },
-      "BaseEvent": {
-        "type": "object",
-        "x-abstract": true,
-        "additionalProperties": false
-      },
       "CookbookMember": {
         "allOf": [
           {
@@ -2172,85 +2228,6 @@
                 "type": "string"
               },
               "recipeId": {
-                "type": "integer",
-                "format": "int32"
-              }
-            }
-          }
-        ]
-      },
-      "RecipeDirection": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/BaseAuditableEntity"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "recipeId": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "text": {
-                "type": "string"
-              },
-              "ordinal": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "image": {
-                "type": "string",
-                "nullable": true
-              }
-            }
-          }
-        ]
-      },
-      "RecipeIngredient": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/BaseAuditableEntity"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "recipeId": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "name": {
-                "type": "string"
-              },
-              "ordinal": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "optional": {
-                "type": "boolean"
-              }
-            }
-          }
-        ]
-      },
-      "RecipeImage": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/BaseAuditableEntity"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "recipeId": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "name": {
-                "type": "string"
-              },
-              "ordinal": {
                 "type": "integer",
                 "format": "int32"
               }
