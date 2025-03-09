@@ -15,7 +15,7 @@ public class Recipes : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            //.RequireAuthorization()
+            .RequireAuthorization()
             .MapGet(GetRecipe, pattern: "{Id}")
             .MapGet(GetRecipesWithPagination)
             .MapPost(CreateRecipe)
