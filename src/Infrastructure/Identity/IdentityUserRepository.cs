@@ -6,7 +6,7 @@ using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPaginatio
 using SharedCookbook.Application.Memberships.Queries;
 using SharedCookbook.Application.Memberships.Queries.GetMembershipsWithPagination;
 using SharedCookbook.Infrastructure.Data;
-using SharedCookbook.Infrastructure.Identity.IdentityUserRepositoryExtensions;
+using SharedCookbook.Infrastructure.Identity.RepositoryExtensions;
 
 namespace SharedCookbook.Infrastructure.Identity;
 

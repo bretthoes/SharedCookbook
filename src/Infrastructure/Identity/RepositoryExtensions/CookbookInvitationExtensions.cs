@@ -2,7 +2,7 @@ using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPaginatio
 using SharedCookbook.Domain.Entities;
 using SharedCookbook.Domain.Enums;
 
-namespace SharedCookbook.Infrastructure.Identity.IdentityUserRepositoryExtensions;
+namespace SharedCookbook.Infrastructure.Identity.RepositoryExtensions;
 
 public static class CookbookInvitationExtensions
 {

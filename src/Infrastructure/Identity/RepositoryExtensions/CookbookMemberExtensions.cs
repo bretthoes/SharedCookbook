@@ -1,7 +1,7 @@
 using SharedCookbook.Application.Memberships.Queries;
 using SharedCookbook.Domain.Entities;
 
-namespace SharedCookbook.Infrastructure.Identity.IdentityUserRepositoryExtensions;
+namespace SharedCookbook.Infrastructure.Identity.RepositoryExtensions;
 
 public static class CookbookMemberExtensions
 {
