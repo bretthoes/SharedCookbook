@@ -4,11 +4,13 @@ using RestSharp;
 using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 using System.Text.Json;
+using SharedCookbook.Application.Common.Extensions;
 
 namespace SharedCookbook.Infrastructure.RecipeUrlParser;
 
 public class RecipeUrlParser(
     IOptions<RecipeUrlParserOptions> options,
+    IImageUploadService imageUploadService,
     ILogger<RecipeUrlParser> logger)
     : IRecipeUrlParser
 {
@@ -49,7 +51,7 @@ public class RecipeUrlParser(
 
                 if (apiResponse != null)
                 {
-                    return MapToCreateRecipeDto(apiResponse, 0);
+                    return await MapToCreateRecipeDto(apiResponse, 0);
                 }
                 else
                 {
@@ -72,14 +74,19 @@ public class RecipeUrlParser(
         throw new Exception("Failed to fetch or parse the recipe from the URL.");
     }
 
-    private static CreateRecipeDto MapToCreateRecipeDto(RecipeApiResponse apiResponse, int cookbookId)
+    private async Task<CreateRecipeDto> MapToCreateRecipeDto(RecipeApiResponse apiResponse, int cookbookId)
     {
         // Split instructions into individual steps based on double newline characters
         var steps = apiResponse.Instructions.Split(["\n\n"], StringSplitOptions.RemoveEmptyEntries);
+        var hasImage = apiResponse.Image?.IsValidUrl() ?? false;
+        var image = "";
+        if (apiResponse.Image != null && hasImage)
+            image = await imageUploadService.UploadImageFromUrl(apiResponse.Image);
 
         var createRecipeDto = new CreateRecipeDto
         {
             Title = apiResponse.Title.Length > 255 ? apiResponse.Title[..255] : apiResponse.Title,
+            Images = [new CreateRecipeImageDto { Name= image, Ordinal = 1 }],
             CookbookId = cookbookId,
             // TODO need to handle html in here being viewed as plain text. Also should increase length in db
             Summary = apiResponse.Summary?.Length > 255 ? apiResponse.Summary[..255] : apiResponse.Summary,

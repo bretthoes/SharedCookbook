@@ -5,6 +5,7 @@ using Amazon.S3.Transfer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using RestSharp;
 using SharedCookbook.Application.Common;
 using SharedCookbook.Application.Common.Interfaces;
 
@@ -34,6 +35,38 @@ public class S3ImageUploadService : IImageUploadService
         }
 
         return uploadedFileKeys;
+    }
+
+    public async Task<string> UploadImageFromUrl(string imageUrl)
+    {
+        using var client = GetS3Client();
+        using var fileTransferUtility = new TransferUtility(client);
+
+        var imageStream = await DownloadImageFromUrl(imageUrl);
+
+        var extension = Path.GetExtension(imageUrl)?.ToLower() ?? ".jpg";
+        var key = ImageUtilities.GetUniqueFileName(extension);
+
+        var uploadRequest = CreateUploadRequest(imageStream, key);
+        await fileTransferUtility.UploadAsync(uploadRequest);
+
+        return uploadRequest.Key;
+    }
+
+    private static async Task<Stream> DownloadImageFromUrl(string imageUrl)
+    {
+        using var client = new RestClient(imageUrl);
+        var request = new RestRequest();
+        var response = await client.ExecuteAsync(request);
+
+        if (!response.IsSuccessful || response.RawBytes == null)
+        {
+            throw new Exception($"Failed to download image from URL: {imageUrl}");
+        }
+
+        var stream = new MemoryStream(response.RawBytes);
+        return stream;
+
     }
 
     private AmazonS3Client GetS3Client()
