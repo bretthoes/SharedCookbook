@@ -10,39 +10,39 @@ public class CookbookConfiguration : IEntityTypeConfiguration<Cookbook>
     {
         builder.ToTable("cookbook");
 
-        builder.HasKey(c => c.Id)
+        builder.HasKey(cookbook => cookbook.Id)
             .HasName("PK_cookbook_id");
 
         builder.HasIndex(
-            c => c.CreatedBy, 
-            "IX_cookbook_creator__created_by");
+            cookbook => cookbook.CreatedBy, 
+            name: "IX_cookbook_creator__created_by");
 
-        builder.Property(c => c.Id)
+        builder.Property(cookbook => cookbook.Id)
             .HasColumnName("cookbook_id")
             .IsRequired();
-        builder.Property(c => c.Title)
+        builder.Property(cookbook => cookbook.Title)
             .HasColumnName("title")
             .HasMaxLength(255)
             .IsRequired();
-        builder.Property(c => c.Image)
+        builder.Property(cookbook => cookbook.Image)
             .HasColumnName("image")
             .HasMaxLength(255);
 
         builder.HasOne<Identity.ApplicationUser>()
-            .WithMany(p => p.Cookbooks)
-            .HasForeignKey(c => c.CreatedBy)
+            .WithMany(user => user.Cookbooks)
+            .HasForeignKey(cookbook => cookbook.CreatedBy)
             .HasConstraintName("FK_cookbook__created_by");
-        builder.HasMany(c => c.CookbookInvitations)
-            .WithOne(ci => ci.Cookbook)
-            .HasForeignKey(ci => ci.CookbookId);
-        builder.HasMany(c => c.CookbookMembers)
-            .WithOne(cm => cm.Cookbook)
-            .HasForeignKey(cm => cm.CookbookId);
-        builder.HasMany(c => c.CookbookNotifications)
-            .WithOne(cn => cn.Cookbook)
-            .HasForeignKey(cn => cn.CookbookId);
-        builder.HasMany(c => c.Recipes)
-            .WithOne(r => r.Cookbook)
-            .HasForeignKey(r => r.CookbookId);
+        builder.HasMany(cookbook => cookbook.CookbookInvitations)
+            .WithOne(invitation => invitation.Cookbook)
+            .HasForeignKey(invitation => invitation.CookbookId);
+        builder.HasMany(cookbook => cookbook.CookbookMembers)
+            .WithOne(member => member.Cookbook)
+            .HasForeignKey(member => member.CookbookId);
+        builder.HasMany(cookbook => cookbook.CookbookNotifications)
+            .WithOne(notification => notification.Cookbook)
+            .HasForeignKey(notification => notification.CookbookId);
+        builder.HasMany(cookbook => cookbook.Recipes)
+            .WithOne(recipe => recipe.Cookbook)
+            .HasForeignKey(recipe => recipe.CookbookId);
     }
 }

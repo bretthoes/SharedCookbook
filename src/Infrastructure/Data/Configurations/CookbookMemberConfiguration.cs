@@ -11,53 +11,53 @@ public class CookbookMemberConfiguration : IEntityTypeConfiguration<CookbookMemb
     {
         builder.ToTable("cookbook_member");
 
-        builder.HasKey(cm => cm.Id)
+        builder.HasKey(member => member.Id)
             .HasName("PK_cookbook_member_id");
 
         builder.HasIndex(
-            cm => cm.CookbookId, 
-            "IX_cookbook_member__cookbook_id");
+            member => member.CookbookId, 
+            name: "IX_cookbook_member__cookbook_id");
         builder.HasIndex(
-            cm => cm.CreatedBy, 
-            "IX_cookbook_member__created_by");
+            member => member.CreatedBy, 
+            name: "IX_cookbook_member__created_by");
 
-        builder.Property(cm => cm.Id)
+        builder.Property(member => member.Id)
             .HasColumnName("cookbook_member_id")
             .IsRequired();
-        builder.Property(cm => cm.CookbookId)
+        builder.Property(member => member.CookbookId)
             .HasColumnName("cookbook_id")
             .IsRequired();
-        builder.Property(cm => cm.IsCreator)
+        builder.Property(member => member.IsCreator)
             .HasColumnName("is_creator")
             .IsRequired();
-        builder.Property(cm => cm.CanAddRecipe)
+        builder.Property(member => member.CanAddRecipe)
             .HasColumnName("can_add_recipe")
             .IsRequired();
-        builder.Property(cm => cm.CanUpdateRecipe)
+        builder.Property(member => member.CanUpdateRecipe)
             .HasColumnName("can_update_recipe")
             .IsRequired();
-        builder.Property(cm => cm.CanDeleteRecipe)
+        builder.Property(member => member.CanDeleteRecipe)
             .HasColumnName("can_delete_recipe")
             .IsRequired();
-        builder.Property(cm => cm.CanSendInvite)
+        builder.Property(member => member.CanSendInvite)
             .HasColumnName("can_send_invite")
             .IsRequired();
-        builder.Property(cm => cm.CanRemoveMember)
+        builder.Property(member => member.CanRemoveMember)
             .HasColumnName("can_remove_member")
             .IsRequired();
-        builder.Property(cm => cm.CanEditCookbookDetails)
+        builder.Property(member => member.CanEditCookbookDetails)
             .HasColumnName("can_edit_cookbook_details")
             .IsRequired();
 
         builder.HasOne<ApplicationUser>()
-            .WithMany(p => p.CookbookMemberships)
-            .HasForeignKey(d => d.CreatedBy)
+            .WithMany(user => user.CookbookMemberships)
+            .HasForeignKey(member => member.CreatedBy)
             .HasConstraintName("FK_cookbook_member__created_by")
             .OnDelete(DeleteBehavior.Cascade)
             .IsRequired();
-        builder.HasOne(cm => cm.Cookbook)
-            .WithMany(c => c.CookbookMembers)
-            .HasForeignKey(cm => cm.CookbookId)
+        builder.HasOne(member => member.Cookbook)
+            .WithMany(cookbook => cookbook.CookbookMembers)
+            .HasForeignKey(member => member.CookbookId)
             .HasConstraintName("FK_cookbook_member__cookbook_id")
             .OnDelete(DeleteBehavior.Cascade)
             .IsRequired();
