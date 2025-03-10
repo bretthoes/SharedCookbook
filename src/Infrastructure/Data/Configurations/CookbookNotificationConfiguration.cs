@@ -11,46 +11,46 @@ public class CookbookNotificationConfiguration : IEntityTypeConfiguration<Cookbo
     {
         builder.ToTable("cookbook_notification");
 
-        builder.HasKey(cn => cn.Id)
+        builder.HasKey(notification => notification.Id)
             .HasName("PK_cookbook_notification_id");
 
         builder.HasIndex(
-            cn => cn.CreatedBy,
-            "IX_cookbook_notification__created_by");
+            notification => notification.CreatedBy,
+            name: "IX_cookbook_notification__created_by");
         builder.HasIndex(
-            cn => cn.CookbookId,
-            "IX_cookbook_notification__cookbook_id");
+            notification => notification.CookbookId,
+            name: "IX_cookbook_notification__cookbook_id");
         builder.HasIndex(
-            cn => cn.RecipeId,
-            "IX_cookbook_notification__recipe_id");
+            notification => notification.RecipeId,
+            name: "IX_cookbook_notification__recipe_id");
 
-        builder.Property(cn => cn.Id)
+        builder.Property(notification => notification.Id)
             .HasColumnName("cookbook_notification_id")
             .IsRequired();
-        builder.Property(cn => cn.CookbookId)
+        builder.Property(notification => notification.CookbookId)
             .HasColumnName("cookbook_id");
-        builder.Property(cn => cn.RecipeId)
+        builder.Property(notification => notification.RecipeId)
             .HasColumnName("recipe_id");
-        builder.Property(cn => cn.ActionType)
+        builder.Property(notification => notification.ActionType)
             .HasColumnName("action_type")
             .HasConversion<string>()
             .HasMaxLength(255)
             .IsRequired();
-        builder.Property(cn => cn.Created)
+        builder.Property(notification => notification.Created)
             .HasColumnName("created")
             .IsRequired();
 
-        builder.HasOne(cn => cn.Cookbook)
-            .WithMany(c => c.CookbookNotifications)
-            .HasForeignKey(cn => cn.CookbookId)
+        builder.HasOne(notification => notification.Cookbook)
+            .WithMany(cookbook => cookbook.CookbookNotifications)
+            .HasForeignKey(notification => notification.CookbookId)
             .HasConstraintName("FK_cookbook_notification__cookbook_id");
-        builder.HasOne(cn => cn.Recipe)
-            .WithMany(r => r.CookbookNotifications)
-            .HasForeignKey(cn => cn.RecipeId)
+        builder.HasOne(notification => notification.Recipe)
+            .WithMany(recipe => recipe.CookbookNotifications)
+            .HasForeignKey(notification => notification.RecipeId)
             .HasConstraintName("FK_cookbook_notification__recipe_id");
         builder.HasOne<ApplicationUser>()
-            .WithMany(p => p.CookbookNotifications)
-            .HasForeignKey(cn => cn.CreatedBy)
+            .WithMany(user => user.CookbookNotifications)
+            .HasForeignKey(notification => notification.CreatedBy)
             .HasConstraintName("FK_cookbook_notification__created_by");
     }
 }

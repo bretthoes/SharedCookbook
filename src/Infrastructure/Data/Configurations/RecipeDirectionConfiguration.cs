@@ -15,7 +15,7 @@ public class RecipeDirectionConfiguration : IEntityTypeConfiguration<RecipeDirec
 
         builder.HasIndex(
             rd => rd.RecipeId,
-            "IX_recipe_direction__recipe_id");
+            name: "IX_recipe_direction__recipe_id");
 
         builder.Property(rd => rd.Id)
             .HasColumnName("recipe_direction_id")

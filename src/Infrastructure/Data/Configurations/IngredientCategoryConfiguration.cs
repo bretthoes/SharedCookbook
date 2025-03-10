@@ -10,26 +10,26 @@ public class IngredientCategoryConfiguration : IEntityTypeConfiguration<Ingredie
     {
         builder.ToTable("ingredient_category");
 
-        builder.HasKey(ic => ic.Id)
+        builder.HasKey(category => category.Id)
             .HasName("PK_ingredient_category_id");
 
         builder.HasIndex(
-            ic => ic.RecipeId,
-            "IX_ingredient__category_recipe_id");
+            category => category.RecipeId,
+            name: "IX_ingredient__category_recipe_id");
 
-        builder.Property(ic => ic.Id)
+        builder.Property(category => category.Id)
             .HasColumnName("ingredient_category_id")
             .IsRequired();
-        builder.Property(ic => ic.RecipeId)
+        builder.Property(category => category.RecipeId)
             .HasColumnName("recipe_id");
-        builder.Property(ic => ic.Title)
+        builder.Property(category => category.Title)
             .HasMaxLength(255)
             .HasColumnName("title")
             .IsRequired();
 
         builder.HasOne<Recipe>()
-            .WithMany(r => r.IngredientCategories)
-            .HasForeignKey(d => d.RecipeId)
+            .WithMany(recipe => recipe.IngredientCategories)
+            .HasForeignKey(category => category.RecipeId)
             .HasConstraintName("FK_ingredient_category__recipe_id")
             .IsRequired();
     }
