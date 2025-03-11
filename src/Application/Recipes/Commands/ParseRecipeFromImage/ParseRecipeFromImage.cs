@@ -36,13 +36,14 @@ public class ParseRecipeFromImageCommandHandler(IOcrService ocrService)
         var ingredients = new List<CreateRecipeIngredientDto>();
         var ingredientRegex = new Regex(@"^- (.+?)( \(optional\))?$", RegexOptions.Multiline);
 
+        int ordinal = 1;
         foreach (Match match in ingredientRegex.Matches(text))
         {
             ingredients.Add(new CreateRecipeIngredientDto
             {
                 Name = match.Groups[1].Value,
                 Optional = match.Groups[2].Success,
-                Ordinal = 0
+                Ordinal = ordinal++
             });
         }
 
@@ -61,9 +62,9 @@ public class ParseRecipeFromImageCommandHandler(IOcrService ocrService)
         bool isDirections = false;
         foreach (var line in lines)
         {
-            if (line.Equals("Directions", StringComparison.OrdinalIgnoreCase) || 
-                line.Equals("Steps", StringComparison.OrdinalIgnoreCase) || 
-                line.Equals("Instructions", StringComparison.OrdinalIgnoreCase))
+            if (line.StartsWith("Directions", StringComparison.OrdinalIgnoreCase) || 
+                line.StartsWith("Steps", StringComparison.OrdinalIgnoreCase) || 
+                line.StartsWith("Instructions", StringComparison.OrdinalIgnoreCase))
             {
                 isDirections = true;
                 continue;
