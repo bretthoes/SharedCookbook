@@ -6,35 +6,27 @@ namespace SharedCookbook.Application.Recipes.Commands.ParseRecipeFromImage;
 
 public record ParseRecipeFromImageCommand(IFormFile File) : IRequest<CreateRecipeDto>;
 
-public class ParseRecipeFromImageCommandHandler(IOcrService ocrService)
+public partial class ParseRecipeFromImageCommandHandler(IOcrService ocrService)
     : IRequestHandler<ParseRecipeFromImageCommand, CreateRecipeDto>
 {
-    public async Task<CreateRecipeDto> Handle(ParseRecipeFromImageCommand request, CancellationToken cancellationToken)
-    {
-        string extractedText = await ocrService.ExtractText(request.File);
-        return ParseRecipeFromText(extractedText);
-    }
+    public async Task<CreateRecipeDto> Handle(
+        ParseRecipeFromImageCommand request,
+        CancellationToken cancellationToken)
+        => ParseRecipeFromText(await ocrService.ExtractText(request.File));
 
     private static CreateRecipeDto ParseRecipeFromText(string text)
-    {
-        var lines = GetLines(text);
-        string title = GetTitle(lines);
-        var ingredients = ParseIngredients(text);
-        var directions = ParseDirections(text);
+        => CreateRecipeDto(GetTitle(GetLines(text)), ParseIngredients(text), ParseDirections(text));
 
-        return CreateRecipeDto(title, ingredients, directions);
-    }
+    private static string[] GetLines(string text) 
+        => text.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
-    private static string[] GetLines(string text) => 
-        text.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-
-    private static string GetTitle(string[] lines) => 
-        lines.FirstOrDefault()?.Trim() ?? string.Empty;
+    private static string GetTitle(string[] lines) 
+        => lines.FirstOrDefault()?.Trim() ?? string.Empty;
 
     private static List<CreateRecipeIngredientDto> ParseIngredients(string text)
     {
         var ingredients = new List<CreateRecipeIngredientDto>();
-        var ingredientRegex = new Regex(@"^- (.+?)( \(optional\))?$", RegexOptions.Multiline);
+        var ingredientRegex = MyRegex();
 
         int ordinal = 1;
         foreach (Match match in ingredientRegex.Matches(text))
@@ -60,7 +52,7 @@ public class ParseRecipeFromImageCommandHandler(IOcrService ocrService)
             .ToArray();
 
         bool isDirections = false;
-        foreach (var line in lines)
+        foreach (string line in lines)
         {
             if (line.StartsWith("Directions", StringComparison.OrdinalIgnoreCase) || 
                 line.StartsWith("Steps", StringComparison.OrdinalIgnoreCase) || 
@@ -101,4 +93,6 @@ public class ParseRecipeFromImageCommandHandler(IOcrService ocrService)
         Images = [],
         CookbookId = 0
     };
+    [GeneratedRegex(@"^- (.+?)( \(optional\))?$", RegexOptions.Multiline)]
+    private static partial Regex MyRegex();
 }
