@@ -84,9 +84,7 @@ public class IdentityUserRepository : IIdentityUserRepository
                     CookbookImage = invitation.Cookbook == null
                         ? ""
                         : invitation.Cookbook.Image,
-                    SenderName = !string.IsNullOrWhiteSpace(user.DisplayName) 
-                        ? user.DisplayName 
-                        : user.UserName ?? user.Email,
+                    SenderName = user.DisplayName ?? "",
                     SenderEmail = user.Email
                 })
             .OrderByMostRecentlyCreated()
