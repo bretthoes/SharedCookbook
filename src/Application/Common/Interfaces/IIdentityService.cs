@@ -7,6 +7,8 @@ public interface IIdentityService
     Task<UserDto?> FindByEmailAsync(string email);
     
     Task<string?> GetUserNameAsync(string userId);
+    
+    Task<string?> GetEmailAsync(string userId);
 
     Task<bool> IsInRoleAsync(string userId, string role);
 
