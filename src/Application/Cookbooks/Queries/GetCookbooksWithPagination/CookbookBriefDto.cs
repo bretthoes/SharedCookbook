@@ -8,5 +8,11 @@ public class CookbookBriefDto
 
     public string? Image { get; init; }
 
+    public string? Author { get; set; }
+    
+    public string? AuthorEmail { get; set; }
+    
     public int MembersCount { get; init; }
+    
+    public int RecipeCount { get; init; }
 }

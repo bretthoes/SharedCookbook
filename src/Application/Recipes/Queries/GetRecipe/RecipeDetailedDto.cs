@@ -6,10 +6,10 @@ public class RecipeDetailedDto
 
     public required string Title { get; init; }
 
-    public string? AuthorId { get; init; }
-
     public string? Author { get; set; }
 
+    public string? AuthorEmail { get; set; }
+    
     public string? Summary { get; init; }
 
     public string? Thumbnail { get; init; }
