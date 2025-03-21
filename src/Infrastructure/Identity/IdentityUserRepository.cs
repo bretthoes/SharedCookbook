@@ -2,6 +2,7 @@
 using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Application.Common.Mappings;
 using SharedCookbook.Application.Common.Models;
+using SharedCookbook.Application.Cookbooks.Queries.GetCookbooksWithPagination;
 using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
 using SharedCookbook.Application.Memberships.Queries;
 using SharedCookbook.Application.Memberships.Queries.GetMembershipsWithPagination;
@@ -91,4 +92,24 @@ public class IdentityUserRepository : IIdentityUserRepository
             .OrderByMostRecentlyCreated()
             .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
     }
+    
+    public Task<PaginatedList<CookbookBriefDto>> GetCookbooks(
+        GetCookbooksWithPaginationQuery query,
+        CancellationToken cancellationToken)
+        => _context.Cookbooks
+            .QueryCookbooksForMember(_context, _user.Id)
+            .Join(_context.People,
+                cookbook => cookbook.CreatedBy,
+                user => user.Id,
+                (cookbook, user) => new CookbookBriefDto
+                {
+                    Id = cookbook.Id,
+                    Title = cookbook.Title,
+                    Image = cookbook.Image,
+                    MembersCount = cookbook.CookbookMembers.Count,
+                    RecipeCount = cookbook.Recipes.Count,
+                    Author = user.DisplayName,
+                    AuthorEmail = user.Email ?? ""
+                })
+            .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
 }

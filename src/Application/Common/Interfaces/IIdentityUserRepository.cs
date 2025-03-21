@@ -1,4 +1,5 @@
 ﻿using SharedCookbook.Application.Common.Models;
+using SharedCookbook.Application.Cookbooks.Queries.GetCookbooksWithPagination;
 using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
 using SharedCookbook.Application.Memberships.Queries;
 using SharedCookbook.Application.Memberships.Queries.GetMembershipsWithPagination;
@@ -13,5 +14,9 @@ public interface IIdentityUserRepository
 
     Task<PaginatedList<InvitationDto>> GetInvitations(
         GetInvitationsWithPaginationQuery query,
+        CancellationToken cancellationToken);
+
+    Task<PaginatedList<CookbookBriefDto>> GetCookbooks(
+        GetCookbooksWithPaginationQuery query,
         CancellationToken cancellationToken);
 }
