@@ -1281,7 +1281,19 @@
             "type": "string",
             "nullable": true
           },
+          "author": {
+            "type": "string",
+            "nullable": true
+          },
+          "authorEmail": {
+            "type": "string",
+            "nullable": true
+          },
           "membersCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "recipeCount": {
             "type": "integer",
             "format": "int32"
           }
@@ -1513,11 +1525,11 @@
           "title": {
             "type": "string"
           },
-          "authorId": {
+          "author": {
             "type": "string",
             "nullable": true
           },
-          "author": {
+          "authorEmail": {
             "type": "string",
             "nullable": true
           },

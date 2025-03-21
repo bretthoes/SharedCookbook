@@ -8,16 +8,11 @@ public record GetCookbooksWithPaginationQuery : IRequest<PaginatedList<CookbookB
     public int PageSize { get; init; } = 10;
 }
 
-public class GetCookbooksWithPaginationQueryHandler(IApplicationDbContext context, IUser user)
+public class GetCookbooksWithPaginationQueryHandler(IIdentityUserRepository repository)
     : IRequestHandler<GetCookbooksWithPaginationQuery, PaginatedList<CookbookBriefDto>>
 {
     public Task<PaginatedList<CookbookBriefDto>> Handle(
-        GetCookbooksWithPaginationQuery request,
+        GetCookbooksWithPaginationQuery query,
         CancellationToken cancellationToken)
-        => context.Cookbooks
-            .QueryCookbooksForMember(context,
-                user?.Id,
-                request.PageNumber,
-                request.PageSize,
-                cancellationToken);
+        => repository.GetCookbooks(query, cancellationToken);
 }
