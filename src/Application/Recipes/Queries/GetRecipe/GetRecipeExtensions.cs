@@ -22,7 +22,6 @@ internal static class RecipeQueryExtensions
         {
             Id = recipe.Id,
             Title = recipe.Title,
-            AuthorId = recipe.CreatedBy,
             Summary = recipe.Summary,
             Thumbnail = recipe.Thumbnail,
             VideoPath = recipe.VideoPath,

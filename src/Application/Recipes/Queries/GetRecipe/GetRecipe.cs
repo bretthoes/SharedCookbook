@@ -2,14 +2,14 @@
 
 public record GetRecipeQuery(int Id) : IRequest<RecipeDetailedDto>;
 
-public class GetRecipeQueryHandler(IApplicationDbContext context, IIdentityService identityService)
+public class GetRecipeQueryHandler(IApplicationDbContext context, IIdentityService identityService,  IUser user)
     : IRequestHandler<GetRecipeQuery, RecipeDetailedDto>
 {
     public async Task<RecipeDetailedDto> Handle(GetRecipeQuery request, CancellationToken cancellationToken)
     {
         var dto = await context.Recipes
             .QueryRecipeDetailedDto(request.Id, cancellationToken);
- 
+
         Guard.Against.NotFound(request.Id, dto);
 
         // Map the author name separately since this field (ApplicationUser.DisplayName)
@@ -17,7 +17,10 @@ public class GetRecipeQueryHandler(IApplicationDbContext context, IIdentityServi
         // the ApplicationUser object in the domain layer. For collections, this will
         // typically be handled by the IdentityUserRepository. For a single entity like
         // this, it is manually mapped on the line below.
-        dto.Author = await identityService.GetDisplayNameAsync(dto.AuthorId ?? string.Empty);
+        if (user.Id is null) return dto;
+
+        dto.AuthorEmail = await identityService.GetEmailAsync(user.Id);
+        dto.Author = await identityService.GetDisplayNameAsync(user.Id);
 
         return dto;
     }
