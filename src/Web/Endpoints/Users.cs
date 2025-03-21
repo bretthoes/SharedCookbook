@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SharedCookbook.Application.Users.Commands.UpdateUser;
+using SharedCookbook.Application.Users.Queries;
 using SharedCookbook.Infrastructure.Identity;
 
 namespace SharedCookbook.Web.Endpoints;
@@ -10,12 +11,18 @@ public class Users : EndpointGroupBase
     {
         app.MapGroup(this)
             .MapPost(UpdateUser, "/update")
+            .MapGet(GetDisplayName, "/display-name")
             .MapIdentityApi<ApplicationUser>();
     }
-    
-    public async Task<IResult> UpdateUser(ISender sender, [FromBody] UpdateUserCommand command)
+
+    private static async Task<IResult> UpdateUser(ISender sender, [FromBody] UpdateUserCommand command)
     {
         await sender.Send(command);
         return Results.NoContent();
+    }
+
+    private static async Task<string?> GetDisplayName(ISender sender)
+    {
+        return await sender.Send(new GetDisplayNameQuery());
     }
 }
