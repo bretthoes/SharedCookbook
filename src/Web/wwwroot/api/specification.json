@@ -839,6 +839,26 @@
         }
       }
     },
+    "/api/Users/display-name": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "GetDisplayName",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Users/register": {
       "post": {
         "tags": [

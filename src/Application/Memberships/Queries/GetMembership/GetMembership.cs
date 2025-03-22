@@ -27,7 +27,8 @@ public class GetMembershipQueryHandler : IRequestHandler<GetMembershipQuery, Mem
             CanRemoveMember = entity.CanRemoveMember,
             CanSendInvite = entity.CanSendInvite,
             CanEditCookbookDetails = entity.CanEditCookbookDetails,
-            Name = await _identityService.GetDisplayNameAsync(entity.CreatedBy ?? string.Empty)
+            Name = await _identityService.GetDisplayNameAsync(entity.CreatedBy ?? string.Empty),
+            Email = await _identityService.GetEmailAsync(entity.CreatedBy ?? string.Empty)
         };
 
         Guard.Against.NotFound(request.Id, dto);
