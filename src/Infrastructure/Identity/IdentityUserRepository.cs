@@ -55,7 +55,7 @@ public class IdentityUserRepository : IIdentityUserRepository
                     CanSendInvite = member.CanSendInvite,
                     CanRemoveMember = member.CanRemoveMember,
                     CanEditCookbookDetails = member.CanEditCookbookDetails,
-                    Name = user.UserName,
+                    Name = user.DisplayName,
                     Email = user.Email
                 })
             .OrderByName()
