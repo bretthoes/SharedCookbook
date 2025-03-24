@@ -441,8 +441,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .HasColumnName("summary");
 
                     b.Property<string>("Thumbnail")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)")
                         .HasColumnName("thumbnail");
 
                     b.Property<string>("Title")
@@ -502,8 +502,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)")
                         .HasColumnName("text");
 
                     b.HasKey("Id")

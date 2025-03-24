@@ -24,7 +24,7 @@ public class RecipeDirectionConfiguration : IEntityTypeConfiguration<RecipeDirec
             .HasColumnName("recipe_id")
             .IsRequired();
         builder.Property(rd => rd.Text)
-            .HasMaxLength(255)
+            .HasMaxLength(2048)
             .HasColumnName("text")
             .IsRequired();
         builder.Property(rd => rd.Ordinal)
