@@ -11,7 +11,8 @@ public static class CookbookQueryExtensions
         string? userId)
         => cookbooks
             .AsNoTracking()
-            .UserCookbooks(context, userId);
+            .UserCookbooks(context, userId)
+            .OrderByTitle();
             
 
     private static IQueryable<Cookbook> UserCookbooks(
@@ -22,6 +23,6 @@ public static class CookbookQueryExtensions
             .Where(c => context.CookbookMembers
                 .Any(cm => cm.CreatedBy == userId && cm.CookbookId == c.Id));
 
-    private static IQueryable<Cookbook> OrderByTitle(this IQueryable<Cookbook> query)
+    public static IQueryable<Cookbook> OrderByTitle(this IQueryable<Cookbook> query)
         => query.OrderBy(c => c.Title);
 }

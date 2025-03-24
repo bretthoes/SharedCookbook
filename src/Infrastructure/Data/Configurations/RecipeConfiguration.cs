@@ -31,7 +31,7 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
         builder.Property(recipe => recipe.Summary)
             .HasColumnName("summary");
         builder.Property(recipe => recipe.Thumbnail)
-            .HasMaxLength(255)
+            .HasMaxLength(2048)
             .HasColumnName("thumbnail");
         builder.Property(recipe => recipe.VideoPath)
             .HasMaxLength(255)
