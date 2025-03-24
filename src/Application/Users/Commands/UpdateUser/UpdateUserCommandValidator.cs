@@ -4,11 +4,10 @@ public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
 {
     public UpdateUserCommandValidator()
     {
-        // TODO this should not allow special characters,
-        // should also allow international names
         RuleFor(u => u.DisplayName)
-            .MinimumLength(1)
-            .MaximumLength(30)
-            .NotEmpty();
+            .NotNull()
+            .MaximumLength(255)
+            .Matches(@"^[\p{L}\p{M} \-']+$")
+            .WithMessage("Display name can only contain letters, spaces, hyphens, and apostrophes.");
     }
 }

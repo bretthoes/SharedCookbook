@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 using SharedCookbook.Domain.Entities;
 
 namespace SharedCookbook.Infrastructure.Identity;
 
 public class ApplicationUser : IdentityUser
 {
+    [MaxLength(256)]
     public string? DisplayName { get; set; }
     
     public virtual ICollection<Cookbook> Cookbooks { get; set; } = [];

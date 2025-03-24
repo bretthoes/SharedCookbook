@@ -1,5 +1,4 @@
-﻿using SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
-using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
+﻿using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 
 namespace SharedCookbook.Application.Users.Commands.UpdateUser;
 
@@ -12,7 +11,7 @@ public class UpdateUserCommandHandler(IIdentityService service, IUser user)
     {
         Guard.Against.Null(user.Id);
         
-        var result = await service.UpdateUserAsync(user.Id, request.DisplayName);
+        var result = await service.UpdateUserAsync(user.Id, request.DisplayName.Trim());
 
         if (!result.Succeeded) throw new ValidationException("Could not update user.");
     }
