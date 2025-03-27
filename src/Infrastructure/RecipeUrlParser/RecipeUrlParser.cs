@@ -5,6 +5,7 @@ using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 using System.Text.Json;
 using SharedCookbook.Application.Common.Extensions;
+using SharedCookbook.Infrastructure.RecipeUrlParser.Models;
 
 namespace SharedCookbook.Infrastructure.RecipeUrlParser;
 
@@ -25,20 +26,11 @@ public class RecipeUrlParser(
     {
         // Construct the full Spoonacular API URL with query parameters
         var apiUrl = $"{_options.BaseUrl}/recipes/extract";
-
+        
+        var request = GetRequest(url);
+        
         // Create the RestClient
         using var client = new RestClient(apiUrl);
-
-        // Create the RestRequest and add the query parameters
-        var request = new RestRequest();
-
-        // Add query parameters for the request
-        request.AddParameter(name: "url", url);
-        request.AddParameter(name: "forceExtraction", "true");
-        request.AddParameter(name: "analyze", "false");
-        request.AddParameter(name: "includeNutrition", "false");
-        request.AddParameter(name: "includeTaste", "false");
-        request.AddParameter(name: "apiKey", _options.ApiKey);
 
         // Execute the request
         var response = await client.ExecuteAsync(request, cancellationToken);
@@ -51,7 +43,7 @@ public class RecipeUrlParser(
 
                 if (apiResponse != null)
                 {
-                    return await MapToCreateRecipeDto(apiResponse, 0);
+                    return await MapToCreateRecipeDto(apiResponse, cookbookId: 0);
                 }
                 else
                 {
@@ -73,11 +65,21 @@ public class RecipeUrlParser(
 
         throw new Exception("Failed to fetch or parse the recipe from the URL.");
     }
+    
+    private RestRequest GetRequest(string url) =>
+        new RestRequest()
+            .AddParameter(name: "url", url)
+            .AddParameter(name: "forceExtraction", "true")
+            .AddParameter(name: "analyze", "false")
+            .AddParameter(name: "includeNutrition", "false")
+            .AddParameter(name: "includeTaste", "false")
+            .AddParameter(name: "apiKey", _options.ApiKey);
 
     private async Task<CreateRecipeDto> MapToCreateRecipeDto(RecipeApiResponse apiResponse, int cookbookId)
     {
         // Split instructions into individual steps based on double newline characters
-        var steps = apiResponse.Instructions.Split(["\n\n"], StringSplitOptions.RemoveEmptyEntries);
+        string summary = apiResponse.Summary?.RemoveHtml() ?? "";
+        string[] steps = apiResponse.Instructions.RemoveHtml().Split(["\n\n"], StringSplitOptions.RemoveEmptyEntries);
         var hasImage = apiResponse.Image?.IsValidUrl() ?? false;
         var image = "";
         if (apiResponse.Image != null && hasImage)
@@ -89,7 +91,7 @@ public class RecipeUrlParser(
             Images = [new CreateRecipeImageDto { Name= image, Ordinal = 1 }],
             CookbookId = cookbookId,
             // TODO need to handle html in here being viewed as plain text. Also should increase length in db
-            Summary = apiResponse.Summary?.Length > 255 ? apiResponse.Summary[..255] : apiResponse.Summary,
+            Summary = summary.Length > 2048 ? summary[..2048] : summary,
             Servings = apiResponse.Servings,
             PreparationTimeInMinutes = null,
             CookingTimeInMinutes = null,
@@ -101,33 +103,15 @@ public class RecipeUrlParser(
                     Optional = ingredient.Optional,
                     Ordinal = index + 1
                 }).ToList(),
-            Directions = steps.Select((step, index) =>
+            Directions = steps.Select((stepString, index) =>
                 new CreateRecipeDirectionDto
                 {
-                    Text = step.Length > 255 ? step[..255] : step,
+                    Text = stepString.Length > 255 ? stepString[..255] : stepString,
                     Ordinal = index + 1
                 }).ToList()
         };
 
         return createRecipeDto;
     }
-}
-
-// These only exist to deserialize based on matching property names from
-// Spoonacular API; may be better to move these to specific dto folder
-public class RecipeApiResponse
-{
-    public string Title { get; init; } = "";
-    public string? Summary { get; init; }
-    public string? Image { get; init; }
-    public int? Servings { get; init; }
-    public List<Ingredient> ExtendedIngredients { get; init; } = [];
-    public string Instructions { get; init; } = "";
-}
-
-public class Ingredient
-{
-    public string Name { get; set; } = "";
-    public bool Optional { get; set; }
 }
 
