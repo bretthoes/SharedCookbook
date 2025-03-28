@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace SharedCookbook.Application.Common.Extensions
 {
-    public partial static class StringExtensions
+    public static partial class StringExtensions
     {
         [GeneratedRegex(pattern: @"\s+")]
         private static partial Regex ReplaceWithSpacesRegex();

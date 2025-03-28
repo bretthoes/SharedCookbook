@@ -13,27 +13,20 @@ public class EmailSender(IOptions<EmailApiOptions> options, ILogger<EmailSender>
 
     public async Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
-        var authenticator = new HttpBasicAuthenticator("api", _options.ApiKey);
-
         var options = new RestClientOptions(_options.BaseUrl)
         {
-            Authenticator = authenticator
+            Authenticator = new HttpBasicAuthenticator(username: "api", password: _options.ApiKey)
         };
 
         using var client = new RestClient(options);
 
-        var request = new RestRequest
-        {
-            Resource = "{domain}/messages",
-            Method = Method.Post
-        };
+        var request = new RestRequest(resource: $"v3/{_options.Domain}/messages", Method.Post);
 
         // add email parameters to request
-        request.AddParameter("domain", _options.Domain, ParameterType.UrlSegment);
-        request.AddParameter("from", _options.From);
-        request.AddParameter("to", email);
-        request.AddParameter("subject", subject);
-        request.AddParameter("html", htmlMessage);
+        request.AddParameter(name: "from", _options.From);
+        request.AddParameter(name: "to", email);
+        request.AddParameter(name: "subject", subject);
+        request.AddParameter(name: "html", htmlMessage);
 
         var response = await client.ExecuteAsync(request);
         
