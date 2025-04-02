@@ -24,7 +24,7 @@ else
     app.UseHsts();
 }
 
-app.UseHealthChecks("/health");
+app.UseHealthChecks(new PathString("/health"));
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -35,9 +35,9 @@ app.UseSwaggerUi(settings =>
 });
 
 
-app.UseExceptionHandler(options => { });
+app.UseExceptionHandler(_ => { });
 
-app.Map("/", () => Results.Redirect("/api"));
+app.Map(pattern: "/", () => Results.Redirect(url: "/api"));
 
 app.MapEndpoints();
 
