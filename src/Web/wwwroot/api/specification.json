@@ -470,6 +470,43 @@
         ]
       }
     },
+    "/api/Memberships/by-cookbook/{cookbookId}": {
+      "get": {
+        "tags": [
+          "Memberships"
+        ],
+        "operationId": "GetMembershipByCookbook",
+        "parameters": [
+          {
+            "name": "cookbookId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MembershipDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/Memberships": {
       "get": {
         "tags": [

@@ -6,6 +6,8 @@ public interface IIdentityService
 {
     Task<UserDto?> FindByEmailAsync(string email);
     
+    Task<UserDto?> FindByIdAsync(string id);
+    
     Task<string?> GetUserNameAsync(string userId);
     
     Task<string?> GetEmailAsync(string userId);

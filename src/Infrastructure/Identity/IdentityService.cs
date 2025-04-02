@@ -28,6 +28,14 @@ public class IdentityService : IIdentityService
             ? null
             : MapApplicationUserToUserDto(user);
     }
+    
+    public async Task<UserDto?> FindByIdAsync(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        return user == null
+            ? null
+            : MapApplicationUserToUserDto(user);
+    }
 
     public async Task<string?> GetUserNameAsync(string userId)
     {
@@ -121,7 +129,8 @@ public class IdentityService : IIdentityService
         {
             Id = user.Id,
             UserName = user.UserName,
-            Email = user.Email ?? string.Empty
+            Email = user.Email ?? string.Empty,
+            DisplayName = user.DisplayName
         };
     }
 }
