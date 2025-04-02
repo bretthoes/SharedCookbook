@@ -19,10 +19,9 @@ public class InvitationAcceptedEventHandler : INotificationHandler<InvitationAcc
                                 && member.CreatedBy == newMembership.CreatedBy,
                 cancellationToken);
         
-        if (!membershipAlreadyExists)
-        {
-            await _context.CookbookMembers.AddAsync(newMembership, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);    
-        }
+        if (membershipAlreadyExists) return;
+        
+        await _context.CookbookMembers.AddAsync(newMembership, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
     }
 }
