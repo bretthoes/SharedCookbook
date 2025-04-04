@@ -6,19 +6,15 @@ namespace SharedCookbook.Web.Infrastructure;
 
 public class CustomExceptionHandler : IExceptionHandler
 {
-    private readonly Dictionary<Type, Func<HttpContext, Exception, Task>> _exceptionHandlers;
-
-    public CustomExceptionHandler()
+    private readonly Dictionary<Type, Func<HttpContext, Exception, Task>> _exceptionHandlers = new()
     {
         // Register known exception types and handlers.
-        _exceptionHandlers = new Dictionary<Type, Func<HttpContext, Exception, Task>>
-        {
-            { typeof(ValidationException), HandleValidationException },
-            { typeof(NotFoundException), HandleNotFoundException },
-            { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException },
-            { typeof(ForbiddenAccessException), HandleForbiddenAccessException },
-        };
-    }
+        { typeof(ValidationException), HandleValidationException },
+        { typeof(NotFoundException), HandleNotFoundException },
+        { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException },
+        { typeof(ForbiddenAccessException), HandleForbiddenAccessException },
+        {typeof(ConflictException), HandleConflictException }
+    };
 
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception,
         CancellationToken cancellationToken)
@@ -84,6 +80,18 @@ public class CustomExceptionHandler : IExceptionHandler
             Status = StatusCodes.Status403Forbidden,
             Title = "Forbidden",
             Type = "https://tools.ietf.org/html/rfc7231#section-6.5.3"
+        });
+    }
+    
+    private static async Task HandleConflictException(HttpContext httpContext, Exception ex)
+    {
+        httpContext.Response.StatusCode = StatusCodes.Status409Conflict;
+
+        await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
+        {
+            Status = StatusCodes.Status409Conflict,
+            Title = "Conflict",
+            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.8"
         });
     }
 }
