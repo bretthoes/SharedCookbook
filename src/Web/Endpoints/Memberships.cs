@@ -1,6 +1,7 @@
 using SharedCookbook.Application.Common.Models;
 using SharedCookbook.Application.Memberships.Commands.DeleteMembership;
 using SharedCookbook.Application.Memberships.Commands.PatchMembership;
+using SharedCookbook.Application.Memberships.Commands.UpdateMembership;
 using SharedCookbook.Application.Memberships.Queries;
 using SharedCookbook.Application.Memberships.Queries.GetMembership;
 using SharedCookbook.Application.Memberships.Queries.GetMembershipByCookbook;
@@ -18,6 +19,7 @@ public class Memberships : EndpointGroupBase
             .MapGet(GetMembershipByCookbook, pattern: "by-cookbook/{cookbookId}")
             .MapGet(GetMembershipsWithPagination)
             .MapPatch(PatchMembership, pattern: "{id}")
+            .MapPut(UpdateMembership, pattern: "{id}")
             .MapDelete(DeleteMembership, pattern: "{id}");
     }
 
@@ -37,6 +39,13 @@ public class Memberships : EndpointGroupBase
         => sender.Send(query);
 
     private static async Task<IResult> PatchMembership(ISender sender, int id, PatchMembershipCommand command)
+    {
+        if (id != command.Id) return Results.BadRequest();
+        await sender.Send(command);
+        return Results.NoContent();
+    }
+    
+    private static async Task<IResult> UpdateMembership(ISender sender, int id, UpdateMembershipCommand command)
     {
         if (id != command.Id) return Results.BadRequest();
         await sender.Send(command);

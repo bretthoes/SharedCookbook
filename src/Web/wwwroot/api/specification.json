@@ -441,6 +441,46 @@
           }
         ]
       },
+      "put": {
+        "tags": [
+          "Memberships"
+        ],
+        "operationId": "UpdateMembership",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMembershipCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      },
       "delete": {
         "tags": [
           "Memberships"
@@ -1568,6 +1608,37 @@
           "id": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "UpdateMembershipCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isCreator": {
+            "type": "boolean"
+          },
+          "canAddRecipe": {
+            "type": "boolean"
+          },
+          "canUpdateRecipe": {
+            "type": "boolean"
+          },
+          "canDeleteRecipe": {
+            "type": "boolean"
+          },
+          "canSendInvite": {
+            "type": "boolean"
+          },
+          "canRemoveMember": {
+            "type": "boolean"
+          },
+          "canEditCookbookDetails": {
+            "type": "boolean"
           }
         }
       },
