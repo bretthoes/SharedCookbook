@@ -9,4 +9,6 @@ public class RecipeApiResponse
     public int? Servings { get; init; }
     public List<Ingredient> ExtendedIngredients { get; init; } = [];
     public string Instructions { get; init; } = "";
+    public int PreparationMinutes { get; set; }
+    public int CookingMinutes { get; set; }
 }

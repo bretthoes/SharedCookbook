@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RestSharp;
@@ -45,10 +46,8 @@ public class RecipeUrlParser(
                 {
                     return await MapToCreateRecipeDto(apiResponse, cookbookId: 0);
                 }
-                else
-                {
-                    throw new Exception("Failed to deserialize the recipe data.");
-                }
+
+                throw new Exception("Failed to deserialize the recipe data.");
             }
             catch (JsonException ex)
             {
@@ -79,7 +78,11 @@ public class RecipeUrlParser(
     {
         // Split instructions into individual steps based on double newline characters
         string summary = apiResponse.Summary?.RemoveHtml() ?? "";
-        string[] steps = apiResponse.Instructions.RemoveHtml().Split(["\n\n"], StringSplitOptions.RemoveEmptyEntries);
+        string summaryDecoded = WebUtility.HtmlDecode(summary);
+        string instructionsDecoded = WebUtility.HtmlDecode(apiResponse.Instructions);
+        string[] steps = instructionsDecoded.Split(["\n\n"], StringSplitOptions.RemoveEmptyEntries);
+        foreach (string step in steps) step.RemoveHtml();
+        
         var hasImage = apiResponse.Image?.IsValidUrl() ?? false;
         var image = "";
         if (apiResponse.Image != null && hasImage)
@@ -88,19 +91,20 @@ public class RecipeUrlParser(
         var createRecipeDto = new CreateRecipeDto
         {
             Title = apiResponse.Title.Length > 255 ? apiResponse.Title[..255] : apiResponse.Title,
-            Images = [new CreateRecipeImageDto { Name= image, Ordinal = 1 }],
+            Images = string.IsNullOrWhiteSpace(image)
+                ? []
+                : [new CreateRecipeImageDto { Name= image, Ordinal = 1 }],
             CookbookId = cookbookId,
-            // TODO need to handle html in here being viewed as plain text. Also should increase length in db
-            Summary = summary.Length > 2048 ? summary[..2048] : summary,
+            Summary = summaryDecoded.Length > 2048 ? summaryDecoded[..2048] : summaryDecoded,
             Servings = apiResponse.Servings,
-            PreparationTimeInMinutes = null,
-            CookingTimeInMinutes = null,
+            PreparationTimeInMinutes = apiResponse.PreparationMinutes,
+            CookingTimeInMinutes = apiResponse.CookingMinutes,
             BakingTimeInMinutes = null,
             Ingredients = apiResponse.ExtendedIngredients.Select((ingredient, index) =>
                 new CreateRecipeIngredientDto
                 {
-                    Name = ingredient.Name,
-                    Optional = ingredient.Optional,
+                    Name = ingredient.Original,
+                    Optional = false,
                     Ordinal = index + 1
                 }).ToList(),
             Directions = steps.Select((stepString, index) =>
