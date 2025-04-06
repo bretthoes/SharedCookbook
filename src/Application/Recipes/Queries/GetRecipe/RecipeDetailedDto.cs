@@ -23,6 +23,20 @@ public class RecipeDetailedDto
     public int? BakingTimeInMinutes { get; init; }
 
     public int? Servings { get; init; }
+    
+    public bool? IsVegetarian { get; set; }
+    
+    public bool? IsVegan { get; set; }
+    
+    public bool? IsGlutenFree { get; set; }
+    
+    public bool? IsDairyFree { get; set; }
+    
+    public bool? IsHealthy { get; set; }
+    
+    public bool? IsCheap { get; set; }
+    
+    public bool? IsLowFodmap { get; set; }
 
     public virtual ICollection<RecipeDirection> Directions { get; init; } = [];
 

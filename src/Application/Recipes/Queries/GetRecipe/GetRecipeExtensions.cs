@@ -31,6 +31,13 @@ internal static class RecipeQueryExtensions
             Servings = recipe.Servings,
             Directions = recipe.Directions,
             Images = recipe.Images,
-            Ingredients = recipe.Ingredients
+            Ingredients = recipe.Ingredients,
+            IsVegan = recipe.IsVegan,
+            IsVegetarian = recipe.IsVegetarian,
+            IsCheap = recipe.IsCheap,
+            IsHealthy = recipe.IsHealthy,
+            IsDairyFree = recipe.IsDairyFree,
+            IsGlutenFree = recipe.IsGlutenFree,
+            IsLowFodmap = recipe.IsLowFodmap,
         };
 }
