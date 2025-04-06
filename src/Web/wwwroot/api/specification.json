@@ -2062,6 +2062,34 @@
                 "format": "int32",
                 "nullable": true
               },
+              "isVegetarian": {
+                "type": "boolean",
+                "nullable": true
+              },
+              "isVegan": {
+                "type": "boolean",
+                "nullable": true
+              },
+              "isGlutenFree": {
+                "type": "boolean",
+                "nullable": true
+              },
+              "isDairyFree": {
+                "type": "boolean",
+                "nullable": true
+              },
+              "isHealthy": {
+                "type": "boolean",
+                "nullable": true
+              },
+              "isCheap": {
+                "type": "boolean",
+                "nullable": true
+              },
+              "isLowFodmap": {
+                "type": "boolean",
+                "nullable": true
+              },
               "cookbook": {
                 "nullable": true,
                 "oneOf": [
