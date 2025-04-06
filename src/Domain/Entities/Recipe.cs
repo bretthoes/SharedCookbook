@@ -19,7 +19,21 @@ public class Recipe : BaseAuditableEntity
     public int? BakingTimeInMinutes { get; set; }
 
     public int? Servings { get; set; }
-
+    
+    public bool? IsVegetarian { get; set; }
+    
+    public bool? IsVegan { get; set; }
+    
+    public bool? IsGlutenFree { get; set; }
+    
+    public bool? IsDairyFree { get; set; }
+    
+    public bool? IsHealthy { get; set; }
+    
+    public bool? IsCheap { get; set; }
+    
+    public bool? IsLowFodmap { get; set; }
+    
     public Cookbook? Cookbook { get; set; }
 
     public RecipeNutrition? Nutrition { get; set; }
