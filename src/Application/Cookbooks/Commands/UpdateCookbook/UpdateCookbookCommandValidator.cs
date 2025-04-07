@@ -4,10 +4,10 @@ public class UpdateCookbookCommandValidator : AbstractValidator<UpdateCookbookCo
 {
     public UpdateCookbookCommandValidator()
     {
-        RuleFor(v => v.Title)
-            .MaximumLength(200)
-            .NotEmpty();
-        RuleFor(v => v.Image)
-            .NotEmpty();
+        RuleFor(command => command.Title)
+            .MinimumLength(1)
+            .MaximumLength(255)
+            .NotEmpty()
+            .NotNull();
     }
 }
