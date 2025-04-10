@@ -6,6 +6,8 @@ using SharedCookbook.Application.Cookbooks.Queries.GetCookbooksWithPagination;
 using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
 using SharedCookbook.Application.Memberships.Queries;
 using SharedCookbook.Application.Memberships.Queries.GetMembershipsWithPagination;
+using SharedCookbook.Application.Recipes.Queries.GetRecipe;
+using SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
 using SharedCookbook.Infrastructure.Data;
 using SharedCookbook.Infrastructure.Identity.RepositoryExtensions;
 
@@ -65,8 +67,7 @@ public class IdentityUserRepository : IIdentityUserRepository
     public Task<PaginatedList<InvitationDto>> GetInvitations(
         GetInvitationsWithPaginationQuery query,
         CancellationToken cancellationToken)
-    {
-        return _context.CookbookInvitations
+        => _context.CookbookInvitations
             .AsNoTracking()
             .GetInvitationsForUserByStatus(_user.Id, query.Status)
             .Join(
@@ -89,7 +90,6 @@ public class IdentityUserRepository : IIdentityUserRepository
                 })
             .OrderByMostRecentlyCreated()
             .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
-    }
     
     public Task<PaginatedList<CookbookBriefDto>> GetCookbooks(
         GetCookbooksWithPaginationQuery query,
@@ -108,6 +108,43 @@ public class IdentityUserRepository : IIdentityUserRepository
                     RecipeCount = cookbook.Recipes.Count,
                     Author = user.DisplayName,
                     AuthorEmail = user.Email ?? ""
+                })
+            .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
+
+    public Task<PaginatedList<RecipeDetailedDto>> GetRecipes(
+        GetRecipesWithPaginationQuery query,
+        CancellationToken cancellationToken)
+        =>_context.Recipes.AsNoTracking()
+            .HasCookbookId(query.CookbookId)
+            .TitleContains(query.Search)
+            .IncludeRecipeDetails()
+            .OrderByTitle()
+            .Join(_context.People,
+                recipe => recipe.CreatedBy,
+                user => user.Id,
+                (recipe, user) => new RecipeDetailedDto
+                {
+                    Id = recipe.Id,
+                    Title = recipe.Title,
+                    Summary = recipe.Summary,
+                    AuthorEmail = user.Email,
+                    Author = user.DisplayName,
+                    Thumbnail = recipe.Thumbnail,
+                    VideoPath = recipe.VideoPath,
+                    PreparationTimeInMinutes = recipe.PreparationTimeInMinutes,
+                    CookingTimeInMinutes = recipe.CookingTimeInMinutes,
+                    BakingTimeInMinutes = recipe.BakingTimeInMinutes,
+                    Servings = recipe.Servings,
+                    Directions = recipe.Directions,
+                    Images = recipe.Images,
+                    Ingredients = recipe.Ingredients,
+                    IsVegan = recipe.IsVegan,
+                    IsVegetarian = recipe.IsVegetarian,
+                    IsCheap = recipe.IsCheap,
+                    IsHealthy = recipe.IsHealthy,
+                    IsDairyFree = recipe.IsDairyFree,
+                    IsGlutenFree = recipe.IsGlutenFree,
+                    IsLowFodmap = recipe.IsLowFodmap,
                 })
             .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
 }
