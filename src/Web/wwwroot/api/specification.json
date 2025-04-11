@@ -694,7 +694,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedListOfRecipeBriefDto"
+                  "$ref": "#/components/schemas/PaginatedListOfRecipeDetailedDto"
                 }
               }
             }
@@ -1872,14 +1872,14 @@
           }
         ]
       },
-      "PaginatedListOfRecipeBriefDto": {
+      "PaginatedListOfRecipeDetailedDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "items": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/RecipeBriefDto"
+              "$ref": "#/components/schemas/RecipeDetailedDto"
             }
           },
           "pageNumber": {
@@ -1899,19 +1899,6 @@
           },
           "hasNextPage": {
             "type": "boolean"
-          }
-        }
-      },
-      "RecipeBriefDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "title": {
-            "type": "string"
           }
         }
       },
