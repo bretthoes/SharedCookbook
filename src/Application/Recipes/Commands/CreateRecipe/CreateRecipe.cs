@@ -61,7 +61,7 @@ public class CreateRecipeCommandValidator : AbstractValidator<CreateRecipeComman
     public CreateRecipeCommandValidator()
     {
         RuleFor(x => x.Recipe.Title)
-            .MinimumLength(3)
+            .MinimumLength(1)
             .MaximumLength(255)
             .WithMessage("New recipe title must be at least 3 characters and less than 255.");
 
@@ -79,9 +79,9 @@ public class CreateRecipeCommandValidator : AbstractValidator<CreateRecipeComman
             .ChildRules(ingredient =>
             {
                 ingredient.RuleFor(i => i.Text)
-                    .MinimumLength(3)
+                    .MinimumLength(1)
                     .MaximumLength(255)
-                    .WithMessage("Each direction's text must be at least 3 characters and less than 255.");
+                    .WithMessage("Each direction's text must be at least 1 characters and less than 255.");
             });
 
         RuleFor(x => x.Recipe.Ingredients)
@@ -94,9 +94,9 @@ public class CreateRecipeCommandValidator : AbstractValidator<CreateRecipeComman
             .ChildRules(ingredient =>
             {
                 ingredient.RuleFor(i => i.Name)
-                    .MinimumLength(3)
+                    .MinimumLength(1)
                     .MaximumLength(255)
-                    .WithMessage("Each ingredient's name must be at least 3 characters and less than 255.");
+                    .WithMessage("Each ingredient's name must be at least 1 character and less than 255.");
             });
 
         RuleFor(x => x.Recipe.Images)
