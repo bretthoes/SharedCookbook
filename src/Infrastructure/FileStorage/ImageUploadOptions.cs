@@ -7,4 +7,6 @@ public class ImageUploadOptions
     public required string AwsSecretAccessKey { get; init; }
     public required string Region { get; init; }
     public required string ToolkitArtifactGuid { get; init; }
+
+    public string ImageBaseUrl => $"https://{BucketName}.s3.{Region}.amazonaws.com/";
 }

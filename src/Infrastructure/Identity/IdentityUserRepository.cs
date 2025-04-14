@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Application.Common.Mappings;
 using SharedCookbook.Application.Common.Models;
@@ -8,7 +9,9 @@ using SharedCookbook.Application.Memberships.Queries;
 using SharedCookbook.Application.Memberships.Queries.GetMembershipsWithPagination;
 using SharedCookbook.Application.Recipes.Queries.GetRecipe;
 using SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
+using SharedCookbook.Domain.Entities;
 using SharedCookbook.Infrastructure.Data;
+using SharedCookbook.Infrastructure.FileStorage;
 using SharedCookbook.Infrastructure.Identity.RepositoryExtensions;
 
 namespace SharedCookbook.Infrastructure.Identity;
@@ -29,11 +32,13 @@ public class IdentityUserRepository : IIdentityUserRepository
 {
     private readonly ApplicationDbContext _context;
     private readonly IUser _user;
+    private readonly IOptions<ImageUploadOptions> _options;
 
-    public IdentityUserRepository(ApplicationDbContext context, IUser user)
+    public IdentityUserRepository(ApplicationDbContext context, IUser user, IOptions<ImageUploadOptions> options)
     {
         _context = context;
         _user = user;
+        _options = options;
     }
 
     public async Task<PaginatedList<MembershipDto>> GetMemberships(
@@ -82,9 +87,9 @@ public class IdentityUserRepository : IIdentityUserRepository
                     CookbookTitle = invitation.Cookbook == null
                         ? ""
                         : invitation.Cookbook.Title,
-                    CookbookImage = invitation.Cookbook == null
+                    CookbookImage = invitation.Cookbook == null || string.IsNullOrWhiteSpace(invitation.Cookbook.Image)
                         ? ""
-                        : invitation.Cookbook.Image,
+                        : $"{_options.Value.ImageBaseUrl}{invitation.Cookbook.Image}",
                     SenderName = user.DisplayName ?? "",
                     SenderEmail = user.Email
                 })
@@ -103,7 +108,9 @@ public class IdentityUserRepository : IIdentityUserRepository
                 {
                     Id = cookbook.Id,
                     Title = cookbook.Title,
-                    Image = cookbook.Image,
+                    Image = string.IsNullOrWhiteSpace(cookbook.Image)
+                        ? ""
+                        : $"{_options.Value.ImageBaseUrl}{cookbook.Image}",
                     MembersCount = cookbook.CookbookMembers.Count,
                     RecipeCount = cookbook.Recipes.Count,
                     Author = user.DisplayName,
@@ -129,14 +136,23 @@ public class IdentityUserRepository : IIdentityUserRepository
                     Summary = recipe.Summary,
                     AuthorEmail = user.Email,
                     Author = user.DisplayName,
-                    Thumbnail = recipe.Thumbnail,
-                    VideoPath = recipe.VideoPath,
+                    Thumbnail = string.IsNullOrWhiteSpace(recipe.Thumbnail)
+                        ? ""
+                        : $"{_options.Value.ImageBaseUrl}{recipe.Thumbnail}",
+                    VideoPath = string.IsNullOrWhiteSpace(recipe.VideoPath)
+                        ? ""
+                        : $"{_options.Value.ImageBaseUrl}{recipe.VideoPath}",
                     PreparationTimeInMinutes = recipe.PreparationTimeInMinutes,
                     CookingTimeInMinutes = recipe.CookingTimeInMinutes,
                     BakingTimeInMinutes = recipe.BakingTimeInMinutes,
                     Servings = recipe.Servings,
                     Directions = recipe.Directions,
-                    Images = recipe.Images,
+                    Images = recipe.Images.Select(image => new RecipeImage
+                    {
+                        Id = image.Id,
+                        Name = $"{_options.Value.ImageBaseUrl}{image.Name}",
+                        Ordinal = image.Ordinal,
+                    }).ToList(),
                     Ingredients = recipe.Ingredients,
                     IsVegan = recipe.IsVegan,
                     IsVegetarian = recipe.IsVegetarian,
