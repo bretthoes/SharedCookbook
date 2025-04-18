@@ -6,10 +6,12 @@ using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 using System.Text.Json;
 using SharedCookbook.Application.Common.Extensions;
+using SharedCookbook.Domain.Entities;
 using SharedCookbook.Infrastructure.RecipeUrlParser.Models;
 
 namespace SharedCookbook.Infrastructure.RecipeUrlParser;
 
+// TODO class needs refactoring
 public class RecipeUrlParser(
     IOptions<RecipeUrlParserOptions> options,
     IImageUploadService imageUploadService,
@@ -103,14 +105,16 @@ public class RecipeUrlParser(
             Ingredients = apiResponse.ExtendedIngredients.Select((ingredient, index) =>
                 new CreateRecipeIngredientDto
                 {
-                    Name = ingredient.Original,
+                    Name = ingredient.Original.Length > 255 ? ingredient.Original[..255] : ingredient.Original,
                     Optional = false,
                     Ordinal = index + 1
                 }).ToList(),
             Directions = steps.Select((stepString, index) =>
                 new CreateRecipeDirectionDto
                 {
-                    Text = stepString.Length > 255 ? stepString[..255] : stepString,
+                    Text = stepString.Length > RecipeDirection.Constraints.TextMaxLength
+                        ? stepString[..RecipeDirection.Constraints.TextMaxLength]
+                        : stepString,
                     Ordinal = index + 1
                 }).ToList()
         };
