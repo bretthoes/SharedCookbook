@@ -5,8 +5,8 @@ public class CreateCookbookCommandValidator : AbstractValidator<CreateCookbookCo
     public CreateCookbookCommandValidator()
     {
         RuleFor(v => v.Title)
-            .MinimumLength(1)
-            .MaximumLength(255)
+            .MinimumLength(Cookbook.Constraints.TitleMinLength)
+            .MaximumLength(Cookbook.Constraints.TitleMaxLength)
             .NotEmpty()
             .NotNull();
     }

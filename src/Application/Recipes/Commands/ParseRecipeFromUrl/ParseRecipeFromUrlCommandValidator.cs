@@ -7,11 +7,10 @@ public class ParseRecipeFromUrlCommandValidator : AbstractValidator<ParseRecipeF
 {
     public ParseRecipeFromUrlCommandValidator()
     {
-        RuleFor(f => f.Url)
+        RuleFor(command => command.Url)
             .NotNull()
             .NotEmpty()
-            .Must(url => url.IsValidUrl())
-            .WithMessage("Must provide a valid URL.")
-            .WithErrorCode(HttpStatusCode.BadRequest.ToString());
+            .Must(urlString => urlString.IsValidUrl())
+            .WithMessage("Must provide a valid URL.");
     }
 }

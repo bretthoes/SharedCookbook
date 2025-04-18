@@ -5,12 +5,12 @@ public class GetMembershipsWithPaginationQueryValidator : AbstractValidator<GetM
     public GetMembershipsWithPaginationQueryValidator()
     {
         RuleFor(x => x.CookbookId)
-            .GreaterThanOrEqualTo(1).WithMessage("CookbookId at least greater than or equal to 1.");
+            .GreaterThan(0).WithMessage("CookbookId at least greater than or equal to 1.");
 
         RuleFor(x => x.PageNumber)
-            .GreaterThanOrEqualTo(1).WithMessage("PageNumber at least greater than or equal to 1.");
+            .GreaterThan(0).WithMessage("PageNumber at least greater than or equal to 1.");
 
         RuleFor(x => x.PageSize)
-            .GreaterThanOrEqualTo(1).WithMessage("PageSize at least greater than or equal to 1.");
+            .GreaterThan(0).WithMessage("PageSize at least greater than or equal to 1.");
     }
 }

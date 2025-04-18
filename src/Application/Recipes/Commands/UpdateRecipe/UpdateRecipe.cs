@@ -7,35 +7,35 @@ public class UpdateRecipeCommandHandler(IApplicationDbContext context)
 {
     public async Task<int> Handle(UpdateRecipeCommand request, CancellationToken cancellationToken)
     {
-        var entity = await context.Recipes
-            .Include(r => r.Ingredients)
-            .Include(r => r.Directions)
-            .Include(r => r.Images)
-            .Include(r => r.Nutrition)
-            .Include(r => r.IngredientCategories)
-            .FirstOrDefaultAsync(r => r.Id == request.Recipe.Id, cancellationToken);
+        var recipe = await context.Recipes
+            .Include(navigationPropertyPath: recipe => recipe.Ingredients)
+            .Include(navigationPropertyPath: recipe => recipe.Directions)
+            .Include(navigationPropertyPath: recipe => recipe.Images)
+            .Include(navigationPropertyPath: recipe => recipe.Nutrition)
+            .Include(navigationPropertyPath: recipe => recipe.IngredientCategories)
+            .FirstOrDefaultAsync(recipe => recipe.Id == request.Recipe.Id, cancellationToken);
 
-        Guard.Against.NotFound(request.Recipe.Id, entity);
+        Guard.Against.NotFound(request.Recipe.Id, recipe);
 
         // Update primitive properties
-        entity.Title = request.Recipe.Title;
-        entity.Summary = request.Recipe.Summary;
-        entity.Thumbnail = request.Recipe.Thumbnail;
-        entity.VideoPath = request.Recipe.VideoPath;
-        entity.PreparationTimeInMinutes = request.Recipe.PreparationTimeInMinutes;
-        entity.CookingTimeInMinutes = request.Recipe.CookingTimeInMinutes;
-        entity.BakingTimeInMinutes = request.Recipe.BakingTimeInMinutes;
-        entity.Servings = request.Recipe.Servings;
+        recipe.Title = request.Recipe.Title;
+        recipe.Summary = request.Recipe.Summary;
+        recipe.Thumbnail = request.Recipe.Thumbnail;
+        recipe.VideoPath = request.Recipe.VideoPath;
+        recipe.PreparationTimeInMinutes = request.Recipe.PreparationTimeInMinutes;
+        recipe.CookingTimeInMinutes = request.Recipe.CookingTimeInMinutes;
+        recipe.BakingTimeInMinutes = request.Recipe.BakingTimeInMinutes;
+        recipe.Servings = request.Recipe.Servings;
 
         // Update collections
-        UpdateCollection(entity.Ingredients, request.Recipe.Ingredients);
-        UpdateCollection(entity.Directions, request.Recipe.Directions);
-        UpdateCollection(entity.Images, request.Recipe.Images);
-        UpdateCollection(entity.IngredientCategories, request.Recipe.IngredientCategories);
+        UpdateCollection(recipe.Ingredients, newCollection: request.Recipe.Ingredients);
+        UpdateCollection(recipe.Directions, newCollection: request.Recipe.Directions);
+        UpdateCollection(recipe.Images, newCollection: request.Recipe.Images);
+        UpdateCollection(recipe.IngredientCategories, newCollection: request.Recipe.IngredientCategories);
 
         await context.SaveChangesAsync(cancellationToken);
         
-        return entity.Id;
+        return recipe.Id;
     }
 
     private static void UpdateCollection<T>(ICollection<T> existingCollection, ICollection<T> newCollection)

@@ -5,8 +5,8 @@ public class UpdateCookbookCommandValidator : AbstractValidator<UpdateCookbookCo
     public UpdateCookbookCommandValidator()
     {
         RuleFor(command => command.Title)
-            .MinimumLength(1)
-            .MaximumLength(255)
+            .MinimumLength(Cookbook.Constraints.TitleMinLength)
+            .MaximumLength(Cookbook.Constraints.TitleMaxLength)
             .NotEmpty()
             .NotNull();
     }

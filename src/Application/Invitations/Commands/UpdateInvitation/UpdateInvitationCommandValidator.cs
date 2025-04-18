@@ -6,7 +6,7 @@ public class UpdateInvitationCommandValidator : AbstractValidator<UpdateInvitati
 {
     public UpdateInvitationCommandValidator()
     {
-        RuleFor(x => x.NewStatus)
+        RuleFor(command => command.NewStatus)
             .IsInEnum()
             .WithMessage("NewStatus must be a valid status: 0=Unknown, 1=Sent, 2=Accepted, or 3=Rejected.")
             .Must(status => Enum.IsDefined(typeof(CookbookInvitationStatus), status))
