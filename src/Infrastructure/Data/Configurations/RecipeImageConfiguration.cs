@@ -10,31 +10,32 @@ public class RecipeImageConfiguration : IEntityTypeConfiguration<RecipeImage>
     {
         builder.ToTable("recipe_image");
 
-        builder.HasKey(ri => ri.Id)
+        builder.HasKey(recipeImage => recipeImage.Id)
             .HasName("PK_recipe_image_id");
 
-        builder.HasIndex(ri => ri.RecipeId, "IX_recipe_image__recipe_id");
+        builder.HasIndex(recipeImage => recipeImage.RecipeId,
+            name: "IX_recipe_image__recipe_id");
 
-        builder.Property(ri => ri.Id)
+        builder.Property(recipeImage => recipeImage.Id)
             .HasColumnName("recipe_image_id")
             .IsRequired();
 
-        builder.Property(ri => ri.RecipeId)
+        builder.Property(recipeImage => recipeImage.RecipeId)
             .HasColumnName("recipe_id")
             .IsRequired();
 
-        builder.Property(ri => ri.Name)
-            .HasMaxLength(2048)
+        builder.Property(recipeImage => recipeImage.Name)
+            .HasMaxLength(RecipeImage.Constraints.NameMaxLength)
             .HasColumnName("name")
             .IsRequired();
 
-        builder.Property(ri => ri.Ordinal)
+        builder.Property(recipeImage => recipeImage.Ordinal)
             .HasColumnName("ordinal")
             .IsRequired();
 
         builder.HasOne<Recipe>()
-            .WithMany(r => r.Images)
-            .HasForeignKey(ri => ri.RecipeId)
+            .WithMany(recipe => recipe.Images)
+            .HasForeignKey(recipeImage => recipeImage.RecipeId)
             .HasConstraintName("FK_recipe_image__recipe_id");
     }
 }

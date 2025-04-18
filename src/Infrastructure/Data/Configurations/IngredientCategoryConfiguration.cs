@@ -23,7 +23,7 @@ public class IngredientCategoryConfiguration : IEntityTypeConfiguration<Ingredie
         builder.Property(category => category.RecipeId)
             .HasColumnName("recipe_id");
         builder.Property(category => category.Title)
-            .HasMaxLength(255)
+            .HasMaxLength(IngredientCategory.Constraints.TitleMaxLength)
             .HasColumnName("title")
             .IsRequired();
 

@@ -25,16 +25,17 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
             .HasColumnName("cookbook_id")
             .IsRequired();
         builder.Property(recipe => recipe.Title)
-            .HasMaxLength(255)
+            .HasMaxLength(Recipe.Constraints.TitleMaxLength)
             .HasColumnName("title")
             .IsRequired();
         builder.Property(recipe => recipe.Summary)
+            .HasMaxLength(Recipe.Constraints.SummaryMaxLength)
             .HasColumnName("summary");
         builder.Property(recipe => recipe.Thumbnail)
-            .HasMaxLength(2048)
+            .HasMaxLength(Recipe.Constraints.ThumbnailMaxLength)
             .HasColumnName("thumbnail");
         builder.Property(recipe => recipe.VideoPath)
-            .HasMaxLength(255)
+            .HasMaxLength(Recipe.Constraints.VideoPathMaxLength)
             .HasColumnName("video_path");
         builder.Property(recipe => recipe.PreparationTimeInMinutes)
             .HasColumnName("preparation_time_in_minutes");

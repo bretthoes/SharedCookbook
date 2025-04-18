@@ -34,7 +34,7 @@ public class CookbookNotificationConfiguration : IEntityTypeConfiguration<Cookbo
         builder.Property(notification => notification.ActionType)
             .HasColumnName("action_type")
             .HasConversion<string>()
-            .HasMaxLength(255)
+            .HasMaxLength(CookbookNotification.Constraints.ActionTypeMaxLength)
             .IsRequired();
         builder.Property(notification => notification.Created)
             .HasColumnName("created")

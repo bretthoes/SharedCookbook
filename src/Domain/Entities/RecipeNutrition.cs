@@ -2,19 +2,19 @@
 
 public class RecipeNutrition : BaseAuditableEntity
 {
-    public required int RecipeId { get; set; }
+    public required int RecipeId { get; init; }
 
-    public int? Calories { get; set; }
+    public int? Calories { get; init; }
 
-    public int? Protein { get; set; }
+    public int? Protein { get; init; }
 
-    public int? Fat { get; set; }
+    public int? Fat { get; init; }
 
-    public int? Carbohydrates { get; set; }
+    public int? Carbohydrates { get; init; }
 
-    public int? Sugar { get; set; }
+    public int? Sugar { get; init; }
 
-    public int? Fiber { get; set; }
+    public int? Fiber { get; init; }
 
-    public int? Sodium { get; set; }
+    public int? Sodium { get; init; }
 }

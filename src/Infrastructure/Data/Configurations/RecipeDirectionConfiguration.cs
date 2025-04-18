@@ -10,33 +10,33 @@ public class RecipeDirectionConfiguration : IEntityTypeConfiguration<RecipeDirec
     {
         builder.ToTable("recipe_direction");
 
-        builder.HasKey(rd => rd.Id)
+        builder.HasKey(recipeDirection => recipeDirection.Id)
             .HasName("PK_recipe_direction_id");
 
         builder.HasIndex(
-            rd => rd.RecipeId,
+            recipeDirection => recipeDirection.RecipeId,
             name: "IX_recipe_direction__recipe_id");
 
-        builder.Property(rd => rd.Id)
+        builder.Property(recipeDirection => recipeDirection.Id)
             .HasColumnName("recipe_direction_id")
             .IsRequired();
-        builder.Property(rd => rd.RecipeId)
+        builder.Property(recipeDirection => recipeDirection.RecipeId)
             .HasColumnName("recipe_id")
             .IsRequired();
-        builder.Property(rd => rd.Text)
+        builder.Property(recipeDirection => recipeDirection.Text)
             .HasMaxLength(RecipeDirection.Constraints.TextMaxLength)
             .HasColumnName("text")
             .IsRequired();
-        builder.Property(rd => rd.Ordinal)
+        builder.Property(recipeDirection => recipeDirection.Ordinal)
             .HasColumnName("ordinal")
             .IsRequired();
-        builder.Property(rd => rd.Image)
-            .HasMaxLength(255)
+        builder.Property(recipeDirection => recipeDirection.Image)
+            .HasMaxLength(RecipeDirection.Constraints.ImageMaxLength)
             .HasColumnName("image");
 
         builder.HasOne<Recipe>()
-            .WithMany(p => p.Directions)
-            .HasForeignKey(rd => rd.RecipeId)
+            .WithMany(recipe => recipe.Directions)
+            .HasForeignKey(recipeDirection => recipeDirection.RecipeId)
             .HasConstraintName("FK_recipe_direction__recipe_id");
     }
 }

@@ -2,9 +2,9 @@
 
 public class CookbookMember : BaseAuditableEntity
 {
-    public int CookbookId { get; set; }
+    public int CookbookId { get; init; }
 
-    public required bool IsCreator { get; set; }
+    public required bool IsCreator { get; init; }
 
     public required bool CanAddRecipe { get; set; }
 
@@ -18,11 +18,10 @@ public class CookbookMember : BaseAuditableEntity
 
     public required bool CanEditCookbookDetails { get; set; }
 
-    public Cookbook? Cookbook { get; set; }
+    public Cookbook? Cookbook { get; init; }
     
     public static CookbookMember GetNewCreatorMembership()
-    {
-        return new()
+        => new()
         {
             IsCreator = true,
             CanAddRecipe = true,
@@ -32,11 +31,9 @@ public class CookbookMember : BaseAuditableEntity
             CanSendInvite = true,
             CanUpdateRecipe = true,
         };
-    }
 
     public static CookbookMember GetDefaultMembership(int cookbookId)
-    {
-        return new()
+        => new()
         {
             CookbookId = cookbookId,
             IsCreator = false,
@@ -47,5 +44,4 @@ public class CookbookMember : BaseAuditableEntity
             CanRemoveMember = false,
             CanEditCookbookDetails = false
         };
-    }
 }

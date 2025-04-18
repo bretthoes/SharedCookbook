@@ -34,7 +34,7 @@ public class CookbookInvitationConfiguration : IEntityTypeConfiguration<Cookbook
         builder.Property(invitation => invitation.InvitationStatus)
             .HasColumnName("invitation_status")
             .HasConversion<string>()
-            .HasMaxLength(255)
+            .HasMaxLength(CookbookInvitation.Constraints.InvitationStatusMaxLength)
             .IsRequired();
         builder.Property(invitation => invitation.ResponseDate)
             .HasColumnName("response_date");

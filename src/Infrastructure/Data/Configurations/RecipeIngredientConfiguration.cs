@@ -10,33 +10,33 @@ public class RecipeIngredientConfiguration : IEntityTypeConfiguration<RecipeIngr
     {
         builder.ToTable("recipe_ingredient");
 
-        builder.HasKey(ri => ri.Id)
+        builder.HasKey(recipeIngredient => recipeIngredient.Id)
             .HasName("PK_recipe_ingredient_id");
 
         builder.HasIndex(
-            ri => ri.RecipeId,
-            "IX_recipe_ingredient__recipe_id");
+            recipeIngredient => recipeIngredient.RecipeId,
+            name: "IX_recipe_ingredient__recipe_id");
 
-        builder.Property(ri => ri.Id)
+        builder.Property(recipeIngredient => recipeIngredient.Id)
             .HasColumnName("recipe_ingredient_id")
             .IsRequired();
-        builder.Property(ri => ri.RecipeId)
+        builder.Property(recipeIngredient => recipeIngredient.RecipeId)
             .HasColumnName("recipe_id")
             .IsRequired();
-        builder.Property(ri => ri.Name)
-            .HasMaxLength(255)
+        builder.Property(recipeIngredient => recipeIngredient.Name)
+            .HasMaxLength(RecipeIngredient.Constraints.NameMaxLength)
             .HasColumnName("name")
             .IsRequired();
-        builder.Property(ri => ri.Ordinal)
+        builder.Property(recipeIngredient => recipeIngredient.Ordinal)
             .HasColumnName("ordinal")
             .IsRequired();
-        builder.Property(ri => ri.Optional)
+        builder.Property(recipeIngredient => recipeIngredient.Optional)
             .HasColumnName("optional")
             .IsRequired();
 
         builder.HasOne<Recipe>()
-            .WithMany(r => r.Ingredients)
-            .HasForeignKey(ri => ri.RecipeId)
+            .WithMany(recipe => recipe.Ingredients)
+            .HasForeignKey(recipeIngredient => recipeIngredient.RecipeId)
             .HasConstraintName("FK_recipe_ingredient__recipe_id");
     }
 }

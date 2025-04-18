@@ -13,5 +13,6 @@ public class RecipeDirection : BaseAuditableEntity
     public struct Constraints
     {
         public const int TextMaxLength = 2048;
+        public const int ImageMaxLength = 2048;
     }
 }

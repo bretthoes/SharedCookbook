@@ -6,11 +6,18 @@ public class Cookbook : BaseAuditableEntity
 
     public string? Image { get; set; }
 
-    public ICollection<CookbookInvitation> CookbookInvitations { get; set; } = [];
+    public IReadOnlyCollection<CookbookInvitation> CookbookInvitations { get; init; } = [];
 
-    public ICollection<CookbookMember> CookbookMembers { get; set; } = [];
+    public ICollection<CookbookMember> CookbookMembers { get; init; } = [];
 
-    public ICollection<CookbookNotification> CookbookNotifications { get; set; } = [];
+    public IReadOnlyCollection<CookbookNotification> CookbookNotifications { get; init; } = [];
 
-    public ICollection<Recipe> Recipes { get; set; } = [];
+    public IReadOnlyCollection<Recipe> Recipes { get; init; } = [];
+
+    public struct Constraints
+    {
+        public const int TitleMinLength = 1;
+        public const int TitleMaxLength = 255;
+        public const int ImageMaxLength = 255;
+    }
 }

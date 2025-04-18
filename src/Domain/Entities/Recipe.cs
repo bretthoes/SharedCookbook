@@ -20,31 +20,40 @@ public class Recipe : BaseAuditableEntity
 
     public int? Servings { get; set; }
     
-    public bool? IsVegetarian { get; set; }
+    public bool? IsVegetarian { get; init; }
     
-    public bool? IsVegan { get; set; }
+    public bool? IsVegan { get; init; }
     
-    public bool? IsGlutenFree { get; set; }
+    public bool? IsGlutenFree { get; init; }
     
-    public bool? IsDairyFree { get; set; }
+    public bool? IsDairyFree { get; init; }
     
-    public bool? IsHealthy { get; set; }
+    public bool? IsHealthy { get; init; }
     
-    public bool? IsCheap { get; set; }
+    public bool? IsCheap { get; init; }
     
-    public bool? IsLowFodmap { get; set; }
+    public bool? IsLowFodmap { get; init; }
     
-    public Cookbook? Cookbook { get; set; }
+    public Cookbook? Cookbook { get; init; }
 
-    public RecipeNutrition? Nutrition { get; set; }
+    public RecipeNutrition? Nutrition { get; init; }
 
-    public ICollection<CookbookNotification> CookbookNotifications { get; set; } = [];
+    public IReadOnlyCollection<CookbookNotification> CookbookNotifications { get; init; } = [];
 
-    public ICollection<IngredientCategory> IngredientCategories { get; set; } = [];
+    public ICollection<IngredientCategory> IngredientCategories { get; init; } = [];
 
-    public ICollection<RecipeDirection> Directions { get; set; } = [];
+    public ICollection<RecipeDirection> Directions { get; init; } = [];
 
-    public ICollection<RecipeIngredient> Ingredients { get; set; } = [];
+    public ICollection<RecipeIngredient> Ingredients { get; init; } = [];
 
-    public ICollection<RecipeImage> Images { get; set; } = [];
+    public ICollection<RecipeImage> Images { get; init; } = [];
+
+    public struct Constraints
+    {
+        public const int TitleMaxLength = 255;
+        public const int SummaryMaxLength = 2048;
+        public const int ThumbnailMaxLength = 2048;
+        public const int VideoPathMaxLength = 2048;
+        
+    }
 }

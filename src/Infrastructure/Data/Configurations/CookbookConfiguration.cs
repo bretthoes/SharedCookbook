@@ -22,11 +22,11 @@ public class CookbookConfiguration : IEntityTypeConfiguration<Cookbook>
             .IsRequired();
         builder.Property(cookbook => cookbook.Title)
             .HasColumnName("title")
-            .HasMaxLength(255)
+            .HasMaxLength(Cookbook.Constraints.TitleMaxLength)
             .IsRequired();
         builder.Property(cookbook => cookbook.Image)
             .HasColumnName("image")
-            .HasMaxLength(255);
+            .HasMaxLength(Cookbook.Constraints.ImageMaxLength);
 
         builder.HasOne<Identity.ApplicationUser>()
             .WithMany(user => user.Cookbooks)

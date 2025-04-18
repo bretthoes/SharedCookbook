@@ -2,7 +2,12 @@
 
 public class IngredientCategory : BaseAuditableEntity
 {
-    public required string Title { get; set; }
+    public required string Title { get; init; }
 
-    public required int RecipeId { get; set; }
+    public required int RecipeId { get; init; }
+
+    public struct Constraints
+    {
+        public const int TitleMaxLength = 255;
+    }
 }

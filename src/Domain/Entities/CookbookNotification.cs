@@ -2,13 +2,18 @@
 
 public class CookbookNotification : BaseAuditableEntity
 {
-    public int? CookbookId { get; set; }
+    public int? CookbookId { get; init; }
 
-    public int? RecipeId { get; set; }
+    public int? RecipeId { get; init; }
 
-    public required CookbookNotificationActionType ActionType { get; set; }
+    public required CookbookNotificationActionType ActionType { get; init; }
 
-    public Cookbook? Cookbook { get; set; }
+    public Cookbook? Cookbook { get; init; }
 
-    public Recipe? Recipe { get; set; }
+    public Recipe? Recipe { get; init; }
+
+    public struct Constraints
+    {
+        public const int ActionTypeMaxLength = 255;
+    }
 }

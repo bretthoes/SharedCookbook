@@ -8,38 +8,38 @@ public class RecipeNutritionConfiguration : IEntityTypeConfiguration<RecipeNutri
 {
     public void Configure(EntityTypeBuilder<RecipeNutrition> builder)
     {
-        builder.HasKey(rn => rn.Id)
+        builder.HasKey(recipeNutrition => recipeNutrition.Id)
         .HasName("PK_recipe_nutrition_id");
 
         builder.ToTable("recipe_nutrition");
 
         builder.HasIndex(
-            rn => rn.RecipeId,
-            "IX_recipe_nutrition__recipe_id");
+            recipeNutrition => recipeNutrition.RecipeId,
+            name: "IX_recipe_nutrition__recipe_id");
 
-        builder.Property(rn => rn.Id)
+        builder.Property(recipeNutrition => recipeNutrition.Id)
             .HasColumnName("recipe_nutrition_id")
             .IsRequired();
-        builder.Property(rn => rn.RecipeId)
+        builder.Property(recipeNutrition => recipeNutrition.RecipeId)
             .HasColumnName("recipe_id");
-        builder.Property(rn => rn.Calories)
+        builder.Property(recipeNutrition => recipeNutrition.Calories)
             .HasColumnName("calories");
-        builder.Property(rn => rn.Protein)
+        builder.Property(recipeNutrition => recipeNutrition.Protein)
             .HasColumnName("protein");
-        builder.Property(rn => rn.Fat)
+        builder.Property(recipeNutrition => recipeNutrition.Fat)
             .HasColumnName("fat");
-        builder.Property(rn => rn.Carbohydrates)
+        builder.Property(recipeNutrition => recipeNutrition.Carbohydrates)
             .HasColumnName("carbohydrates");
-        builder.Property(rn => rn.Sugar)
+        builder.Property(recipeNutrition => recipeNutrition.Sugar)
             .HasColumnName("sugar");
-        builder.Property(rn => rn.Fiber)
+        builder.Property(recipeNutrition => recipeNutrition.Fiber)
             .HasColumnName("fiber");
-        builder.Property(rn => rn.Sodium)
+        builder.Property(recipeNutrition => recipeNutrition.Sodium)
             .HasColumnName("sodium");
 
         builder.HasOne<Recipe>()
-        .WithOne(r => r.Nutrition)
-        .HasForeignKey<RecipeNutrition>(rn => rn.RecipeId)
+        .WithOne(recipe => recipe.Nutrition)
+        .HasForeignKey<RecipeNutrition>(recipeNutrition => recipeNutrition.RecipeId)
         .HasConstraintName("FK_recipe_nutrition__recipe_id");
     }
 }
