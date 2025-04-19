@@ -179,7 +179,7 @@ public class ApplicationDbContextInitialiser
             },
         };
         
-        await _context.CookbookMembers.AddRangeAsync(members);
+        await _context.CookbookMemberships.AddRangeAsync(members);
         await _context.SaveChangesAsync();
 
         var invitations = new List<CookbookInvitation>()

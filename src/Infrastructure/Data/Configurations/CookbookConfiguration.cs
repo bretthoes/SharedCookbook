@@ -32,13 +32,13 @@ public class CookbookConfiguration : IEntityTypeConfiguration<Cookbook>
             .WithMany(user => user.Cookbooks)
             .HasForeignKey(cookbook => cookbook.CreatedBy)
             .HasConstraintName("FK_cookbook__created_by");
-        builder.HasMany(cookbook => cookbook.CookbookInvitations)
+        builder.HasMany(cookbook => cookbook.Invitations)
             .WithOne(invitation => invitation.Cookbook)
             .HasForeignKey(invitation => invitation.CookbookId);
-        builder.HasMany(cookbook => cookbook.CookbookMembers)
+        builder.HasMany(cookbook => cookbook.Memberships)
             .WithOne(member => member.Cookbook)
             .HasForeignKey(member => member.CookbookId);
-        builder.HasMany(cookbook => cookbook.CookbookNotifications)
+        builder.HasMany(cookbook => cookbook.Notifications)
             .WithOne(notification => notification.Cookbook)
             .HasForeignKey(notification => notification.CookbookId);
         builder.HasMany(cookbook => cookbook.Recipes)

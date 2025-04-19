@@ -14,14 +14,14 @@ public class InvitationAcceptedEventHandler : INotificationHandler<InvitationAcc
         var newMembership = CookbookMembership.GetDefaultMembership(acceptedEvent.Invitation.CookbookId);
         
         // TODO break this query into smaller extensions
-        var membershipAlreadyExists = await _context.CookbookMembers
+        var membershipAlreadyExists = await _context.CookbookMemberships
             .AnyAsync(member => member.CookbookId == newMembership.CookbookId
                                 && member.CreatedBy == newMembership.CreatedBy,
                 cancellationToken);
         
         if (membershipAlreadyExists) return;
         
-        await _context.CookbookMembers.AddAsync(newMembership, cancellationToken);
+        await _context.CookbookMemberships.AddAsync(newMembership, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
     }
 }

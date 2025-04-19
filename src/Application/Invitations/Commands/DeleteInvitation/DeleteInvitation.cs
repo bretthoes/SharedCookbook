@@ -1,26 +1,19 @@
 ﻿namespace SharedCookbook.Application.Invitations.Commands.DeleteInvitation;
 
 public record DeleteInvitationCommand(int Id) : IRequest;
-public class DeleteInvitationCommandHandler : IRequestHandler<DeleteInvitationCommand>
+public class DeleteInvitationCommandHandler(IApplicationDbContext context) : IRequestHandler<DeleteInvitationCommand>
 {
-    private readonly IApplicationDbContext _context;
-
-    public DeleteInvitationCommandHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task Handle(DeleteInvitationCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _context.CookbookInvitations
-            .FindAsync([request.Id], cancellationToken);
+        var invitation = await context.CookbookInvitations
+            .FindAsync(keyValues: [request.Id], cancellationToken);
 
-        Guard.Against.NotFound(request.Id, entity);
+        Guard.Against.NotFound(request.Id, invitation);
 
-        _context.CookbookInvitations.Remove(entity);
+        context.CookbookInvitations.Remove(invitation);
 
-        entity.AddDomainEvent(new InvitationDeletedEvent(entity));
+        invitation.AddDomainEvent(new InvitationDeletedEvent(invitation));
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }

@@ -12,12 +12,12 @@ public class DeleteMembershipCommandHandler : IRequestHandler<DeleteMembershipCo
 
     public async Task Handle(DeleteMembershipCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _context.CookbookMembers
-            .FindAsync([request.Id], cancellationToken);
+        var membership = await _context.CookbookMemberships
+            .FindAsync(keyValues: [request.Id], cancellationToken);
 
-        Guard.Against.NotFound(request.Id, entity);
+        Guard.Against.NotFound(request.Id, membership);
 
-        _context.CookbookMembers.Remove(entity);
+        _context.CookbookMemberships.Remove(membership);
 
         //entity.AddDomainEvent(new MembershipDeletedEvent(entity));
 

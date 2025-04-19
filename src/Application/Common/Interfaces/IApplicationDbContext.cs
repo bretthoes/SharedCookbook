@@ -6,7 +6,7 @@ public interface IApplicationDbContext
 
     DbSet<CookbookInvitation> CookbookInvitations { get; }
 
-    DbSet<CookbookMembership> CookbookMembers { get; }
+    DbSet<CookbookMembership> CookbookMemberships { get; }
 
     DbSet<Recipe> Recipes { get; }
 

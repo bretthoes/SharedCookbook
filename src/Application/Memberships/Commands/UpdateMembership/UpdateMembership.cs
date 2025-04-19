@@ -28,7 +28,7 @@ public class UpdateMembershipCommandHandler(IApplicationDbContext context)
 
     public async Task Handle(UpdateMembershipCommand command, CancellationToken cancellationToken)
     {
-        var entity = await context.CookbookMembers
+        var entity = await context.CookbookMemberships
             .FindAsync(keyValues: [command.Id], cancellationToken);
 
         Guard.Against.NotFound(command.Id, entity);

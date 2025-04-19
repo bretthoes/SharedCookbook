@@ -18,17 +18,17 @@ public class CreateCookbookCommandHandler : IRequestHandler<CreateCookbookComman
 
     public async Task<int> Handle(CreateCookbookCommand request, CancellationToken cancellationToken)
     {
-        var entity = new Cookbook
+        var cookbook = new Cookbook
         {
             Title = request.Title,
             Image = request.Image,
-            CookbookMembers = [CookbookMembership.GetNewCreatorMembership()]
+            Memberships = [CookbookMembership.GetNewCreatorMembership()]
         };
         
-        await _context.Cookbooks.AddAsync(entity, cancellationToken);
+        await _context.Cookbooks.AddAsync(cookbook, cancellationToken);
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return entity.Id;
+        return cookbook.Id;
     }
 }

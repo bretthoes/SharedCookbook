@@ -15,7 +15,7 @@ public class GetMembershipQueryHandler : IRequestHandler<GetMembershipQuery, Mem
 
     public async Task<MembershipDto> Handle(GetMembershipQuery request, CancellationToken cancellationToken)
     {
-        var entity = await _context.CookbookMembers.FindAsync([request.Id], cancellationToken) 
+        var entity = await _context.CookbookMemberships.FindAsync([request.Id], cancellationToken) 
             ?? throw new NotFoundException(request.Id.ToString(), nameof(CookbookMembership));
 
         var dto = new MembershipDto

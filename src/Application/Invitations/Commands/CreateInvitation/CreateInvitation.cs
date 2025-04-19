@@ -42,7 +42,7 @@ public class CreateInvitationCommandHandler : IRequestHandler<CreateInvitationCo
 
     private async Task ValidateInvitation(int cookbookId, string recipientId, CancellationToken token)
     {
-        var recipientIsAlreadyMember = await _context.CookbookMembers
+        var recipientIsAlreadyMember = await _context.CookbookMemberships
             .AnyAsync(member => member.CreatedBy == recipientId
                 && member.CookbookId == cookbookId,
                 token);

@@ -40,7 +40,7 @@ public class CookbookInvitationConfiguration : IEntityTypeConfiguration<Cookbook
             .HasColumnName("response_date");
 
         builder.HasOne(invitation => invitation.Cookbook)
-            .WithMany(cookbook => cookbook.CookbookInvitations)
+            .WithMany(cookbook => cookbook.Invitations)
             .HasForeignKey(invitation => invitation.CookbookId)
             .HasConstraintName("FK_cookbook_invitation__cookbook_id");
         builder.HasOne<Identity.ApplicationUser>()

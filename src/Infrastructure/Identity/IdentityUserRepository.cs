@@ -45,7 +45,7 @@ public class IdentityUserRepository : IIdentityUserRepository
         GetMembershipsWithPaginationQuery query,
         CancellationToken cancellationToken)
     {
-        return await _context.CookbookMembers
+        return await _context.CookbookMemberships
             .AsNoTracking()
             .HasCookbookId(query.CookbookId)
             .Join(
@@ -111,7 +111,7 @@ public class IdentityUserRepository : IIdentityUserRepository
                     Image = string.IsNullOrWhiteSpace(cookbook.Image)
                         ? ""
                         : $"{_options.Value.ImageBaseUrl}{cookbook.Image}",
-                    MembersCount = cookbook.CookbookMembers.Count,
+                    MembersCount = cookbook.Memberships.Count,
                     RecipeCount = cookbook.Recipes.Count,
                     Author = user.DisplayName,
                     AuthorEmail = user.Email ?? ""

@@ -7,25 +7,18 @@ public record UpdateCookbookCommand : IRequest<int>
     public string? Image { get; init; }
 }
 
-public class UpdateCookbookCommandHandler : IRequestHandler<UpdateCookbookCommand, int>
+public class UpdateCookbookCommandHandler(IApplicationDbContext context) : IRequestHandler<UpdateCookbookCommand, int>
 {
-    private readonly IApplicationDbContext _context;
-
-    public UpdateCookbookCommandHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<int> Handle(UpdateCookbookCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _context.Cookbooks
-            .FindAsync([request.Id], cancellationToken);
+        var cookbook = await context.Cookbooks
+            .FindAsync(keyValues: [request.Id], cancellationToken);
 
-        Guard.Against.NotFound(request.Id, entity);
+        Guard.Against.NotFound(request.Id, cookbook);
 
-        if (!string.IsNullOrWhiteSpace(request.Title)) entity.Title = request.Title;
-        if (!string.IsNullOrWhiteSpace(request.Image)) entity.Image = request.Image;
+        if (!string.IsNullOrWhiteSpace(request.Title)) cookbook.Title = request.Title;
+        if (!string.IsNullOrWhiteSpace(request.Image)) cookbook.Image = request.Image;
 
-        return await _context.SaveChangesAsync(cancellationToken);
+        return await context.SaveChangesAsync(cancellationToken);
     }
 }
