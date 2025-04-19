@@ -5,8 +5,8 @@ namespace SharedCookbook.Infrastructure.Identity.RepositoryExtensions;
 
 public static class CookbookMemberExtensions
 {
-    public static IQueryable<CookbookMember> HasCookbookId(
-        this IQueryable<CookbookMember> query,
+    public static IQueryable<CookbookMembership> HasCookbookId(
+        this IQueryable<CookbookMembership> query,
         int cookbookId)
         => query.Where(member => member.CookbookId == cookbookId);
     

@@ -11,7 +11,7 @@ public class ApplicationUser : IdentityUser
     
     public virtual ICollection<Cookbook> Cookbooks { get; set; } = [];
 
-    public virtual ICollection<CookbookMember> CookbookMemberships { get; set; } = [];
+    public virtual ICollection<CookbookMembership> CookbookMemberships { get; set; } = [];
 
     public virtual ICollection<CookbookNotification> CookbookNotifications { get; set; } = [];
 

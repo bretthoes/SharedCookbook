@@ -22,7 +22,7 @@ public class CreateCookbookCommandHandler : IRequestHandler<CreateCookbookComman
         {
             Title = request.Title,
             Image = request.Image,
-            CookbookMembers = [CookbookMember.GetNewCreatorMembership()]
+            CookbookMembers = [CookbookMembership.GetNewCreatorMembership()]
         };
         
         await _context.Cookbooks.AddAsync(entity, cancellationToken);

@@ -8,7 +8,7 @@ public class Cookbook : BaseAuditableEntity
 
     public IReadOnlyCollection<CookbookInvitation> CookbookInvitations { get; init; } = [];
 
-    public ICollection<CookbookMember> CookbookMembers { get; init; } = [];
+    public ICollection<CookbookMembership> CookbookMembers { get; init; } = [];
 
     public IReadOnlyCollection<CookbookNotification> CookbookNotifications { get; init; } = [];
 

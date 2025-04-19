@@ -5,9 +5,9 @@ using SharedCookbook.Infrastructure.Identity;
 
 namespace SharedCookbook.Infrastructure.Data.Configurations;
 
-public class CookbookMemberConfiguration : IEntityTypeConfiguration<CookbookMember>
+public class CookbookMemberConfiguration : IEntityTypeConfiguration<CookbookMembership>
 {
-    public void Configure(EntityTypeBuilder<CookbookMember> builder)
+    public void Configure(EntityTypeBuilder<CookbookMembership> builder)
     {
         builder.ToTable("cookbook_member");
 

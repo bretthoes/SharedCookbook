@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Domain.Entities;
 
-public class CookbookMember : BaseAuditableEntity
+public class CookbookMembership : BaseAuditableEntity
 {
     public int CookbookId { get; init; }
 
@@ -20,7 +20,7 @@ public class CookbookMember : BaseAuditableEntity
 
     public Cookbook? Cookbook { get; init; }
     
-    public static CookbookMember GetNewCreatorMembership()
+    public static CookbookMembership GetNewCreatorMembership()
         => new()
         {
             IsCreator = true,
@@ -32,7 +32,7 @@ public class CookbookMember : BaseAuditableEntity
             CanUpdateRecipe = true,
         };
 
-    public static CookbookMember GetDefaultMembership(int cookbookId)
+    public static CookbookMembership GetDefaultMembership(int cookbookId)
         => new()
         {
             CookbookId = cookbookId,

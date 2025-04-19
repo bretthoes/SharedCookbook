@@ -14,7 +14,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public DbSet<CookbookInvitation> CookbookInvitations => Set<CookbookInvitation>();
 
-    public DbSet<CookbookMember> CookbookMembers => Set<CookbookMember>();
+    public DbSet<CookbookMembership> CookbookMembers => Set<CookbookMembership>();
 
     public DbSet<ApplicationUser> People => Set<ApplicationUser>();
 

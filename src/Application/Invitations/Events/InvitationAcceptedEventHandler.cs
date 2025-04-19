@@ -11,7 +11,7 @@ public class InvitationAcceptedEventHandler : INotificationHandler<InvitationAcc
 
     public async Task Handle(InvitationAcceptedEvent acceptedEvent, CancellationToken cancellationToken)
     {
-        var newMembership = CookbookMember.GetDefaultMembership(acceptedEvent.Invitation.CookbookId);
+        var newMembership = CookbookMembership.GetDefaultMembership(acceptedEvent.Invitation.CookbookId);
         
         // TODO break this query into smaller extensions
         var membershipAlreadyExists = await _context.CookbookMembers

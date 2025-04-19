@@ -138,7 +138,7 @@ public class ApplicationDbContextInitialiser
         var cookbook = cookbooks[0];
         var cookbook2 = cookbooks[1];
 
-        var members = new List<CookbookMember>
+        var members = new List<CookbookMembership>
         {
             new()
             {
