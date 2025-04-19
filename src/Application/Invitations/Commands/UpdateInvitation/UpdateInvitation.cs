@@ -20,22 +20,21 @@ public class UpdateInvitationCommandHandler : IRequestHandler<UpdateInvitationCo
 
     public async Task<int> Handle(UpdateInvitationCommand command, CancellationToken cancellationToken)
     {
-        var entity = await _context.CookbookInvitations
-            .FindAsync([command.Id], cancellationToken);
+        var invitation = await _context.CookbookInvitations
+            .FindAsync(keyValues: [command.Id], cancellationToken);
 
-        Guard.Against.NotFound(command.Id, entity);
+        Guard.Against.NotFound(command.Id, invitation);
 
         if (command.NewStatus == CookbookInvitationStatus.Accepted)
         {
-            entity.Accept();
+            invitation.Accept();
         }
         else if (command.NewStatus != CookbookInvitationStatus.Unknown)
         {
-            entity.InvitationStatus = command.NewStatus;
+            invitation.InvitationStatus = command.NewStatus;
         }
 
         await _context.SaveChangesAsync(cancellationToken);
-        return entity.Id;
+        return invitation.Id;
     }
-
 }

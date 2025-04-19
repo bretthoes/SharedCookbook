@@ -8,26 +8,26 @@ public class CreateImagesCommandValidator : AbstractValidator<CreateImagesComman
 {
     public CreateImagesCommandValidator()
     {
-        RuleFor(f => f.Files)
+        RuleFor(command => command.Files)
             .NotNull()
             .NotEmpty()
             .WithMessage("No files were found.")
             .WithErrorCode(HttpStatusCode.BadRequest.ToString());
 
-        RuleFor(f => f.Files.Count)
+        RuleFor(command => command.Files.Count)
             .LessThanOrEqualTo(ImageUtilities.MaxFileUploadCount)
             .WithMessage($"Cannot upload more than {ImageUtilities.MaxFileUploadCount} files at once.")
             .WithErrorCode(HttpStatusCode.BadRequest.ToString());
 
-        RuleForEach(f => f.Files).ChildRules(file =>
+        RuleForEach(command => command.Files).ChildRules(validator =>
         {
-            file.RuleFor(f => f.Length)
+            validator.RuleFor(file => file.Length)
                 .LessThanOrEqualTo(ImageUtilities.MaxFileSizeBytes)
                 .WithMessage($"File size should not exceed {ImageUtilities.MaxFileSizeMegabytes} MB.")
                 .WithErrorCode(HttpStatusCode.RequestEntityTooLarge.ToString());
 
-            file.RuleFor(f => f.FileName)
-                .Must(f => f.HasValidImageExtension())
+            validator.RuleFor(file => file.FileName)
+                .Must(fileString => fileString.HasValidImageExtension())
                 .WithMessage($"File must have one of the following extensions: {
                     string.Join(", ", ImageUtilities.AllowedExtensions)
                 }.")
