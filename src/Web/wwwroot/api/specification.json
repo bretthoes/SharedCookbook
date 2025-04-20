@@ -2171,19 +2171,19 @@
                 "type": "string",
                 "nullable": true
               },
-              "cookbookInvitations": {
+              "invitations": {
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/CookbookInvitation"
                 }
               },
-              "cookbookMembers": {
+              "memberships": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/CookbookMember"
+                  "$ref": "#/components/schemas/CookbookMembership"
                 }
               },
-              "cookbookNotifications": {
+              "notifications": {
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/CookbookNotification"
@@ -2236,7 +2236,7 @@
           }
         ]
       },
-      "CookbookMember": {
+      "CookbookMembership": {
         "allOf": [
           {
             "$ref": "#/components/schemas/BaseAuditableEntity"
