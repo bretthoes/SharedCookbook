@@ -245,7 +245,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.ToTable("cookbook_invitation", (string)null);
                 });
 
-            modelBuilder.Entity("SharedCookbook.Domain.Entities.CookbookMember", b =>
+            modelBuilder.Entity("SharedCookbook.Domain.Entities.CookbookMembership", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -458,7 +458,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Summary")
-                        .HasColumnType("text")
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)")
                         .HasColumnName("summary");
 
                     b.Property<string>("Thumbnail")
@@ -473,8 +474,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .HasColumnName("title");
 
                     b.Property<string>("VideoPath")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)")
                         .HasColumnName("video_path");
 
                     b.HasKey("Id")
@@ -503,8 +504,8 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Image")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)")
                         .HasColumnName("image");
 
                     b.Property<DateTimeOffset>("LastModified")
@@ -819,7 +820,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
             modelBuilder.Entity("SharedCookbook.Domain.Entities.CookbookInvitation", b =>
                 {
                     b.HasOne("SharedCookbook.Domain.Entities.Cookbook", "Cookbook")
-                        .WithMany("CookbookInvitations")
+                        .WithMany("Invitations")
                         .HasForeignKey("CookbookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -838,10 +839,10 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Navigation("Cookbook");
                 });
 
-            modelBuilder.Entity("SharedCookbook.Domain.Entities.CookbookMember", b =>
+            modelBuilder.Entity("SharedCookbook.Domain.Entities.CookbookMembership", b =>
                 {
                     b.HasOne("SharedCookbook.Domain.Entities.Cookbook", "Cookbook")
-                        .WithMany("CookbookMembers")
+                        .WithMany("Memberships")
                         .HasForeignKey("CookbookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -860,7 +861,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
             modelBuilder.Entity("SharedCookbook.Domain.Entities.CookbookNotification", b =>
                 {
                     b.HasOne("SharedCookbook.Domain.Entities.Cookbook", "Cookbook")
-                        .WithMany("CookbookNotifications")
+                        .WithMany("Notifications")
                         .HasForeignKey("CookbookId")
                         .HasConstraintName("FK_cookbook_notification__cookbook_id");
 
@@ -948,11 +949,11 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("SharedCookbook.Domain.Entities.Cookbook", b =>
                 {
-                    b.Navigation("CookbookInvitations");
+                    b.Navigation("Invitations");
 
-                    b.Navigation("CookbookMembers");
+                    b.Navigation("Memberships");
 
-                    b.Navigation("CookbookNotifications");
+                    b.Navigation("Notifications");
 
                     b.Navigation("Recipes");
                 });
