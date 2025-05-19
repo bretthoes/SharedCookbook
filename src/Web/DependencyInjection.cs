@@ -30,12 +30,12 @@ public static class DependencyInjection
 
         builder.Services.AddEndpointsApiExplorer();
 
-        builder.Services.AddOpenApiDocument((configure, sp) =>
+        builder.Services.AddOpenApiDocument((settings, _) =>
         {
-            configure.Title = "SharedCookbook API";
+            settings.Title = "SharedCookbook API";
 
             // Add JWT
-            configure.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
+            settings.AddSecurity(name: "JWT", globalScopeNames: [], new OpenApiSecurityScheme
             {
                 Type = OpenApiSecuritySchemeType.ApiKey,
                 Name = "Authorization",
@@ -43,13 +43,13 @@ public static class DependencyInjection
                 Description = "Type into the textbox: Bearer {your JWT token}."
             });
 
-            configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
+            settings.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor(name: "JWT"));
         });
     }
 
     public static void AddKeyVaultIfConfigured(this IHostApplicationBuilder builder)
     {
-        var keyVaultUri = builder.Configuration["AZURE_KEY_VAULT_ENDPOINT"];
+        string? keyVaultUri = builder.Configuration["AZURE_KEY_VAULT_ENDPOINT"];
         if (!string.IsNullOrWhiteSpace(keyVaultUri))
         {
             builder.Configuration.AddAzureKeyVault(

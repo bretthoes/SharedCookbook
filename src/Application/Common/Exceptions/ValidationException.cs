@@ -8,7 +8,7 @@ public class ValidationException() : Exception("One or more validation failures 
         : this()
     {
         Errors = failures
-            .GroupBy(e => e.PropertyName, e => e.ErrorMessage)
+            .GroupBy(failure => failure.PropertyName, failure => failure.ErrorMessage)
             .ToDictionary(failureGroup
                 => failureGroup.Key, failureGroup => failureGroup.ToArray());
     }

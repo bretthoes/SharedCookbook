@@ -2,24 +2,15 @@
 
 namespace SharedCookbook.Application.Common.Behaviours;
 
-public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
+public class PerformanceBehaviour<TRequest, TResponse>(
+    ILogger<TRequest> logger,
+    IUser user,
+    IIdentityService identityService)
+    : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : notnull
 {
-    private readonly Stopwatch _timer;
-    private readonly ILogger<TRequest> _logger;
-    private readonly IUser _user;
-    private readonly IIdentityService _identityService;
-
-    public PerformanceBehaviour(
-        ILogger<TRequest> logger,
-        IUser user,
-        IIdentityService identityService)
-    {
-        _timer = new Stopwatch();
-
-        _logger = logger;
-        _user = user;
-        _identityService = identityService;
-    }
+    private readonly Stopwatch _timer = new();
+    private const long ThresholdMilliseconds = 500;
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
@@ -30,23 +21,23 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
 
         _timer.Stop();
 
-        var elapsedMilliseconds = _timer.ElapsedMilliseconds;
+        long elapsedMilliseconds = _timer.ElapsedMilliseconds;
 
-        if (elapsedMilliseconds <= 500)
+        if (elapsedMilliseconds <= ThresholdMilliseconds)
         {
             return response;
         }
 
-        var requestName = typeof(TRequest).Name;
-        var userId = _user.Id ?? string.Empty;
-        var userName = string.Empty;
+        string? requestName = typeof(TRequest).Name;
+        string userId = user.Id ?? string.Empty;
+        string? userName = string.Empty;
 
         if (!string.IsNullOrEmpty(userId))
         {
-            userName = await _identityService.GetUserNameAsync(userId);
+            userName = await identityService.GetUserNameAsync(userId);
         }
 
-        _logger.LogWarning(
+        logger.LogWarning(
             "SharedCookbook Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@UserName} {@Request}",
             requestName, elapsedMilliseconds, userId, userName, request);
 

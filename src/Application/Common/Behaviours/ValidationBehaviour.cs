@@ -2,20 +2,14 @@
 
 namespace SharedCookbook.Application.Common.Behaviours;
 
-public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public class ValidationBehaviour<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
+    : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull
 {
-    private readonly IEnumerable<IValidator<TRequest>> _validators;
-
-    public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators)
-    {
-        _validators = validators;
-    }
-
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        if (!_validators.Any())
+        if (!validators.Any())
         {
             return await next();
         }
@@ -23,12 +17,12 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
         var context = new ValidationContext<TRequest>(request);
 
         var validationResults = await Task.WhenAll(
-            _validators.Select(v =>
-                v.ValidateAsync(context, cancellationToken)));
+            tasks: validators.Select(validator =>
+                validator.ValidateAsync(context, cancellationToken)));
 
         var failures = validationResults
-            .Where(r => r.Errors.Count != 0)
-            .SelectMany(r => r.Errors)
+            .Where(result => result.Errors.Count != 0)
+            .SelectMany(result => result.Errors)
             .ToList();
 
         if (failures.Count != 0)
