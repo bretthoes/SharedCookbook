@@ -4,6 +4,8 @@ public class CookbookMembership : BaseAuditableEntity
 {
     public int CookbookId { get; init; }
 
+    // TODO change to IsOwner. We have CreatedBy to verify identity, and this
+    // property name does not reflect that ownership of a cookbook can change.
     public required bool IsCreator { get; init; }
 
     public required bool CanAddRecipe { get; set; }
