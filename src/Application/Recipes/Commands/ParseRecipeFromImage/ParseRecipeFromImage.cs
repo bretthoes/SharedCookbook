@@ -93,6 +93,6 @@ public partial class ParseRecipeFromImageCommandHandler(IOcrService ocrService)
         Images = [],
         CookbookId = 0
     };
-    [GeneratedRegex(@"^- (.+?)( \(optional\))?$", RegexOptions.Multiline)]
+    [GeneratedRegex(pattern: @"^- (.+?)( \(optional\))?$", RegexOptions.Multiline)]
     private static partial Regex MyRegex();
 }
