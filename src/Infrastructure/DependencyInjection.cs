@@ -21,8 +21,8 @@ public static class DependencyInjection
 {
     public static void AddInfrastructureServices(this IHostApplicationBuilder builder)
     {
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        Guard.Against.Null(connectionString, message: "Connection string 'DefaultConnection' not found.");
+        var connectionString = builder.Configuration.GetConnectionString(name: "DefaultConnection");
+        Guard.Against.Null(input: connectionString, message: "Connection string 'DefaultConnection' not found.");
 
         builder.Services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         builder.Services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
@@ -43,10 +43,10 @@ public static class DependencyInjection
         builder.Services.AddAuthentication()
             .AddBearerToken(IdentityConstants.BearerScheme);
 
-        builder.Services.Configure<IdentityOptions>(opts =>
+        builder.Services.Configure<IdentityOptions>(options =>
         {
-            opts.SignIn.RequireConfirmedEmail = true;
-            opts.User.RequireUniqueEmail = true;
+            options.SignIn.RequireConfirmedEmail = true;
+            options.User.RequireUniqueEmail = true;
         });
 
         builder.Services.AddAuthorizationBuilder();
