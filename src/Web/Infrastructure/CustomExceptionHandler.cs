@@ -13,7 +13,8 @@ public class CustomExceptionHandler : IExceptionHandler
         { typeof(NotFoundException), HandleNotFoundException },
         { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException },
         { typeof(ForbiddenAccessException), HandleForbiddenAccessException },
-        {typeof(ConflictException), HandleConflictException }
+        {typeof(ConflictException), HandleConflictException },
+        { typeof(RateLimitExceededException), HandleRateLimitExceededException }
     };
 
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception,
@@ -91,6 +92,18 @@ public class CustomExceptionHandler : IExceptionHandler
         {
             Status = StatusCodes.Status409Conflict,
             Title = "Conflict",
+            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.8"
+        });
+    }
+    
+    private static async Task HandleRateLimitExceededException(HttpContext httpContext, Exception ex)
+    {
+        httpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
+        {
+            Status = StatusCodes.Status429TooManyRequests,
+            Title = "Too Many Requests",
+            Detail = ex.Message,
             Type = "https://tools.ietf.org/html/rfc7231#section-6.5.8"
         });
     }
