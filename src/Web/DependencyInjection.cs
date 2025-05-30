@@ -1,7 +1,9 @@
-﻿using Azure.Identity;
+﻿using System.Threading.RateLimiting;
+using Azure.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NSwag;
 using NSwag.Generation.Processors.Security;
+using SharedCookbook.Application.Common.Exceptions;
 using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Infrastructure.Data;
 using SharedCookbook.Infrastructure.Identity;
@@ -44,6 +46,27 @@ public static class DependencyInjection
             });
 
             settings.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor(name: "JWT"));
+        });
+
+        builder.AddRateLimiter();
+    }
+
+    private static void AddRateLimiter(this IHostApplicationBuilder builder)
+    {
+        builder.Services.AddRateLimiter(options =>
+        {
+            options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(partitioner: context =>
+            {
+                string ip = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+                return RateLimitPartition.GetFixedWindowLimiter(partitionKey: ip, factory: _ =>
+                    new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 100,
+                        Window = TimeSpan.FromMinutes(1),
+                        QueueLimit = 0
+                    });
+            });
+            options.OnRejected = (_, _) => throw new RateLimitExceededException();
         });
     }
 
