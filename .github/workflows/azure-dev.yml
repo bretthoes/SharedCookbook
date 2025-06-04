@@ -30,7 +30,18 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install azd
+        id: setup_azd
         uses: Azure/setup-azd@v1.0.0
+        continue-on-error: true
+
+      - name: Fallback → Install azd manually if the action failed
+        if: steps.setup_azd.outcome == 'failure'
+        run: |
+          echo "setup-azd action failed; doing manual azd install..."
+          curl -fsSL https://azdrelease.azureedge.net/azd/standalone/release/latest/azd-linux-amd64.tar.gz \
+            | tar -xz -C /usr/local/bin azd
+          chmod +x /usr/local/bin/azd
+          echo "azd version: $(azd version)"
 
       - name: Install .NET
         uses: actions/setup-dotnet@v4
