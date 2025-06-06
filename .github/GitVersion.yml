@@ -1,0 +1,17 @@
+﻿mode: ContinuousDelivery
+
+branches:
+  master:
+    tag: []
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+
+  develop:
+    tag: beta
+    increment: Minor
+    source-branches: [ master ]
+
+  feature:
+    tag: alpha
+    increment: Patch
+    source-branches: [ develop ]
