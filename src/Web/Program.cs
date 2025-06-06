@@ -6,7 +6,6 @@ using SharedCookbook.Web;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.AddKeyVaultIfConfigured();
 builder.AddApplicationServices();
 builder.AddInfrastructureServices();
 builder.AddWebServices();
@@ -24,6 +23,7 @@ else
     app.UseHsts();
 }
 
+app.UseRateLimiter();
 app.UseHealthChecks(new PathString("/health"));
 app.UseHttpsRedirection();
 app.UseStaticFiles();

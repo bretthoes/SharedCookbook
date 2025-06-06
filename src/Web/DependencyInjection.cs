@@ -1,9 +1,8 @@
-﻿using System.Threading.RateLimiting;
-using Azure.Identity;
+﻿using System.Globalization;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Mvc;
 using NSwag;
 using NSwag.Generation.Processors.Security;
-using SharedCookbook.Application.Common.Exceptions;
 using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Infrastructure.Data;
 using SharedCookbook.Infrastructure.Identity;
@@ -53,31 +52,47 @@ public static class DependencyInjection
 
     private static void AddRateLimiter(this IHostApplicationBuilder builder)
     {
+        
         builder.Services.AddRateLimiter(options =>
         {
-            options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(partitioner: context =>
+            options.OnRejected = async (context, cancellationToken) =>
             {
-                string ip = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
-                return RateLimitPartition.GetFixedWindowLimiter(partitionKey: ip, factory: _ =>
-                    new FixedWindowRateLimiterOptions
-                    {
-                        PermitLimit = 100,
-                        Window = TimeSpan.FromMinutes(1),
-                        QueueLimit = 0
-                    });
-            });
-            options.OnRejected = (_, _) => throw new RateLimitExceededException();
-        });
-    }
+                if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+                {
+                    context.HttpContext.Response.Headers.RetryAfter =
+                        ((int) retryAfter.TotalSeconds).ToString(NumberFormatInfo.InvariantInfo);
+                }
+                
+                context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+                await context.HttpContext.Response.WriteAsync("Too many requests. Please try again later.", cancellationToken);
+            };
+            options.GlobalLimiter = PartitionedRateLimiter.CreateChained(
+                PartitionedRateLimiter.Create<HttpContext, string>(partitioner: httpContext =>
+                {
+                    var userAgent = httpContext.Request.Headers.UserAgent.ToString();
 
-    public static void AddKeyVaultIfConfigured(this IHostApplicationBuilder builder)
-    {
-        string? keyVaultUri = builder.Configuration["AZURE_KEY_VAULT_ENDPOINT"];
-        if (!string.IsNullOrWhiteSpace(keyVaultUri))
-        {
-            builder.Configuration.AddAzureKeyVault(
-                new Uri(keyVaultUri),
-                new DefaultAzureCredential());
-        }
+                    return RateLimitPartition.GetFixedWindowLimiter
+                    (userAgent, factory: _ =>
+                        new FixedWindowRateLimiterOptions
+                        {
+                            AutoReplenishment = true,
+                            PermitLimit = 4,
+                            Window = TimeSpan.FromSeconds(2)
+                        });
+                }),
+                PartitionedRateLimiter.Create<HttpContext, string>(partitioner: httpContext =>
+                {
+                    var userAgent = httpContext.Request.Headers.UserAgent.ToString();
+            
+                    return RateLimitPartition.GetFixedWindowLimiter
+                    (userAgent, factory: _ =>
+                        new FixedWindowRateLimiterOptions
+                        {
+                            AutoReplenishment = true,
+                            PermitLimit = 15,    
+                            Window = TimeSpan.FromSeconds(60)
+                        });
+                }));
+        });
     }
 }
