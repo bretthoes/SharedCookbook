@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Check out code
         uses: actions/checkout@v4
 
       - name: Setup .NET 9 SDK
@@ -23,11 +23,11 @@ jobs:
         with:
           dotnet-version: 9.0.x
 
-      - name: Restore dependencies
+      - name: Restore NuGet packages
         run: dotnet restore
 
-      - name: Build solution
-        run: dotnet build --no-restore --configuration Release
+      - name: Build solution (skip NSwag)
+        run: dotnet build --no-restore -c Release -p:SkipNSwag=true
 
-      - name: Run tests
-        run: dotnet test --no-restore --verbosity normal
+      - name: Run all tests (skip NSwag)
+        run: dotnet test --no-build -c Release --verbosity normal -p:SkipNSwag=true
