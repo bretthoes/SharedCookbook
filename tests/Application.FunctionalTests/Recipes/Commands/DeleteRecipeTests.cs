@@ -20,12 +20,32 @@ public class DeleteRecipeTests : BaseTestFixture
     [Test]
     public async Task ShouldDeleteRecipe()
     {
+        var cookbook = new Cookbook { Title = "Test Cookbook Title" };
+        await AddAsync(cookbook);
+        
         var itemId = await SendAsync(new CreateRecipeCommand
         {
             Recipe = new CreateRecipeDto
             {
                 Title = "Another Recipe Title",
-                CookbookId = 0
+                CookbookId = cookbook.Id,
+                Directions = new List<CreateRecipeDirectionDto>()
+                {
+                    new()
+                    {
+                        Text = "Test Direction",
+                        Ordinal = 0
+                    }
+                },
+                Ingredients = new List<CreateRecipeIngredientDto>
+                {
+                    new()
+                    {
+                        Name = "Test Ingredient",
+                        Optional = false,
+                        Ordinal = 0
+                    }
+                }
             }
         });
 
