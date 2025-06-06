@@ -89,8 +89,8 @@ public static class DependencyInjection
                         new FixedWindowRateLimiterOptions
                         {
                             AutoReplenishment = true,
-                            PermitLimit = 15,    
-                            Window = TimeSpan.FromSeconds(60)
+                            PermitLimit = 15,
+                            Window = TimeSpan.FromSeconds(30)
                         });
                 }));
         });
