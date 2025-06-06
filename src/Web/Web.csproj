@@ -4,6 +4,7 @@
         <RootNamespace>SharedCookbook.Web</RootNamespace>
         <AssemblyName>SharedCookbook.Web</AssemblyName>
         <UserSecretsId>c531cf51-b3d5-44e0-a94d-4a0ffbb57feb</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -28,6 +29,12 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="FluentValidation.AspNetCore" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
   <!-- Auto-generated Open API specification and Angular TypeScript clients -->
