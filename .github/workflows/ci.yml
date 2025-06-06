@@ -21,7 +21,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # ← Add this BEFORE the GitVersion steps
       - name: Setup .NET 9.0.100 SDK
         uses: actions/setup-dotnet@v4
         with:
@@ -38,6 +37,7 @@ jobs:
         with:
           useConfigFile: true
           configFilePath: .github/GitVersion.yml
+          verbosity: Quiet
 
       - name: Show GitVersion info
         run: |
@@ -45,6 +45,16 @@ jobs:
           echo "SemVer          = ${{ steps.gitversion.outputs.SemVer }}"
           echo "AssemblySemVer  = ${{ steps.gitversion.outputs.AssemblySemVer }}"
           echo "NuGetVersionV2  = ${{ steps.gitversion.outputs.NuGetVersionV2 }}"
+
+      - name: Tag commit with version
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        env:
+          SEMVER: ${{ steps.gitversion.outputs.SemVer }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag v$SEMVER
+          git push origin v$SEMVER
 
       - name: Restore NuGet packages
         run: dotnet restore
