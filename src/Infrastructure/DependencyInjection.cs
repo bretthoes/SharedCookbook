@@ -22,6 +22,7 @@ public static class DependencyInjection
     public static void AddInfrastructureServices(this IHostApplicationBuilder builder)
     {
         var connectionString = builder.Configuration.GetConnectionString(name: "DefaultConnection");
+        Console.WriteLine("Connection string:"+ connectionString?[..10] ?? "empty");
         Guard.Against.Null(input: connectionString, message: "Connection string 'DefaultConnection' not found.");
 
         builder.Services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
