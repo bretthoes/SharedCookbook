@@ -28,7 +28,7 @@ public static class DependencyInjection
         }
         else
         {
-            Console.WriteLine("Connection string:"+ connectionString?[..10] ?? "empty");
+            Console.WriteLine("Connection string:"+ connectionString ?? "empty");
         }
         
         Guard.Against.Null(input: connectionString, message: "Connection string 'DefaultConnection' not found.");
