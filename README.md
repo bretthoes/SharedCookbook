@@ -4,8 +4,6 @@
 
 Backend API for [cookbook-mobile repo](https://github.com/bretthoes/cookbook-mobile), adheres to [OpenAPI Specification v3.1.0](https://spec.openapis.org/oas/v3.1.0.html).
 
-API versioning is not currently implemented.
-
 ## Build
 
 Run `dotnet build -tl` to build the solution.
