@@ -21,11 +21,20 @@ public static class DependencyInjection
 {
     public static void AddInfrastructureServices(this IHostApplicationBuilder builder)
     {
+        var connectionString = builder.Configuration.GetConnectionString(name: "DefaultConnection");
+        Guard.Against.Null(input: connectionString, message: "Connection string 'DefaultConnection' not found.");
+
         builder.Services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         builder.Services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
-        
-        AddDbContext(builder);
-        
+
+        builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
+        {
+            options
+                .AddInterceptors(sp.GetServices<ISaveChangesInterceptor>())
+                .UseNpgsql(connectionString);
+        });
+
+
         builder.Services.AddScoped<IApplicationDbContext>(provider =>
             provider.GetRequiredService<ApplicationDbContext>());
 
@@ -68,22 +77,5 @@ public static class DependencyInjection
 
         builder.Services.AddAuthorizationBuilder()
             .AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator));
-    }
-
-    private static void AddDbContext(this IHostApplicationBuilder builder)
-    {
-        var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-        if (!string.IsNullOrEmpty(databaseUrl))
-        {
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(databaseUrl));
-        }
-        else
-        {
-            var connectionString = builder.Configuration.GetConnectionString(name: "DefaultConnection");
-            Guard.Against.Null(input: connectionString, message: "Connection string 'DefaultConnection' not found.");
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(connectionString));
-        }
     }
 }
