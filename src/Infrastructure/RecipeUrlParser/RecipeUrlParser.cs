@@ -92,17 +92,16 @@ public class RecipeUrlParser(
         if (apiResponse.Image != null && hasImage)
             image = await imageUploadService.UploadImageFromUrl(apiResponse.Image);
 
-        string? title = apiResponse.Title?.Length > 255 
-            ? apiResponse.Title[..255] 
-            : apiResponse.Title;
+        string title = apiResponse.Title?.Truncate(Recipe.Constraints.TitleMaxLength) ?? "";
+        
         var createRecipeDto = new CreateRecipeDto
         {
-            Title = title ?? "",
+            Title = title,
             Images = string.IsNullOrWhiteSpace(image)
                 ? []
                 : [new CreateRecipeImageDto { Name= image, Ordinal = 1 }],
             CookbookId = 0,
-            Summary = summaryDecoded.Length > 2048 ? summaryDecoded[..2048] : summaryDecoded,
+            Summary = summaryDecoded.Truncate(Recipe.Constraints.SummaryMaxLength),
             Servings = apiResponse.Servings,
             PreparationTimeInMinutes = apiResponse.PreparationMinutes,
             CookingTimeInMinutes = apiResponse.CookingMinutes,
@@ -110,7 +109,7 @@ public class RecipeUrlParser(
             Ingredients = apiResponse.ExtendedIngredients?.Select((ingredient, index) =>
                 new CreateRecipeIngredientDto
                 {
-                    Name = ingredient.Original.Length > 255 ? ingredient.Original[..255] : ingredient.Original,
+                    Name = ingredient.Original.Truncate(RecipeIngredient.Constraints.NameMaxLength),
                     Optional = false,
                     Ordinal = index + 1
                 }).ToList() ?? [],

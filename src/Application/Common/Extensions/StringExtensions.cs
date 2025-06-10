@@ -24,5 +24,8 @@ namespace SharedCookbook.Application.Common.Extensions
                 .Replace(input: HtmlTagRegex()
                     .Replace(input: html, replacement: string.Empty), replacement: " ")
                 .Trim();
+        
+        public static string Truncate(this string input, int maxLength) =>
+            input.Length <= maxLength ? input : input[..maxLength];
     }
 }
