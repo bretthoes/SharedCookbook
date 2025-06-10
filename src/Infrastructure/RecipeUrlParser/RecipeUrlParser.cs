@@ -43,13 +43,10 @@ public class RecipeUrlParser(
             try
             {
                 var apiResponse = JsonSerializer.Deserialize<RecipeApiResponse>(response.Content ?? "", JsonOptions);
+                if (apiResponse is null)
+                    throw new Exception("Failed to deserialize the recipe data.");
 
-                if (apiResponse != null)
-                {
-                    return await MapToCreateRecipeDto(apiResponse, cookbookId: 0);
-                }
-
-                throw new Exception("Failed to deserialize the recipe data.");
+                return await MapToCreateRecipeDto(apiResponse.ApplyDefaults(), cookbookId: 0);
             }
             catch (JsonException ex)
             {
@@ -81,7 +78,7 @@ public class RecipeUrlParser(
         // Split instructions into individual steps based on double newline characters
         string summary = apiResponse.Summary?.RemoveHtml() ?? "";
         string summaryDecoded = WebUtility.HtmlDecode(summary);
-        string instructionsDecoded = WebUtility.HtmlDecode(apiResponse.Instructions);
+        string instructionsDecoded = WebUtility.HtmlDecode(apiResponse.Instructions) ?? "";
         string[] steps = instructionsDecoded.Split(["\n\n"], StringSplitOptions.RemoveEmptyEntries);
         foreach (string step in steps) step.RemoveHtml();
         
@@ -90,9 +87,12 @@ public class RecipeUrlParser(
         if (apiResponse.Image != null && hasImage)
             image = await imageUploadService.UploadImageFromUrl(apiResponse.Image);
 
+        string? title = apiResponse.Title?.Length > 255 
+            ? apiResponse.Title[..255] 
+            : apiResponse.Title;
         var createRecipeDto = new CreateRecipeDto
         {
-            Title = apiResponse.Title.Length > 255 ? apiResponse.Title[..255] : apiResponse.Title,
+            Title = title ?? "",
             Images = string.IsNullOrWhiteSpace(image)
                 ? []
                 : [new CreateRecipeImageDto { Name= image, Ordinal = 1 }],
@@ -102,13 +102,13 @@ public class RecipeUrlParser(
             PreparationTimeInMinutes = apiResponse.PreparationMinutes,
             CookingTimeInMinutes = apiResponse.CookingMinutes,
             BakingTimeInMinutes = null,
-            Ingredients = apiResponse.ExtendedIngredients.Select((ingredient, index) =>
+            Ingredients = apiResponse.ExtendedIngredients?.Select((ingredient, index) =>
                 new CreateRecipeIngredientDto
                 {
                     Name = ingredient.Original.Length > 255 ? ingredient.Original[..255] : ingredient.Original,
                     Optional = false,
                     Ordinal = index + 1
-                }).ToList(),
+                }).ToList() ?? [],
             Directions = steps.Select((stepString, index) =>
                 new CreateRecipeDirectionDto
                 {
