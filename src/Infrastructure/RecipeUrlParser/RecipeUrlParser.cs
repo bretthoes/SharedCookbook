@@ -38,30 +38,30 @@ public class RecipeUrlParser(
         // Execute the request
         var response = await client.ExecuteAsync(request, cancellationToken);
 
-        if (response.IsSuccessful)
+        if (!response.IsSuccessful)
         {
-            try
-            {
-                var apiResponse = JsonSerializer.Deserialize<RecipeApiResponse>(response.Content ?? "", JsonOptions);
-                if (apiResponse is null)
-                    throw new Exception("Failed to deserialize the recipe data.");
+            logger.LogError(
+                "Failed to parse recipe from URL: {StatusCode} {Content} {Exception}",
+                response.StatusCode,
+                response.Content,
+                response.ErrorException?.Message);
 
-                return await MapToCreateRecipeDto(apiResponse.ApplyDefaults(), cookbookId: 0);
-            }
-            catch (JsonException ex)
-            {
-                logger.LogError("Error deserializing response content: {Error}", ex.Message);
-                throw new Exception("Error parsing recipe data from API response.", ex);
-            }
+            throw new Exception("Failed to fetch or parse the recipe from the URL.");
         }
 
-        logger.LogError(
-            "Failed to parse recipe from URL: {StatusCode} {Content} {Exception}",
-            response.StatusCode,
-            response.Content,
-            response.ErrorException?.Message);
+        try
+        {
+            var apiResponse = JsonSerializer.Deserialize<RecipeApiResponse>(response.Content ?? "", JsonOptions);
+            if (apiResponse is null)
+                throw new Exception("Failed to deserialize the recipe data.");
 
-        throw new Exception("Failed to fetch or parse the recipe from the URL.");
+            return await MapToCreateRecipeDto(apiResponse.ApplyDefaults());
+        }
+        catch (JsonException ex)
+        {
+            logger.LogError("Error deserializing response content: {Error}", ex.Message);
+            throw new Exception("Error parsing recipe data from API response.", ex);
+        }
     }
     
     private RestRequest GetRequest(string url) =>
@@ -73,14 +73,19 @@ public class RecipeUrlParser(
             .AddParameter(name: "includeTaste", "false")
             .AddParameter(name: "apiKey", _options.ApiKey);
 
-    private async Task<CreateRecipeDto> MapToCreateRecipeDto(RecipeApiResponse apiResponse, int cookbookId)
+    private async Task<CreateRecipeDto> MapToCreateRecipeDto(RecipeApiResponse apiResponse)
     {
         // Split instructions into individual steps based on double newline characters
         string summary = apiResponse.Summary?.RemoveHtml() ?? "";
         string summaryDecoded = WebUtility.HtmlDecode(summary);
         string instructionsDecoded = WebUtility.HtmlDecode(apiResponse.Instructions) ?? "";
-        string[] steps = instructionsDecoded.Split(["\n\n"], StringSplitOptions.RemoveEmptyEntries);
-        foreach (string step in steps) step.RemoveHtml();
+        
+        string[] steps = instructionsDecoded
+            .Split(["\n\n"], StringSplitOptions.RemoveEmptyEntries)
+            .Select(stepString => stepString.RemoveHtml().Trim())
+            .Where(stepString => stepString.Length > 0)
+            .ToArray();
+
         
         var hasImage = apiResponse.Image?.IsValidUrl() ?? false;
         var image = "";
@@ -96,7 +101,7 @@ public class RecipeUrlParser(
             Images = string.IsNullOrWhiteSpace(image)
                 ? []
                 : [new CreateRecipeImageDto { Name= image, Ordinal = 1 }],
-            CookbookId = cookbookId,
+            CookbookId = 0,
             Summary = summaryDecoded.Length > 2048 ? summaryDecoded[..2048] : summaryDecoded,
             Servings = apiResponse.Servings,
             PreparationTimeInMinutes = apiResponse.PreparationMinutes,
