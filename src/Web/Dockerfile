@@ -33,8 +33,23 @@ RUN dotnet publish "Web.csproj" -c $BUILD_CONFIGURATION \
 
 # ─── Stage 3: Runtime ──────────────────────────────────────────────────────────
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
+
+# Install Tesseract and Leptonica as root before switching to non-root user
+USER root
+
+# Update package lists and install tesseract-ocr and dependencies
+# Note: package names may vary slightly depending on the base image's distro version.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        tesseract-ocr \
+        libleptonica-dev \
+        libtesseract-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 USER $APP_UID
 WORKDIR /app
 
+# Copy published output
 COPY --from=publish /app/publish .
+
 ENTRYPOINT ["sh", "-c", "dotnet SharedCookbook.Web.dll --urls http://*:$PORT"]
