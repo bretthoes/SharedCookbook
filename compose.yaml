@@ -19,7 +19,7 @@ services:
     depends_on:
       - database
     ports:
-      - "5000:5000"   # HTTP only
+      - "8080:8080"   # HTTP only
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
       # This explicitly tells ASP.NET to use the “database” service, not localhost
