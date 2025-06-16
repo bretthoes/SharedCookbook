@@ -38,21 +38,24 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-         tesseract-ocr \
-         libleptonica-dev \
-         libtesseract-dev \
+         tesseract-ocr libleptonica-dev libtesseract-dev \
     && echo "---- libleptonica files ----" \
     && ls /usr/lib/x86_64-linux-gnu | grep libleptonica || echo "None found" \
     && echo "---- libtesseract files ----" \
     && ls /usr/lib/x86_64-linux-gnu | grep libtesseract || echo "None found" \
-    \
-    # Create symlinks matching the wrapper’s expected names:
-    && LIB_LEP=$(ls /usr/lib/x86_64-linux-gnu/libleptonica.so.* | head -n1) \
+    && \
+    # Determine the actual libleptonica file (versioned or unversioned) and symlink the expected name:
+    LIB_LEP=$(ls /usr/lib/x86_64-linux-gnu/libleptonica.so.* 2>/dev/null | head -n1) \
+    && if [ -z "$LIB_LEP" ]; then LIB_LEP="/usr/lib/x86_64-linux-gnu/libleptonica.so"; fi \
     && ln -sf "$LIB_LEP" /usr/lib/x86_64-linux-gnu/libleptonica-1.82.0.so \
-    && LIB_TESS=$(ls /usr/lib/x86_64-linux-gnu/libtesseract.so.* | head -n1) \
+    && \
+    # For libtesseract: if versioned exists, use that; else fall back to unversioned
+    LIB_TESS=$(ls /usr/lib/x86_64-linux-gnu/libtesseract.so.* 2>/dev/null | head -n1) \
+    && if [ -z "$LIB_TESS" ]; then LIB_TESS="/usr/lib/x86_64-linux-gnu/libtesseract.so"; fi \
     && ln -sf "$LIB_TESS" /usr/lib/x86_64-linux-gnu/libtesseract.so \
     && ldconfig \
     && rm -rf /var/lib/apt/lists/*
+
 
 USER $APP_UID
 WORKDIR /app
