@@ -63,15 +63,15 @@ RUN apt-get update \
     && ldconfig \
     && rm -rf /var/lib/apt/lists/*
 
-USER $APP_UID
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["sh", "-c", "dotnet SharedCookbook.Web.dll --urls http://*:$PORT"]
 
+# Copy native libs into /app and ensure loader looks there
+RUN cp /usr/lib/x86_64-linux-gnu/libleptonica.so* /app/ || true \
+    && cp /usr/lib/x86_64-linux-gnu/libtesseract.so* /app/ || true
 
-
+# Tell the dynamic loader to look in /app first
+ENV LD_LIBRARY_PATH="/app:${LD_LIBRARY_PATH:-}"
 USER $APP_UID
-WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["sh", "-c", "dotnet SharedCookbook.Web.dll --urls http://*:$PORT"]
 
+ENTRYPOINT ["sh", "-c", "dotnet SharedCookbook.Web.dll --urls http://*:$PORT"]
