@@ -55,18 +55,21 @@ RUN mkdir -p /app/x64
 #    Adjust source filenames (/usr/lib/x86_64-linux-gnu/...) to those actually present.
 #    E.g., if apt installed /usr/lib/x86_64-linux-gnu/libleptonica.so.5, link it to libleptonica-1.78.0.so
 #    If it installed /usr/lib/x86_64-linux-gnu/libtesseract.so.4.0.1, link it to libtesseract41.so.
+# Symlink for Leptonica:
 RUN \
-    # Symlink for Leptonica:
+    mkdir -p /app/x64 && \
     if [ -f "/usr/lib/x86_64-linux-gnu/libleptonica.so.5" ]; then \
-      ln -sf /usr/lib/x86_64-linux-gnu/libleptonica.so.5 /app/x64/libleptonica-1.82.0.so; \
-    if [ -f "/usr/lib/x86_64-linux-gnu/libleptonica-1.82.0.so" ]; then \
-          ln -sf /usr/lib/x86_64-linux-gnu/libleptonica.so.5 /app/x64/libleptonica-1.82.0.so; \
+       ln -sf /usr/lib/x86_64-linux-gnu/libleptonica.so.5 /app/x64/libleptonica-1.82.0.so; \
     elif [ -f "/usr/lib/x86_64-linux-gnu/libleptonica.so" ]; then \
-      # fallback if only unversioned exists; still link under expected name:
-      ln -sf /usr/lib/x86_64-linux-gnu/libleptonica.so /app/x64/libleptonica-1.82.0.so; \
+       ln -sf /usr/lib/x86_64-linux-gnu/libleptonica.so /app/x64/libleptonica-1.82.0.so; \
+    elif [ -f "/usr/lib/x86_64-linux-gnu/liblept.so.5" ]; then \
+           ln -sf /usr/lib/x86_64-linux-gnu/liblept.so.5 /app/x64/libleptonica-1.82.0.so; \
+    elif [ -f "/usr/lib/x86_64-linux-gnu/liblept.so" ]; then \
+               ln -sf /usr/lib/x86_64-linux-gnu/liblept.so /app/x64/libleptonica-1.82.0.so; \
     else \
-      echo "Warning: libleptonica source .so not found"; \
+       echo "Warning: libleptonica source .so not found"; \
     fi
+
 
 # 5. If your code expects tessdata under a particular path (e.g. alongside app), you can also link traineddata files:
 #    Suppose you have wwwroot/tessdata/*.traineddata in your publish output:
