@@ -1,4 +1,5 @@
 ﻿using SharedCookbook.Application.Common.Exceptions;
+using SharedCookbook.Application.Common.Extensions;
 using SharedCookbook.Application.Common.Security;
 
 namespace SharedCookbook.Application.Common.Behaviours;
@@ -10,9 +11,12 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
 {
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        var authorizeAttributes = request.GetType().GetCustomAttributes<AuthorizeAttribute>();
+        var authorizeAttributes = request
+            .GetType()
+            .GetCustomAttributes<AuthorizeAttribute>()
+            .ToArray();
 
-        if (!authorizeAttributes.Any())
+        if (authorizeAttributes.IsEmpty())
         {
             return await next();
         }
@@ -24,9 +28,11 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
         }
 
         // Role-based authorization
-        var authorizeAttributesWithRoles = authorizeAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Roles));
+        var authorizeAttributesWithRoles = authorizeAttributes
+            .Where(a => !string.IsNullOrWhiteSpace(a.Roles))
+            .ToArray();
 
-        if (authorizeAttributesWithRoles.Any())
+        if (authorizeAttributesWithRoles.IsNotEmpty())
         {
             var authorized = false;
 
@@ -53,8 +59,11 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
         }
 
         // Policy-based authorization
-        var authorizeAttributesWithPolicies = authorizeAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Policy));
-        if (!authorizeAttributesWithPolicies.Any())
+        var authorizeAttributesWithPolicies = authorizeAttributes
+            .Where(a => !string.IsNullOrWhiteSpace(a.Policy))
+            .ToArray();
+        
+        if (authorizeAttributesWithPolicies.IsEmpty())
         {
             return await next();
         }
