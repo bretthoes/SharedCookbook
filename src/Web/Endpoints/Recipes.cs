@@ -16,7 +16,7 @@ public class Recipes : EndpointGroupBase
     {
         app.MapGroup(this)
             .DisableAntiforgery()
-            .RequireAuthorization()
+            //.RequireAuthorization()
             .MapGet(GetRecipe, pattern: "{Id}")
             .MapGet(GetRecipesWithPagination)
             .MapPost(CreateRecipe)
