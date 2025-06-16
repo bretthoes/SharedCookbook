@@ -61,14 +61,17 @@ RUN apt-get update \
     && ldconfig -p | grep libleptonica || echo "Still not in ldconfig" \
     \
     && ldconfig \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* 
+
+
+    #ln -s /usr/lib/libleptonica.so.6.0.0 /app/x64/libleptonica-1.82.0.so
+    #ln -s /usr/lib/libtesseract.so.5.0.3 /app/x64/libtesseract50.so
+    #ln -s /app/tessdata/eng.traineddata /usr/share/tessdata/eng.traineddata
+
+
 
 WORKDIR /app
 COPY --from=publish /app/publish .
-
-# Copy native libs into /app and ensure loader looks there
-RUN cp /usr/lib/x86_64-linux-gnu/libleptonica.so* /app/ || true \
-    && cp /usr/lib/x86_64-linux-gnu/libtesseract.so* /app/ || true
 
 # Tell the dynamic loader to look in /app first
 ENV LD_LIBRARY_PATH="/app:${LD_LIBRARY_PATH:-}"

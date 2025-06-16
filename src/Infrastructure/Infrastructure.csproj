@@ -8,8 +8,6 @@
     <ItemGroup>
         <PackageReference Include="AWSSDK.S3" />
         <PackageReference Include="Azure.Identity"/>
-        <PackageReference Include="IronOcr" />
-        <PackageReference Include="IronOcr.Linux" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore"/>
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore"/>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
@@ -20,6 +18,9 @@
         </PackageReference>
         <PackageReference Include="RestSharp" />
         <PackageReference Include="Tesseract" />
+        <PackageReference Include="Tesseract.Data.English" />
+        <PackageReference Include="Tesseract.Drawing" />
+        <PackageReference Include="TesseractWrapper64" />
     </ItemGroup>
 
     <ItemGroup>
