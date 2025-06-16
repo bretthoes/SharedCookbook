@@ -48,41 +48,40 @@ WORKDIR /app
 # 2. Copy published .NET app
 COPY --from=publish /app/publish .
 
-# 3. Create a folder for native symlinks, adjust ownership if needed
+# 3. Create directory for native symlinks next to your app binaries
 RUN mkdir -p /app/x64
 
-# 4. Symlink real system libs into /app/x64 under the names expected by P/Invoke.
-#    Use the actual versioned filenames you saw in your diagnostics.
-#    For example, if you saw /usr/lib/x86_64-linux-gnu/libleptonica.so.6.0.0, use that.
-#    Here’s a pattern: find the real file, then symlink to the expected name.
+# 4. Create symlinks for Leptonica and Tesseract with the expected versioned names.
+#    Adjust source filenames (/usr/lib/x86_64-linux-gnu/...) to those actually present.
+#    E.g., if apt installed /usr/lib/x86_64-linux-gnu/libleptonica.so.5, link it to libleptonica-1.78.0.so
+#    If it installed /usr/lib/x86_64-linux-gnu/libtesseract.so.4.0.1, link it to libtesseract41.so.
 RUN \
-    # Find actual libleptonica file (adjust the pattern if needed):
-    LIB_LEP_SYS=$(ls /usr/lib/x86_64-linux-gnu/libleptonica.so.* 2>/dev/null | head -n1) \
-    && if [ -z "$LIB_LEP_SYS" ]; then LIB_LEP_SYS="/usr/lib/x86_64-linux-gnu/libleptonica.so"; fi \
-    && ln -sf "$LIB_LEP_SYS" /app/x64/libleptonica-1.82.0.so \
-    \
-    # Find actual tesseract library (adjust if your diagnostics showed a versioned name):
-    && LIB_TESS_SYS=$(ls /usr/lib/x86_64-linux-gnu/libtesseract.so.* 2>/dev/null | head -n1) \
-    && if [ -z "$LIB_TESS_SYS" ]; then LIB_TESS_SYS="/usr/lib/x86_64-linux-gnu/libtesseract.so"; fi \
-    && ln -sf "$LIB_TESS_SYS" /app/x64/libtesseract50.so
+    # Symlink for Leptonica:
+    if [ -f "/usr/lib/x86_64-linux-gnu/libleptonica.so.5" ]; then \
+      ln -sf /usr/lib/x86_64-linux-gnu/libleptonica.so.5 /app/x64/libleptonica-1.82.0.so; \
+    if [ -f "/usr/lib/x86_64-linux-gnu/libleptonica-1.82.0.so" ]; then \
+          ln -sf /usr/lib/x86_64-linux-gnu/libleptonica.so.5 /app/x64/libleptonica-1.82.0.so; \
+    elif [ -f "/usr/lib/x86_64-linux-gnu/libleptonica.so" ]; then \
+      # fallback if only unversioned exists; still link under expected name:
+      ln -sf /usr/lib/x86_64-linux-gnu/libleptonica.so /app/x64/libleptonica-1.82.0.so; \
+    else \
+      echo "Warning: libleptonica source .so not found"; \
+    fi
 
-# 5. (Optional) If you have tessdata in your published app (e.g. under wwwroot/tessdata),
-#    and your code or TesseractEngine expects to find it under /usr/share/tessdata, you can symlink:
-#    Adapt paths: if your publish includes wwwroot/tessdata/eng.traineddata, link it into system tessdata folder:
+# 5. If your code expects tessdata under a particular path (e.g. alongside app), you can also link traineddata files:
+#    Suppose you have wwwroot/tessdata/*.traineddata in your publish output:
 RUN \
     if [ -d "/app/wwwroot/tessdata" ]; then \
-      # Ensure system tessdata dir exists:
       mkdir -p /usr/share/tessdata; \
-      # Link each traineddata file:
       for f in /app/wwwroot/tessdata/*.traineddata; do \
         ln -sf "$f" "/usr/share/tessdata/$(basename "$f")"; \
       done; \
     fi
 
-# 6. Ensure the dynamic loader searches /app/x64 first (and optionally /app)
-ENV LD_LIBRARY_PATH="/app/x64:/app:${LD_LIBRARY_PATH:-}"
+# 6. Ensure the loader searches /app/x64 first
+ENV LD_LIBRARY_PATH="/app/x64:${LD_LIBRARY_PATH:-}"
 
-# 7. Switch to non-root user if required by your app
+# 7. Switch to non-root if needed
 USER $APP_UID
 
 ENTRYPOINT ["dotnet", "SharedCookbook.Web.dll", "--urls", "http://*:$PORT"]

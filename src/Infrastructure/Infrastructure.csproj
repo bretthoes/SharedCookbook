@@ -20,6 +20,7 @@
         <PackageReference Include="Tesseract" />
         <PackageReference Include="Tesseract.Data.English" />
         <PackageReference Include="Tesseract.Drawing" />
+        <PackageReference Include="TesseractCSharp" />
         <PackageReference Include="TesseractWrapper64" />
     </ItemGroup>
 
