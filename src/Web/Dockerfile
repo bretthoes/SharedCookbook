@@ -37,24 +37,37 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-         tesseract-ocr libleptonica-dev libtesseract-dev \
-    && echo "---- libleptonica files ----" \
-    && ls /usr/lib/x86_64-linux-gnu | grep libleptonica || echo "None found" \
-    && echo "---- libtesseract files ----" \
-    && ls /usr/lib/x86_64-linux-gnu | grep libtesseract || echo "None found" \
-    && \
-    # Determine the actual libleptonica file (versioned or unversioned) and symlink the expected name:
-    LIB_LEP=$(ls /usr/lib/x86_64-linux-gnu/libleptonica.so.* 2>/dev/null | head -n1) \
+    && apt-get install -y --no-install-recommends tesseract-ocr libleptonica-dev libtesseract-dev \
+    \
+    # Debug: list exact files and ldconfig entries
+    && echo "---- Files under /usr/lib/x86_64-linux-gnu for libleptonica ----" \
+    && ls -l /usr/lib/x86_64-linux-gnu | grep libleptonica || echo "None found" \
+    && echo "---- ldconfig -p for libleptonica ----" \
+    && ldconfig -p | grep libleptonica || echo "None found in ldconfig" \
+    \
+    # Symlink logic
+    && LIB_LEP=$(ls /usr/lib/x86_64-linux-gnu/libleptonica.so.* 2>/dev/null | head -n1) \
     && if [ -z "$LIB_LEP" ]; then LIB_LEP="/usr/lib/x86_64-linux-gnu/libleptonica.so"; fi \
     && ln -sf "$LIB_LEP" /usr/lib/x86_64-linux-gnu/libleptonica-1.82.0.so \
-    && \
-    # For libtesseract: if versioned exists, use that; else fall back to unversioned
-    LIB_TESS=$(ls /usr/lib/x86_64-linux-gnu/libtesseract.so.* 2>/dev/null | head -n1) \
+    \
+    # Similarly for tesseract, if needed
+    && LIB_TESS=$(ls /usr/lib/x86_64-linux-gnu/libtesseract.so.* 2>/dev/null | head -n1) \
     && if [ -z "$LIB_TESS" ]; then LIB_TESS="/usr/lib/x86_64-linux-gnu/libtesseract.so"; fi \
     && ln -sf "$LIB_TESS" /usr/lib/x86_64-linux-gnu/libtesseract.so \
+    \
+    && echo "---- After symlink: ls libleptonica-1.82.0.so ----" \
+    && ls -l /usr/lib/x86_64-linux-gnu/libleptonica-1.82.0.so || echo "Symlink missing" \
+    && echo "---- After symlink: ldconfig -p for libleptonica ----" \
+    && ldconfig -p | grep libleptonica || echo "Still not in ldconfig" \
+    \
     && ldconfig \
     && rm -rf /var/lib/apt/lists/*
+
+USER $APP_UID
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["sh", "-c", "dotnet SharedCookbook.Web.dll --urls http://*:$PORT"]
+
 
 
 USER $APP_UID
