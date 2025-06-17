@@ -49,7 +49,7 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 
 # 3. Prepare /app/x64 for native libs
-RUN mkdir -p /app/x64
+# RUN mkdir -p /app/x64
 
 # 4. Symlink or copy exact libraries into /app/x64 under the names you want:
 #RUN \
@@ -81,7 +81,7 @@ RUN mkdir -p /app/x64
 #    fi
 
 # 6. Ensure the dynamic loader searches /app/x64 first
-ENV LD_LIBRARY_PATH="/app/x64:${LD_LIBRARY_PATH:-}"
+# ENV LD_LIBRARY_PATH="/app/x64:${LD_LIBRARY_PATH:-}"
 
 # 7. Switch to non-root user and run the app
 USER $APP_UID
