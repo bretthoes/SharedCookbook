@@ -52,33 +52,33 @@ COPY --from=publish /app/publish .
 RUN mkdir -p /app/x64
 
 # 4. Symlink or copy exact libraries into /app/x64 under the names you want:
-RUN \
-    # libleptonica-1.8.2.so: link from the unversioned lib (since that's what exists)
-    if [ -f "/usr/lib/x86_64-linux-gnu/libleptonica.so" ]; then \
-      ln -sf /usr/lib/x86_64-linux-gnu/libleptonica.so /app/x64/libleptonica-1.8.2.so; \
-    else \
-      echo "Warning: /usr/lib/x86_64-linux-gnu/libleptonica.so not found"; \
-    fi && \
-    # libtesseract50.so: link from libtesseract.so.5 (or fallback)
-    if [ -f "/usr/lib/x86_64-linux-gnu/libtesseract.so.5" ]; then \
-      ln -sf /usr/lib/x86_64-linux-gnu/libtesseract.so.5 /app/x64/libtesseract50.so; \
-    elif [ -f "/usr/lib/x86_64-linux-gnu/libtesseract.so" ]; then \
-      ln -sf /usr/lib/x86_64-linux-gnu/libtesseract.so /app/x64/libtesseract50.so; \
-    else \
-      echo "Warning: libtesseract.so.5 or libtesseract.so not found"; \
-    fi && \
-    # libtesseract.so.5: link explicitly as well (though libtesseract.so → so.5.0.3 already)
-    if [ -f "/usr/lib/x86_64-linux-gnu/libtesseract.so.5" ]; then \
-      ln -sf /usr/lib/x86_64-linux-gnu/libtesseract.so.5 /app/x64/libtesseract.so.5; \
-    else \
-      echo "Warning: /usr/lib/x86_64-linux-gnu/libtesseract.so.5 not found"; \
-    fi && \
-    # libtesseract.so.5.0.3: link explicitly
-    if [ -f "/usr/lib/x86_64-linux-gnu/libtesseract.so.5.0.3" ]; then \
-      ln -sf /usr/lib/x86_64-linux-gnu/libtesseract.so.5.0.3 /app/x64/libtesseract.so.5.0.3; \
-    else \
-      echo "Warning: /usr/lib/x86_64-linux-gnu/libtesseract.so.5.0.3 not found"; \
-    fi
+#RUN \
+#    # libleptonica-1.8.2.so: link from the unversioned lib (since that's what exists)
+#    if [ -f "/usr/lib/x86_64-linux-gnu/libleptonica.so" ]; then \
+#      ln -sf /usr/lib/x86_64-linux-gnu/libleptonica.so /app/x64/libleptonica-1.8.2.so; \
+#    else \
+#      echo "Warning: /usr/lib/x86_64-linux-gnu/libleptonica.so not found"; \
+#    fi && \
+#    # libtesseract50.so: link from libtesseract.so.5 (or fallback)
+#    if [ -f "/usr/lib/x86_64-linux-gnu/libtesseract.so.5" ]; then \
+#      ln -sf /usr/lib/x86_64-linux-gnu/libtesseract.so.5 /app/x64/libtesseract50.so; \
+#    elif [ -f "/usr/lib/x86_64-linux-gnu/libtesseract.so" ]; then \
+#      ln -sf /usr/lib/x86_64-linux-gnu/libtesseract.so /app/x64/libtesseract50.so; \
+#    else \
+#      echo "Warning: libtesseract.so.5 or libtesseract.so not found"; \
+#    fi && \
+#    # libtesseract.so.5: link explicitly as well (though libtesseract.so → so.5.0.3 already)
+#    if [ -f "/usr/lib/x86_64-linux-gnu/libtesseract.so.5" ]; then \
+#      ln -sf /usr/lib/x86_64-linux-gnu/libtesseract.so.5 /app/x64/libtesseract.so.5; \
+#    else \
+#      echo "Warning: /usr/lib/x86_64-linux-gnu/libtesseract.so.5 not found"; \
+#    fi && \
+#    # libtesseract.so.5.0.3: link explicitly
+#    if [ -f "/usr/lib/x86_64-linux-gnu/libtesseract.so.5.0.3" ]; then \
+#      ln -sf /usr/lib/x86_64-linux-gnu/libtesseract.so.5.0.3 /app/x64/libtesseract.so.5.0.3; \
+#    else \
+#      echo "Warning: /usr/lib/x86_64-linux-gnu/libtesseract.so.5.0.3 not found"; \
+#    fi
 
 # 6. Ensure the dynamic loader searches /app/x64 first
 ENV LD_LIBRARY_PATH="/app/x64:${LD_LIBRARY_PATH:-}"
