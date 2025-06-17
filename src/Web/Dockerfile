@@ -36,74 +36,53 @@ RUN dotnet publish "Web.csproj" \
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 ENV DEBIAN_FRONTEND=noninteractive
 
-# 1. Install Tesseract & Leptonica and common imaging dependencies
+# 1. Install Tesseract & Leptonica system packages (and common imaging deps if needed)
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
          tesseract-ocr \
          libleptonica-dev \
          libtesseract-dev \
-         libpng16-16 \
-         libjpeg62-turbo \
-         libwebp7 \
-         zlib1g \
-         # add others if ldd shows missing dependencies
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Diagnostic: list installed Leptonica/Tesseract libs and ldd output
-RUN echo "=== ls for libleptonica and libtesseract ===" \
-    && ls -l /usr/lib/x86_64-linux-gnu | grep -E 'libleptonica|libtesseract' || echo "None found in lib dir" \
-    && echo "=== ldconfig -p for libleptonica ===" \
-    && ldconfig -p | grep libleptonica || echo "No libleptonica in ldconfig" \
-    && echo "=== ldconfig -p for tesseract ===" \
-    && ldconfig -p | grep tesseract || echo "No libtesseract in ldconfig"
-
 WORKDIR /app
-# 3. Copy published .NET app
+# 2. Copy published .NET app
 COPY --from=publish /app/publish .
 
-# 4. Prepare /app/x64 for symlinks
+# 3. Prepare /app/x64 for native libs
 RUN mkdir -p /app/x64
 
-# 5. Dynamically detect and symlink Leptonica
+# 4. Symlink or copy exact libraries into /app/x64 under the names you want:
 RUN \
-    LIB_LEP_SYS=$(ls /usr/lib/x86_64-linux-gnu/libleptonica.so.* 2>/dev/null | head -n1) && \
-    if [ -n "$LIB_LEP_SYS" ]; then \
-       echo "Linking Leptonica from $LIB_LEP_SYS"; \
-       ln -sf "$LIB_LEP_SYS" /app/x64/libleptonica-1.82.0.so; \
-    elif [ -f "/usr/lib/x86_64-linux-gnu/libleptonica.so" ]; then \
-       echo "Linking Leptonica from unversioned"; \
-       ln -sf /usr/lib/x86_64-linux-gnu/libleptonica.so /app/x64/libleptonica-1.82.0.so; \
+    # libleptonica-1.8.2.so: link from the unversioned lib (since that's what exists)
+    if [ -f "/usr/lib/x86_64-linux-gnu/libleptonica.so" ]; then \
+      ln -sf /usr/lib/x86_64-linux-gnu/libleptonica.so /app/x64/libleptonica-1.8.2.so; \
     else \
-       echo "Warning: libleptonica source .so not found"; \
-    fi
-
-# 6. Dynamically detect and symlink Tesseract
-RUN \
-    LIB_TESS_SYS=$(ls /usr/lib/x86_64-linux-gnu/libtesseract.so.* 2>/dev/null | head -n1) && \
-    if [ -n "$LIB_TESS_SYS" ]; then \
-       echo "Linking Tesseract from $LIB_TESS_SYS"; \
-       # adjust target name to what wrapper expects, e.g., libtesseract50.so or libtesseract41.so
-       ln -sf "$LIB_TESS_SYS" /app/x64/libtesseract50.so; \
+      echo "Warning: /usr/lib/x86_64-linux-gnu/libleptonica.so not found"; \
+    fi && \
+    # libtesseract50.so: link from libtesseract.so.5 (or fallback)
+    if [ -f "/usr/lib/x86_64-linux-gnu/libtesseract.so.5" ]; then \
+      ln -sf /usr/lib/x86_64-linux-gnu/libtesseract.so.5 /app/x64/libtesseract50.so; \
     elif [ -f "/usr/lib/x86_64-linux-gnu/libtesseract.so" ]; then \
-       echo "Linking Tesseract from unversioned"; \
-       ln -sf /usr/lib/x86_64-linux-gnu/libtesseract.so /app/x64/libtesseract50.so; \
+      ln -sf /usr/lib/x86_64-linux-gnu/libtesseract.so /app/x64/libtesseract50.so; \
     else \
-       echo "Warning: libtesseract source .so not found"; \
+      echo "Warning: libtesseract.so.5 or libtesseract.so not found"; \
+    fi && \
+    # libtesseract.so.5: link explicitly as well (though libtesseract.so → so.5.0.3 already)
+    if [ -f "/usr/lib/x86_64-linux-gnu/libtesseract.so.5" ]; then \
+      ln -sf /usr/lib/x86_64-linux-gnu/libtesseract.so.5 /app/x64/libtesseract.so.5; \
+    else \
+      echo "Warning: /usr/lib/x86_64-linux-gnu/libtesseract.so.5 not found"; \
+    fi && \
+    # libtesseract.so.5.0.3: link explicitly
+    if [ -f "/usr/lib/x86_64-linux-gnu/libtesseract.so.5.0.3" ]; then \
+      ln -sf /usr/lib/x86_64-linux-gnu/libtesseract.so.5.0.3 /app/x64/libtesseract.so.5.0.3; \
+    else \
+      echo "Warning: /usr/lib/x86_64-linux-gnu/libtesseract.so.5.0.3 not found"; \
     fi
 
-# 7. (Optional) Link tessdata if needed. If your code expects tessdata in /usr/share/tessdata:
-RUN \
-    if [ -d "/app/wwwroot/tessdata" ]; then \
-      echo "Linking tessdata files..."; \
-      mkdir -p /usr/share/tessdata; \
-      for f in /app/wwwroot/tessdata/*.traineddata; do \
-         ln -sf "$f" "/usr/share/tessdata/$(basename "$f")"; \
-      done; \
-    fi
-
-# 8. Ensure loader searches /app/x64 first
+# 6. Ensure the dynamic loader searches /app/x64 first
 ENV LD_LIBRARY_PATH="/app/x64:${LD_LIBRARY_PATH:-}"
 
-# 9. Switch to non-root and run app
+# 7. Switch to non-root user and run the app
 USER $APP_UID
 ENTRYPOINT ["dotnet", "SharedCookbook.Web.dll", "--urls", "http://*:$PORT"]
