@@ -52,7 +52,6 @@ public static class DependencyInjection
 
     private static void AddRateLimiter(this IHostApplicationBuilder builder)
     {
-        
         builder.Services.AddRateLimiter(options =>
         {
             options.OnRejected = async (context, cancellationToken) =>
