@@ -30,10 +30,7 @@
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="[9.0.1, )" />
     <PackageVersion Include="RestSharp" Version="[112.1.0, )" />
     <PackageVersion Include="Tesseract" Version="[5.2.0, )" />
-    <PackageVersion Include="Tesseract.Data.English" Version="4.0.0" />
     <PackageVersion Include="Tesseract.Drawing" Version="5.2.0" />
-    <PackageVersion Include="TesseractCSharp" Version="1.0.5" />
-    <PackageVersion Include="TesseractWrapper64" Version="1.2.0" />
     <PackageVersion Include="Testcontainers.PostgreSql" Version="[4.0.0, )" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="[$(EfcoreVersion), )" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="[$(MicrosoftExtensionsVersion), )" />
