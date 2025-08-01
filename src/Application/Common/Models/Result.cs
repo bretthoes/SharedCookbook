@@ -14,11 +14,11 @@ public class Result
 
     public static Result Success()
     {
-        return new Result(true, Array.Empty<string>());
+        return new Result(succeeded: true, errors: Array.Empty<string>());
     }
 
     public static Result Failure(IEnumerable<string> errors)
     {
-        return new Result(false, errors);
+        return new Result(succeeded: false, errors);
     }
 }
