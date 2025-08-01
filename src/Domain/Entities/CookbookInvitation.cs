@@ -14,7 +14,7 @@ public class CookbookInvitation : BaseAuditableEntity
     
     public void Accept()
     {
-        if (InvitationStatus == CookbookInvitationStatus.Accepted) return;
+        if (InvitationHasBeenAccepted) return;
 
         InvitationStatus = CookbookInvitationStatus.Accepted;
         AddDomainEvent(new InvitationAcceptedEvent(this));
@@ -24,4 +24,7 @@ public class CookbookInvitation : BaseAuditableEntity
     {
         public const int InvitationStatusMaxLength = 255;
     }
+
+    private bool InvitationHasBeenAccepted
+        => InvitationStatus == CookbookInvitationStatus.Accepted;
 }

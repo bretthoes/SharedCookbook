@@ -1,27 +1,24 @@
 namespace SharedCookbook.Application.Invitations.Events;
 
-public class InvitationAcceptedEventHandler : INotificationHandler<InvitationAcceptedEvent>
+public class InvitationAcceptedEventHandler(IApplicationDbContext context)
+    : INotificationHandler<InvitationAcceptedEvent>
 {
-    private readonly IApplicationDbContext _context;
-
-    public InvitationAcceptedEventHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task Handle(InvitationAcceptedEvent acceptedEvent, CancellationToken cancellationToken)
     {
-        var newMembership = CookbookMembership.GetDefaultMembership(acceptedEvent.Invitation.CookbookId);
+        var candidateMembership = CookbookMembership.GetDefaultMembership(acceptedEvent.Invitation.CookbookId);
         
-        // TODO break this query into smaller extensions
-        var membershipAlreadyExists = await _context.CookbookMemberships
-            .AnyAsync(member => member.CookbookId == newMembership.CookbookId
-                                && member.CreatedBy == newMembership.CreatedBy,
-                cancellationToken);
+        bool alreadyExists = await context.CookbookMemberships
+            .AnyAsync(membership => MatchesMembership(membership, candidateMembership), cancellationToken);
+
         
-        if (membershipAlreadyExists) return;
+        if (alreadyExists) return;
         
-        await _context.CookbookMemberships.AddAsync(newMembership, cancellationToken);
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.CookbookMemberships.AddAsync(candidateMembership, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
+    
+    private static bool MatchesMembership(CookbookMembership membership, CookbookMembership candidate)
+        => membership.CookbookId == candidate.CookbookId
+           && membership.CreatedBy == candidate.CreatedBy;
+
 }
