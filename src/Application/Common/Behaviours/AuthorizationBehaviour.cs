@@ -36,9 +36,9 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
         {
             var authorized = false;
 
-            foreach (var roles in authorizeAttributesWithRoles.Select(a => a.Roles.Split(',')))
+            foreach (string[] roles in authorizeAttributesWithRoles.Select(a => a.Roles.Split(',')))
             {
-                foreach (var role in roles)
+                foreach (string role in roles)
                 {
                     var isInRole = await identityService.IsInRoleAsync(user.Id, role.Trim());
                     if (!isInRole)
@@ -69,9 +69,9 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
         }
 
         {
-            foreach (var policy in authorizeAttributesWithPolicies.Select(a => a.Policy))
+            foreach (string policy in authorizeAttributesWithPolicies.Select(a => a.Policy))
             {
-                var authorized = await identityService.AuthorizeAsync(user.Id, policy);
+                bool authorized = await identityService.AuthorizeAsync(user.Id, policy);
 
                 if (!authorized)
                 {
