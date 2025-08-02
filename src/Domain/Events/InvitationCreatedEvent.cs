@@ -1,11 +1,6 @@
 ﻿namespace SharedCookbook.Domain.Events;
 
-public class InvitationCreatedEvent : BaseEvent
+public sealed class InvitationCreatedEvent(CookbookInvitation invitation) : BaseEvent
 {
-    public InvitationCreatedEvent(CookbookInvitation invitation)
-    {
-        Invitation = invitation;
-    }
-
-    public CookbookInvitation Invitation { get; }
+    public CookbookInvitation Invitation { get; } = invitation;
 }

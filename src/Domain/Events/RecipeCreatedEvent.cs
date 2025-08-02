@@ -1,11 +1,6 @@
 ﻿namespace SharedCookbook.Domain.Events;
 
-public class RecipeCreatedEvent : BaseEvent
+public sealed class RecipeCreatedEvent(Recipe recipe) : BaseEvent
 {
-    public RecipeCreatedEvent(Recipe recipe)
-    {
-        Recipe = recipe;
-    }
-
-    public Recipe Recipe { get; }
+    public Recipe Recipe { get; } = recipe;
 }
