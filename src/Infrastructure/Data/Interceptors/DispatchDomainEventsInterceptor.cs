@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using SharedCookbook.Application.Common.Extensions;
 
 namespace SharedCookbook.Infrastructure.Data.Interceptors;
 
@@ -35,7 +36,7 @@ public class DispatchDomainEventsInterceptor : SaveChangesInterceptor
 
         var entities = context.ChangeTracker
             .Entries<BaseEntity>()
-            .Where(e => e.Entity.DomainEvents.Any())
+            .Where(e => e.Entity.DomainEvents.IsNotEmpty())
             .Select(e => e.Entity);
 
         var domainEvents = entities
