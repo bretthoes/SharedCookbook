@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Domain.Entities;
 
-public class CookbookNotification : BaseAuditableEntity
+public sealed class CookbookNotification : BaseAuditableEntity
 {
     public int? CookbookId { get; init; }
 

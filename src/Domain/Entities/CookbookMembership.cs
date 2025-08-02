@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Domain.Entities;
 
-public class CookbookMembership : BaseAuditableEntity
+public sealed class CookbookMembership : BaseAuditableEntity
 {
     public int CookbookId { get; init; }
 

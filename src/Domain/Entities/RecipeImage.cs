@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Domain.Entities;
 
-public class RecipeImage : BaseAuditableEntity
+public sealed class RecipeImage : BaseAuditableEntity
 {
     public int RecipeId { get; init; }
 
