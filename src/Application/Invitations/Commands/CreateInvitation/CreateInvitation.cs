@@ -11,7 +11,10 @@ public record CreateInvitationCommand : IRequest<int>
     public required string Email { get; init; }
 }
 
-public class CreateInvitationCommandHandler(IApplicationDbContext context, IIdentityService identityService, IUser user)
+public class CreateInvitationCommandHandler(
+    IApplicationDbContext context,
+    IIdentityService identityService,
+    IUser user)
     : IRequestHandler<CreateInvitationCommand, int>
 {
     public async Task<int> Handle(CreateInvitationCommand command, CancellationToken cancellationToken)
@@ -51,7 +54,7 @@ public class CreateInvitationCommandHandler(IApplicationDbContext context, IIden
         var entity = new CookbookInvitation
         {
             CookbookId = cookbookId,
-            CreatedBy = user.Id,
+            CreatedBy = user.Id, // TODO remove this and test, value should be set at interception
             RecipientPersonId = recipientId,
             InvitationStatus = CookbookInvitationStatus.Sent,
             ResponseDate = null,
