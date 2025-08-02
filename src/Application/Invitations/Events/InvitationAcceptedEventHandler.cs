@@ -1,24 +1,27 @@
+using SharedCookbook.Application.Memberships.Commands.CreateMembership;
+
 namespace SharedCookbook.Application.Invitations.Events;
 
-public class InvitationAcceptedEventHandler(IApplicationDbContext context)
+public class InvitationAcceptedEventHandler(IApplicationDbContext context, IUser user, IMediator mediator)
     : INotificationHandler<InvitationAcceptedEvent>
 {
-    public async Task Handle(InvitationAcceptedEvent acceptedEvent, CancellationToken cancellationToken)
+    public async Task Handle(InvitationAcceptedEvent acceptedEvent, CancellationToken token)
     {
-        var candidateMembership = CookbookMembership.GetDefaultMembership(acceptedEvent.Invitation.CookbookId);
+        Guard.Against.Null(user.Id);
         
-        bool alreadyExists = await context.CookbookMemberships
-            .AnyAsync(membership => MatchesMembership(membership, candidateMembership), cancellationToken);
+        if (await MembershipAlreadyExistsInCookbook(acceptedEvent.Invitation.CookbookId, user.Id, token)) return;
 
-        
-        if (alreadyExists) return;
-        
-        await context.CookbookMemberships.AddAsync(candidateMembership, cancellationToken);
-        await context.SaveChangesAsync(cancellationToken);
+        var command = new CreateMembershipCommand { CookbookId = acceptedEvent.Invitation.CookbookId };
+
+        await mediator.Send(command, token);
     }
-    
-    private static bool MatchesMembership(CookbookMembership membership, CookbookMembership candidate)
-        => membership.CookbookId == candidate.CookbookId
-           && membership.CreatedBy == candidate.CreatedBy;
 
+    private async Task<bool> MembershipAlreadyExistsInCookbook(
+        int cookbookId,
+        string userId,
+        CancellationToken token) 
+        => await context.CookbookMemberships
+            .AnyAsync(membership
+                => membership.CookbookId == cookbookId
+                   && membership.CreatedBy == userId, token);
 }

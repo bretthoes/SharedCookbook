@@ -34,6 +34,7 @@ public class CookbookMembership : BaseAuditableEntity
             CanUpdateRecipe = true,
         };
 
+    // TODO change to AddWithDefaultMembership, and raise a domain event here as well
     public static CookbookMembership GetDefaultMembership(int cookbookId)
         => new()
         {

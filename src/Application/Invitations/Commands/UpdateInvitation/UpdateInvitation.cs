@@ -9,32 +9,57 @@ public record UpdateInvitationCommand : IRequest<int>
     public CookbookInvitationStatus NewStatus { get; init; }
 }
 
-public class UpdateInvitationCommandHandler : IRequestHandler<UpdateInvitationCommand, int>
+public class UpdateInvitationCommandHandler(
+    IApplicationDbContext context,
+    IUser user,
+    TimeProvider timeProvider)
+    : IRequestHandler<UpdateInvitationCommand, int>
 {
-    private readonly IApplicationDbContext _context;
-
-    public UpdateInvitationCommandHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<int> Handle(UpdateInvitationCommand command, CancellationToken cancellationToken)
     {
-        var invitation = await _context.CookbookInvitations
-            .FindAsync(keyValues: [command.Id], cancellationToken);
-
+        var invitation = await context.CookbookInvitations.FindAsync(keyValues: [command.Id], cancellationToken);
+        
         Guard.Against.NotFound(command.Id, invitation);
+        Guard.Against.Null(user.Id);
 
-        if (command.NewStatus == CookbookInvitationStatus.Accepted)
+        switch (command.NewStatus)
         {
-            invitation.Accept();
-        }
-        else if (command.NewStatus != CookbookInvitationStatus.Unknown)
-        {
-            invitation.InvitationStatus = command.NewStatus;
-        }
+            case CookbookInvitationStatus.Accepted:
+                if (InvitationIsNotAlreadyAccepted(invitation, command.NewStatus))
+                {
+                    invitation.Accept(timestamp: timeProvider.GetUtcNow().UtcDateTime);
+                    await context.CookbookInvitations.AddAsync(invitation, cancellationToken);
+                }
 
-        await _context.SaveChangesAsync(cancellationToken);
+                if (await UserDoesNotHaveMembershipInCookbook(invitation.CookbookId, user.Id, cancellationToken))
+                {
+                    var membership = CookbookMembership.GetDefaultMembership(invitation.CookbookId);
+                    await context.CookbookMemberships.AddAsync(membership, cancellationToken);
+                }
+                break;
+            case CookbookInvitationStatus.Unknown:
+            case CookbookInvitationStatus.Sent:
+            case CookbookInvitationStatus.Rejected:
+            default:
+                break;
+        }
+        
+        await context.SaveChangesAsync(cancellationToken);
+        
         return invitation.Id;
     }
+
+    private static bool InvitationIsNotAlreadyAccepted(
+        CookbookInvitation invitation,
+        CookbookInvitationStatus newStatus)
+        => invitation.IsNotAccepted && newStatus == CookbookInvitationStatus.Accepted;
+    
+    private async Task<bool> UserDoesNotHaveMembershipInCookbook(
+        int cookbookId,
+        string userId,
+        CancellationToken token) 
+        => !await context.CookbookMemberships
+            .AnyAsync(membership
+                => membership.CookbookId == cookbookId
+                   && membership.CreatedBy == userId, token);
 }
