@@ -1,4 +1,4 @@
-﻿namespace SharedCookbook.Application.Cookbooks.Events;
+﻿namespace SharedCookbook.Application.Cookbooks.EventHandlers;
 
 public class CookbookCreatedEventHandler(ILogger<CookbookCreatedEventHandler> logger)
     : INotificationHandler<CookbookCreatedEvent>

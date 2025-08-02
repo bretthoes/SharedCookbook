@@ -1,6 +1,6 @@
 using SharedCookbook.Application.Memberships.Commands.CreateMembership;
 
-namespace SharedCookbook.Application.Invitations.Events;
+namespace SharedCookbook.Application.Invitations.EventHandlers;
 
 public class InvitationAcceptedEventHandler(IMediator mediator, ILogger<InvitationAcceptedEventHandler> logger)
     : INotificationHandler<InvitationAcceptedEvent>
