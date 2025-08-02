@@ -12,9 +12,9 @@ public sealed class CookbookInvitation : BaseAuditableEntity
 
     public Cookbook? Cookbook { get; init; }
 
-    public bool IsNotAccepted => !IsAccepted;
-
     private bool IsAccepted => InvitationStatus == CookbookInvitationStatus.Accepted;
+    
+    private bool IsRejected => InvitationStatus == CookbookInvitationStatus.Rejected;
     
     public void Accept(DateTime timestamp)
     {
@@ -24,6 +24,16 @@ public sealed class CookbookInvitation : BaseAuditableEntity
         ResponseDate = timestamp;
         
         // AddDomainEvent(new InvitationAcceptedEvent(this));
+    }
+
+    public void Reject(DateTime timestamp)
+    {
+        if (IsRejected) return;
+
+        InvitationStatus = CookbookInvitationStatus.Rejected;
+        ResponseDate = timestamp;
+        
+        // AddDomainEvent(new InvitationRejectedEvent(this));
     }
 
     public struct Constraints

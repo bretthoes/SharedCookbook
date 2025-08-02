@@ -21,45 +21,37 @@ public class UpdateInvitationCommandHandler(
         Guard.Against.NotFound(command.Id, invitation);
         Guard.Against.Null(user.Id);
 
-        // TODO currently violates SRP; we handle updating the invitation, and if accepted, we also handle
-        // the resulting action of adding a membership. We are doing this to avoid having writes elsewhere
-        // in a domain event handler until outbox pattern or something similar is implemented for more
-        // sophisticated transaction handling.
-        bool shouldSave = false;
+        if (!InvitationShouldBeUpdated(invitation, command.NewStatus)) return invitation.Id; 
+
         switch (command.NewStatus)
         {
             case CookbookInvitationStatus.Accepted:
-                if (InvitationIsNotAlreadyAccepted(invitation, command.NewStatus))
-                {
-                    invitation.Accept(timestamp: timeProvider.GetUtcNow().UtcDateTime);
-                    await context.CookbookInvitations.AddAsync(invitation, cancellationToken);
-                    shouldSave = true;
-                }
+                invitation.Accept(timestamp: timeProvider.GetUtcNow().UtcDateTime);
+                await context.CookbookInvitations.AddAsync(invitation, cancellationToken);
 
                 if (await UserDoesNotHaveMembershipInCookbook(invitation.CookbookId, user.Id, cancellationToken))
                 {
                     var membership = CookbookMembership.GetDefaultMembership(invitation.CookbookId);
                     await context.CookbookMemberships.AddAsync(membership, cancellationToken);
-                    shouldSave = true;
                 }
-                
+                break;
+            case CookbookInvitationStatus.Rejected:
+                invitation.Reject(timestamp: timeProvider.GetUtcNow().UtcDateTime);
+                await context.CookbookInvitations.AddAsync(invitation, cancellationToken);
                 break;
             case CookbookInvitationStatus.Unknown:
             case CookbookInvitationStatus.Sent:
-            case CookbookInvitationStatus.Rejected:
             default:
-                break;
+                return invitation.Id;
         }
 
-        if (shouldSave) await context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
         
         return invitation.Id;
     }
 
-    private static bool InvitationIsNotAlreadyAccepted(
-        CookbookInvitation invitation,
-        CookbookInvitationStatus newStatus)
-        => invitation.IsNotAccepted && newStatus == CookbookInvitationStatus.Accepted;
+    private static bool InvitationShouldBeUpdated(CookbookInvitation invitation, CookbookInvitationStatus newStatus)
+        => invitation.InvitationStatus != newStatus;
     
     private async Task<bool> UserDoesNotHaveMembershipInCookbook(
         int cookbookId,
