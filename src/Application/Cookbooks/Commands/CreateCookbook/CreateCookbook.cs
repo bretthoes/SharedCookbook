@@ -7,27 +7,14 @@ public record CreateCookbookCommand : IRequest<int>
     public string? Image { get; init; }
 }
 
-public class CreateCookbookCommandHandler : IRequestHandler<CreateCookbookCommand, int>
+public class CreateCookbookCommandHandler(IApplicationDbContext context) : IRequestHandler<CreateCookbookCommand, int>
 {
-    private readonly IApplicationDbContext _context;
-
-    public CreateCookbookCommandHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<int> Handle(CreateCookbookCommand request, CancellationToken cancellationToken)
     {
-        var cookbook = new Cookbook
-        {
-            Title = request.Title,
-            Image = request.Image,
-            Memberships = [CookbookMembership.GetNewCreatorMembership()]
-        };
+        var cookbook = Cookbook.Create(request.Title, request.Image);
         
-        await _context.Cookbooks.AddAsync(cookbook, cancellationToken);
-
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.Cookbooks.AddAsync(cookbook, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
 
         return cookbook.Id;
     }
