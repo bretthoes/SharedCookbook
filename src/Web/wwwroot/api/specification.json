@@ -2231,9 +2231,6 @@
                     "$ref": "#/components/schemas/Cookbook"
                   }
                 ]
-              },
-              "isNotAccepted": {
-                "type": "boolean"
               }
             }
           }
