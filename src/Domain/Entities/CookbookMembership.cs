@@ -21,6 +21,11 @@ public sealed class CookbookMembership : BaseAuditableEntity
     public required bool CanEditCookbookDetails { get; set; }
 
     public Cookbook? Cookbook { get; init; }
+
+    public void MarkDeleted()
+    {
+        AddDomainEvent(new MembershipDeletedEvent(this));
+    }
     
     public static CookbookMembership GetNewCreatorMembership()
         => new()

@@ -1,26 +1,18 @@
 ﻿namespace SharedCookbook.Application.Memberships.Commands.DeleteMembership;
 
 public record DeleteMembershipCommand(int Id) : IRequest;
-public class DeleteMembershipCommandHandler : IRequestHandler<DeleteMembershipCommand>
+public class DeleteMembershipCommandHandler(IApplicationDbContext context) : IRequestHandler<DeleteMembershipCommand>
 {
-    private readonly IApplicationDbContext _context;
-
-    public DeleteMembershipCommandHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task Handle(DeleteMembershipCommand request, CancellationToken cancellationToken)
     {
-        var membership = await _context.CookbookMemberships
+        var membership = await context.CookbookMemberships
             .FindAsync(keyValues: [request.Id], cancellationToken);
 
         Guard.Against.NotFound(request.Id, membership);
 
-        _context.CookbookMemberships.Remove(membership);
+        context.CookbookMemberships.Remove(membership);
+        membership.MarkDeleted();
 
-        //entity.AddDomainEvent(new MembershipDeletedEvent(entity));
-
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }
