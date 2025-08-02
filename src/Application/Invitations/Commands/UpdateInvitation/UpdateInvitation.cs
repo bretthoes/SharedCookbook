@@ -22,6 +22,10 @@ public class UpdateInvitationCommandHandler(
         Guard.Against.NotFound(command.Id, invitation);
         Guard.Against.Null(user.Id);
 
+        // TODO currently violates SRP; we handle updating the invitation, and if accepted, we also handle
+        // the resulting action of adding a membership. We are doing this to avoid having writes elsewhere
+        // in a domain event handler until outbox pattern or something similar is implemented for more
+        // sophisticated transaction handling.
         switch (command.NewStatus)
         {
             case CookbookInvitationStatus.Accepted:
