@@ -27,7 +27,6 @@ public class UpdateInvitationCommandHandler(
         {
             case CookbookInvitationStatus.Accepted:
                 invitation.Accept(timestamp: timeProvider.GetUtcNow().UtcDateTime);
-                await context.CookbookInvitations.AddAsync(invitation, cancellationToken);
 
                 if (await UserDoesNotHaveMembershipInCookbook(invitation.CookbookId, user.Id, cancellationToken))
                 {
@@ -37,7 +36,6 @@ public class UpdateInvitationCommandHandler(
                 break;
             case CookbookInvitationStatus.Rejected:
                 invitation.Reject(timestamp: timeProvider.GetUtcNow().UtcDateTime);
-                await context.CookbookInvitations.AddAsync(invitation, cancellationToken);
                 break;
             case CookbookInvitationStatus.Unknown:
             case CookbookInvitationStatus.Sent:
