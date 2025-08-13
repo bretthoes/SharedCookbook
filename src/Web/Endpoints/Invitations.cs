@@ -14,28 +14,30 @@ public class Invitations : EndpointGroupBase
             .RequireAuthorization()
             .MapGet(GetInvitationsWithPagination)
             .MapPost(CreateInvitation)
-            .MapPut(UpdateInvitation, "{id}")
-            .MapDelete(DeleteInvitation, "{id}");
+            .MapPut(UpdateInvitation, pattern: "{id}")
+            .MapDelete(DeleteInvitation, pattern: "{id}");
     }
 
-    public Task<PaginatedList<InvitationDto>> GetInvitationsWithPagination(ISender sender, [AsParameters] GetInvitationsWithPaginationQuery query)
+    private static Task<PaginatedList<InvitationDto>> GetInvitationsWithPagination(
+        ISender sender,
+        [AsParameters] GetInvitationsWithPaginationQuery query)
     {
         return sender.Send(query);
     }
 
-    public Task<int> CreateInvitation(ISender sender, CreateInvitationCommand command)
+    private static Task<int> CreateInvitation(ISender sender, CreateInvitationCommand command)
     {
         return sender.Send(command);
     }
 
-    public async Task<IResult> UpdateInvitation(ISender sender, int id, UpdateInvitationCommand command)
+    private static async Task<IResult> UpdateInvitation(ISender sender, int id, UpdateInvitationCommand command)
     {
         if (id != command.Id) return Results.BadRequest();
         await sender.Send(command);
         return Results.NoContent();
     }
 
-    public async Task<IResult> DeleteInvitation(ISender sender, int id)
+    private static async Task<IResult> DeleteInvitation(ISender sender, int id)
     {
         await sender.Send(new DeleteInvitationCommand(id));
         return Results.NoContent();

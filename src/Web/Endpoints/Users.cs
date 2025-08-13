@@ -10,8 +10,8 @@ public class Users : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .MapPost(UpdateUser, "/update")
-            .MapGet(GetDisplayName, "/display-name")
+            .MapPost(UpdateUser, pattern: "/update")
+            .MapGet(GetDisplayName, pattern: "/display-name")
             .MapIdentityApi<ApplicationUser>();
     }
 
