@@ -4,9 +4,9 @@ namespace SharedCookbook.Web.Infrastructure;
 
 public static class MethodInfoExtensions
 {
-    public static bool IsAnonymous(this MethodInfo method)
+    private static bool IsAnonymous(this MethodInfo method)
     {
-        var invalidChars = new[] { '<', '>' };
+        char[] invalidChars = ['<', '>'];
         return method.Name.Any(invalidChars.Contains);
     }
 
