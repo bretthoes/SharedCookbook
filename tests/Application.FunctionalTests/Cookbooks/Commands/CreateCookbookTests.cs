@@ -23,22 +23,22 @@ public class CreateCookbookTests : BaseTestFixture
     [Test]
     public async Task ShouldCreateCookbook()
     {
-        var userId = await RunAsDefaultUserAsync();
+        string userId = await RunAsDefaultUserAsync();
 
         var command = new CreateCookbookCommand
         {
             Title = "Another New Cookbook",
         };
 
-        var itemId = await SendAsync(command);
+        int itemId = await SendAsync(command);
 
         var item = await FindAsync<Cookbook>(itemId);
 
         item.Should().NotBeNull();
         item!.Title.Should().Be(command.Title);
         item.CreatedBy.Should().Be(userId);
-        item.Created.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(10));
+        item.Created.Should().BeCloseTo(DateTime.Now, precision: TimeSpan.FromSeconds(10));
         item.LastModifiedBy.Should().Be(userId);
-        item.LastModified.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(10));
+        item.LastModified.Should().BeCloseTo(DateTime.Now, precision: TimeSpan.FromSeconds(10));
     }
 }
