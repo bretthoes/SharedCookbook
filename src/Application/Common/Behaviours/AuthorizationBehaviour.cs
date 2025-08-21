@@ -18,7 +18,7 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
 
         if (authorizeAttributes.IsEmpty())
         {
-            return await next();
+            return await next(cancellationToken);
         }
 
         // Must be authenticated user
@@ -65,7 +65,7 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
         
         if (authorizeAttributesWithPolicies.IsEmpty())
         {
-            return await next();
+            return await next(cancellationToken);
         }
 
         {
@@ -81,6 +81,6 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
         }
 
         // User is authorized / authorization not required
-        return await next();
+        return await next(cancellationToken);
     }
 }
