@@ -40,7 +40,7 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
             {
                 foreach (string role in roles)
                 {
-                    var isInRole = await identityService.IsInRoleAsync(user.Id, role.Trim());
+                    var isInRole = user.Roles?.Any(userRole => role == userRole) ?? false;
                     if (!isInRole)
                     {
                         continue;
