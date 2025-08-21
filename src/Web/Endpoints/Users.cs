@@ -7,12 +7,11 @@ namespace SharedCookbook.Web.Endpoints;
 
 public class Users : EndpointGroupBase
 {
-    public override void Map(WebApplication app)
+    public override void Map(RouteGroupBuilder builder)
     {
-        app.MapGroup(this)
-            .MapPost(UpdateUser, "/update")
-            .MapGet(GetDisplayName, "/display-name")
-            .MapIdentityApi<ApplicationUser>();
+        builder.MapPost(UpdateUser, pattern: "/update");
+        builder.MapGet(GetDisplayName, pattern: "/display-name");
+        builder.MapIdentityApi<ApplicationUser>();
     }
 
     private static async Task<IResult> UpdateUser(ISender sender, [FromBody] UpdateUserCommand command)

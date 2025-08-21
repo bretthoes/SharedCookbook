@@ -8,14 +8,12 @@ namespace SharedCookbook.Web.Endpoints;
 
 public class Invitations : EndpointGroupBase
 {
-    public override void Map(WebApplication app)
+    public override void Map(RouteGroupBuilder builder)
     {
-        app.MapGroup(this)
-            .RequireAuthorization()
-            .MapGet(GetInvitationsWithPagination)
-            .MapPost(CreateInvitation)
-            .MapPut(UpdateInvitation, "{id}")
-            .MapDelete(DeleteInvitation, "{id}");
+        builder.MapGet(GetInvitationsWithPagination).RequireAuthorization();
+        builder.MapPost(CreateInvitation).RequireAuthorization();
+        builder.MapPut(UpdateInvitation, pattern: "{id}").RequireAuthorization();
+        builder.MapDelete(DeleteInvitation, pattern: "{id}").RequireAuthorization();
     }
 
     public Task<PaginatedList<InvitationDto>> GetInvitationsWithPagination(ISender sender, [AsParameters] GetInvitationsWithPaginationQuery query)

@@ -4,12 +4,10 @@ namespace SharedCookbook.Web.Endpoints;
 
 public class Images : EndpointGroupBase
 {
-    public override void Map(WebApplication app)
+    public override void Map(RouteGroupBuilder builder)
     {
-        app.MapGroup(this)
-            .DisableAntiforgery()
-            .RequireAuthorization()
-            .MapPost(CreateImages);
+        builder.DisableAntiforgery();
+        builder.MapPost(CreateImages).RequireAuthorization();
     }
 
     private static Task<string[]> CreateImages(ISender sender, IFormFileCollection files)

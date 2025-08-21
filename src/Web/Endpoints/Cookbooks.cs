@@ -9,14 +9,12 @@ namespace SharedCookbook.Web.Endpoints;
 
 public class Cookbooks : EndpointGroupBase
 {
-    public override void Map(WebApplication app)
+    public override void Map(RouteGroupBuilder builder)
     {
-        app.MapGroup(this)
-            .RequireAuthorization()
-            .MapGet(GetCookbooksWithPagination)
-            .MapPost(CreateCookbook)
-            .MapPut(UpdateCookbook, pattern: "{id}")
-            .MapDelete(DeleteCookbook, pattern: "{id}");
+        builder.MapGet(GetCookbooksWithPagination).RequireAuthorization();
+        builder.MapPost(CreateCookbook).RequireAuthorization();
+        builder.MapPut(UpdateCookbook, pattern: "{id}").RequireAuthorization();
+        builder.MapDelete(DeleteCookbook, pattern: "{id}").RequireAuthorization();
     }
 
     private static Task<PaginatedList<CookbookBriefDto>> GetCookbooksWithPagination(

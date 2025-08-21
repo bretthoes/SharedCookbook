@@ -11,16 +11,13 @@ namespace SharedCookbook.Web.Endpoints;
 
 public class Memberships : EndpointGroupBase
 {
-    public override void Map(WebApplication app)
+    public override void Map(RouteGroupBuilder builder)
     {
-        app.MapGroup(this)
-            .RequireAuthorization()
-            .MapGet(GetMembership, pattern: "{id}")
-            .MapGet(GetMembershipByCookbook, pattern: "by-cookbook/{cookbookId}")
-            .MapGet(GetMembershipsWithPagination)
-            .MapPatch(PatchMembership, pattern: "{id}")
-            .MapPut(UpdateMembership, pattern: "{id}")
-            .MapDelete(DeleteMembership, pattern: "{id}");
+        builder.MapGet(GetMembership, pattern: "{id}").RequireAuthorization();
+        builder.MapGet(GetMembershipByCookbook, pattern: "by-cookbook/{cookbookId}").RequireAuthorization();
+        builder.MapGet(GetMembershipsWithPagination).RequireAuthorization();
+        builder.MapPut(UpdateMembership, pattern: "{id}").RequireAuthorization();
+        builder.MapDelete(DeleteMembership, pattern: "{id}").RequireAuthorization();
     }
 
     private static Task<MembershipDto> GetMembership(

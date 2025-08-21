@@ -12,18 +12,16 @@ namespace SharedCookbook.Web.Endpoints;
 
 public class Recipes : EndpointGroupBase
 {
-    public override void Map(WebApplication app)
+    public override void Map(RouteGroupBuilder builder)
     {
-        app.MapGroup(this)
-            .DisableAntiforgery()
-            .RequireAuthorization()
-            .MapGet(GetRecipe, pattern: "{Id}")
-            .MapGet(GetRecipesWithPagination)
-            .MapPost(CreateRecipe)
-            .MapPut(UpdateRecipe, pattern: "{id}")
-            .MapDelete(DeleteRecipe, pattern: "{id}")
-            .MapPost(ParseRecipeFromUrl, pattern: "/parse-recipe-url")
-            .MapPost(ParseRecipeFromImage, pattern: "/parse-recipe-img");
+        builder.DisableAntiforgery();
+        builder.MapGet(GetRecipe, pattern: "{Id}").RequireAuthorization();
+        builder.MapGet(GetRecipesWithPagination).RequireAuthorization();
+        builder.MapPost(CreateRecipe).RequireAuthorization();
+        builder.MapPut(UpdateRecipe, pattern: "{id}").RequireAuthorization();
+        builder.MapDelete(DeleteRecipe, pattern: "{id}").RequireAuthorization();
+        builder.MapPost(ParseRecipeFromUrl, pattern: "/parse-recipe-url").RequireAuthorization();
+        builder.MapPost(ParseRecipeFromImage, pattern: "/parse-recipe-img").RequireAuthorization();
     }
 
     private static Task<RecipeDetailedDto> GetRecipe(ISender sender, [AsParameters] GetRecipeQuery query)
