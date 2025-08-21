@@ -4,7 +4,10 @@ namespace SharedCookbook.Web.Infrastructure;
 
 public static class EndpointRouteBuilderExtensions
 {
-    public static RouteHandlerBuilder MapGet(this IEndpointRouteBuilder builder, Delegate handler, [StringSyntax("Route")] string pattern = "")
+    public static RouteHandlerBuilder MapGet(
+        this IEndpointRouteBuilder builder,
+        Delegate handler,
+        [StringSyntax("Route")] string pattern = "")
     {
         Guard.Against.AnonymousMethod(handler);
 
@@ -12,7 +15,10 @@ public static class EndpointRouteBuilderExtensions
             .WithName(handler.Method.Name);
     }
 
-    public static RouteHandlerBuilder MapPost(this IEndpointRouteBuilder builder, Delegate handler, [StringSyntax("Route")] string pattern = "")
+    public static RouteHandlerBuilder MapPost(
+        this IEndpointRouteBuilder builder,
+        Delegate handler,
+        [StringSyntax("Route")] string pattern = "")
     {
         Guard.Against.AnonymousMethod(handler);
 
@@ -20,7 +26,10 @@ public static class EndpointRouteBuilderExtensions
             .WithName(handler.Method.Name);
     }
 
-    public static RouteHandlerBuilder MapPut(this IEndpointRouteBuilder builder, Delegate handler, [StringSyntax("Route")] string pattern)
+    public static RouteHandlerBuilder MapPut(
+        this IEndpointRouteBuilder builder,
+        Delegate handler,
+        [StringSyntax("Route")] string pattern)
     {
         Guard.Against.AnonymousMethod(handler);
 
@@ -28,7 +37,10 @@ public static class EndpointRouteBuilderExtensions
             .WithName(handler.Method.Name);
     }
 
-    public static RouteHandlerBuilder MapDelete(this IEndpointRouteBuilder builder, Delegate handler, [StringSyntax("Route")] string pattern)
+    public static RouteHandlerBuilder MapDelete(
+        this IEndpointRouteBuilder builder,
+        Delegate handler,
+        [StringSyntax("Route")] string pattern)
     {
         Guard.Against.AnonymousMethod(handler);
 
