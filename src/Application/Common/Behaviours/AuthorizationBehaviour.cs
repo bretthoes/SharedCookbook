@@ -22,7 +22,7 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
         }
 
         // Must be authenticated user
-        if (user.Id == null)
+        if (user.Id == null || user.Id == Guid.Empty.ToString())
         {
             throw new UnauthorizedAccessException();
         }
@@ -36,18 +36,11 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
         {
             var authorized = false;
 
-            foreach (string[] roles in authorizeAttributesWithRoles.Select(a => a.Roles.Split(',')))
+            foreach (string[] roles in authorizeAttributesWithRoles.Select(attribute => attribute.Roles.Split(',')))
             {
-                foreach (string role in roles)
+                if (roles.Select(role => user.Roles?.Any(userRole => role == userRole) ?? false).Any(isInRole => isInRole))
                 {
-                    var isInRole = user.Roles?.Any(userRole => role == userRole) ?? false;
-                    if (!isInRole)
-                    {
-                        continue;
-                    }
-
                     authorized = true;
-                    break;
                 }
             }
 
