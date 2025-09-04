@@ -76,6 +76,6 @@ public static class DependencyInjection
         
 
         builder.Services.AddAuthorizationBuilder()
-            .AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator));
+            .AddPolicy(name: Policies.CanPurge, configurePolicy: policy => policy.RequireRole(Roles.Administrator));
     }
 }
