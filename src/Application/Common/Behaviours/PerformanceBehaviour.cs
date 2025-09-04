@@ -28,7 +28,7 @@ public class PerformanceBehaviour<TRequest, TResponse>(
             return response;
         }
 
-        string? requestName = typeof(TRequest).Name;
+        string requestName = typeof(TRequest).Name;
         string userId = user.Id ?? string.Empty;
         string? userName = string.Empty;
 
