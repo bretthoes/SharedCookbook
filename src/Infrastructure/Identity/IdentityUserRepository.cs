@@ -28,42 +28,32 @@ namespace SharedCookbook.Infrastructure.Identity;
 /// AspNetUsers should be handled exclusively by Identity services provided
 /// by ASP.NET.
 /// </remarks>
-public class IdentityUserRepository : IIdentityUserRepository
+public class IdentityUserRepository(ApplicationDbContext context, IUser user, IOptions<ImageUploadOptions> options)
+    : IIdentityUserRepository
 {
-    private readonly ApplicationDbContext _context;
-    private readonly IUser _user;
-    private readonly IOptions<ImageUploadOptions> _options;
-
-    public IdentityUserRepository(ApplicationDbContext context, IUser user, IOptions<ImageUploadOptions> options)
-    {
-        _context = context;
-        _user = user;
-        _options = options;
-    }
-
     public async Task<PaginatedList<MembershipDto>> GetMemberships(
         GetMembershipsWithPaginationQuery query,
         CancellationToken cancellationToken)
     {
-        return await _context.CookbookMemberships
+        return await context.CookbookMemberships
             .AsNoTracking()
             .HasCookbookId(query.CookbookId)
             .Join(
-                _context.People,
-                member => member.CreatedBy,
-                user => user.Id,
-                (member, user) => new MembershipDto
+                context.People,
+                membership => membership.CreatedBy,
+                identityUser => identityUser.Id,
+                (membership, identityUser) => new MembershipDto
                 {
-                    Id = member.Id,
-                    IsCreator = member.IsCreator,
-                    CanAddRecipe = member.CanAddRecipe,
-                    CanUpdateRecipe = member.CanUpdateRecipe,
-                    CanDeleteRecipe = member.CanDeleteRecipe,
-                    CanSendInvite = member.CanSendInvite,
-                    CanRemoveMember = member.CanRemoveMember,
-                    CanEditCookbookDetails = member.CanEditCookbookDetails,
-                    Name = user.DisplayName,
-                    Email = user.Email
+                    Id = membership.Id,
+                    IsCreator = membership.IsCreator,
+                    CanAddRecipe = membership.CanAddRecipe,
+                    CanUpdateRecipe = membership.CanUpdateRecipe,
+                    CanDeleteRecipe = membership.CanDeleteRecipe,
+                    CanSendInvite = membership.CanSendInvite,
+                    CanRemoveMember = membership.CanRemoveMember,
+                    CanEditCookbookDetails = membership.CanEditCookbookDetails,
+                    Name = identityUser.DisplayName,
+                    Email = identityUser.Email
                 })
             .OrderByName()
             .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
@@ -72,14 +62,14 @@ public class IdentityUserRepository : IIdentityUserRepository
     public Task<PaginatedList<InvitationDto>> GetInvitations(
         GetInvitationsWithPaginationQuery query,
         CancellationToken cancellationToken)
-        => _context.CookbookInvitations
+        => context.CookbookInvitations
             .AsNoTracking()
-            .GetInvitationsForUserByStatus(_user.Id, query.Status)
+            .GetInvitationsForUserByStatus(user.Id, query.Status)
             .Join(
-                _context.People,
+                context.People,
                 invitation => invitation.CreatedBy,
-                user => user.Id,
-                (invitation, user) => new InvitationDto
+                identityUser => identityUser.Id,
+                (invitation, identityUser) => new InvitationDto
                 {
                     Id = invitation.Id,
                     Created = invitation.Created,
@@ -89,9 +79,9 @@ public class IdentityUserRepository : IIdentityUserRepository
                         : invitation.Cookbook.Title,
                     CookbookImage = invitation.Cookbook == null || string.IsNullOrWhiteSpace(invitation.Cookbook.Image)
                         ? ""
-                        : $"{_options.Value.ImageBaseUrl}{invitation.Cookbook.Image}",
-                    SenderName = user.DisplayName ?? "",
-                    SenderEmail = user.Email
+                        : $"{options.Value.ImageBaseUrl}{invitation.Cookbook.Image}",
+                    SenderName = identityUser.DisplayName ?? "",
+                    SenderEmail = identityUser.Email
                 })
             .OrderByMostRecentlyCreated()
             .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
@@ -99,49 +89,49 @@ public class IdentityUserRepository : IIdentityUserRepository
     public Task<PaginatedList<CookbookBriefDto>> GetCookbooks(
         GetCookbooksWithPaginationQuery query,
         CancellationToken cancellationToken)
-        => _context.Cookbooks
-            .QueryCookbooksForMember(_context, _user.Id)
-            .Join(_context.People,
+        => context.Cookbooks
+            .QueryCookbooksForMember(context, user.Id)
+            .Join(context.People,
                 cookbook => cookbook.CreatedBy,
-                user => user.Id,
-                (cookbook, user) => new CookbookBriefDto
+                identityUser => identityUser.Id,
+                (cookbook, identityUser) => new CookbookBriefDto
                 {
                     Id = cookbook.Id,
                     Title = cookbook.Title,
                     Image = string.IsNullOrWhiteSpace(cookbook.Image)
                         ? ""
-                        : $"{_options.Value.ImageBaseUrl}{cookbook.Image}",
+                        : $"{options.Value.ImageBaseUrl}{cookbook.Image}",
                     MembersCount = cookbook.Memberships.Count,
                     RecipeCount = cookbook.Recipes.Count,
-                    Author = user.DisplayName,
-                    AuthorEmail = user.Email ?? ""
+                    Author = identityUser.DisplayName,
+                    AuthorEmail = identityUser.Email ?? ""
                 })
             .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
 
     public Task<PaginatedList<RecipeDetailedDto>> GetRecipes(
         GetRecipesWithPaginationQuery query,
         CancellationToken cancellationToken)
-        =>_context.Recipes.AsNoTracking()
+        =>context.Recipes.AsNoTracking()
             .HasCookbookId(query.CookbookId)
             .TitleContains(query.Search)
             .IncludeRecipeDetails()
             .OrderByTitle()
-            .Join(_context.People,
+            .Join(context.People,
                 recipe => recipe.CreatedBy,
-                user => user.Id,
-                (recipe, user) => new RecipeDetailedDto
+                identityUser => identityUser.Id,
+                (recipe, identityUser) => new RecipeDetailedDto
                 {
                     Id = recipe.Id,
                     Title = recipe.Title,
                     Summary = recipe.Summary,
-                    AuthorEmail = user.Email,
-                    Author = user.DisplayName,
+                    AuthorEmail = identityUser.Email,
+                    Author = identityUser.DisplayName,
                     Thumbnail = string.IsNullOrWhiteSpace(recipe.Thumbnail)
                         ? ""
-                        : $"{_options.Value.ImageBaseUrl}{recipe.Thumbnail}",
+                        : $"{options.Value.ImageBaseUrl}{recipe.Thumbnail}",
                     VideoPath = string.IsNullOrWhiteSpace(recipe.VideoPath)
                         ? ""
-                        : $"{_options.Value.ImageBaseUrl}{recipe.VideoPath}",
+                        : $"{options.Value.ImageBaseUrl}{recipe.VideoPath}",
                     PreparationTimeInMinutes = recipe.PreparationTimeInMinutes,
                     CookingTimeInMinutes = recipe.CookingTimeInMinutes,
                     BakingTimeInMinutes = recipe.BakingTimeInMinutes,
@@ -150,7 +140,7 @@ public class IdentityUserRepository : IIdentityUserRepository
                     Images = recipe.Images.Select(image => new RecipeImage
                     {
                         Id = image.Id,
-                        Name = $"{_options.Value.ImageBaseUrl}{image.Name}",
+                        Name = $"{options.Value.ImageBaseUrl}{image.Name}",
                         Ordinal = image.Ordinal,
                     }).ToList(),
                     Ingredients = recipe.Ingredients,
