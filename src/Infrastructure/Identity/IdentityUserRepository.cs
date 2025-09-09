@@ -17,7 +17,7 @@ using SharedCookbook.Infrastructure.Identity.RepositoryExtensions;
 namespace SharedCookbook.Infrastructure.Identity;
 
 /// <summary>
-/// Repository for handling queries that involve the AspNetUsers table,
+/// Repository for handling queries with joins to the AspNetUsers table,
 /// which is managed by the Identity framework. This repository is defined
 /// in the Infrastructure layer (and accessed through an interface in the
 /// Application layer) to avoid directly referencing the IdentityUser in

@@ -16,7 +16,9 @@ public class Invitations : EndpointGroupBase
         builder.MapDelete(DeleteInvitation, pattern: "{id}").RequireAuthorization();
     }
 
-    private static Task<PaginatedList<InvitationDto>> GetInvitationsWithPagination(ISender sender, [AsParameters] GetInvitationsWithPaginationQuery query)
+    private static Task<PaginatedList<InvitationDto>> GetInvitationsWithPagination(
+        ISender sender,
+        [AsParameters] GetInvitationsWithPaginationQuery query)
     {
         return sender.Send(query);
     }
