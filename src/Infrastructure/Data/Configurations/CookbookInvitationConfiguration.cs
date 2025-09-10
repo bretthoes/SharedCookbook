@@ -38,6 +38,12 @@ public class CookbookInvitationConfiguration : IEntityTypeConfiguration<Cookbook
             .IsRequired();
         builder.Property(invitation => invitation.ResponseDate)
             .HasColumnName("response_date");
+        builder.Property(invitation => invitation.Hash)
+            .HasColumnName("hash")
+            .HasMaxLength(CookbookInvitation.Constraints.HashLength);
+        builder.Property(invitation => invitation.Salt)
+            .HasColumnName("salt")
+            .HasMaxLength(CookbookInvitation.Constraints.SaltLength);
 
         builder.HasOne(invitation => invitation.Cookbook)
             .WithMany(cookbook => cookbook.Invitations)
