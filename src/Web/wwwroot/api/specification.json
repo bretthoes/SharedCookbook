@@ -281,8 +281,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "integer",
-                  "format": "int32"
+                  "type": "string"
                 }
               }
             }
@@ -1475,7 +1474,8 @@
             "format": "int32"
           },
           "email": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -2168,6 +2168,14 @@
               },
               "invitationStatus": {
                 "$ref": "#/components/schemas/CookbookInvitationStatus"
+              },
+              "hash": {
+                "type": "string",
+                "format": "byte"
+              },
+              "salt": {
+                "type": "string",
+                "format": "byte"
               },
               "responseDate": {
                 "type": "string",
