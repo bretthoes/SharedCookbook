@@ -14,6 +14,7 @@ using SharedCookbook.Infrastructure.FileStorage;
 using SharedCookbook.Infrastructure.Identity;
 using SharedCookbook.Infrastructure.Ocr;
 using SharedCookbook.Infrastructure.RecipeUrlParser;
+using SharedCookbook.Infrastructure.TokenService;
 
 namespace SharedCookbook.Infrastructure;
 
@@ -59,6 +60,8 @@ public static class DependencyInjection
 
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddTransient<IIdentityService, IdentityService>();
+        
+        builder.Services.AddSingleton<IInvitationTokenService, InvitationTokenService>();
         
         builder.Services.AddTransient<IImageUploadService, S3ImageUploadService>();
         builder.Services.Configure<ImageUploadOptions>(
