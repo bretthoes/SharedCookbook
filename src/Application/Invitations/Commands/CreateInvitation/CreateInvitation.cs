@@ -19,16 +19,16 @@ public class CreateInvitationCommandHandler(
     : IRequestHandler<CreateInvitationCommand, string>
 {
 
-    public async Task<string> Handle(CreateInvitationCommand command, CancellationToken token)
+    public async Task<string> Handle(CreateInvitationCommand command, CancellationToken cancellationToken)
     {
         // Branch: no email -> shareable link token
         if (string.IsNullOrWhiteSpace(command.Email))
-            return await CreateLinkInvite(command.CookbookId, token);
+            return await CreateLinkInvite(command.CookbookId, cancellationToken);
 
         // Email path -> legacy flow (ID-based)
         string recipientId = await GetRecipientId(command.Email);
-        await ValidateEmailInvite(command.CookbookId, recipientId, token);
-        return await CreateEmailInvite(command.CookbookId, recipientId, token);
+        await ValidateEmailInvite(command.CookbookId, recipientId, cancellationToken);
+        return await CreateEmailInvite(command.CookbookId, recipientId, cancellationToken);
     }
 
     // ---- Email path ---------------------------------------------------------
