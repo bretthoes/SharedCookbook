@@ -13,16 +13,17 @@ public class GetInvitationPreviewQueryHandler(
     public async Task<InvitationDto> Handle(GetInvitationPreviewQuery request, CancellationToken cancellationToken)
     {
         // TODO refine this 
-        var parsed = tokens.Parse(request.Token)
-                     ?? throw new NotFoundException(nameof(CookbookInvitation), request.Token);
+        var parsed = tokens.Parse(request.Token);
+        Guard.Against.Null(parsed);
 
         var invitation = await context.CookbookInvitations
-                             .AsNoTracking()
-                             .Include(i => i.Cookbook)
-                             .FirstOrDefaultAsync(i =>
-                                 i.Id == parsed.InvitationId &&
-                                 i.InvitationStatus == CookbookInvitationStatus.Sent, cancellationToken)
-                         ?? throw new NotFoundException(key: parsed.InvitationId.ToString(), nameof(CookbookInvitation));
+            .AsNoTracking()
+            .Include(i => i.Cookbook)
+            .FirstOrDefaultAsync(i =>
+                i.Id == parsed.InvitationId &&
+                i.InvitationStatus == CookbookInvitationStatus.Sent, cancellationToken);
+        
+        Guard.Against.NotFound(parsed.InvitationId, invitation);
 
         switch (parsed)
         {
