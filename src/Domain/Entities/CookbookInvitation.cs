@@ -29,7 +29,7 @@ public sealed class CookbookInvitation : BaseAuditableEntity
         InvitationStatus = CookbookInvitationStatus.Accepted;
         ResponseDate = timestamp;
         
-        // AddDomainEvent(new InvitationAcceptedEvent(this));
+        AddDomainEvent(new InvitationAcceptedEvent(this));
     }
 
     public void Reject(DateTime timestamp)
@@ -39,7 +39,7 @@ public sealed class CookbookInvitation : BaseAuditableEntity
         InvitationStatus = CookbookInvitationStatus.Rejected;
         ResponseDate = timestamp;
         
-        // AddDomainEvent(new InvitationRejectedEvent(this));
+        AddDomainEvent(new InvitationRejectedEvent(this));
     }
 
     public struct Constraints
