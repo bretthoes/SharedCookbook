@@ -9,7 +9,7 @@ public sealed class InvitationTokenService : IInvitationTokenService
     private const int CodeBytes = 24;
     private const int SaltBytes = 16;
 
-    public GeneratedLinkCode Mint()
+    public MintedToken Mint()
     {
         byte[] code = RandomNumberGenerator.GetBytes(count: CodeBytes);
         string inviteToken = WebEncoders.Base64UrlEncode(code);
@@ -20,10 +20,10 @@ public sealed class InvitationTokenService : IInvitationTokenService
         Buffer.BlockCopy(code, 0, material, salt.Length, code.Length);
 
         byte[] hash = SHA256.HashData(material);
-        return new GeneratedLinkCode(inviteToken, new InvitationCodeHash(hash, salt));
+        return new MintedToken(inviteToken, new HashedToken(hash, salt));
     }
 
-    public bool Verify(string inviteToken, InvitationCodeHash stored)
+    public bool Verify(string inviteToken, HashedToken stored)
     {
         byte[] code;
         try { code = WebEncoders.Base64UrlDecode(inviteToken); }
@@ -38,13 +38,13 @@ public sealed class InvitationTokenService : IInvitationTokenService
                CryptographicOperations.FixedTimeEquals(left: stored.Hash, right: computed);
     }
 
-    public InvitationLink? Parse(string raw)
+    public InvitationTokenReference? Parse(string raw)
     {
         if (string.IsNullOrWhiteSpace(raw)) return null;
         int dot = raw.IndexOf('.');
 
         if (!int.TryParse(raw[..dot], out int id)) return null;
         string code = raw[(dot + 1)..];
-        return string.IsNullOrEmpty(code) ? null : new InvitationLink(id, code);
+        return string.IsNullOrEmpty(code) ? null : new InvitationTokenReference(id, code);
     }
 }
