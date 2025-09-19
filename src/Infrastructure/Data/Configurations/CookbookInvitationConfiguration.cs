@@ -38,12 +38,6 @@ public class CookbookInvitationConfiguration : IEntityTypeConfiguration<Cookbook
             .IsRequired();
         builder.Property(invitation => invitation.ResponseDate)
             .HasColumnName("response_date");
-        builder.Property(invitation => invitation.Hash)
-            .HasColumnName("hash")
-            .HasMaxLength(CookbookInvitation.Constraints.HashLength);
-        builder.Property(invitation => invitation.Salt)
-            .HasColumnName("salt")
-            .HasMaxLength(CookbookInvitation.Constraints.SaltLength);
 
         builder.HasOne(invitation => invitation.Cookbook)
             .WithMany(cookbook => cookbook.Invitations)
@@ -57,5 +51,8 @@ public class CookbookInvitationConfiguration : IEntityTypeConfiguration<Cookbook
             .WithMany(user => user.SentInvitations)
             .HasForeignKey(invitation => invitation.CreatedBy)
             .HasConstraintName("FK_cookbook_invitation__created_by");
+
+        builder.HasMany(invitation => invitation.Tokens)
+            .WithOne(token => token.Invitation);
     }
 }
