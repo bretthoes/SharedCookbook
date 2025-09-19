@@ -441,7 +441,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .HasColumnName("token_status");
 
                     b.HasKey("Id")
-                        .HasName("PK_cookbook_invitation_id");
+                        .HasName("invitation_token_id");
 
                     b.HasIndex("CookbookInvitationId", "Status")
                         .HasDatabaseName("IX_invitation_token__invitation_status");

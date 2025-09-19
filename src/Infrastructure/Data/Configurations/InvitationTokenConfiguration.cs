@@ -11,7 +11,7 @@ public class InvitationTokenConfiguration : IEntityTypeConfiguration<InvitationT
         builder.ToTable("invitation_token");
         
         builder.HasKey(token => token.Id)
-            .HasName("PK_cookbook_invitation_id");
+            .HasName("invitation_token_id");
         
         builder.HasIndex(token => new { token.CookbookInvitationId, token.Status })
             .HasDatabaseName("IX_invitation_token__invitation_status");

@@ -37,7 +37,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_cookbook_invitation_id", x => x.invitation_token_id);
+                    table.PrimaryKey("invitation_token_id", x => x.invitation_token_id);
                     table.ForeignKey(
                         name: "FK_cookbook_invitation__invitation_token",
                         column: x => x.cookbook_invitation_id,
