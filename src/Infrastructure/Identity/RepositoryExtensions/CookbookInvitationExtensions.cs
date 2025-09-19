@@ -4,6 +4,7 @@ using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Infrastructure.Identity.RepositoryExtensions;
 
+// TODO should move these to application
 public static class CookbookInvitationExtensions
 {
     public static IQueryable<CookbookInvitation> GetInvitationsForUserByStatus(

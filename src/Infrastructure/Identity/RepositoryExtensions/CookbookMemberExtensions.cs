@@ -3,6 +3,7 @@ using SharedCookbook.Domain.Entities;
 
 namespace SharedCookbook.Infrastructure.Identity.RepositoryExtensions;
 
+// TODO should move these to application
 public static class CookbookMemberExtensions
 {
     public static IQueryable<CookbookMembership> HasCookbookId(

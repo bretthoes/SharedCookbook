@@ -50,6 +50,7 @@ public static class DependencyInjection
         builder.AddRateLimiter();
     }
 
+    // TODO move to extension class 
     private static void AddRateLimiter(this IHostApplicationBuilder builder)
     {
         builder.Services.AddRateLimiter(options =>

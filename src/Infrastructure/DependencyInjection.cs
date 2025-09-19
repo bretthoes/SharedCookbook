@@ -14,7 +14,7 @@ using SharedCookbook.Infrastructure.FileStorage;
 using SharedCookbook.Infrastructure.Identity;
 using SharedCookbook.Infrastructure.Ocr;
 using SharedCookbook.Infrastructure.RecipeUrlParser;
-using SharedCookbook.Infrastructure.TokenService;
+using SharedCookbook.Infrastructure.Security;
 
 namespace SharedCookbook.Infrastructure;
 
