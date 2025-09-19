@@ -213,12 +213,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
 
-                    b.Property<byte[]>("Hash")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("bytea")
-                        .HasColumnName("hash");
-
                     b.Property<string>("InvitationStatus")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -238,12 +232,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<DateTime?>("ResponseDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("response_date");
-
-                    b.Property<byte[]>("Salt")
-                        .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("bytea")
-                        .HasColumnName("salt");
 
                     b.HasKey("Id")
                         .HasName("PK_cookbook_invitation_id");
@@ -406,6 +394,56 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.HasIndex(new[] { "RecipeId" }, "IX_ingredient__category_recipe_id");
 
                     b.ToTable("ingredient_category", (string)null);
+                });
+
+            modelBuilder.Entity("SharedCookbook.Domain.Entities.InvitationToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("invitation_token_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CookbookInvitationId")
+                        .HasColumnType("integer")
+                        .HasColumnName("cookbook_invitation_id");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<byte[]>("Hash")
+                        .IsRequired()
+                        .HasColumnType("bytea")
+                        .HasColumnName("token_hash");
+
+                    b.Property<DateTimeOffset>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<byte[]>("Salt")
+                        .IsRequired()
+                        .HasColumnType("bytea")
+                        .HasColumnName("token_salt");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("token_status");
+
+                    b.HasKey("Id")
+                        .HasName("PK_cookbook_invitation_id");
+
+                    b.HasIndex("CookbookInvitationId", "Status")
+                        .HasDatabaseName("IX_invitation_token__invitation_status");
+
+                    b.ToTable("invitation_token", (string)null);
                 });
 
             modelBuilder.Entity("SharedCookbook.Domain.Entities.Recipe", b =>
@@ -902,6 +940,18 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .HasConstraintName("FK_ingredient_category__recipe_id");
                 });
 
+            modelBuilder.Entity("SharedCookbook.Domain.Entities.InvitationToken", b =>
+                {
+                    b.HasOne("SharedCookbook.Domain.Entities.CookbookInvitation", "Invitation")
+                        .WithMany("Tokens")
+                        .HasForeignKey("CookbookInvitationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_cookbook_invitation__invitation_token");
+
+                    b.Navigation("Invitation");
+                });
+
             modelBuilder.Entity("SharedCookbook.Domain.Entities.Recipe", b =>
                 {
                     b.HasOne("SharedCookbook.Domain.Entities.Cookbook", "Cookbook")
@@ -968,6 +1018,11 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Navigation("Notifications");
 
                     b.Navigation("Recipes");
+                });
+
+            modelBuilder.Entity("SharedCookbook.Domain.Entities.CookbookInvitation", b =>
+                {
+                    b.Navigation("Tokens");
                 });
 
             modelBuilder.Entity("SharedCookbook.Domain.Entities.Recipe", b =>
