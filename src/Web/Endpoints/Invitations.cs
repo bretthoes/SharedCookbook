@@ -11,7 +11,7 @@ public class Invitations : EndpointGroupBase
 {
     public override void Map(RouteGroupBuilder builder)
     {
-        builder.MapGet(GetInvitationPreview, pattern: "/token");
+        builder.MapGet(GetInvitationPreview, pattern: "/preview").RequireAuthorization();
         builder.MapGet(GetInvitationsWithPagination).RequireAuthorization();
         builder.MapPost(CreateInvitation).RequireAuthorization();
         builder.MapPut(UpdateInvitation, pattern: "{id}").RequireAuthorization();

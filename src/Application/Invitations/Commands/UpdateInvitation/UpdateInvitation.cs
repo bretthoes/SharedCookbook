@@ -17,22 +17,17 @@ public class UpdateInvitationCommandHandler(
 {
     public async Task<int> Handle(UpdateInvitationCommand command, CancellationToken cancellationToken)
     {
+        Guard.Against.Null(user.Id);
+        
         var invitation = await context.CookbookInvitations.FindAsync(keyValues: [command.Id], cancellationToken);
         Guard.Against.NotFound(command.Id, invitation);
-        Guard.Against.Null(user.Id);
-
+        
         if (!InvitationShouldBeUpdated(invitation, command.NewStatus)) return invitation.Id; 
 
         switch (command.NewStatus)
         {
             case CookbookInvitationStatus.Accepted:
-                invitation.Accept(timestamp: timeProvider.GetUtcNow().UtcDateTime);
-
-                if (await UserDoesNotHaveMembershipInCookbook(invitation.CookbookId, user.Id, cancellationToken))
-                {
-                    var membership = CookbookMembership.GetDefaultMembership(invitation.CookbookId);
-                    await context.CookbookMemberships.AddAsync(membership, cancellationToken);
-                }
+                await Accept(invitation, cancellationToken);
                 break;
             case CookbookInvitationStatus.Rejected:
                 invitation.Reject(timestamp: timeProvider.GetUtcNow().UtcDateTime);
@@ -48,6 +43,18 @@ public class UpdateInvitationCommandHandler(
         return invitation.Id;
     }
 
+    private async Task Accept(CookbookInvitation invitation, CancellationToken cancellationToken)
+    {
+        invitation.Accept(timestamp: timeProvider.GetUtcNow().UtcDateTime);
+
+        // TODO this side effect could be an integration event
+        if (await UserDoesNotHaveMembershipInCookbook(invitation.CookbookId, user.Id!, cancellationToken))
+        {
+            var membership = CookbookMembership.GetDefaultMembership(invitation.CookbookId);
+            await context.CookbookMemberships.AddAsync(membership, cancellationToken);
+        }
+    }
+
     private static bool InvitationShouldBeUpdated(CookbookInvitation invitation, CookbookInvitationStatus newStatus)
         => invitation.InvitationStatus != newStatus;
     
@@ -56,7 +63,8 @@ public class UpdateInvitationCommandHandler(
         string userId,
         CancellationToken token) 
         => !await context.CookbookMemberships
+            .AsNoTracking()
             .AnyAsync(membership
                 => membership.CookbookId == cookbookId
-                   && membership.CreatedBy == userId, token);
+                   && membership.CreatedBy == userId,token);
 }

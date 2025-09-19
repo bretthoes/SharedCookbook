@@ -203,7 +203,7 @@
         ]
       }
     },
-    "/api/Invitations/token": {
+    "/api/Invitations/preview": {
       "get": {
         "tags": [
           "Invitations"
@@ -232,7 +232,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/Invitations": {
@@ -2201,14 +2206,6 @@
               "invitationStatus": {
                 "$ref": "#/components/schemas/CookbookInvitationStatus"
               },
-              "hash": {
-                "type": "string",
-                "format": "byte"
-              },
-              "salt": {
-                "type": "string",
-                "format": "byte"
-              },
               "responseDate": {
                 "type": "string",
                 "format": "date-time",
@@ -2221,9 +2218,65 @@
                     "$ref": "#/components/schemas/Cookbook"
                   }
                 ]
+              },
+              "tokens": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/InvitationToken"
+                }
               }
             }
           }
+        ]
+      },
+      "InvitationToken": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "cookbookInvitationId": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "status": {
+                "$ref": "#/components/schemas/InvitationTokenStatus"
+              },
+              "hash": {
+                "type": "string",
+                "format": "byte"
+              },
+              "salt": {
+                "type": "string",
+                "format": "byte"
+              },
+              "invitation": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/CookbookInvitation"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "InvitationTokenStatus": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Active",
+          "Consumed",
+          "Revoked"
+        ],
+        "enum": [
+          0,
+          1,
+          2
         ]
       },
       "CookbookMembership": {

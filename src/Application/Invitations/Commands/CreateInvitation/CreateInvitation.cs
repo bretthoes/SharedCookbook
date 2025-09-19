@@ -54,6 +54,7 @@ public class CreateInvitationCommandHandler(
 
     private async Task ValidateEmailInvite(int cookbookId, string recipientId, CancellationToken token)
     {
+        // TODO replace exceptions here with guard clauses?
         bool alreadyMember = await context.CookbookMemberships
             .AnyAsync(m => m.CookbookId == cookbookId && m.CreatedBy == recipientId, token);
         if (alreadyMember) throw new ConflictException("Recipient is already a member of this cookbook.");
@@ -69,7 +70,7 @@ public class CreateInvitationCommandHandler(
 
     private async Task<string> CreateLinkInvite(int cookbookId, CancellationToken token)
     {
-        var code = tokens.GenerateLinkCode();
+        var code = tokens.Mint();
 
         var entity = new CookbookInvitation
         {
@@ -77,14 +78,14 @@ public class CreateInvitationCommandHandler(
             CreatedBy = user.Id,
             RecipientPersonId = null,
             InvitationStatus = CookbookInvitationStatus.Sent,
-            Hash = code.Stored.Hash,
-            Salt = code.Stored.Salt
+            //Hash = code.Stored.Hash,
+            //Salt = code.Stored.Salt
         };
 
         context.CookbookInvitations.Add(entity);
         entity.AddDomainEvent(new InvitationCreatedEvent(entity));
         await context.SaveChangesAsync(token);
 
-        return $"{entity.Id}.{code.CodeToken}";
+        return $"{entity.Id}.{code.InviteToken}";
     }
 }

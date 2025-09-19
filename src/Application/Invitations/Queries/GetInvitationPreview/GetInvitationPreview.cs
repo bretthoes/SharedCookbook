@@ -25,20 +25,13 @@ public class GetInvitationPreviewQueryHandler(
         
         Guard.Against.NotFound(parsed.InvitationId, invitation);
 
-        switch (parsed)
+        if (parsed is not var (_, code))
         {
-            case InvitationToken.Link(var id, var code):
-                if (!tokens.Verify(code, new HashedInvitationCode(invitation.Hash, invitation.Salt)))
-                    throw new NotFoundException(key: parsed.InvitationId.ToString(), nameof(CookbookInvitation));
-
-                break;
-
-            case InvitationToken.Email(var id):
-                if (invitation.RecipientPersonId is null)
-                    throw new NotFoundException(key: parsed.InvitationId.ToString(), nameof(CookbookInvitation));
-
-                break;
+            return new InvitationDto { CookbookTitle = invitation.Cookbook?.Title ?? "" };
         }
+
+        //if (!tokens.Verify(code, new InvitationCodeHash(invitation.Hash, invitation.Salt)))
+//            throw new NotFoundException(key: parsed.InvitationId.ToString(), nameof(CookbookInvitation));
 
         return new InvitationDto
         {
