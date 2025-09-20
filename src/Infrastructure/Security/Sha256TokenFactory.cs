@@ -4,7 +4,7 @@ using SharedCookbook.Application.Common.Interfaces;
 
 namespace SharedCookbook.Infrastructure.Security;
 
-public sealed class InvitationTokenService : IInvitationTokenService
+public sealed class Sha256TokenFactory : IInvitationTokenFactory
 {
     private const int CodeBytes = 24;
     private const int SaltBytes = 16;

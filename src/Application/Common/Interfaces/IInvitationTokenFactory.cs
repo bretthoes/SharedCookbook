@@ -1,6 +1,6 @@
 namespace SharedCookbook.Application.Common.Interfaces;
 
-public interface IInvitationTokenService
+public interface IInvitationTokenFactory
 {
     /// <summary>
     /// Mints a new invitation token.

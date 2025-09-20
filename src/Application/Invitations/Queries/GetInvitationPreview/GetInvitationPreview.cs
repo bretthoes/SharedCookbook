@@ -6,29 +6,23 @@ namespace SharedCookbook.Application.Invitations.Queries.GetInvitationPreview;
 public record GetInvitationPreviewQuery(string Token) : IRequest<InvitationDto>;
 
 public class GetInvitationPreviewQueryHandler(
-    IApplicationDbContext context,
-    IInvitationTokenService tokens)
+    IApplicationDbContext context)
     : IRequestHandler<GetInvitationPreviewQuery, InvitationDto>
 {
     public async Task<InvitationDto> Handle(GetInvitationPreviewQuery request, CancellationToken cancellationToken)
     {
         // TODO refine this 
-        var parsed = tokens.Parse(request.Token);
-        Guard.Against.Null(parsed);
+        if (!TokenLink.TryParse(request.Token, out var parsed))
+            throw new Exception();
 
         var invitation = await context.CookbookInvitations
             .AsNoTracking()
             .Include(i => i.Cookbook)
             .FirstOrDefaultAsync(i =>
-                i.Id == parsed.InvitationId &&
+                i.Id == parsed.TokenId &&
                 i.InvitationStatus == CookbookInvitationStatus.Sent, cancellationToken);
         
-        Guard.Against.NotFound(parsed.InvitationId, invitation);
-
-        if (parsed is not var (_, code))
-        {
-            return new InvitationDto { CookbookTitle = invitation.Cookbook?.Title ?? "" };
-        }
+        Guard.Against.NotFound(parsed.TokenId, invitation);
 
         //if (!tokens.Verify(code, new InvitationCodeHash(invitation.Hash, invitation.Salt)))
 //            throw new NotFoundException(key: parsed.InvitationId.ToString(), nameof(CookbookInvitation));
