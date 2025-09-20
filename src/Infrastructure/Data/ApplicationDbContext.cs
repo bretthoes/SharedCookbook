@@ -13,6 +13,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Cookbook> Cookbooks => Set<Cookbook>();
 
     public DbSet<CookbookInvitation> CookbookInvitations => Set<CookbookInvitation>();
+    
+    public DbSet<InvitationToken> InvitationTokens => Set<InvitationToken>();
 
     public DbSet<CookbookMembership> CookbookMemberships => Set<CookbookMembership>();
 
