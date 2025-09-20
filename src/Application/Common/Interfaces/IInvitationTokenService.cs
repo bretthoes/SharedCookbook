@@ -29,23 +29,26 @@ public interface IInvitationTokenService
     /// Callers must check invitation state (e.g., <c>Sent</c>), and expiry derived from <c>Created</c>.
     /// </remarks>
     bool Verify(string inviteToken, HashedToken stored);
-    
-    /// <summary>
-    /// Parses a raw invitation token of the form <c>{invitationId}.{inviteToken}</c>.
-    /// </summary>
-    /// <param name="raw">The raw token string taken from the deep link or request.</param>
-    /// <returns>
-    /// An <see cref="InvitationTokenReference"/> with the numeric invitation id and the Base64URL token,
-    /// or <c>null</c> when the format is invalid.
-    /// </returns>
-    /// <remarks>
-    /// This method does not validate the code's Base64URL content. Use <see cref="Verify"/> to validate cryptographically.
-    /// </remarks>
-    InvitationTokenReference? Parse(string raw);
 }
 
 public sealed record HashedToken(byte[] Hash, byte[] Salt);
-public sealed record MintedToken(string InviteToken, HashedToken Hashed);
-public sealed record InvitationTokenReference(int InvitationId, string InviteToken);
+public sealed record MintedToken(string InviteToken, HashedToken HashDetails);
+
+public readonly record struct TokenLink(int TokenId, string Secret)
+{
+    // "<tokenId>.<secret>"
+    public override string ToString() => $"{TokenId}.{Secret}";
+
+    public static bool TryParse(string? raw, out TokenLink link)
+    {
+        link = default;
+        if (string.IsNullOrWhiteSpace(raw)) return false;
+        int dot = raw.IndexOf('.');
+        if (dot <= 0 || dot == raw.Length - 1) return false;
+        if (!int.TryParse(s: raw.AsSpan(start: 0, length: dot), out int id)) return false;
+        link = new TokenLink(id, raw[(dot + 1)..]);
+        return true;
+    }
+}
 
 

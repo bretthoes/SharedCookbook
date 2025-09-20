@@ -37,14 +37,4 @@ public sealed class InvitationTokenService : IInvitationTokenService
         return stored.Hash.Length == computed.Length &&
                CryptographicOperations.FixedTimeEquals(left: stored.Hash, right: computed);
     }
-
-    public InvitationTokenReference? Parse(string raw)
-    {
-        if (string.IsNullOrWhiteSpace(raw)) return null;
-        int dot = raw.IndexOf('.');
-
-        if (!int.TryParse(raw[..dot], out int id)) return null;
-        string code = raw[(dot + 1)..];
-        return string.IsNullOrEmpty(code) ? null : new InvitationTokenReference(id, code);
-    }
 }
