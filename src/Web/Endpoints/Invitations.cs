@@ -32,7 +32,7 @@ public class Invitations : EndpointGroupBase
         return sender.Send(query);
     }
 
-    private static Task<string> CreateInvitation(ISender sender, CreateInvitationCommand command)
+    private static Task<int> CreateInvitation(ISender sender, CreateInvitationCommand command)
     {
         return sender.Send(command);
     }

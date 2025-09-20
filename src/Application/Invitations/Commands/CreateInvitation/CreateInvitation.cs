@@ -4,7 +4,7 @@ using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.Invitations.Commands.CreateInvitation;
 
-public sealed record CreateInvitationCommand : IRequest<string>
+public sealed record CreateInvitationCommand : IRequest<int>
 {
     public required int CookbookId { get; init; }
     public required string Email { get; init; }
@@ -14,16 +14,16 @@ public class CreateInvitationCommandHandler(
     IApplicationDbContext context,
     IIdentityService identityService,
     IUser user
-) : IRequestHandler<CreateInvitationCommand, string>
+) : IRequestHandler<CreateInvitationCommand, int>
 {
-    public async Task<string> Handle(CreateInvitationCommand command, CancellationToken cancellationToken)
+    public async Task<int> Handle(CreateInvitationCommand command, CancellationToken cancellationToken)
     {
         string recipientId = await GetRecipientId(command.Email);
         await ValidateEmailInvite(command.CookbookId, recipientId, cancellationToken);
         return await CreateEmailInvite(command.CookbookId, recipientId, cancellationToken);
     }
 
-    private async Task<string> CreateEmailInvite(int cookbookId, string recipientId, CancellationToken token)
+    private async Task<int> CreateEmailInvite(int cookbookId, string recipientId, CancellationToken token)
     {
         var entity = new CookbookInvitation
         {
@@ -37,7 +37,7 @@ public class CreateInvitationCommandHandler(
         entity.AddDomainEvent(new InvitationCreatedEvent(entity));
         await context.SaveChangesAsync(token);
 
-        return entity.Id.ToString();
+        return entity.Id;
     }
 
     private async Task<string> GetRecipientId(string email)
