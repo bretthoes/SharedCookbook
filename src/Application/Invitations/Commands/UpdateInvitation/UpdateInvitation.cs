@@ -17,8 +17,6 @@ public class UpdateInvitationCommandHandler(
 {
     public async Task<int> Handle(UpdateInvitationCommand command, CancellationToken cancellationToken)
     {
-        Guard.Against.Null(user.Id);
-        
         var invitation = await context.CookbookInvitations.FindAsync(keyValues: [command.Id], cancellationToken);
         Guard.Against.NotFound(command.Id, invitation);
         
@@ -46,9 +44,10 @@ public class UpdateInvitationCommandHandler(
     private async Task Accept(CookbookInvitation invitation, CancellationToken cancellationToken)
     {
         invitation.Accept(timestamp: timeProvider.GetUtcNow().UtcDateTime);
+        Guard.Against.Null(user.Id);
 
         // TODO this side effect could be an integration event
-        if (await UserDoesNotHaveMembershipInCookbook(invitation.CookbookId, user.Id!, cancellationToken))
+        if (await UserDoesNotHaveMembershipInCookbook(invitation.CookbookId, user.Id, cancellationToken))
         {
             var membership = CookbookMembership.GetDefaultMembership(invitation.CookbookId);
             await context.CookbookMemberships.AddAsync(membership, cancellationToken);
@@ -58,6 +57,7 @@ public class UpdateInvitationCommandHandler(
     private static bool InvitationShouldBeUpdated(CookbookInvitation invitation, CookbookInvitationStatus newStatus)
         => invitation.InvitationStatus != newStatus;
     
+    // TODO move to query extension
     private async Task<bool> UserDoesNotHaveMembershipInCookbook(
         int cookbookId,
         string userId,
