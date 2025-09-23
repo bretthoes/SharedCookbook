@@ -25,7 +25,7 @@ public sealed class CookbookInvitation : BaseAuditableEntity
 
     public void IssueToken(TokenDigest digest, DateTime timestamp)
     {
-        if (!CanIssueToken) return; // TODO throw exception here?
+        if (!CanIssueToken) throw new InvitationNotPendingException(InvitationStatus);
         foreach (var token in Tokens.Where(token => token.IsActive)) token.Revoke();
         var issuedToken = new InvitationToken
         {
@@ -34,16 +34,6 @@ public sealed class CookbookInvitation : BaseAuditableEntity
         };
         Tokens.Add(issuedToken);
         //AddDomainEvent(new InvitationTokenIssuedEvent(this, tok));
-    }
-    
-    public void AcceptFromToken(InvitationToken tok, DateTime now)
-    {
-        if (tok.CookbookInvitationId != Id) throw new DomainException("Wrong token.");
-        if (!tok.IsActive()) throw new DomainException("Token not active.");
-        tok.MarkUsed(now);
-        InvitationStatus = CookbookInvitationStatus.Accepted;
-        ResponseDate = now;
-        AddDomainEvent(new InvitationAcceptedEvent(this));
     }
     
     public void Accept(DateTime timestamp)
@@ -56,6 +46,15 @@ public sealed class CookbookInvitation : BaseAuditableEntity
         AddDomainEvent(new InvitationAcceptedEvent(this));
     }
 
+    public void AcceptFromToken(InvitationToken token, DateTime timestamp)
+    {
+        if (token.CookbookInvitationId != Id) throw new InvitationTokenMismatchException(Id, token.Id);
+        if (!token.IsActive) throw new InvitationTokenInactiveException(token.Status);
+        
+        token.Consume();
+        Accept(timestamp);
+    }
+    
     public void Reject(DateTime timestamp)
     {
         if (IsRejected) return;
