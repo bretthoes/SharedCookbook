@@ -12,7 +12,7 @@ public sealed class InvitationToken : BaseAuditableEntity
     
     public CookbookInvitation? Invitation { get; init; }
 
-    private bool IsActive => Status == InvitationTokenStatus.Active;
+    public bool IsActive => Status == InvitationTokenStatus.Active;
     
     public void Consume()
     {

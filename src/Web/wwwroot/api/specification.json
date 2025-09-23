@@ -318,7 +318,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "type": "integer",
+                  "format": "int32"
                 }
               }
             }
@@ -392,6 +393,43 @@
         "responses": {
           "200": {
             "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/InvitationTokens": {
+      "post": {
+        "tags": [
+          "InvitationTokens"
+        ],
+        "operationId": "CreateInvitationToken",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInvitationTokenCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1511,8 +1549,7 @@
             "format": "int32"
           },
           "email": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           }
         }
       },
@@ -1526,6 +1563,16 @@
           },
           "newStatus": {
             "$ref": "#/components/schemas/CookbookInvitationStatus"
+          }
+        }
+      },
+      "CreateInvitationTokenCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "cookbookId": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -2245,13 +2292,8 @@
               "status": {
                 "$ref": "#/components/schemas/InvitationTokenStatus"
               },
-              "hash": {
-                "type": "string",
-                "format": "byte"
-              },
-              "salt": {
-                "type": "string",
-                "format": "byte"
+              "digest": {
+                "$ref": "#/components/schemas/TokenDigest"
               },
               "invitation": {
                 "nullable": true,
@@ -2278,6 +2320,32 @@
           1,
           2
         ]
+      },
+      "TokenDigest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ValueObject"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "hash": {
+                "type": "string",
+                "format": "byte"
+              },
+              "salt": {
+                "type": "string",
+                "format": "byte"
+              }
+            }
+          }
+        ]
+      },
+      "ValueObject": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false
       },
       "CookbookMembership": {
         "allOf": [
