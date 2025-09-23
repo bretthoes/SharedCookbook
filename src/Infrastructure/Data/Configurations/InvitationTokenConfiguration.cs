@@ -22,12 +22,11 @@ public class InvitationTokenConfiguration : IEntityTypeConfiguration<InvitationT
         builder.Property(token => token.CookbookInvitationId)
             .HasColumnName("cookbook_invitation_id")
             .IsRequired();
-        builder.Property(token => token.Hash)
-            .HasColumnName("token_hash")
-            .IsRequired();
-        builder.Property(token => token.Salt)
-            .HasColumnName("token_salt")
-            .IsRequired();
+        builder.OwnsOne(token => token.Digest, owned =>
+        {
+            owned.Property(digest => digest.Hash).HasColumnName("token_hash").HasColumnType("bytea").IsRequired();
+            owned.Property(digest => digest.Salt).HasColumnName("token_salt").HasColumnType("bytea").IsRequired();
+        });
         builder.Property(token => token.Status)
             .HasColumnName("token_status")
             .HasConversion<string>()
