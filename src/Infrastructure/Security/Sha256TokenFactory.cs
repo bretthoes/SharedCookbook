@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.WebUtilities;
 using SharedCookbook.Application.Common.Interfaces;
+using SharedCookbook.Domain.ValueObjects;
 
 namespace SharedCookbook.Infrastructure.Security;
 
@@ -20,10 +21,10 @@ public sealed class Sha256TokenFactory : IInvitationTokenFactory
         Buffer.BlockCopy(code, 0, material, salt.Length, code.Length);
 
         byte[] hash = SHA256.HashData(material);
-        return new MintedToken(inviteToken, new HashedToken(hash, salt));
+        return new MintedToken(inviteToken, new TokenDigest(hash, salt));
     }
 
-    public bool Verify(string inviteToken, HashedToken stored)
+    public bool Verify(string inviteToken, TokenDigest stored)
     {
         byte[] code;
         try { code = WebEncoders.Base64UrlDecode(inviteToken); }

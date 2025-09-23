@@ -1,3 +1,5 @@
+using SharedCookbook.Domain.ValueObjects;
+
 namespace SharedCookbook.Application.Common.Interfaces;
 
 public interface IInvitationTokenFactory
@@ -9,7 +11,7 @@ public interface IInvitationTokenFactory
     /// A <see cref="MintedToken"/> containing:
     /// <list type="bullet">
     /// <item><description><c>InviteToken</c> — Base64URL-encoded secret to send to the client.</description></item>
-    /// <item><description><c>Stored</c> — <see cref="HashedToken"/> with <c>Hash</c> (SHA-256 of salt||code) and <c>Salt</c> to persist in the database.</description></item>
+    /// <item><description><c>Stored</c> — <see cref="TokenDigest"/> with <c>Hash</c> (SHA-256 of salt||code) and <c>Salt</c> to persist in the database.</description></item>
     /// </list>
     /// </returns>
     /// <remarks>
@@ -22,17 +24,16 @@ public interface IInvitationTokenFactory
     /// Verifies a Base64URL-encoded invitation <paramref name="inviteToken"/> against a stored hash and salt.
     /// </summary>
     /// <param name="inviteToken">The Base64URL-encoded token received from the client (no padding).</param>
-    /// <param name="stored">The stored <see cref="HashedToken"/> (hash and salt) from the invitation row.</param>
+    /// <param name="stored">The stored <see cref="TokenDigest"/> (hash and salt) from the invitation row.</param>
     /// <returns><c>true</c> if the token matches the stored hash; otherwise <c>false</c>.</returns>
     /// <remarks>
     /// This method performs only cryptographic verification. It does not enforce TTL, status, or authorization.
     /// Callers must check invitation state (e.g., <c>Sent</c>), and expiry derived from <c>Created</c>.
     /// </remarks>
-    bool Verify(string inviteToken, HashedToken stored);
+    bool Verify(string inviteToken, TokenDigest stored);
 }
 
-public sealed record HashedToken(byte[] Hash, byte[] Salt);
-public sealed record MintedToken(string InviteToken, HashedToken HashDetails);
+public sealed record MintedToken(string InviteToken, TokenDigest HashDetails);
 
 public readonly record struct TokenLink(int TokenId, string Secret)
 {

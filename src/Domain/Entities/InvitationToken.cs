@@ -1,16 +1,28 @@
-﻿namespace SharedCookbook.Domain.Entities;
+﻿using SharedCookbook.Domain.ValueObjects;
+
+namespace SharedCookbook.Domain.Entities;
 
 public sealed class InvitationToken : BaseAuditableEntity
 {
-    public required int CookbookInvitationId { get; set; }
+    public int CookbookInvitationId { get; init; }
     
     public required InvitationTokenStatus Status { get; set; }
+
+    public TokenDigest Digest { get; init; } = null!;
     
-    public required byte[] Hash { get; init; } = [];
+    public CookbookInvitation? Invitation { get; init; }
+
+    private bool IsActive => Status == InvitationTokenStatus.Active;
     
-    public required byte[] Salt { get; init; } = [];
-    
-    public CookbookInvitation? Invitation { get; set; }
+    public void Consume()
+    {
+        if (IsActive) Status = InvitationTokenStatus.Consumed;
+    }
+
+    public void Revoke()
+    {
+        if (IsActive) Status = InvitationTokenStatus.Revoked;
+    }
     
     public struct Constraints
     {
