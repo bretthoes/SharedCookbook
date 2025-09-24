@@ -2302,6 +2302,9 @@
                     "$ref": "#/components/schemas/CookbookInvitation"
                   }
                 ]
+              },
+              "isActive": {
+                "type": "boolean"
               }
             }
           }

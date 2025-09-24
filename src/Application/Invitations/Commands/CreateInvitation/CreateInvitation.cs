@@ -51,13 +51,13 @@ public class CreateInvitationCommandHandler(
     {
         // TODO replace exceptions here with guard clauses?
         bool alreadyMember = await context.CookbookMemberships
-            .AnyAsync(m => m.CookbookId == cookbookId && m.CreatedBy == recipientId, token);
-        if (alreadyMember) throw new ConflictException("Recipient is already a member of this cookbook.");
+            .AnyAsync(membership => membership.CookbookId == cookbookId && membership.CreatedBy == recipientId, token);
+        if (alreadyMember) throw new ConflictException("Recipient is already a member of this cookbook."); // TODO replace with domain level exception; 'existing member cannot be invited' as an invariant
 
         bool hasPending = await context.CookbookInvitations
-            .AnyAsync(i => i.CookbookId == cookbookId
-                && i.RecipientPersonId == recipientId
-                && i.InvitationStatus == CookbookInvitationStatus.Sent, token);
+            .AnyAsync(invitation => invitation.CookbookId == cookbookId
+                && invitation.RecipientPersonId == recipientId
+                && invitation.InvitationStatus == CookbookInvitationStatus.Sent, token);
         if (hasPending) throw new ConflictException("Recipient has already been invited.");
     }
 }

@@ -20,9 +20,9 @@ public static class CookbookQueryExtensions
         IApplicationDbContext context,
         string? userId)
         => query
-            .Where(c => context.CookbookMemberships
-                .Any(cm => cm.CreatedBy == userId && cm.CookbookId == c.Id));
+            .Where(cookbook => context.CookbookMemberships
+                .Any(cm => cm.CreatedBy == userId && cm.CookbookId == cookbook.Id));
 
-    public static IQueryable<Cookbook> OrderByTitle(this IQueryable<Cookbook> query)
-        => query.OrderBy(c => c.Title);
+    private static IQueryable<Cookbook> OrderByTitle(this IQueryable<Cookbook> query)
+        => query.OrderBy(cookbook => cookbook.Title);
 }
