@@ -23,17 +23,18 @@ public sealed class CookbookInvitation : BaseAuditableEntity
     private bool IsSent => InvitationStatus == CookbookInvitationStatus.Sent;
     private bool CanIssueToken => IsSent;
 
-    public void IssueToken(TokenDigest digest, DateTime timestamp)
+    public InvitationToken IssueToken(TokenDigest digest)
     {
         if (!CanIssueToken) throw new InvitationNotPendingException(InvitationStatus);
         foreach (var token in Tokens.Where(token => token.IsActive)) token.Revoke();
         var issuedToken = new InvitationToken
         {
             Status = InvitationTokenStatus.Active,
-            Digest = digest,
+            Digest = digest
         };
         Tokens.Add(issuedToken);
-        //AddDomainEvent(new InvitationTokenIssuedEvent(this, tok));
+        
+        return issuedToken;
     }
     
     public void Accept(DateTime timestamp)

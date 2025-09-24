@@ -5,12 +5,13 @@ namespace SharedCookbook.Application.InvitationTokens.Commands.CreateInvitationT
 
 public sealed record CreateInvitationTokenCommand(int CookbookId) : IRequest<string>;
 
-public class CreateInvitationTokenCommandHandler(IApplicationDbContext context,
+public sealed class CreateInvitationTokenCommandHandler(IApplicationDbContext context,
     IUser user,
     IInvitationTokenFactory tokenFactory): IRequestHandler<CreateInvitationTokenCommand, string>
 {
     public async Task<string> Handle(CreateInvitationTokenCommand command, CancellationToken cancellationToken)
     {
+        // TODO refactor to query extension; GetPendingInvitation or something of the like
         var invitation = await context.CookbookInvitations
             .Include(navigationPropertyPath: cookbookInvitation => cookbookInvitation.Tokens)
             .FirstOrDefaultAsync(cookbookInvitation =>
@@ -31,25 +32,14 @@ public class CreateInvitationTokenCommandHandler(IApplicationDbContext context,
             invitation.AddDomainEvent(new InvitationCreatedEvent(invitation));
         }
 
-        // Replace any active token
-        var activeToken = invitation.Tokens.FirstOrDefault(token => token.Status == InvitationTokenStatus.Active);
-        if (activeToken is not null) activeToken.Status = InvitationTokenStatus.Revoked;
-
         // Mint and persist new token
         var minted = tokenFactory.Mint();
-        var newToken = new InvitationToken
-        {
-            Status = InvitationTokenStatus.Active,
-            Digest = minted.HashDetails,
-            Invitation = invitation
-        };
-        context.InvitationTokens.Add(newToken);
+        var issuedToken = invitation.IssueToken(minted.HashDetails);
 
         await context.SaveChangesAsync(cancellationToken);
 
-        return new TokenLink(newToken.Id, minted.InviteToken).ToString();
+        return new TokenLink(issuedToken.Id, minted.InviteToken).ToString();
     }
-    
 }
 
 public class CreateInvitationTokenCommandValidator : AbstractValidator<CreateInvitationTokenCommand>
