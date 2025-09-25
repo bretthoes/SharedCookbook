@@ -43,8 +43,8 @@ public class CreateInvitationCommandHandler(
     private async Task<string> GetRecipientId(string email)
     {
         var recipient = await identityService.FindByEmailAsync(email.Trim());
-        // TODO use guard clause instead
-        return recipient?.Id ?? throw new NotFoundException(key: email, nameof(UserDto));
+        Guard.Against.NotFound(key: email, input: nameof(UserDto));
+        return recipient!.Id;
     }
 
     private async Task ValidateEmailInvite(int cookbookId, string recipientId, CancellationToken token)
