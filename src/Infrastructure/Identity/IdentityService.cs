@@ -18,6 +18,9 @@ public class IdentityService(
             ? null
             : MapApplicationUserToUserDto(user);
     }
+
+    public async Task<string?> GetIdByEmailAsync(string email)
+        => (await userManager.FindByEmailAsync(email))?.Id;
     
     public async Task<UserDto?> FindByIdAsync(string id)
     {

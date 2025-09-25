@@ -18,7 +18,11 @@ public class CreateInvitationCommandHandler(
 {
     public async Task<int> Handle(CreateInvitationCommand command, CancellationToken cancellationToken)
     {
-        string recipientId = await GetRecipientId(command.Email);
+        string recipientId = Guard.Against.NotFound(
+            key: command.Email,
+            input: await identityService.GetIdByEmailAsync(command.Email.Trim())
+        );
+        
         await ValidateEmailInvite(command.CookbookId, recipientId, cancellationToken);
         return await CreateEmailInvite(command.CookbookId, recipientId, cancellationToken);
     }
@@ -38,13 +42,6 @@ public class CreateInvitationCommandHandler(
         await context.SaveChangesAsync(token);
 
         return entity.Id;
-    }
-
-    private async Task<string> GetRecipientId(string email)
-    {
-        var recipient = await identityService.FindByEmailAsync(email.Trim());
-        Guard.Against.NotFound(key: email, input: nameof(UserDto));
-        return recipient!.Id;
     }
 
     private async Task ValidateEmailInvite(int cookbookId, string recipientId, CancellationToken token)
