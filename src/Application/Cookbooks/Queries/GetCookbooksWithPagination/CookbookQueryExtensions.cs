@@ -1,7 +1,4 @@
-﻿using SharedCookbook.Application.Common.Mappings;
-using SharedCookbook.Application.Common.Models;
-
-namespace SharedCookbook.Application.Cookbooks.Queries.GetCookbooksWithPagination;
+﻿namespace SharedCookbook.Application.Cookbooks.Queries.GetCookbooksWithPagination;
 
 public static class CookbookQueryExtensions
 {
