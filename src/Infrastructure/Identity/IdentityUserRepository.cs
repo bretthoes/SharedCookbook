@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using SharedCookbook.Application.Common.Extensions;
 using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Application.Common.Mappings;
 using SharedCookbook.Application.Common.Models;
@@ -90,7 +91,9 @@ public class IdentityUserRepository(ApplicationDbContext context, IUser user, IO
         GetCookbooksWithPaginationQuery query,
         CancellationToken cancellationToken)
         => context.Cookbooks
-            .QueryCookbooksForMember(context, user.Id)
+            .AsNoTracking()
+            .ForMember(user.Id)
+            .OrderByTitle()
             .Join(context.People,
                 cookbook => cookbook.CreatedBy,
                 identityUser => identityUser.Id,
