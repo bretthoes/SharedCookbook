@@ -1,5 +1,5 @@
-﻿using SharedCookbook.Domain.Enums;
-using SharedCookbook.Domain.ValueObjects;
+﻿using SharedCookbook.Application.Common.Extensions;
+using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.InvitationTokens.Commands.CreateInvitationToken;
 
@@ -11,13 +11,8 @@ public sealed class CreateInvitationTokenCommandHandler(IApplicationDbContext co
 {
     public async Task<string> Handle(CreateInvitationTokenCommand command, CancellationToken cancellationToken)
     {
-        // TODO refactor to query extension; GetPendingInvitation or something of the like
         var invitation = await context.CookbookInvitations
-            .Include(navigationPropertyPath: cookbookInvitation => cookbookInvitation.Tokens)
-            .FirstOrDefaultAsync(cookbookInvitation =>
-                cookbookInvitation.CookbookId == command.CookbookId &&
-                cookbookInvitation.RecipientPersonId == null &&
-                cookbookInvitation.InvitationStatus == CookbookInvitationStatus.Sent, cancellationToken);
+            .FirstLinkInviteWithTokens(command.CookbookId, cancellationToken);
 
         if (invitation is null)
         {
