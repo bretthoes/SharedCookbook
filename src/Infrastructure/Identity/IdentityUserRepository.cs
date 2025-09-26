@@ -20,9 +20,12 @@ namespace SharedCookbook.Infrastructure.Identity;
 /// <summary>
 /// Repository for handling queries with joins to the AspNetUsers table,
 /// which is managed by the Identity framework. This repository is defined
-/// in the Infrastructure layer (and accessed through an interface in the
+/// in the Infrastructure layer (and injected through an interface in the
 /// Application layer) to avoid directly referencing the IdentityUser in
-/// the Application project. 
+/// the Application project. The tradeoff here is that knowledge of
+/// Identity is kept out of the application layer, but the downside is
+/// the necessity of this repository and the verbose joining/mapping that
+/// must be defined in the query.
 /// </summary>
 /// <remarks>
 /// This repository should be limited to read-only operations, as modifying
@@ -94,21 +97,7 @@ public class IdentityUserRepository(ApplicationDbContext context, IUser user, IO
             .AsNoTracking()
             .ForMember(user.Id)
             .OrderByTitle()
-            .Join(context.People,
-                cookbook => cookbook.CreatedBy,
-                identityUser => identityUser.Id,
-                (cookbook, identityUser) => new CookbookBriefDto
-                {
-                    Id = cookbook.Id,
-                    Title = cookbook.Title,
-                    Image = string.IsNullOrWhiteSpace(cookbook.Image)
-                        ? ""
-                        : $"{options.Value.ImageBaseUrl}{cookbook.Image}",
-                    MembersCount = cookbook.Memberships.Count,
-                    RecipeCount = cookbook.Recipes.Count,
-                    Author = identityUser.DisplayName,
-                    AuthorEmail = identityUser.Email ?? ""
-                })
+            .SelectBriefDto(context.People.AsNoTracking(), options.Value.ImageBaseUrl)
             .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
 
     public Task<PaginatedList<RecipeDetailedDto>> GetRecipes(
@@ -156,4 +145,29 @@ public class IdentityUserRepository(ApplicationDbContext context, IUser user, IO
                     IsLowFodmap = recipe.IsLowFodmap,
                 })
             .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
+}
+
+// TODO move this somewhere more appropriate; perform this refactoring for other DTO mappings in this file
+public static class CookbookBriefDtoQueries
+{
+    public static IQueryable<CookbookBriefDto> SelectBriefDto(
+        this IQueryable<Cookbook> cookbooks,
+        IQueryable<ApplicationUser> people,
+        string imageBaseUrl)
+        => cookbooks.Join(
+                people,
+                c => c.CreatedBy,
+                p => p.Id,
+                (c, p) => new CookbookBriefDto
+                {
+                    Id           = c.Id,
+                    Title        = c.Title,
+                    Image        = (c.Image != null && c.Image != "")
+                                   ? (imageBaseUrl + c.Image)
+                                   : "",
+                    MembersCount = c.Memberships.Count,
+                    RecipeCount  = c.Recipes.Count,
+                    Author       = p.DisplayName,
+                    AuthorEmail  = p.Email ?? ""
+                });
 }
