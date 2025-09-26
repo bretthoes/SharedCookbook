@@ -1,5 +1,4 @@
-﻿using SharedCookbook.Application.Common.Exceptions;
-using SharedCookbook.Application.Common.Models;
+﻿using SharedCookbook.Application.Common.Extensions;
 using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.Invitations.Commands.CreateInvitation;
@@ -16,18 +15,25 @@ public class CreateInvitationCommandHandler(
     IUser user
 ) : IRequestHandler<CreateInvitationCommand, int>
 {
-    public async Task<int> Handle(CreateInvitationCommand command, CancellationToken cancellationToken)
+    public async Task<int> Handle(CreateInvitationCommand command, CancellationToken token)
     {
-        string recipientId = await GetRecipientId(command.Email);
-        await ValidateEmailInvite(command.CookbookId, recipientId, cancellationToken);
-        return await CreateEmailInvite(command.CookbookId, recipientId, cancellationToken);
-    }
+        string email = command.Email.Trim();
 
-    private async Task<int> CreateEmailInvite(int cookbookId, string recipientId, CancellationToken token)
-    {
+        string? recipientId = await identityService.GetIdByEmailAsync(email);
+        Guard.Against.NotFound(key: email, input: recipientId);
+
+        bool alreadyMember = await context.CookbookMemberships
+            .IsMember(command.CookbookId, recipientId, token);
+
+        bool hasPending = await context.CookbookInvitations
+            .HasActiveInvite(command.CookbookId, recipientId, token);
+
+        Guard.Against.ExistingMembership(alreadyMember, command.CookbookId, user.Id!, recipientId);
+        Guard.Against.PendingInvitation(hasPending, command.CookbookId, user.Id!, recipientId);
+
         var entity = new CookbookInvitation
         {
-            CookbookId = cookbookId,
+            CookbookId = command.CookbookId,
             CreatedBy = user.Id,
             RecipientPersonId = recipientId,
             InvitationStatus = CookbookInvitationStatus.Sent,
@@ -38,26 +44,5 @@ public class CreateInvitationCommandHandler(
         await context.SaveChangesAsync(token);
 
         return entity.Id;
-    }
-
-    private async Task<string> GetRecipientId(string email)
-    {
-        var recipient = await identityService.FindByEmailAsync(email.Trim());
-        // TODO use guard clause instead
-        return recipient?.Id ?? throw new NotFoundException(key: email, nameof(UserDto));
-    }
-
-    private async Task ValidateEmailInvite(int cookbookId, string recipientId, CancellationToken token)
-    {
-        // TODO replace exceptions here with guard clauses?
-        bool alreadyMember = await context.CookbookMemberships
-            .AnyAsync(membership => membership.CookbookId == cookbookId && membership.CreatedBy == recipientId, token);
-        if (alreadyMember) throw new ConflictException("Recipient is already a member of this cookbook."); // TODO replace with domain level exception; 'existing member cannot be invited' as an invariant
-
-        bool hasPending = await context.CookbookInvitations
-            .AnyAsync(invitation => invitation.CookbookId == cookbookId
-                && invitation.RecipientPersonId == recipientId
-                && invitation.InvitationStatus == CookbookInvitationStatus.Sent, token);
-        if (hasPending) throw new ConflictException("Recipient has already been invited.");
     }
 }

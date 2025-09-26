@@ -13,7 +13,7 @@ public class CustomExceptionHandler : IExceptionHandler
         { typeof(NotFoundException), HandleNotFoundException },
         { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException },
         { typeof(ForbiddenAccessException), HandleForbiddenAccessException },
-        {typeof(ConflictException), HandleConflictException },
+        { typeof(ConflictException), HandleConflictException },
         { typeof(RateLimitExceededException), HandleRateLimitExceededException }
     };
 
