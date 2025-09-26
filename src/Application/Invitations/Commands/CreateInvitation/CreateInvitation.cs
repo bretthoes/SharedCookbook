@@ -1,5 +1,4 @@
 ﻿using SharedCookbook.Application.Common.Exceptions;
-using SharedCookbook.Application.Common.Models;
 using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.Invitations.Commands.CreateInvitation;
@@ -47,14 +46,10 @@ public class CreateInvitationCommandHandler(
     private async Task ValidateEmailInvite(int cookbookId, string recipientId, CancellationToken token)
     {
         // TODO replace exceptions here with guard clauses?
-        bool alreadyMember = await context.CookbookMemberships
-            .AnyAsync(membership => membership.CookbookId == cookbookId && membership.CreatedBy == recipientId, token);
-        if (alreadyMember) throw new ConflictException("Recipient is already a member of this cookbook."); // TODO replace with domain level exception; 'existing member cannot be invited' as an invariant
+        if (await context.CookbookMemberships.IsMember(cookbookId, recipientId, token))
+            throw new ConflictException("Recipient is already a member of this cookbook.");
 
-        bool hasPending = await context.CookbookInvitations
-            .AnyAsync(invitation => invitation.CookbookId == cookbookId
-                && invitation.RecipientPersonId == recipientId
-                && invitation.InvitationStatus == CookbookInvitationStatus.Sent, token);
-        if (hasPending) throw new ConflictException("Recipient has already been invited.");
+        if (await context.CookbookInvitations.HasActiveInvite(cookbookId, recipientId, token))
+            throw new ConflictException("Recipient has already been invited.");
     }
 }
