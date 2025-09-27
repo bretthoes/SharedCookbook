@@ -10,5 +10,4 @@ public static class CookbookQueryExtensions
 
     public static IQueryable<Cookbook> OrderByTitle(this IQueryable<Cookbook> query)
         => query.OrderBy(cookbook => cookbook.Title);
-    
 }
