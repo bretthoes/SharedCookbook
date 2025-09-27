@@ -3,24 +3,15 @@ using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
 
-public record GetInvitationsWithPaginationQuery : IRequest<PaginatedList<InvitationDto>>
+public record GetInvitationsWithPaginationQuery(
+    CookbookInvitationStatus Status = CookbookInvitationStatus.Sent,
+    int PageNumber = 1,
+    int PageSize = 10)
+    : IRequest<PaginatedList<InvitationDto>>;
+
+public class GetInvitationsWithPaginationQueryHandler(IIdentityUserRepository repository)
+    : IRequestHandler<GetInvitationsWithPaginationQuery, PaginatedList<InvitationDto>>
 {
-    public CookbookInvitationStatus Status { get; init; } = CookbookInvitationStatus.Sent;
-    public int PageNumber { get; init; } = 1;
-    public int PageSize { get; init; } = 10;
-}
-
-public class GetInvitationsWithPaginationQueryHandler : IRequestHandler<GetInvitationsWithPaginationQuery, PaginatedList<InvitationDto>>
-{
-    private readonly IIdentityUserRepository _repository;
-
-    public GetInvitationsWithPaginationQueryHandler(IApplicationDbContext context, IIdentityUserRepository repository)
-    {
-        _repository = repository;
-    }
-
-    public Task<PaginatedList<InvitationDto>> Handle(GetInvitationsWithPaginationQuery query, CancellationToken cancellationToken)
-    {
-        return _repository.GetInvitations(query, cancellationToken);
-    }
+    public Task<PaginatedList<InvitationDto>> Handle(GetInvitationsWithPaginationQuery query, CancellationToken token)
+        => repository.GetInvitations(query, token);
 }
