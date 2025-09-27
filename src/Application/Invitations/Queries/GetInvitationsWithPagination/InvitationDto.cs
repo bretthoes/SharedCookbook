@@ -13,6 +13,4 @@ public record InvitationDto
     public string? CookbookImage { get; init; }
 
     public DateTimeOffset Created { get; init; }
-
-    public string? CreatedBy { get; init; }
 }

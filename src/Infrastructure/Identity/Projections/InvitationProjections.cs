@@ -15,7 +15,6 @@ internal static class InvitationProjections
         {
             Id = invitation.Id,
             Created = invitation.Created,
-            CreatedBy = invitation.CreatedBy,
             CookbookTitle = invitation.Cookbook != null ? invitation.Cookbook.Title : "",
             CookbookImage = (invitation.Cookbook != null && invitation.Cookbook.Image != null && invitation.Cookbook.Image != "")
                             ? imageBaseUrl + invitation.Cookbook.Image
