@@ -66,6 +66,12 @@ public sealed class CookbookInvitation : BaseAuditableEntity
         AddDomainEvent(new InvitationRejectedEvent(this));
     }
 
+    public static CookbookInvitation ForLink(int cookbookId)
+        => new()
+        {
+            CookbookId = cookbookId, RecipientPersonId = null, InvitationStatus = CookbookInvitationStatus.Sent
+        };
+
     public struct Constraints
     {
         public const int InvitationStatusMaxLength = 255;

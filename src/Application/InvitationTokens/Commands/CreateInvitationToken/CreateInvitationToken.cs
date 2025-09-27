@@ -5,9 +5,8 @@ namespace SharedCookbook.Application.InvitationTokens.Commands.CreateInvitationT
 
 public sealed record CreateInvitationTokenCommand(int CookbookId) : IRequest<string>;
 
-public sealed class CreateInvitationTokenCommandHandler(IApplicationDbContext context,
-    IUser user,
-    IInvitationTokenFactory tokenFactory): IRequestHandler<CreateInvitationTokenCommand, string>
+public sealed class CreateInvitationTokenCommandHandler(IApplicationDbContext context, IInvitationTokenFactory factory)
+    : IRequestHandler<CreateInvitationTokenCommand, string>
 {
     public async Task<string> Handle(CreateInvitationTokenCommand command, CancellationToken cancellationToken)
     {
@@ -16,33 +15,16 @@ public sealed class CreateInvitationTokenCommandHandler(IApplicationDbContext co
 
         if (invitation is null)
         {
-            invitation = new CookbookInvitation
-            {
-                CookbookId = command.CookbookId,
-                CreatedBy = user.Id,
-                RecipientPersonId = null,
-                InvitationStatus = CookbookInvitationStatus.Sent,
-            };
+            invitation = CookbookInvitation.ForLink(command.CookbookId);
             context.CookbookInvitations.Add(invitation);
             invitation.AddDomainEvent(new InvitationCreatedEvent(invitation));
         }
 
-        // Mint and persist new token
-        var minted = tokenFactory.Mint();
-        var issuedToken = invitation.IssueToken(minted.HashDetails);
+        var mintedToken = factory.Mint();
+        var issuedToken = invitation.IssueToken(mintedToken.HashDetails);
 
         await context.SaveChangesAsync(cancellationToken);
 
-        return new TokenLink(issuedToken.Id, minted.InviteToken).ToString();
-    }
-}
-
-public class CreateInvitationTokenCommandValidator : AbstractValidator<CreateInvitationTokenCommand>
-{
-    public CreateInvitationTokenCommandValidator()
-    {
-        RuleFor(command => command.CookbookId)
-            .GreaterThan(0)
-            .WithMessage("CookbookId must be greater than zero.");
+        return new TokenLink(issuedToken.Id, mintedToken.InviteToken).ToString();
     }
 }
