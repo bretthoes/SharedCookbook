@@ -10,7 +10,6 @@ using SharedCookbook.Application.Memberships.Queries;
 using SharedCookbook.Application.Memberships.Queries.GetMembershipsWithPagination;
 using SharedCookbook.Application.Recipes.Queries.GetRecipe;
 using SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
-using SharedCookbook.Domain.Entities;
 using SharedCookbook.Infrastructure.Data;
 using SharedCookbook.Infrastructure.FileStorage;
 using SharedCookbook.Infrastructure.Identity.Projections;
@@ -39,10 +38,10 @@ public class IdentityUserRepository(ApplicationDbContext context, IUser user, IO
         GetMembershipsWithPaginationQuery query,
         CancellationToken cancellationToken)
         => context.CookbookMemberships
-                .AsNoTracking()
-                .HasCookbookId(query.CookbookId)
-                .SelectMembershipDto(context.People.AsNoTracking())
-                .OrderByName()
+            .AsNoTracking()
+            .HasCookbookId(query.CookbookId)
+            .SelectMembershipDto(context.People.AsNoTracking())
+            .OrderByName()
             .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
 
     public Task<PaginatedList<InvitationDto>> GetInvitations(
@@ -54,7 +53,7 @@ public class IdentityUserRepository(ApplicationDbContext context, IUser user, IO
             .SelectInvitationDto(context.People.AsNoTracking(), options.Value.ImageBaseUrl)
             .OrderByMostRecentlyCreated()
             .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
-    
+
     public Task<PaginatedList<CookbookBriefDto>> GetCookbooks(
         GetCookbooksWithPaginationQuery query,
         CancellationToken cancellationToken)
