@@ -1,9 +1,19 @@
-﻿using SharedCookbook.Domain.Enums;
+﻿using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
+using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.Common.Extensions;
 
 public static class InvitationQueryExtensions
 {
+    public static IQueryable<CookbookInvitation> GetInvitationsForUserByStatus(
+        this IQueryable<CookbookInvitation> query,
+        string? userId,
+        CookbookInvitationStatus status)
+        => query
+            .Where(invitation
+                => invitation.RecipientPersonId == userId
+                   && invitation.InvitationStatus == status);
+    
     public static Task<CookbookInvitation?> FirstLinkInviteWithTokens(
         this IQueryable<CookbookInvitation> query,
         int cookbookId,
@@ -14,20 +24,19 @@ public static class InvitationQueryExtensions
             .IsSent()
             .WithTokens()
             .FirstOrDefaultAsync(cancellationToken);
-
-    private static IQueryable<CookbookInvitation> ForCookbook(
-        this IQueryable<CookbookInvitation> q, int cookbookId) =>
+    
+    public static IQueryable<InvitationDto> OrderByMostRecentlyCreated(this IQueryable<InvitationDto> invitations) =>
+        invitations.OrderByDescending(invitation => invitation.Created);
+    
+    private static IQueryable<CookbookInvitation> ForCookbook(this IQueryable<CookbookInvitation> q, int cookbookId) =>
         q.Where(invitation => invitation.CookbookId == cookbookId);
 
-    private static IQueryable<CookbookInvitation> LinkStyle(
-        this IQueryable<CookbookInvitation> q) =>
+    private static IQueryable<CookbookInvitation> LinkStyle(this IQueryable<CookbookInvitation> q) =>
         q.Where(invitation => invitation.RecipientPersonId == null);
 
-    private static IQueryable<CookbookInvitation> IsSent(
-        this IQueryable<CookbookInvitation> q) =>
+    private static IQueryable<CookbookInvitation> IsSent(this IQueryable<CookbookInvitation> q) =>
         q.Where(invitation => invitation.InvitationStatus == CookbookInvitationStatus.Sent);
 
-    private static IQueryable<CookbookInvitation> WithTokens(
-        this IQueryable<CookbookInvitation> q) =>
-        q.Include(navigationPropertyPath: invitation => invitation.Tokens);
+    private static IQueryable<CookbookInvitation> WithTokens(this IQueryable<CookbookInvitation> q) 
+        => q.Include(navigationPropertyPath: invitation => invitation.Tokens);
 }

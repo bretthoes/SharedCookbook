@@ -13,7 +13,6 @@ using SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
 using SharedCookbook.Domain.Entities;
 using SharedCookbook.Infrastructure.Data;
 using SharedCookbook.Infrastructure.FileStorage;
-using SharedCookbook.Infrastructure.Identity.RepositoryExtensions;
 
 namespace SharedCookbook.Infrastructure.Identity;
 
@@ -103,7 +102,7 @@ public class IdentityUserRepository(ApplicationDbContext context, IUser user, IO
     public Task<PaginatedList<RecipeDetailedDto>> GetRecipes(
         GetRecipesWithPaginationQuery query,
         CancellationToken cancellationToken)
-        =>context.Recipes.AsNoTracking()
+        => context.Recipes.AsNoTracking()
             .HasCookbookId(query.CookbookId)
             .TitleContains(query.Search)
             .IncludeRecipeDetails()
@@ -156,18 +155,18 @@ public static class CookbookBriefDtoQueries
         string imageBaseUrl)
         => cookbooks.Join(
                 people,
-                c => c.CreatedBy,
-                p => p.Id,
-                (c, p) => new CookbookBriefDto
+                cookbook => cookbook.CreatedBy,
+                applicationUser => applicationUser.Id,
+                (cookbook, applicationUser) => new CookbookBriefDto
                 {
-                    Id           = c.Id,
-                    Title        = c.Title,
-                    Image        = (c.Image != null && c.Image != "")
-                                   ? (imageBaseUrl + c.Image)
+                    Id           = cookbook.Id,
+                    Title        = cookbook.Title,
+                    Image        = (cookbook.Image != null && cookbook.Image != "")
+                                   ? (imageBaseUrl + cookbook.Image)
                                    : "",
-                    MembersCount = c.Memberships.Count,
-                    RecipeCount  = c.Recipes.Count,
-                    Author       = p.DisplayName,
-                    AuthorEmail  = p.Email ?? ""
+                    MembersCount = cookbook.Memberships.Count,
+                    RecipeCount  = cookbook.Recipes.Count,
+                    Author       = applicationUser.DisplayName,
+                    AuthorEmail  = applicationUser.Email ?? ""
                 });
 }
