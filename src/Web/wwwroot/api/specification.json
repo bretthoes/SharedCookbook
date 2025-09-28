@@ -250,7 +250,6 @@
           {
             "name": "Status",
             "in": "query",
-            "required": true,
             "schema": {
               "$ref": "#/components/schemas/CookbookInvitationStatus"
             },
@@ -259,7 +258,6 @@
           {
             "name": "PageNumber",
             "in": "query",
-            "required": true,
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -269,7 +267,6 @@
           {
             "name": "PageSize",
             "in": "query",
-            "required": true,
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -1487,10 +1484,6 @@
           "created": {
             "type": "string",
             "format": "date-time"
-          },
-          "createdBy": {
-            "type": "string",
-            "nullable": true
           }
         }
       },

@@ -1,6 +1,9 @@
-﻿using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
+﻿using FluentValidation.Results;
+using SharedCookbook.Application.Common.Extensions;
+using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
 using SharedCookbook.Domain.Enums;
 using SharedCookbook.Domain.Exceptions;
+using ValidationException = SharedCookbook.Application.Common.Exceptions.ValidationException;
 
 namespace SharedCookbook.Application.Invitations.Queries.GetInvitationPreview;
 
@@ -15,12 +18,12 @@ public class GetInvitationPreviewQueryHandler(
     public async Task<InvitationDto> Handle(GetInvitationPreviewQuery request, CancellationToken cancellationToken)
     {
         if (!TokenLink.TryParse(request.Token, out var link))
-            throw new Exception(); // TODO guard clause
+            throw new ValidationException(
+                failures: [new ValidationFailure(nameof(request.Token),
+                    errorMessage: "Token received with invalid format.")
+                ]);
 
-        // TODO query extension(s)
-        var invitationToken = await context.InvitationTokens.AsNoTracking()
-            .Include(navigationPropertyPath: token => token.Invitation)
-            .FirstOrDefaultAsync(token => token.Id == link.TokenId, cancellationToken);
+        var invitationToken = await context.InvitationTokens.FirstByIdWithInvitation(link.TokenId, cancellationToken);
         Guard.Against.NotFound(link.TokenId, invitationToken);
         
         if (!factory.Verify(request.Token, invitationToken.Digest))
