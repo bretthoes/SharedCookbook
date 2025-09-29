@@ -1,3 +1,4 @@
+using System.Globalization;
 using SharedCookbook.Domain.ValueObjects;
 
 namespace SharedCookbook.Application.Common.Interfaces;
@@ -40,15 +41,18 @@ public readonly record struct TokenLink(int TokenId, string Secret)
     // "<tokenId>.<secret>"
     public override string ToString() => $"{TokenId}.{Secret}";
 
-    public static bool TryParse(string? raw, out TokenLink link)
+    public static TokenLink Parse(string raw)
     {
-        link = default;
-        if (string.IsNullOrWhiteSpace(raw)) return false;
+        ArgumentNullException.ThrowIfNull(raw);
+
         int dot = raw.IndexOf('.');
-        if (dot <= 0 || dot == raw.Length - 1) return false;
-        if (!int.TryParse(s: raw.AsSpan(start: 0, length: dot), out int id)) return false;
-        link = new TokenLink(id, raw[(dot + 1)..]);
-        return true;
+        if (dot <= 0 || dot == raw.Length - 1)
+            throw new FormatException("TokenLink must be in the form '<tokenId>.<secret>'.");
+
+        var span = raw.AsSpan(start: 0, length: dot);
+        return !int.TryParse(s: span, style: NumberStyles.None, CultureInfo.InvariantCulture, out int id)
+            ? throw new FormatException("TokenLink tokenId must be an integer.")
+            : new TokenLink(id, raw[(dot + 1)..]);
     }
 }
 

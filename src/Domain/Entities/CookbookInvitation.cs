@@ -16,11 +16,11 @@ public sealed class CookbookInvitation : BaseAuditableEntity
     
     public IList<InvitationToken> Tokens { get; init; } = [];
 
+    public bool IsSent => InvitationStatus == CookbookInvitationStatus.Sent;
+    
     private bool IsAccepted => InvitationStatus == CookbookInvitationStatus.Accepted;
     
     private bool IsRejected => InvitationStatus == CookbookInvitationStatus.Rejected;
-
-    private bool IsSent => InvitationStatus == CookbookInvitationStatus.Sent;
     
     private bool CanIssueToken => IsSent;
 
