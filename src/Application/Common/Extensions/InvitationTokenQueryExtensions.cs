@@ -2,7 +2,7 @@
 
 public static class InvitationTokenQueryExtensions
 {
-    public static Task<InvitationToken?> FirstByIdWithInvitation(
+    public static Task<InvitationToken> FirstByIdWithInvitation(
         this IQueryable<InvitationToken> query,
         long tokenId,
         CancellationToken cancellationToken = default) =>
@@ -10,7 +10,7 @@ public static class InvitationTokenQueryExtensions
             .ById(tokenId)
             .WithInvitation()
             .AsNoTracking()
-            .FirstOrDefaultAsync(cancellationToken);
+            .FirstAsync(cancellationToken);
 
     private static IQueryable<InvitationToken> ById(this IQueryable<InvitationToken> q, long id) =>
         q.Where(invitationToken => invitationToken.Id == id);
