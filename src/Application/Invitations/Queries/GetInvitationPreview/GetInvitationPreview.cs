@@ -15,21 +15,15 @@ public class GetInvitationPreviewQueryHandler(
     IInvitationTokenFactory factory)
     : IRequestHandler<GetInvitationPreviewQuery, InvitationDto>
 {
-    public async Task<InvitationDto> Handle(GetInvitationPreviewQuery request, CancellationToken cancellationToken)
+    public async Task<InvitationDto> Handle(GetInvitationPreviewQuery query, CancellationToken cancellationToken)
     {
-        if (!TokenLink.TryParse(request.Token, out var link))
-            throw new ValidationException(
-                failures: [new ValidationFailure(nameof(request.Token),
-                    errorMessage: "Token received with invalid format.")
-                ]);
+        Guard.Against.InvalidTokenFormat(TokenLink.TryParse(query.Token, out var link));
 
         var invitationToken = await context.InvitationTokens.FirstByIdWithInvitation(link.TokenId, cancellationToken);
-        Guard.Against.NotFound(link.TokenId, invitationToken);
         
-        if (!factory.Verify(request.Token, invitationToken.Digest))
-            throw new NotFoundException(key: link.TokenId.ToString(), nameof(invitationToken)); // TODO guard clause
+        Guard.Against.TokenDigestMismatch(isMatch: factory.Verify(query.Token, invitationToken.Digest));
         
-        if  (invitationToken.Status != InvitationTokenStatus.Active)
+        if  (!invitationToken.IsActive)
             throw new InvitationTokenInactiveException(invitationToken.Status); // TODO guard clause
         if (invitationToken.Invitation?.InvitationStatus != null &&
             invitationToken.Invitation.InvitationStatus != CookbookInvitationStatus.Sent)
