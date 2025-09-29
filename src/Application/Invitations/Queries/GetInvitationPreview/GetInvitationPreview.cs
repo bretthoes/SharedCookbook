@@ -1,10 +1,6 @@
-﻿using FluentValidation.Results;
-using SharedCookbook.Application.Common.Exceptions;
+﻿using SharedCookbook.Application.Common.Exceptions;
 using SharedCookbook.Application.Common.Extensions;
 using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
-using SharedCookbook.Domain.Enums;
-using SharedCookbook.Domain.Exceptions;
-using ValidationException = SharedCookbook.Application.Common.Exceptions.ValidationException;
 
 namespace SharedCookbook.Application.Invitations.Queries.GetInvitationPreview;
 
@@ -20,21 +16,19 @@ public class GetInvitationPreviewQueryHandler(
     {
         var link = TokenLink.Parse(query.Token);
 
-        var invitationToken = await context.InvitationTokens.SingleByIdWithInvitation(link.TokenId, cancellationToken);
+        var token = await context.InvitationTokens.SingleByIdWithInvitation(link.TokenId, cancellationToken);
         
-        var invitation = invitationToken.Invitation;
+        var invitation = token.Invitation;
         ArgumentNullException.ThrowIfNull(invitation);
         
         var cookbook = invitation.Cookbook;
         ArgumentNullException.ThrowIfNull(cookbook);
         
-        string? senderId = invitationToken.CreatedBy;
+        string? senderId = token.CreatedBy;
         ArgumentException.ThrowIfNullOrWhiteSpace(senderId);
         
-        TokenDigestMismatchException.ThrowIfFalse(factory.Verify(query.Token, invitationToken.Digest));
-
-        if (!invitationToken.IsActive || !invitation.IsSent)
-            throw new ConflictException("This invite is no longer available.");
+        Throw.IfFalse<TokenDigestMismatchException>(factory.Verify(query.Token, token.Digest));
+        Throw.IfFalse<InvalidOperationException>(token.IsConsumable);
         
         var userDto = await service.FindByIdAsync(senderId);
         Guard.Against.NotFound(senderId, userDto);

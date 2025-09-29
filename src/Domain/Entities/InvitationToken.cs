@@ -14,6 +14,8 @@ public sealed class InvitationToken : BaseAuditableEntity
 
     public bool IsActive => Status == InvitationTokenStatus.Active;
     
+    public bool IsConsumable => IsActive && Invitation?.InvitationStatus == CookbookInvitationStatus.Sent;
+    
     public void Consume()
     {
         if (IsActive) Status = InvitationTokenStatus.Consumed;
