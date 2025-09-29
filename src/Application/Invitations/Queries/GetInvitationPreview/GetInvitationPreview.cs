@@ -20,7 +20,7 @@ public class GetInvitationPreviewQueryHandler(
     {
         var link = TokenLink.Parse(query.Token);
 
-        var invitationToken = await context.InvitationTokens.FirstByIdWithInvitation(link.TokenId, cancellationToken);
+        var invitationToken = await context.InvitationTokens.SingleByIdWithInvitation(link.TokenId, cancellationToken);
         
         var invitation = invitationToken.Invitation;
         ArgumentNullException.ThrowIfNull(invitation);
