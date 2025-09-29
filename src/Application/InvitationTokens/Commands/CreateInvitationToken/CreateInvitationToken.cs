@@ -25,6 +25,6 @@ public sealed class CreateInvitationTokenCommandHandler(IApplicationDbContext co
 
         await context.SaveChangesAsync(cancellationToken);
 
-        return new TokenLink(issuedToken.Id, mintedToken.InviteToken).ToString();
+        return new TokenLink(issuedToken.PublicId, mintedToken.InviteToken).ToString();
     }
 }

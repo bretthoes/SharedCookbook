@@ -13,11 +13,14 @@ public class InvitationTokenConfiguration : IEntityTypeConfiguration<InvitationT
         builder.HasKey(token => token.Id)
             .HasName("invitation_token_id");
         
-        builder.HasIndex(token => new { token.CookbookInvitationId, token.Status })
-            .HasDatabaseName("IX_invitation_token__invitation_status");
+        builder.HasIndex(token => new { token.PublicId })
+            .HasDatabaseName("IX_invitation_token__public_id");
 
         builder.Property(token => token.Id)
             .HasColumnName("invitation_token_id")
+            .IsRequired();
+        builder.Property(token => token.PublicId)
+            .HasColumnName("public_id")
             .IsRequired();
         builder.Property(token => token.CookbookInvitationId)
             .HasColumnName("cookbook_invitation_id")

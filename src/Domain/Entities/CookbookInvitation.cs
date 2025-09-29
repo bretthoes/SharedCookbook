@@ -31,7 +31,8 @@ public sealed class CookbookInvitation : BaseAuditableEntity
         var issuedToken = new InvitationToken
         {
             Status = InvitationTokenStatus.Active,
-            Digest = digest
+            Digest = digest,
+            PublicId = Guid.NewGuid() // TODO add provider for reproducible results if needed
         };
         Tokens.Add(issuedToken);
         

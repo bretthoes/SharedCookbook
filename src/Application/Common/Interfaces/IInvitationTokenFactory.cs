@@ -36,10 +36,10 @@ public interface IInvitationTokenFactory
 
 public sealed record MintedToken(string InviteToken, TokenDigest HashDetails);
 
-public readonly record struct TokenLink(int TokenId, string Secret)
+public readonly record struct TokenLink(Guid TokenId, string Secret)
 {
     // "<tokenId>.<secret>"
-    public override string ToString() => $"{TokenId}.{Secret}";
+    public override string ToString() => $"{TokenId:D}.{Secret}";
 
     public static TokenLink Parse(string raw)
     {
@@ -49,10 +49,11 @@ public readonly record struct TokenLink(int TokenId, string Secret)
         if (dot <= 0 || dot == raw.Length - 1)
             throw new FormatException("TokenLink must be in the form '<tokenId>.<secret>'.");
 
-        var span = raw.AsSpan(start: 0, length: dot);
-        return !int.TryParse(s: span, style: NumberStyles.None, CultureInfo.InvariantCulture, out int id)
-            ? throw new FormatException("TokenLink tokenId must be an integer.")
-            : new TokenLink(id, raw[(dot + 1)..]);
+        var idSpan = raw.AsSpan(start: 0, length: dot);
+        if (!Guid.TryParse(idSpan, out Guid id))
+            throw new FormatException("TokenLink tokenId must be a GUID.");
+
+        return new TokenLink(id, raw[(dot + 1)..]);
     }
 }
 

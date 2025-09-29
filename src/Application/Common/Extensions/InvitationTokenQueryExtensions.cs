@@ -4,7 +4,7 @@ public static class InvitationTokenQueryExtensions
 {
     public static Task<InvitationToken> SingleByIdWithInvitation(
         this IQueryable<InvitationToken> query,
-        long tokenId,
+        Guid tokenId,
         CancellationToken cancellationToken = default) =>
         query
             .ById(tokenId)
@@ -12,8 +12,8 @@ public static class InvitationTokenQueryExtensions
             .AsNoTracking()
             .SingleAsync(cancellationToken);
 
-    private static IQueryable<InvitationToken> ById(this IQueryable<InvitationToken> q, long id) =>
-        q.Where(invitationToken => invitationToken.Id == id);
+    private static IQueryable<InvitationToken> ById(this IQueryable<InvitationToken> q, Guid id) =>
+        q.Where(invitationToken => invitationToken.PublicId == id);
 
     private static IQueryable<InvitationToken> WithInvitation(this IQueryable<InvitationToken> q) =>
         q.Include(navigationPropertyPath: invitationToken => invitationToken.Invitation);

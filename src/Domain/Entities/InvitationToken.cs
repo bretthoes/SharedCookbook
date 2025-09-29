@@ -6,6 +6,8 @@ public sealed class InvitationToken : BaseAuditableEntity
 {
     public int CookbookInvitationId { get; init; }
     
+    public required Guid PublicId { get; init; }
+    
     public required InvitationTokenStatus Status { get; set; }
 
     public TokenDigest Digest { get; init; } = null!;
