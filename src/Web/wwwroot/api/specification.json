@@ -2264,6 +2264,9 @@
                 "items": {
                   "$ref": "#/components/schemas/InvitationToken"
                 }
+              },
+              "isSent": {
+                "type": "boolean"
               }
             }
           }
@@ -2282,6 +2285,10 @@
                 "type": "integer",
                 "format": "int32"
               },
+              "publicId": {
+                "type": "string",
+                "format": "guid"
+              },
               "status": {
                 "$ref": "#/components/schemas/InvitationTokenStatus"
               },
@@ -2297,6 +2304,9 @@
                 ]
               },
               "isActive": {
+                "type": "boolean"
+              },
+              "isConsumable": {
                 "type": "boolean"
               }
             }
