@@ -1,4 +1,5 @@
-﻿using SharedCookbook.Domain.Enums;
+﻿using SharedCookbook.Application.Common.Extensions;
+using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.Invitations.Commands.UpdateInvitation;
 
@@ -45,9 +46,8 @@ public class UpdateInvitationCommandHandler(
     {
         invitation.Accept(timestamp: timeProvider.GetUtcNow().UtcDateTime);
         Guard.Against.Null(user.Id);
-
-        // TODO this side effect could be an integration event
-        if (await UserDoesNotHaveMembershipInCookbook(invitation.CookbookId, user.Id, cancellationToken))
+        
+        if (await context.CookbookMemberships.ExistsFor(invitation.CookbookId, user.Id!, cancellationToken))
         {
             var membership = CookbookMembership.GetDefaultMembership(invitation.CookbookId);
             await context.CookbookMemberships.AddAsync(membership, cancellationToken);
@@ -56,15 +56,4 @@ public class UpdateInvitationCommandHandler(
 
     private static bool InvitationShouldBeUpdated(CookbookInvitation invitation, CookbookInvitationStatus newStatus)
         => invitation.InvitationStatus != newStatus;
-    
-    // TODO move to query extension
-    private async Task<bool> UserDoesNotHaveMembershipInCookbook(
-        int cookbookId,
-        string userId,
-        CancellationToken token) 
-        => !await context.CookbookMemberships
-            .AsNoTracking()
-            .AnyAsync(membership
-                => membership.CookbookId == cookbookId
-                   && membership.CreatedBy == userId,token);
 }
