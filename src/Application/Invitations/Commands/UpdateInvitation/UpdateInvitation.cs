@@ -3,14 +3,9 @@ using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.Invitations.Commands.UpdateInvitation;
 
-public record UpdateInvitationCommand : IRequest<int>
-{
-    public int Id { get; init; }
+public sealed record UpdateInvitationCommand(int Id, CookbookInvitationStatus NewStatus) : IRequest<int>;
 
-    public CookbookInvitationStatus NewStatus { get; init; }
-}
-
-public class UpdateInvitationCommandHandler(
+public sealed class UpdateInvitationCommandHandler(
     IApplicationDbContext context,
     IUser user,
     TimeProvider timeProvider)
@@ -47,7 +42,7 @@ public class UpdateInvitationCommandHandler(
         invitation.Accept(timestamp: timeProvider.GetUtcNow().UtcDateTime);
         Guard.Against.Null(user.Id);
         
-        if (await context.CookbookMemberships.ExistsFor(invitation.CookbookId, user.Id!, cancellationToken))
+        if (await context.CookbookMemberships.ExistsFor(invitation.CookbookId, user.Id, cancellationToken))
         {
             var membership = CookbookMembership.GetDefaultMembership(invitation.CookbookId);
             await context.CookbookMemberships.AddAsync(membership, cancellationToken);

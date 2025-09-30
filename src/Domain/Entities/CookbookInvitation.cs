@@ -6,7 +6,7 @@ public sealed class CookbookInvitation : BaseAuditableEntity
 {
     public required int CookbookId { get; init; }
 
-    public string? RecipientPersonId { get; init; }
+    public string? RecipientPersonId { get; set; }
 
     public required CookbookInvitationStatus InvitationStatus { get; set; }
 
@@ -49,10 +49,11 @@ public sealed class CookbookInvitation : BaseAuditableEntity
         AddDomainEvent(new InvitationAcceptedEvent(this));
     }
 
-    public void AcceptFromToken(InvitationToken token, DateTime timestamp)
+    public void AcceptFromToken(InvitationToken token, string redeemerId, DateTime timestamp)
     {
         if (token.CookbookInvitationId != Id) throw new InvitationTokenMismatchException(Id, token.Id);
-        if (!token.IsActive) throw new InvitationTokenInactiveException(token.Status);
+        if (!token.IsConsumable) throw new InvitationTokenInactiveException(token.Status);
+        RecipientPersonId = redeemerId;
         
         token.Consume();
         Accept(timestamp);
