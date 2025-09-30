@@ -17,6 +17,7 @@ public sealed class UpdateInvitationCommandHandler(
         Guard.Against.NotFound(command.Id, invitation);
         
         if (!InvitationShouldBeUpdated(invitation, command.NewStatus)) return invitation.Id; 
+        if (invitation.RecipientPersonId != user.Id) return invitation.Id; // TODO throw something here(auth?); this ensures only the recipient can accept/reject
 
         switch (command.NewStatus)
         {
@@ -41,8 +42,9 @@ public sealed class UpdateInvitationCommandHandler(
     {
         invitation.Accept(timestamp: timeProvider.GetUtcNow().UtcDateTime);
         Guard.Against.Null(user.Id);
-        
-        if (await context.CookbookMemberships.ExistsFor(invitation.CookbookId, user.Id, cancellationToken))
+        bool hasMembership = await context.CookbookMemberships
+            .ExistsFor(invitation.CookbookId, user.Id, cancellationToken);
+        if (!hasMembership)
         {
             var membership = CookbookMembership.GetDefaultMembership(invitation.CookbookId);
             await context.CookbookMemberships.AddAsync(membership, cancellationToken);
