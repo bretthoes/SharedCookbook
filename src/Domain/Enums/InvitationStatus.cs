@@ -1,8 +1,10 @@
 ﻿namespace SharedCookbook.Domain.Enums;
 
-public enum InvitationTokenStatus
+public enum InvitationStatus
 {
+    Error,
     Active,
-    Consumed,
+    Accepted,
+    Rejected,
     Revoked
 }

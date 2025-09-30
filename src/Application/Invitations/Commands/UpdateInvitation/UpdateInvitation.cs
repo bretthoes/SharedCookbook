@@ -3,7 +3,7 @@ using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.Invitations.Commands.UpdateInvitation;
 
-public sealed record UpdateInvitationCommand(int Id, CookbookInvitationStatus NewStatus) : IRequest<int>;
+public sealed record UpdateInvitationCommand(int Id, InvitationStatus NewStatus) : IRequest<int>;
 
 public sealed class UpdateInvitationCommandHandler(
     IApplicationDbContext context,
@@ -21,14 +21,15 @@ public sealed class UpdateInvitationCommandHandler(
 
         switch (command.NewStatus)
         {
-            case CookbookInvitationStatus.Accepted:
+            case InvitationStatus.Accepted:
                 await Accept(invitation, cancellationToken);
                 break;
-            case CookbookInvitationStatus.Rejected:
+            case InvitationStatus.Rejected:
                 invitation.Reject(timestamp: timeProvider.GetUtcNow().UtcDateTime);
                 break;
-            case CookbookInvitationStatus.Unknown:
-            case CookbookInvitationStatus.Sent:
+            case InvitationStatus.Error:
+            case InvitationStatus.Active: 
+            case InvitationStatus.Revoked:
             default:
                 return invitation.Id;
         }
@@ -51,6 +52,6 @@ public sealed class UpdateInvitationCommandHandler(
         }
     }
 
-    private static bool InvitationShouldBeUpdated(CookbookInvitation invitation, CookbookInvitationStatus newStatus)
-        => invitation.InvitationStatus != newStatus;
+    private static bool InvitationShouldBeUpdated(CookbookInvitation invitation, InvitationStatus newStatus)
+        => invitation.Status != newStatus;
 }

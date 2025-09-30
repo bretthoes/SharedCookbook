@@ -4,7 +4,7 @@ using SharedCookbook.Domain.Enums;
 namespace SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
 
 public record GetInvitationsWithPaginationQuery(
-    CookbookInvitationStatus Status = CookbookInvitationStatus.Sent,
+    InvitationStatus Status = InvitationStatus.Active,
     int PageNumber = 1,
     int PageSize = 10)
     : IRequest<PaginatedList<InvitationDto>>;

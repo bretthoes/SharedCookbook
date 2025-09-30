@@ -7,6 +7,8 @@ public sealed class Cookbook : BaseAuditableEntity
     public string? Image { get; set; }
 
     public IReadOnlyCollection<CookbookInvitation> Invitations { get; init; } = [];
+    
+    public IReadOnlyCollection<InvitationToken> Tokens { get; init; } = [];
 
     public ICollection<CookbookMembership> Memberships { get; init; } = [];
 

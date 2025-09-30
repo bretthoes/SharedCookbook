@@ -8,8 +8,8 @@ public class UpdateInvitationCommandValidator : AbstractValidator<UpdateInvitati
     {
         RuleFor(command => command.NewStatus)
             .IsInEnum()
-            .WithMessage("NewStatus must be a valid status: 0=Unknown, 1=Sent, 2=Accepted, or 3=Rejected.")
-            .Must(status => Enum.IsDefined(typeof(CookbookInvitationStatus), status))
-            .WithMessage("Invalid status. Must be a valid CookbookInvitationStatus.");
+            .WithMessage($"NewStatus must be a valid status: 1=Active, 2=Accepted, 3=Rejected, 4=Revoked.")
+            .Must(status => Enum.IsDefined(typeof(InvitationStatus), status))
+            .WithMessage("Invalid status. Must be a valid InvitationStatus.");
     }
 }

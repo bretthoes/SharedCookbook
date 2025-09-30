@@ -19,18 +19,18 @@ public static class CookbookQueryExtensions
         string recipientPersonId,
         CancellationToken token = default)
         => invitations.HasInviteWithStatus(
-            cookbookId, recipientPersonId, token, statuses: CookbookInvitationStatus.Sent);
+            cookbookId, recipientPersonId, token, statuses: InvitationStatus.Active);
 
     private static Task<bool> HasInviteWithStatus(
         this IQueryable<CookbookInvitation> invitations,
         int cookbookId,
         string recipientPersonId,
         CancellationToken token = default,
-        params CookbookInvitationStatus[] statuses)
+        params InvitationStatus[] statuses)
         => invitations
             .AsNoTracking()
             .AnyAsync(invitation =>
                 invitation.CookbookId == cookbookId
                 && invitation.RecipientPersonId == recipientPersonId
-                && statuses.Contains(invitation.InvitationStatus), token);
+                && statuses.Contains(invitation.Status), token);
 }

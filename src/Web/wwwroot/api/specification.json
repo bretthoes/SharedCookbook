@@ -251,7 +251,7 @@
             "name": "Status",
             "in": "query",
             "schema": {
-              "$ref": "#/components/schemas/CookbookInvitationStatus"
+              "$ref": "#/components/schemas/InvitationStatus"
             },
             "x-position": 1
           },
@@ -1517,20 +1517,22 @@
           }
         }
       },
-      "CookbookInvitationStatus": {
+      "InvitationStatus": {
         "type": "integer",
         "description": "",
         "x-enumNames": [
-          "Unknown",
-          "Sent",
+          "Error",
+          "Active",
           "Accepted",
-          "Rejected"
+          "Rejected",
+          "Revoked"
         ],
         "enum": [
           0,
           1,
           2,
-          3
+          3,
+          4
         ]
       },
       "CreateInvitationCommand": {
@@ -1555,7 +1557,7 @@
             "format": "int32"
           },
           "newStatus": {
-            "$ref": "#/components/schemas/CookbookInvitationStatus"
+            "$ref": "#/components/schemas/InvitationStatus"
           }
         }
       },
@@ -2204,6 +2206,12 @@
                   "$ref": "#/components/schemas/CookbookInvitation"
                 }
               },
+              "tokens": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/InvitationToken"
+                }
+              },
               "memberships": {
                 "type": "array",
                 "items": {
@@ -2229,27 +2237,44 @@
       "CookbookInvitation": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/BaseAuditableEntity"
+            "$ref": "#/components/schemas/BaseInvitation"
           },
           {
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "cookbookId": {
-                "type": "integer",
-                "format": "int32"
-              },
               "recipientPersonId": {
                 "type": "string",
                 "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "BaseInvitation": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseAuditableEntity"
+          },
+          {
+            "type": "object",
+            "x-abstract": true,
+            "additionalProperties": false,
+            "properties": {
+              "status": {
+                "$ref": "#/components/schemas/InvitationStatus"
               },
-              "invitationStatus": {
-                "$ref": "#/components/schemas/CookbookInvitationStatus"
+              "cookbookId": {
+                "type": "integer",
+                "format": "int32"
               },
               "responseDate": {
                 "type": "string",
                 "format": "date-time",
                 "nullable": true
+              },
+              "isActive": {
+                "type": "boolean"
               },
               "cookbook": {
                 "nullable": true,
@@ -2258,15 +2283,6 @@
                     "$ref": "#/components/schemas/Cookbook"
                   }
                 ]
-              },
-              "tokens": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/InvitationToken"
-                }
-              },
-              "isSent": {
-                "type": "boolean"
               }
             }
           }
@@ -2275,56 +2291,25 @@
       "InvitationToken": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/BaseAuditableEntity"
+            "$ref": "#/components/schemas/BaseInvitation"
           },
           {
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "cookbookInvitationId": {
-                "type": "integer",
-                "format": "int32"
-              },
               "publicId": {
                 "type": "string",
                 "format": "guid"
               },
-              "status": {
-                "$ref": "#/components/schemas/InvitationTokenStatus"
+              "redeemerPersonId": {
+                "type": "string",
+                "nullable": true
               },
               "digest": {
                 "$ref": "#/components/schemas/TokenDigest"
-              },
-              "invitation": {
-                "nullable": true,
-                "oneOf": [
-                  {
-                    "$ref": "#/components/schemas/CookbookInvitation"
-                  }
-                ]
-              },
-              "isActive": {
-                "type": "boolean"
-              },
-              "isConsumable": {
-                "type": "boolean"
               }
             }
           }
-        ]
-      },
-      "InvitationTokenStatus": {
-        "type": "integer",
-        "description": "",
-        "x-enumNames": [
-          "Active",
-          "Consumed",
-          "Revoked"
-        ],
-        "enum": [
-          0,
-          1,
-          2
         ]
       },
       "TokenDigest": {

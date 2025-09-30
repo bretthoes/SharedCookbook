@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SharedCookbook.Domain.Common;
 using SharedCookbook.Domain.Entities;
 
 namespace SharedCookbook.Infrastructure.Data.Configurations;
@@ -22,23 +23,31 @@ public class InvitationTokenConfiguration : IEntityTypeConfiguration<InvitationT
         builder.Property(token => token.PublicId)
             .HasColumnName("public_id")
             .IsRequired();
-        builder.Property(token => token.CookbookInvitationId)
-            .HasColumnName("cookbook_invitation_id")
-            .IsRequired();
         builder.OwnsOne(token => token.Digest, owned =>
         {
             owned.Property(digest => digest.Hash).HasColumnName("token_hash").HasColumnType("bytea").IsRequired();
             owned.Property(digest => digest.Salt).HasColumnName("token_salt").HasColumnType("bytea").IsRequired();
         });
-        builder.Property(token => token.Status)
-            .HasColumnName("token_status")
-            .HasConversion<string>()
-            .HasMaxLength(InvitationToken.Constraints.InvitationTokenStatusMaxLength)
+        builder.Property(invitation => invitation.CookbookId)
+            .HasColumnName("cookbook_id")
             .IsRequired();
+        builder.Property(invitation => invitation.RedeemerPersonId)
+            .HasColumnName("redeemer_person_id");
+        builder.Property(invitation => invitation.Status)
+            .HasColumnName("invitation_status")
+            .HasConversion<string>()
+            .HasMaxLength(BaseInvitation.Constraints.StatusMaxLength)
+            .IsRequired();
+        builder.Property(invitation => invitation.ResponseDate)
+            .HasColumnName("response_date");
 
-        builder.HasOne(token => token.Invitation)
-            .WithMany(invitation => invitation.Tokens)
-            .HasForeignKey(token => token.CookbookInvitationId)
-            .HasConstraintName("FK_cookbook_invitation__invitation_token");
+        builder.HasOne(invitation => invitation.Cookbook)
+            .WithMany(cookbook => cookbook.Tokens)
+            .HasForeignKey(invitation => invitation.CookbookId)
+            .HasConstraintName("FK_invitation_token__cookbook_id");
+        builder.HasOne<Identity.ApplicationUser>()
+            .WithMany(user => user.CreatedTokens)
+            .HasForeignKey(invitation => invitation.CreatedBy)
+            .HasConstraintName("FK_invitation_token__created_by");
     }
 }

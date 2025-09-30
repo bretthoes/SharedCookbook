@@ -12,13 +12,13 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "hash",
-                table: "cookbook_invitation");
+           // migrationBuilder.DropColumn(
+           //     name: "hash",
+           //     table: "cookbook_invitation");
 
-            migrationBuilder.DropColumn(
-                name: "salt",
-                table: "cookbook_invitation");
+           // migrationBuilder.DropColumn(
+           //     name: "salt",
+           //     table: "cookbook_invitation");
 
             migrationBuilder.CreateTable(
                 name: "invitation_token",
@@ -58,21 +58,21 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
             migrationBuilder.DropTable(
                 name: "invitation_token");
 
-            migrationBuilder.AddColumn<byte[]>(
-                name: "hash",
-                table: "cookbook_invitation",
-                type: "bytea",
-                maxLength: 32,
-                nullable: false,
-                defaultValue: new byte[0]);
+             //migrationBuilder.AddColumn<byte[]>(
+             //   name: "hash",
+             //   table: "cookbook_invitation",
+             //   type: "bytea",
+             //   maxLength: 32,
+             //   nullable: false,
+             //   defaultValue: new byte[0]);
 
-            migrationBuilder.AddColumn<byte[]>(
-                name: "salt",
-                table: "cookbook_invitation",
-                type: "bytea",
-                maxLength: 16,
-                nullable: false,
-                defaultValue: new byte[0]);
+            //igrationBuilder.AddColumn<byte[]>(
+             //   name: "salt",
+             //   table: "cookbook_invitation",
+             //   type: "bytea",
+             //   maxLength: 16,
+             //   nullable: false,
+             //   defaultValue: new byte[0]);
         }
     }
 }

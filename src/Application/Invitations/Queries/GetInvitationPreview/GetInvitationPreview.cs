@@ -16,31 +16,28 @@ public class GetInvitationPreviewQueryHandler(
     {
         var link = TokenLink.Parse(query.Token);
 
-        var token = await context.InvitationTokens.SingleByIdWithInvitation(link.TokenId, cancellationToken);
+        var token = await context.InvitationTokens.SingleById(link.TokenId, cancellationToken);
         
-        var invitation = token.Invitation;
-        ArgumentNullException.ThrowIfNull(invitation);
         
-        var cookbook = invitation.Cookbook;
+        var cookbook = token.Cookbook;
         ArgumentNullException.ThrowIfNull(cookbook);
         
         string? senderId = token.CreatedBy;
         ArgumentException.ThrowIfNullOrWhiteSpace(senderId);
         
         Throw.IfFalse<TokenDigestMismatchException>(factory.Verify(query.Token, token.Digest));
-        Throw.IfFalse<TokenIsNotConsumableException>(token.IsConsumable);
+        Throw.IfFalse<TokenIsNotConsumableException>(token.IsActive);
         
         var userDto = await service.FindByIdAsync(senderId);
         Guard.Against.NotFound(senderId, userDto);
 
         return new InvitationDto
         {
-            Id = invitation.Id,
+            Id = token.Id,
             SenderName = userDto.DisplayName,
             SenderEmail = userDto.Email,
-            CookbookImage = invitation.Cookbook?.Image,
-            CookbookTitle = invitation.Cookbook?.Title ?? string.Empty,
-            Created = invitation.Created,
+            CookbookImage = token.Cookbook?.Image,
+            CookbookTitle = token.Cookbook?.Title ?? string.Empty,
         };
     }
 }

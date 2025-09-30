@@ -16,6 +16,8 @@ public class ApplicationUser : IdentityUser
     public virtual ICollection<CookbookNotification> CookbookNotifications { get; set; } = [];
 
     public virtual ICollection<CookbookInvitation> SentInvitations { get; set; } = [];
+    
+    public virtual ICollection<InvitationToken> CreatedTokens { get; set; } = [];
 
     public virtual ICollection<CookbookInvitation> ReceivedInvitations { get; set; } = [];
 

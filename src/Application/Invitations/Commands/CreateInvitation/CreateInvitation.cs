@@ -36,7 +36,7 @@ public class CreateInvitationCommandHandler(
             CookbookId = command.CookbookId,
             CreatedBy = user.Id,
             RecipientPersonId = recipientId,
-            InvitationStatus = CookbookInvitationStatus.Sent,
+            Status = InvitationStatus.Active,
         };
 
         context.CookbookInvitations.Add(entity);

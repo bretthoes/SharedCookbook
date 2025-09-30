@@ -2,34 +2,22 @@
 
 namespace SharedCookbook.Domain.Entities;
 
-public sealed class InvitationToken : BaseAuditableEntity
+public sealed class InvitationToken : BaseInvitation
 {
-    public int CookbookInvitationId { get; init; }
-    
     public required Guid PublicId { get; init; }
     
-    public required InvitationTokenStatus Status { get; set; }
-
+    public string? RedeemerPersonId { get; init; }
+    
     public TokenDigest Digest { get; init; } = null!;
     
-    public CookbookInvitation? Invitation { get; init; }
-
-    public bool IsActive => Status == InvitationTokenStatus.Active;
-    
-    public bool IsConsumable => IsActive && Invitation?.InvitationStatus == CookbookInvitationStatus.Sent;
-    
-    public void Consume()
+    public static InvitationToken IssueNewToken(TokenDigest digest, int cookbookId)
     {
-        if (IsActive) Status = InvitationTokenStatus.Consumed;
-    }
-
-    public void Revoke()
-    {
-        if (IsActive) Status = InvitationTokenStatus.Revoked;
-    }
-    
-    public struct Constraints
-    {
-        public const int InvitationTokenStatusMaxLength = 255;
+        return new InvitationToken
+        {
+            Status = InvitationStatus.Active,
+            Digest = digest,
+            CookbookId = cookbookId,
+            PublicId = Guid.NewGuid() // TODO add provider for reproducible results if needed
+        };
     }
 }

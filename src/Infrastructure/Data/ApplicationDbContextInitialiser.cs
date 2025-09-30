@@ -188,7 +188,7 @@ public class ApplicationDbContextInitialiser
             {
                 Cookbook = cookbooks[0],
                 CookbookId = 0,
-                InvitationStatus = CookbookInvitationStatus.Sent,
+                Status = InvitationStatus.Active,
                 RecipientPersonId = adminId,
                 CreatedBy = otherAdminId,
                 ResponseDate = null

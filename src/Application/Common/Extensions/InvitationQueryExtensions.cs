@@ -8,11 +8,11 @@ public static class InvitationQueryExtensions
     public static IQueryable<CookbookInvitation> GetInvitationsForUserByStatus(
         this IQueryable<CookbookInvitation> query,
         string? userId,
-        CookbookInvitationStatus status)
+        InvitationStatus status)
         => query
             .Where(invitation
                 => invitation.RecipientPersonId == userId
-                   && invitation.InvitationStatus == status);
+                   && invitation.Status == status);
     
     public static Task<CookbookInvitation?> FirstLinkInviteWithTokens(
         this IQueryable<CookbookInvitation> query,
@@ -22,7 +22,6 @@ public static class InvitationQueryExtensions
             .ForCookbook(cookbookId)
             .LinkStyle()
             .IsSent()
-            .WithTokens()
             .FirstOrDefaultAsync(cancellationToken);
     
     public static IQueryable<InvitationDto> OrderByMostRecentlyCreated(this IQueryable<InvitationDto> invitations) =>
@@ -35,8 +34,5 @@ public static class InvitationQueryExtensions
         q.Where(invitation => invitation.RecipientPersonId == null);
 
     private static IQueryable<CookbookInvitation> IsSent(this IQueryable<CookbookInvitation> q) =>
-        q.Where(invitation => invitation.InvitationStatus == CookbookInvitationStatus.Sent);
-
-    private static IQueryable<CookbookInvitation> WithTokens(this IQueryable<CookbookInvitation> q) 
-        => q.Include(navigationPropertyPath: invitation => invitation.Tokens);
+        q.Where(invitation => invitation.Status == InvitationStatus.Active);
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SharedCookbook.Domain.Common;
 using SharedCookbook.Domain.Entities;
 
 namespace SharedCookbook.Infrastructure.Data.Configurations;
@@ -31,10 +32,10 @@ public class CookbookInvitationConfiguration : IEntityTypeConfiguration<Cookbook
             .IsRequired();
         builder.Property(invitation => invitation.RecipientPersonId)
             .HasColumnName("recipient_person_id");
-        builder.Property(invitation => invitation.InvitationStatus)
+        builder.Property(invitation => invitation.Status)
             .HasColumnName("invitation_status")
             .HasConversion<string>()
-            .HasMaxLength(CookbookInvitation.Constraints.InvitationStatusMaxLength)
+            .HasMaxLength(BaseInvitation.Constraints.StatusMaxLength)
             .IsRequired();
         builder.Property(invitation => invitation.ResponseDate)
             .HasColumnName("response_date");
@@ -51,8 +52,5 @@ public class CookbookInvitationConfiguration : IEntityTypeConfiguration<Cookbook
             .WithMany(user => user.SentInvitations)
             .HasForeignKey(invitation => invitation.CreatedBy)
             .HasConstraintName("FK_cookbook_invitation__created_by");
-
-        builder.HasMany(invitation => invitation.Tokens)
-            .WithOne(token => token.Invitation);
     }
 }
