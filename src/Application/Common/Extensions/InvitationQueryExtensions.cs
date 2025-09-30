@@ -35,4 +35,25 @@ public static class InvitationQueryExtensions
 
     private static IQueryable<CookbookInvitation> IsSent(this IQueryable<CookbookInvitation> q) =>
         q.Where(invitation => invitation.Status == InvitationStatus.Active);
+    
+    public static Task<bool> HasActiveInvite(
+        this IQueryable<CookbookInvitation> invitations,
+        int cookbookId,
+        string recipientPersonId,
+        CancellationToken token = default)
+        => invitations.HasInviteWithStatus(
+            cookbookId, recipientPersonId, token, statuses: InvitationStatus.Active);
+
+    private static Task<bool> HasInviteWithStatus(
+        this IQueryable<CookbookInvitation> invitations,
+        int cookbookId,
+        string recipientPersonId,
+        CancellationToken token = default,
+        params InvitationStatus[] statuses)
+        => invitations
+            .AsNoTracking()
+            .AnyAsync(invitation =>
+                invitation.CookbookId == cookbookId
+                && invitation.RecipientPersonId == recipientPersonId
+                && statuses.Contains(invitation.Status), token);
 }

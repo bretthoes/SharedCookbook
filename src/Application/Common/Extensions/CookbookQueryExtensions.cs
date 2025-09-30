@@ -1,4 +1,6 @@
-﻿namespace SharedCookbook.Application.Common.Extensions;
+﻿using SharedCookbook.Domain.Enums;
+
+namespace SharedCookbook.Application.Common.Extensions;
 
 public static class CookbookQueryExtensions
 {
