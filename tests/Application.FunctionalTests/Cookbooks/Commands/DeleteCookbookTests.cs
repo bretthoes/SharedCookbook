@@ -18,11 +18,8 @@ public class DeleteCookbookTests : BaseTestFixture
     public async Task ShouldDeleteCookbook()
     {
         await RunAsDefaultUserAsync();
-        
-        var cookbookId = await SendAsync(new CreateCookbookCommand
-        {
-            Title = "New Cookbook"
-        });
+
+        var cookbookId = await SendAsync(new CreateCookbookCommand(Title: "New Cookbook"));
 
         await SendAsync(new DeleteCookbookCommand(cookbookId));
 

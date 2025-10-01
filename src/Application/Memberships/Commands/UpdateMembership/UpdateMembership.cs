@@ -48,3 +48,5 @@ public class UpdateMembershipCommandHandler(IApplicationDbContext context)
         await context.SaveChangesAsync(cancellationToken);
     }
 }
+
+// TODO add validator

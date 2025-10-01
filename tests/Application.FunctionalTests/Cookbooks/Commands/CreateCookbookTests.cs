@@ -11,10 +11,7 @@ public class CreateCookbookTests : BaseTestFixture
     [Test]
     public async Task ShouldRequireMinimumFields()
     {
-        var command = new CreateCookbookCommand
-        {
-            Title = null!
-        };
+        var command = new CreateCookbookCommand(Title: null!);
 
         await FluentActions.Invoking((() =>
             SendAsync(command))).Should().ThrowAsync<ValidationException>();
@@ -25,10 +22,7 @@ public class CreateCookbookTests : BaseTestFixture
     {
         string userId = await RunAsDefaultUserAsync();
 
-        var command = new CreateCookbookCommand
-        {
-            Title = "Another New Cookbook",
-        };
+        var command = new CreateCookbookCommand(Title: "Another New Cookbook");
 
         int itemId = await SendAsync(command);
 

@@ -8,19 +8,19 @@ public class ParseRecipeFromImageCommandValidator : AbstractValidator<ParseRecip
 {
     public ParseRecipeFromImageCommandValidator()
     {
-        RuleFor(f => f.File)
+        RuleFor(command => command.File)
             .NotNull()
             .NotEmpty()
             .WithMessage("No files were found.")
             .WithErrorCode(HttpStatusCode.BadRequest.ToString());
         
-        RuleFor(f => f.File.Length)
+        RuleFor(command => command.File.Length)
             .LessThanOrEqualTo(ImageUtilities.MaxFileSizeBytes)
             .WithMessage($"File size should not exceed {ImageUtilities.MaxFileSizeMegabytes} MB.")
             .WithErrorCode(HttpStatusCode.RequestEntityTooLarge.ToString());
         
-        RuleFor(f => f.File.FileName)
-            .Must(f => f.HasValidImageExtension())
+        RuleFor(command => command.File.FileName)
+            .Must(filenameString => filenameString.HasValidImageExtension())
             .WithMessage($"File must have one of the following extensions: {
                 string.Join(", ", ImageUtilities.AllowedExtensions)
             }.")

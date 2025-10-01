@@ -24,3 +24,13 @@ public class DeleteRecipeCommandHandler : IRequestHandler<DeleteRecipeCommand>
         await _context.SaveChangesAsync(cancellationToken);
     }
 }
+
+public class DeleteRecipeCommandValidator : AbstractValidator<DeleteRecipeCommand>
+{
+    public DeleteRecipeCommandValidator()
+    {
+        RuleFor(query => query.Id)
+            .GreaterThan(0)
+            .WithMessage("Id must be greater than zero.");
+    }
+}

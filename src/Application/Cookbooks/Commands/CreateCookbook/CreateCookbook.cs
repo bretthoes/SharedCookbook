@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
 
-public record CreateCookbookCommand(string Title, string? Image) : IRequest<int>;
+public record CreateCookbookCommand(string Title, string? Image = null) : IRequest<int>;
 
 public class CreateCookbookCommandHandler(IApplicationDbContext context) : IRequestHandler<CreateCookbookCommand, int>
 {

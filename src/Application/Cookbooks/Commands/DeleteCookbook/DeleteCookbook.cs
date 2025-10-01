@@ -1,6 +1,7 @@
 ﻿namespace SharedCookbook.Application.Cookbooks.Commands.DeleteCookbook;
 
 public record DeleteCookbookCommand(int Id) : IRequest;
+
 public class DeleteCookbookCommandHandler(IApplicationDbContext context) : IRequestHandler<DeleteCookbookCommand>
 {
     public async Task Handle(DeleteCookbookCommand request, CancellationToken cancellationToken)

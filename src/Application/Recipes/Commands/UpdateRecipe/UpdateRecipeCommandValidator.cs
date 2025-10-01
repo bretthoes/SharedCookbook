@@ -4,5 +4,6 @@ public class UpdateRecipeCommandValidator : AbstractValidator<UpdateRecipeComman
 {
     public UpdateRecipeCommandValidator()
     {
+        // TODO add rules
     }
 }

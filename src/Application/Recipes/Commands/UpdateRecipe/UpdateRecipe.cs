@@ -1,5 +1,6 @@
 ﻿namespace SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
 
+// TODO use a dto here; shouldn't tie this to domain model
 public record UpdateRecipeCommand(Recipe Recipe) : IRequest<int>;
 
 public class UpdateRecipeCommandHandler(IApplicationDbContext context) 

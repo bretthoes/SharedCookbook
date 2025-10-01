@@ -12,7 +12,7 @@ public class UpdateCookbookTests : BaseTestFixture
     [Test]
     public async Task ShouldRequireValidCookbookId()
     {
-        var command = new UpdateCookbookCommand { Id = 99, Title = "New Title" };
+        var command = new UpdateCookbookCommand(Id: 99, Title: "New Title");
         await FluentActions.Invoking((() => SendAsync(command))).Should().ThrowAsync<NotFoundException>();
     }
 
@@ -48,16 +48,9 @@ public class UpdateCookbookTests : BaseTestFixture
     {
         var userId = await RunAsDefaultUserAsync();
 
-        var cookbookId = await SendAsync(new CreateCookbookCommand
-        {
-            Title = "New Cookbook"
-        });
+        var cookbookId = await SendAsync(new CreateCookbookCommand(Title: "New Cookbook"));
 
-        var command = new UpdateCookbookCommand
-        {
-            Id = cookbookId,
-            Title = "Updated Cookbook Title"
-        };
+        var command = new UpdateCookbookCommand(Id: cookbookId, Title: "Updated Cookbook Title");
 
         await SendAsync(command);
 

@@ -1,9 +1,6 @@
 ﻿namespace SharedCookbook.Application.Memberships.Commands.CreateMembership;
 
-public record CreateMembershipCommand : IRequest
-{
-    public int CookbookId { get; init; }
-}
+public record CreateMembershipCommand(int CookbookId) : IRequest;
 
 public class CreateMembershipCommandHandler(IApplicationDbContext context, IUser user)
     : IRequestHandler<CreateMembershipCommand>
@@ -28,4 +25,14 @@ public class CreateMembershipCommandHandler(IApplicationDbContext context, IUser
                 .AnyAsync(membership
                     => membership.CookbookId == cookbookId
                        && membership.CreatedBy == userId, token);
+}
+
+public class CreateMembershipCommandValidator : AbstractValidator<CreateMembershipCommand>
+{
+    public CreateMembershipCommandValidator()
+    {
+        RuleFor(command => command.CookbookId)
+            .GreaterThan(0)
+            .WithMessage("Id must be greater than zero.");
+    }
 }
