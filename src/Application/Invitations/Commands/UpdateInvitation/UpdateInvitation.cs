@@ -1,4 +1,5 @@
 ﻿using SharedCookbook.Application.Common.Extensions;
+using SharedCookbook.Domain.Common;
 using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.Invitations.Commands.UpdateInvitation;
@@ -16,7 +17,7 @@ public sealed class UpdateInvitationCommandHandler(
         var invitation = await context.CookbookInvitations.FindAsync(keyValues: [command.Id], cancellationToken);
         Guard.Against.NotFound(command.Id, invitation);
         
-        if (!InvitationShouldBeUpdated(invitation, command.NewStatus)) return invitation.Id; 
+        if (!InvitationShouldBeUpdated(invitation.Status, command.NewStatus)) return invitation.Id; 
         if (invitation.RecipientPersonId != user.Id) return invitation.Id; // TODO throw something here(auth?); this ensures only the recipient can accept/reject
 
         switch (command.NewStatus)
@@ -39,12 +40,11 @@ public sealed class UpdateInvitationCommandHandler(
         return invitation.Id;
     }
 
-    private async Task Accept(CookbookInvitation invitation, CancellationToken cancellationToken)
+    private async Task Accept(BaseInvitation invitation, CancellationToken cancellationToken)
     {
         invitation.Accept(timestamp: timeProvider.GetUtcNow().UtcDateTime);
-        Guard.Against.Null(user.Id);
         bool hasMembership = await context.CookbookMemberships
-            .ExistsFor(invitation.CookbookId, user.Id, cancellationToken);
+            .ExistsFor(invitation.CookbookId, user.Id!, cancellationToken);
         if (!hasMembership)
         {
             var membership = CookbookMembership.GetDefaultMembership(invitation.CookbookId);
@@ -52,6 +52,6 @@ public sealed class UpdateInvitationCommandHandler(
         }
     }
 
-    private static bool InvitationShouldBeUpdated(CookbookInvitation invitation, InvitationStatus newStatus)
-        => invitation.Status != newStatus;
+    private static bool InvitationShouldBeUpdated(InvitationStatus currentStatus, InvitationStatus newStatus)
+        => currentStatus != newStatus;
 }

@@ -2,17 +2,17 @@
 using SharedCookbook.Application.Common.Extensions;
 using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
 
-namespace SharedCookbook.Application.Invitations.Queries.GetInvitationPreview;
+namespace SharedCookbook.Application.InvitationTokens.Queries.GetInvitationToken;
 
-public record GetInvitationPreviewQuery(string Token) : IRequest<InvitationDto>;
+public record GetInvitationTokenQuery(string Token) : IRequest<InvitationDto>;
 
 public class GetInvitationPreviewQueryHandler(
     IApplicationDbContext context,
     IIdentityService service,
     IInvitationTokenFactory factory)
-    : IRequestHandler<GetInvitationPreviewQuery, InvitationDto>
+    : IRequestHandler<GetInvitationTokenQuery, InvitationDto>
 {
-    public async Task<InvitationDto> Handle(GetInvitationPreviewQuery query, CancellationToken cancellationToken)
+    public async Task<InvitationDto> Handle(GetInvitationTokenQuery query, CancellationToken cancellationToken)
     {
         var link = TokenLink.Parse(query.Token);
 
@@ -25,7 +25,7 @@ public class GetInvitationPreviewQueryHandler(
         ArgumentException.ThrowIfNullOrWhiteSpace(senderId);
         
         Throw.IfFalse<TokenDigestMismatchException>(factory.Verify(link.Secret, token.Digest));
-        Throw.IfFalse<TokenIsNotConsumableException>(token.IsActive);
+        Throw.IfFalse<TokenIsNotConsumableException>(token.IsRedeemable);
         
         var userDto = await service.FindByIdAsync(senderId);
         Guard.Against.NotFound(senderId, userDto);
@@ -41,7 +41,7 @@ public class GetInvitationPreviewQueryHandler(
     }
 }
 
-public class GetInvitationPreviewQueryValidator : AbstractValidator<GetInvitationPreviewQuery>
+public class GetInvitationPreviewQueryValidator : AbstractValidator<GetInvitationTokenQuery>
 {
     public GetInvitationPreviewQueryValidator()
     {

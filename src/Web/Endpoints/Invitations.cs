@@ -2,8 +2,8 @@
 using SharedCookbook.Application.Invitations.Commands.CreateInvitation;
 using SharedCookbook.Application.Invitations.Commands.DeleteInvitation;
 using SharedCookbook.Application.Invitations.Commands.UpdateInvitation;
-using SharedCookbook.Application.Invitations.Queries.GetInvitationPreview;
 using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
+using SharedCookbook.Application.InvitationTokens.Queries.GetInvitationToken;
 
 namespace SharedCookbook.Web.Endpoints;
 
@@ -20,7 +20,7 @@ public class Invitations : EndpointGroupBase
 
     private static Task<InvitationDto> GetInvitationPreview(
         ISender sender,
-        [AsParameters] GetInvitationPreviewQuery query)
+        [AsParameters] GetInvitationTokenQuery query)
     {
         return sender.Send(query);
     }

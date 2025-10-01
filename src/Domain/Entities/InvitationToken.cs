@@ -9,6 +9,10 @@ public sealed class InvitationToken : BaseInvitation
     public string? RedeemerPersonId { get; init; }
     
     public TokenDigest Digest { get; init; } = null!;
+
+    public bool IsRedeemable => IsActive && !IsExpired;
+
+    private bool IsExpired => Created <= DateTimeOffset.UtcNow.AddDays(-14) || Created >= DateTimeOffset.UtcNow; 
     
     public static InvitationToken IssueNewToken(TokenDigest digest, int cookbookId)
     {
@@ -17,7 +21,7 @@ public sealed class InvitationToken : BaseInvitation
             Status = InvitationStatus.Active,
             Digest = digest,
             CookbookId = cookbookId,
-            PublicId = Guid.NewGuid() // TODO add provider for reproducible results if needed
+            PublicId = Guid.NewGuid()
         };
     }
 }
