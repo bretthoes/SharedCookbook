@@ -24,10 +24,10 @@ public sealed class Sha256TokenFactory : IInvitationTokenFactory
         return new MintedToken(inviteToken, new TokenDigest(hash, salt));
     }
 
-    public bool Verify(string inviteToken, TokenDigest stored)
+    public bool Verify(string secret, TokenDigest stored)
     {
         byte[] code;
-        try { code = WebEncoders.Base64UrlDecode(inviteToken); }
+        try { code = WebEncoders.Base64UrlDecode(secret); }
         catch { return false; }
 
         var material = new byte[stored.Salt.Length + code.Length];

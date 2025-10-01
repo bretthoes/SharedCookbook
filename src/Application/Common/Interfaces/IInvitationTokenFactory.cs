@@ -22,16 +22,16 @@ public interface IInvitationTokenFactory
     MintedToken Mint();
     
     /// <summary>
-    /// Verifies a Base64URL-encoded invitation <paramref name="inviteToken"/> against a stored hash and salt.
+    /// Verifies a Base64URL-encoded invitation <paramref name="secret"/> against a stored hash and salt.
     /// </summary>
-    /// <param name="inviteToken">The Base64URL-encoded token received from the client (no padding).</param>
+    /// <param name="secret">The Base64URL-encoded token received from the client (no padding).</param>
     /// <param name="stored">The stored <see cref="TokenDigest"/> (hash and salt) from the invitation row.</param>
     /// <returns><c>true</c> if the token matches the stored hash; otherwise <c>false</c>.</returns>
     /// <remarks>
     /// This method performs only cryptographic verification. It does not enforce TTL, status, or authorization.
     /// Callers must check invitation state (e.g., <c>Sent</c>), and expiry derived from <c>Created</c>.
     /// </remarks>
-    bool Verify(string inviteToken, TokenDigest stored);
+    bool Verify(string secret, TokenDigest stored);
 }
 
 public sealed record MintedToken(string InviteToken, TokenDigest HashDetails);

@@ -18,14 +18,13 @@ public class GetInvitationPreviewQueryHandler(
 
         var token = await context.InvitationTokens.SingleById(link.TokenId, cancellationToken);
         
-        
         var cookbook = token.Cookbook;
         ArgumentNullException.ThrowIfNull(cookbook);
         
         string? senderId = token.CreatedBy;
         ArgumentException.ThrowIfNullOrWhiteSpace(senderId);
         
-        Throw.IfFalse<TokenDigestMismatchException>(factory.Verify(query.Token, token.Digest));
+        Throw.IfFalse<TokenDigestMismatchException>(factory.Verify(link.Secret, token.Digest));
         Throw.IfFalse<TokenIsNotConsumableException>(token.IsActive);
         
         var userDto = await service.FindByIdAsync(senderId);
