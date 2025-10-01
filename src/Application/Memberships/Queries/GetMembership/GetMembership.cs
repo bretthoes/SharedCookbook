@@ -13,25 +13,25 @@ public class GetMembershipQueryHandler : IRequestHandler<GetMembershipQuery, Mem
         _identityService = identityService;
     }
 
-    public async Task<MembershipDto> Handle(GetMembershipQuery request, CancellationToken cancellationToken)
+    public async Task<MembershipDto> Handle(GetMembershipQuery query, CancellationToken cancellationToken)
     {
-        var entity = await _context.CookbookMemberships.FindAsync([request.Id], cancellationToken) 
-            ?? throw new NotFoundException(request.Id.ToString(), nameof(CookbookMembership));
+        var membership = await _context.CookbookMemberships.FindAsync(keyValues: [query.Id], cancellationToken) 
+            ?? throw new NotFoundException(key: query.Id.ToString(), nameof(CookbookMembership));
 
         var dto = new MembershipDto
         {
-            CanAddRecipe = entity.CanAddRecipe,
-            IsCreator = entity.IsCreator,
-            CanUpdateRecipe = entity.CanUpdateRecipe,
-            CanDeleteRecipe = entity.CanDeleteRecipe,
-            CanRemoveMember = entity.CanRemoveMember,
-            CanSendInvite = entity.CanSendInvite,
-            CanEditCookbookDetails = entity.CanEditCookbookDetails,
-            Name = await _identityService.GetDisplayNameAsync(entity.CreatedBy ?? string.Empty),
-            Email = await _identityService.GetEmailAsync(entity.CreatedBy ?? string.Empty)
+            CanAddRecipe = membership.CanAddRecipe,
+            IsCreator = membership.IsCreator,
+            CanUpdateRecipe = membership.CanUpdateRecipe,
+            CanDeleteRecipe = membership.CanDeleteRecipe,
+            CanRemoveMember = membership.CanRemoveMember,
+            CanSendInvite = membership.CanSendInvite,
+            CanEditCookbookDetails = membership.CanEditCookbookDetails,
+            Name = await _identityService.GetDisplayNameAsync(membership.CreatedBy ?? string.Empty),
+            Email = await _identityService.GetEmailAsync(membership.CreatedBy ?? string.Empty)
         };
 
-        Guard.Against.NotFound(request.Id, dto);
+        Guard.Against.NotFound(query.Id, dto);
 
         return dto;
     }

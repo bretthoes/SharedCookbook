@@ -1,5 +1,5 @@
-﻿using SharedCookbook.Application.Common.Exceptions;
-using SharedCookbook.Application.Common.Extensions;
+﻿using SharedCookbook.Application.Common.Extensions;
+using SharedCookbook.Application.Common.Models;
 using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
 
 namespace SharedCookbook.Application.InvitationTokens.Queries.GetInvitationToken;
@@ -8,29 +8,24 @@ public record GetInvitationTokenQuery(string Token) : IRequest<InvitationDto>;
 
 public class GetInvitationPreviewQueryHandler(
     IApplicationDbContext context,
-    IIdentityService service,
-    IInvitationTokenFactory factory)
+    IIdentityService service)
     : IRequestHandler<GetInvitationTokenQuery, InvitationDto>
 {
     public async Task<InvitationDto> Handle(GetInvitationTokenQuery query, CancellationToken cancellationToken)
     {
         var link = TokenLink.Parse(query.Token);
 
-        var token = await context.InvitationTokens.SingleById(link.TokenId, cancellationToken);
-        
+        var token = await context.InvitationTokens.SingleById(link.TokenId, cancellationToken)
+            ?? throw new NotFoundException(key: link.TokenId.ToString(), nameof(cancellationToken));
+
         var cookbook = token.Cookbook;
         ArgumentNullException.ThrowIfNull(cookbook);
         
         string? senderId = token.CreatedBy;
         ArgumentException.ThrowIfNullOrWhiteSpace(senderId);
         
-        if (!factory.Verify(link.Secret, token.Digest))
-            throw new TokenDigestMismatchException();
-        if (!token.IsRedeemable)
-            throw new TokenIsNotConsumableException();
-        
-        var userDto = await service.FindByIdAsync(senderId);
-        Guard.Against.NotFound(senderId, userDto);
+        var userDto = await service.FindByIdAsync(senderId)
+            ?? throw new NotFoundException(key: senderId, nameof(UserDto));
 
         return new InvitationDto
         {
