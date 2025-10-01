@@ -1,4 +1,5 @@
-﻿using SharedCookbook.Application.Common.Extensions;
+﻿using SharedCookbook.Application.Common.Exceptions;
+using SharedCookbook.Application.Common.Extensions;
 using SharedCookbook.Domain.Common;
 using SharedCookbook.Domain.Enums;
 
@@ -17,8 +18,8 @@ public sealed class UpdateInvitationCommandHandler(
         var invitation = await context.CookbookInvitations.FindAsync(keyValues: [command.Id], cancellationToken);
         Guard.Against.NotFound(command.Id, invitation);
         
-        if (!InvitationShouldBeUpdated(invitation.Status, command.NewStatus)) return invitation.Id; 
-        if (invitation.RecipientPersonId != user.Id) return invitation.Id; // TODO throw something here(auth?); this ensures only the recipient can accept/reject
+        if (!InvitationShouldBeUpdated(invitation.Status, command.NewStatus)) return invitation.Id;
+        Throw.IfFalse<ForbiddenAccessException>(invitation.RecipientPersonId == user.Id); // not the intended recipient
 
         switch (command.NewStatus)
         {
