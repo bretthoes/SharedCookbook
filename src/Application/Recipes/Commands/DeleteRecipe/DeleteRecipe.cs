@@ -1,27 +1,18 @@
 ﻿namespace SharedCookbook.Application.Recipes.Commands.DeleteRecipe;
 
 public record DeleteRecipeCommand(int Id) : IRequest;
-public class DeleteRecipeCommandHandler : IRequestHandler<DeleteRecipeCommand>
+public class DeleteRecipeCommandHandler(IApplicationDbContext context) : IRequestHandler<DeleteRecipeCommand>
 {
-    private readonly IApplicationDbContext _context;
-
-    public DeleteRecipeCommandHandler(IApplicationDbContext context)
+    public async Task Handle(DeleteRecipeCommand command, CancellationToken cancellationToken)
     {
-        _context = context;
-    }
+        var recipe = await context.Recipes .FindAsync(keyValues: [command.Id], cancellationToken)
+                ?? throw new NotFoundException(key: command.Id.ToString(), nameof(Recipe));
 
-    public async Task Handle(DeleteRecipeCommand request, CancellationToken cancellationToken)
-    {
-        var entity = await _context.Recipes
-            .FindAsync([request.Id], cancellationToken);
+        context.Recipes.Remove(recipe);
 
-        Guard.Against.NotFound(request.Id, entity);
+        // TODO add domain event with logging
 
-        _context.Recipes.Remove(entity);
-
-        //entity.AddDomainEvent(new TodoItemDeletedEvent(entity));
-
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }
 
@@ -29,7 +20,7 @@ public class DeleteRecipeCommandValidator : AbstractValidator<DeleteRecipeComman
 {
     public DeleteRecipeCommandValidator()
     {
-        RuleFor(query => query.Id)
+        RuleFor(command => command.Id)
             .GreaterThan(0)
             .WithMessage("Id must be greater than zero.");
     }
