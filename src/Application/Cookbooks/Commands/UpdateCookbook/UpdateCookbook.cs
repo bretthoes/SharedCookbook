@@ -1,11 +1,6 @@
 ﻿namespace SharedCookbook.Application.Cookbooks.Commands.UpdateCookbook;
 
-public record UpdateCookbookCommand : IRequest<int>
-{
-    public int Id { get; init; }
-    public string? Title { get; init; }
-    public string? Image { get; init; }
-}
+public record UpdateCookbookCommand(int Id, string? Title, string? Image) : IRequest<int>;
 
 public class UpdateCookbookCommandHandler(IApplicationDbContext context) : IRequestHandler<UpdateCookbookCommand, int>
 {

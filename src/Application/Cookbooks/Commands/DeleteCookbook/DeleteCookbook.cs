@@ -17,3 +17,12 @@ public class DeleteCookbookCommandHandler(IApplicationDbContext context) : IRequ
         await context.SaveChangesAsync(cancellationToken);
     }
 }
+public class DeleteCookbookCommandValidator : AbstractValidator<DeleteCookbookCommand>
+{
+    public DeleteCookbookCommandValidator()
+    {
+        RuleFor(command => command.Id)
+            .GreaterThan(0)
+            .WithMessage("Id must be greater than zero.");
+    }
+}

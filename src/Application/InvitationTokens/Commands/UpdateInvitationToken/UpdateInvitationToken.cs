@@ -19,9 +19,20 @@ public sealed class UpdateInvitationTokenCommandHandler(
         var link = TokenLink.Parse(command.Token);
         var token = await context.InvitationTokens.SingleById(link.TokenId, cancellationToken);
         
-        Throw.IfFalse<TokenDigestMismatchException>(factory.Verify(link.Secret, token.Digest));
-        Throw.IfFalse<TokenIsNotConsumableException>(token.IsRedeemable);
+        if (!factory.Verify(link.Secret, token.Digest))
+            throw new TokenDigestMismatchException();
+        if (!token.IsRedeemable)
+            throw new TokenIsNotConsumableException();
         
         return await responder.Respond(token, command.NewStatus, recipientId, cancellationToken);
+    }
+}
+
+public class UpdateInvitationTokenCommandValidator : AbstractValidator<UpdateInvitationTokenCommand>
+{
+    public UpdateInvitationTokenCommandValidator()
+    {
+        RuleFor(command => command.Token)
+            .NotEmpty().WithMessage("Token cannot be empty.");
     }
 }

@@ -3,11 +3,7 @@ using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.Invitations.Commands.CreateInvitation;
 
-public sealed record CreateInvitationCommand : IRequest<int>
-{
-    public required int CookbookId { get; init; }
-    public required string Email { get; init; }
-}
+public sealed record CreateInvitationCommand(int CookbookId, string Email) : IRequest<int>;
 
 public class CreateInvitationCommandHandler(
     IApplicationDbContext context,

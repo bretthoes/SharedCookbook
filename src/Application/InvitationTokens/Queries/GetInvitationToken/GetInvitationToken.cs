@@ -41,9 +41,9 @@ public class GetInvitationPreviewQueryHandler(
     }
 }
 
-public class GetInvitationPreviewQueryValidator : AbstractValidator<GetInvitationTokenQuery>
+public class GetInvitationQueryValidator : AbstractValidator<GetInvitationTokenQuery>
 {
-    public GetInvitationPreviewQueryValidator()
+    public GetInvitationQueryValidator()
     {
         RuleFor(query => query.Token)
             .NotEmpty().WithMessage("Token cannot be empty.");
