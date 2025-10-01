@@ -76,7 +76,8 @@ public static class DependencyInjection
             builder.Configuration.GetSection(key: nameof(EmailApiOptions)));
         
         builder.Services.AddTransient<IOcrService, TesseractOcrService>();
-        
+
+        builder.Services.AddScoped<IInvitationResponder, InvitationResponder>();
 
         builder.Services.AddAuthorizationBuilder()
             .AddPolicy(name: Policies.CanPurge, configurePolicy: policy => policy.RequireRole(Roles.Administrator));

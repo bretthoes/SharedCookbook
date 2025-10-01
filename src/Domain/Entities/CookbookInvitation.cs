@@ -4,6 +4,9 @@ public sealed class CookbookInvitation : BaseInvitation
 {
     public string? RecipientPersonId { get; init; }
 
+    public bool IsFor(string? personId) => 
+        RecipientPersonId is not null &&
+        string.Equals(RecipientPersonId, personId, StringComparison.Ordinal);
     
     public override void Accept(DateTime timestamp)
     {

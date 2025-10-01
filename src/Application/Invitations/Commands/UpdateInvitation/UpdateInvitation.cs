@@ -1,6 +1,4 @@
 ﻿using SharedCookbook.Application.Common.Exceptions;
-using SharedCookbook.Application.Common.Extensions;
-using SharedCookbook.Domain.Common;
 using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.Invitations.Commands.UpdateInvitation;
@@ -9,50 +7,20 @@ public sealed record UpdateInvitationCommand(int Id, InvitationStatus NewStatus)
 
 public sealed class UpdateInvitationCommandHandler(
     IApplicationDbContext context,
-    IUser user,
-    TimeProvider timeProvider)
+    IInvitationResponder responder,
+    IUser user)
     : IRequestHandler<UpdateInvitationCommand, int>
 {
     public async Task<int> Handle(UpdateInvitationCommand command, CancellationToken cancellationToken)
     {
         var invitation = await context.CookbookInvitations.FindAsync(keyValues: [command.Id], cancellationToken);
-        Guard.Against.NotFound(command.Id, invitation);
         
-        if (!InvitationShouldBeUpdated(invitation.Status, command.NewStatus)) return invitation.Id;
-        Throw.IfFalse<ForbiddenAccessException>(invitation.RecipientPersonId == user.Id); // not the intended recipient
+        if (invitation is null)
+            throw new NotFoundException(key: command.Id.ToString(), nameof(CookbookInvitation));
 
-        switch (command.NewStatus)
-        {
-            case InvitationStatus.Accepted:
-                await Accept(invitation, cancellationToken);
-                break;
-            case InvitationStatus.Rejected:
-                invitation.Reject(timestamp: timeProvider.GetUtcNow().UtcDateTime);
-                break;
-            case InvitationStatus.Error:
-            case InvitationStatus.Active: 
-            case InvitationStatus.Revoked:
-            default:
-                return invitation.Id;
-        }
+        if (invitation.IsFor(user.Id)) 
+            throw new ForbiddenAccessException();
 
-        await context.SaveChangesAsync(cancellationToken);
-        
-        return invitation.Id;
+        return await responder.Respond(invitation, command.NewStatus, user.Id!, cancellationToken);
     }
-
-    private async Task Accept(BaseInvitation invitation, CancellationToken cancellationToken)
-    {
-        invitation.Accept(timestamp: timeProvider.GetUtcNow().UtcDateTime);
-        bool hasMembership = await context.CookbookMemberships
-            .ExistsFor(invitation.CookbookId, user.Id!, cancellationToken);
-        if (!hasMembership)
-        {
-            var membership = CookbookMembership.GetDefaultMembership(invitation.CookbookId);
-            await context.CookbookMemberships.AddAsync(membership, cancellationToken);
-        }
-    }
-
-    private static bool InvitationShouldBeUpdated(InvitationStatus currentStatus, InvitationStatus newStatus)
-        => currentStatus != newStatus;
 }

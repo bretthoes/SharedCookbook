@@ -8,12 +8,15 @@ namespace SharedCookbook.Infrastructure;
 
 
 public sealed class InvitationResponder(
-    IApplicationDbContext db,
+    IApplicationDbContext context,
     TimeProvider clock) : IInvitationResponder
 {
-    public async Task<int> Respond(BaseInvitation invite, InvitationStatus decision, string userId, CancellationToken ct)
+    public async Task<int> Respond(BaseInvitation invite,
+        InvitationStatus decision,
+        string userId,
+        CancellationToken cancellationToken)
     {
-        if (!ShouldUpdate(invite.Status, decision)) return invite.Id;
+        if (!ShouldUpdate(current: invite.Status, next: decision)) return invite.Id;
 
         var now = clock.GetUtcNow().UtcDateTime;
 
@@ -21,18 +24,21 @@ public sealed class InvitationResponder(
         {
             case InvitationStatus.Accepted:
                 invite.Accept(now);
-                await EnsureMembership(invite.CookbookId, userId, ct);
+                await EnsureMembership(invite.CookbookId, userId, cancellationToken);
                 break;
 
             case InvitationStatus.Rejected:
                 invite.Reject(now);
                 break;
 
+            case InvitationStatus.Error:
+            case InvitationStatus.Active:
+            case InvitationStatus.Revoked:
             default:
                 return invite.Id;
         }
 
-        await db.SaveChangesAsync(ct);
+        await context.SaveChangesAsync(cancellationToken);
         return invite.Id;
     }
 
@@ -40,11 +46,11 @@ public sealed class InvitationResponder(
 
     private async Task EnsureMembership(int cookbookId, string userId, CancellationToken ct)
     {
-        bool exists = await db.CookbookMemberships.ExistsFor(cookbookId, userId, ct);
+        bool exists = await context.CookbookMemberships.ExistsFor(cookbookId, userId, ct);
         if (!exists)
         {
             var membership = CookbookMembership.GetDefaultMembership(cookbookId);
-            await db.CookbookMemberships.AddAsync(membership, ct);
+            await context.CookbookMemberships.AddAsync(membership, ct);
         }
     }
 }
