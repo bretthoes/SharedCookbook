@@ -8,7 +8,7 @@ public static class RecipeQueryExtensions
         => (await query
             .AsNoTracking()
             .IncludeRecipeDetails()
-            .SingleAsync(recipe => recipe.Id == id, cancellationToken))
+            .SingleOrDefaultAsync(recipe => recipe.Id == id, cancellationToken))?
             .ProjectToDetailedDto();
 
     public static IQueryable<Recipe> IncludeRecipeDetails(this IQueryable<Recipe> query)

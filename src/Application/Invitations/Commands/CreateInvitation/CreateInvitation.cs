@@ -1,5 +1,4 @@
 ﻿using SharedCookbook.Application.Common.Exceptions;
-using SharedCookbook.Application.Common.Extensions;
 
 namespace SharedCookbook.Application.Invitations.Commands.CreateInvitation;
 

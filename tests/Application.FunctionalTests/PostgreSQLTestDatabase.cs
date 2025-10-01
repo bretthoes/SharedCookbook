@@ -10,7 +10,7 @@ namespace SharedCookbook.Application.FunctionalTests;
 
 public class PostgreSQLTestDatabase : ITestDatabase
 {
-    private readonly string _connectionString = null!;
+    private readonly string _connectionString;
     private NpgsqlConnection _connection = null!;
     private Respawner _respawner = null!;
 
@@ -23,7 +23,7 @@ public class PostgreSQLTestDatabase : ITestDatabase
 
         var connectionString = configuration.GetConnectionString(name: "DefaultConnection");
 
-        Guard.Against.Null(connectionString);
+        ArgumentException.ThrowIfNullOrWhiteSpace(connectionString);
 
         _connectionString = connectionString;
     }

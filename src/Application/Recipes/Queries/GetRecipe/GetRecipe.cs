@@ -7,20 +7,15 @@ public class GetRecipeQueryHandler(IApplicationDbContext context, IIdentityServi
 {
     public async Task<RecipeDetailedDto> Handle(GetRecipeQuery request, CancellationToken cancellationToken)
     {
-        var dto = await context.Recipes
-            .QueryRecipeDetailedDto(request.Id, cancellationToken);
+        ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
+        
+        var dto = await context.Recipes.QueryRecipeDetailedDto(request.Id, cancellationToken)
+            ?? throw new NotFoundException(key: request.Id.ToString(), nameof(Recipe));
 
-        Guard.Against.NotFound(request.Id, dto);
-
-        // Map the author name separately since this field (ApplicationUser.DisplayName)
-        // cannot be accessed through a relationship. This is a byproduct of not having
-        // the ApplicationUser object in the domain layer. For collections, this will
-        // typically be handled by the IdentityUserRepository. For a single entity like
-        // this, it is manually mapped on the line below.
-        if (user.Id is null) return dto;
-
-        dto.AuthorEmail = await identityService.GetEmailAsync(user.Id);
-        dto.Author = await identityService.GetDisplayNameAsync(user.Id);
+        var userDto = await identityService.FindByIdAsync(user.Id);
+        
+        dto.AuthorEmail = userDto?.Email;
+        dto.Author = userDto?.DisplayName;
 
         return dto;
     }

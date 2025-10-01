@@ -1,5 +1,4 @@
-﻿using SharedCookbook.Application.Common.Extensions;
-using SharedCookbook.Application.Common.Models;
+﻿using SharedCookbook.Application.Common.Models;
 using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
 
 namespace SharedCookbook.Application.InvitationTokens.Queries.GetInvitationToken;

@@ -9,7 +9,7 @@ public class UpdateUserCommandHandler(IIdentityService service, IUser user)
 {
     public async Task Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
-        Guard.Against.Null(user.Id);
+        ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
         
         var result = await service.UpdateUserAsync(user.Id, request.DisplayName.Trim());
 

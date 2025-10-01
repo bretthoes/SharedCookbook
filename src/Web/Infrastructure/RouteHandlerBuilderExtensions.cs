@@ -8,43 +8,32 @@ public static class EndpointRouteBuilderExtensions
         this IEndpointRouteBuilder builder,
         Delegate handler,
         [StringSyntax("Route")] string pattern = "")
-    {
-        Guard.Against.AnonymousMethod(handler);
-
-        return builder.MapGet(pattern, handler)
-            .WithName(handler.Method.Name);
-    }
+        => builder.MapGet(pattern, handler).WithName(NameOrThrow(handler));
 
     public static RouteHandlerBuilder MapPost(
         this IEndpointRouteBuilder builder,
         Delegate handler,
         [StringSyntax("Route")] string pattern = "")
-    {
-        Guard.Against.AnonymousMethod(handler);
-
-        return builder.MapPost(pattern, handler)
-            .WithName(handler.Method.Name);
-    }
+        => builder.MapPost(pattern, handler).WithName(NameOrThrow(handler));
 
     public static RouteHandlerBuilder MapPut(
         this IEndpointRouteBuilder builder,
         Delegate handler,
-        [StringSyntax("Route")] string pattern)
-    {
-        Guard.Against.AnonymousMethod(handler);
-
-        return builder.MapPut(pattern, handler)
-            .WithName(handler.Method.Name);
-    }
+        [StringSyntax("Route")] string pattern = "")
+        => builder.MapPut(pattern, handler).WithName(NameOrThrow(handler));
 
     public static RouteHandlerBuilder MapDelete(
         this IEndpointRouteBuilder builder,
         Delegate handler,
-        [StringSyntax("Route")] string pattern)
-    {
-        Guard.Against.AnonymousMethod(handler);
+        [StringSyntax("Route")] string pattern = "")
+        => builder.MapDelete(pattern, handler).WithName(NameOrThrow(handler));
 
-        return builder.MapDelete(pattern, handler)
-            .WithName(handler.Method.Name);
+    private static string NameOrThrow(Delegate handler)
+    {
+        var methodInfo = handler.Method;
+        if (methodInfo.IsAnonymous())
+            throw new ArgumentException("The endpoint name must be specified when using anonymous handlers.",
+                nameof(handler));
+        return methodInfo.Name;
     }
 }
