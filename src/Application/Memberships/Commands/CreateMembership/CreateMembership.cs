@@ -1,4 +1,7 @@
-﻿namespace SharedCookbook.Application.Memberships.Commands.CreateMembership;
+﻿using SharedCookbook.Application.Common.Exceptions;
+using SharedCookbook.Application.Common.Extensions;
+
+namespace SharedCookbook.Application.Memberships.Commands.CreateMembership;
 
 public record CreateMembershipCommand(int CookbookId) : IRequest;
 
@@ -7,24 +10,16 @@ public class CreateMembershipCommandHandler(IApplicationDbContext context, IUser
 {
     public async Task Handle(CreateMembershipCommand command, CancellationToken token)
     {
-        Guard.Against.Null(user.Id);
-        
-        if (await MembershipAlreadyExistsInCookbook(command.CookbookId, user.Id, token)) return;
+        ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
+
+        if (await context.CookbookMemberships.IsMember(command.CookbookId, user.Id, token))
+            throw new MembershipAlreadyExistsException(command.CookbookId, user.Id);
         
         var membership = CookbookMembership.GetDefaultMembership(command.CookbookId);
 
         await context.CookbookMemberships.AddAsync(membership, token);
         await context.SaveChangesAsync(token);
     }
-    
-    private async Task<bool> MembershipAlreadyExistsInCookbook(
-            int cookbookId,
-            string userId,
-            CancellationToken token) 
-            => await context.CookbookMemberships
-                .AnyAsync(membership
-                    => membership.CookbookId == cookbookId
-                       && membership.CreatedBy == userId, token);
 }
 
 public class CreateMembershipCommandValidator : AbstractValidator<CreateMembershipCommand>
