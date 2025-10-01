@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Application.Memberships.Commands.PatchMembership;
-
-namespace SharedCookbook.Application.Memberships.Commands.UpdateMembership;
+﻿namespace SharedCookbook.Application.Memberships.Commands.UpdateMembership;
 
 public record UpdateMembershipCommand : IRequest
 {
@@ -28,22 +26,21 @@ public class UpdateMembershipCommandHandler(IApplicationDbContext context)
 
     public async Task Handle(UpdateMembershipCommand command, CancellationToken cancellationToken)
     {
-        var entity = await context.CookbookMemberships
-            .FindAsync(keyValues: [command.Id], cancellationToken);
+        var membership = await context.CookbookMemberships.FindOrThrowAsync(command.Id, cancellationToken);
 
-        Guard.Against.NotFound(command.Id, entity);
+        Guard.Against.NotFound(command.Id, membership);
 
         // TODO If they are not currently the creator, but are being promoted to creator in this update,
         // we need to handle demoting the current creator. (Creator verbiage should be changed to owner, or
         // needs a new column). This should be handled with a domain event / handler.
         //entity.IsCreator = command.IsCreator;
         
-        entity.CanAddRecipe = command.CanAddRecipe;
-        entity.CanUpdateRecipe = command.CanUpdateRecipe;
-        entity.CanDeleteRecipe = command.CanDeleteRecipe;
-        entity.CanSendInvite = command.CanSendInvite;
-        entity.CanRemoveMember = command.CanRemoveMember;
-        entity.CanEditCookbookDetails = command.CanEditCookbookDetails;
+        membership.CanAddRecipe = command.CanAddRecipe;
+        membership.CanUpdateRecipe = command.CanUpdateRecipe;
+        membership.CanDeleteRecipe = command.CanDeleteRecipe;
+        membership.CanSendInvite = command.CanSendInvite;
+        membership.CanRemoveMember = command.CanRemoveMember;
+        membership.CanEditCookbookDetails = command.CanEditCookbookDetails;
 
         await context.SaveChangesAsync(cancellationToken);
     }

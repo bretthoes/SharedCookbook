@@ -7,7 +7,7 @@ public class CreateMembershipCommandHandler(IApplicationDbContext context, IUser
 {
     public async Task Handle(CreateMembershipCommand command, CancellationToken token)
     {
-        Guard.Against.Null(user.Id);
+        ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
         
         if (await MembershipAlreadyExistsInCookbook(command.CookbookId, user.Id, token)) return;
         

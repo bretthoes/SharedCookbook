@@ -5,8 +5,7 @@ public class DeleteRecipeCommandHandler(IApplicationDbContext context) : IReques
 {
     public async Task Handle(DeleteRecipeCommand command, CancellationToken cancellationToken)
     {
-        var recipe = await context.Recipes .FindAsync(keyValues: [command.Id], cancellationToken)
-                ?? throw new NotFoundException(key: command.Id.ToString(), nameof(Recipe));
+        var recipe = await context.Recipes.FindOrThrowAsync(command.Id, cancellationToken);
 
         context.Recipes.Remove(recipe);
 

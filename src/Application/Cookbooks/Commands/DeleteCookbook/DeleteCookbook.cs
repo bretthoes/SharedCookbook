@@ -6,12 +6,11 @@ public class DeleteCookbookCommandHandler(IApplicationDbContext context) : IRequ
 {
     public async Task Handle(DeleteCookbookCommand command, CancellationToken cancellationToken)
     {
-        var cookbook = await context.Cookbooks .FindAsync(keyValues: [command.Id], cancellationToken)
-            ?? throw new NotFoundException(key: command.Id.ToString(), nameof(Cookbook));
+        var cookbook = await context.Cookbooks.FindOrThrowAsync(command.Id, cancellationToken);
 
         context.Cookbooks.Remove(cookbook);
 
-        //entity.AddDomainEvent(new TodoItemDeletedEvent(entity));
+        // TODO add domain event for logging
 
         await context.SaveChangesAsync(cancellationToken);
     }

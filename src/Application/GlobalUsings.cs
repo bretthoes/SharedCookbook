@@ -7,3 +7,4 @@ global using SharedCookbook.Application.Common.Interfaces;
 global using SharedCookbook.Domain.Entities;
 global using SharedCookbook.Domain.Events;
 global using System.Reflection;
+global using SharedCookbook.Application.Common.Extensions;
