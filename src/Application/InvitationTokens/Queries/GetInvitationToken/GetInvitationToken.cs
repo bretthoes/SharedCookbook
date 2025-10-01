@@ -24,8 +24,10 @@ public class GetInvitationPreviewQueryHandler(
         string? senderId = token.CreatedBy;
         ArgumentException.ThrowIfNullOrWhiteSpace(senderId);
         
-        Throw.IfFalse<TokenDigestMismatchException>(factory.Verify(link.Secret, token.Digest));
-        Throw.IfFalse<TokenIsNotConsumableException>(token.IsRedeemable);
+        if (!factory.Verify(link.Secret, token.Digest))
+            throw new TokenDigestMismatchException();
+        if (!token.IsRedeemable)
+            throw new TokenIsNotConsumableException();
         
         var userDto = await service.FindByIdAsync(senderId);
         Guard.Against.NotFound(senderId, userDto);
