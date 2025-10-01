@@ -19,4 +19,12 @@ public sealed class CookbookInvitation : BaseInvitation
         base.Reject(timestamp);
         AddDomainEvent(new InvitationRejectedEvent(this));
     }
+
+    public static CookbookInvitation Create(int cookbookId, string recipientId)
+        => new()
+        {
+            Status = InvitationStatus.Active,
+            CookbookId = cookbookId,
+            RecipientPersonId = recipientId
+        };
 }

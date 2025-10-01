@@ -4,11 +4,11 @@ public abstract class BaseInvitation : BaseAuditableEntity
 {
     public required InvitationStatus Status { get; set; }
     
-    public required int CookbookId { get; set; }
+    public required int CookbookId { get; init; }
     
     public DateTime? ResponseDate { get; set; }
-    
-    public bool IsActive => Status == InvitationStatus.Active;
+
+    protected bool IsActive => Status == InvitationStatus.Active;
     
     private bool IsAccepted => Status == InvitationStatus.Accepted;
     

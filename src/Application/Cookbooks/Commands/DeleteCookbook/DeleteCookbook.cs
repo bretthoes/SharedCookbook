@@ -4,12 +4,10 @@ public record DeleteCookbookCommand(int Id) : IRequest;
 
 public class DeleteCookbookCommandHandler(IApplicationDbContext context) : IRequestHandler<DeleteCookbookCommand>
 {
-    public async Task Handle(DeleteCookbookCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteCookbookCommand command, CancellationToken cancellationToken)
     {
-        var cookbook = await context.Cookbooks
-            .FindAsync(keyValues: [request.Id], cancellationToken);
-
-        Guard.Against.NotFound(request.Id, cookbook);
+        var cookbook = await context.Cookbooks .FindAsync(keyValues: [command.Id], cancellationToken)
+            ?? throw new NotFoundException(key: command.Id.ToString(), nameof(Cookbook));
 
         context.Cookbooks.Remove(cookbook);
 

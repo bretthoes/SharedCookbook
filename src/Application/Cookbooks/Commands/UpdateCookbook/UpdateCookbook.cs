@@ -6,10 +6,8 @@ public class UpdateCookbookCommandHandler(IApplicationDbContext context) : IRequ
 {
     public async Task<int> Handle(UpdateCookbookCommand request, CancellationToken cancellationToken)
     {
-        var cookbook = await context.Cookbooks
-            .FindAsync(keyValues: [request.Id], cancellationToken);
-
-        Guard.Against.NotFound(request.Id, cookbook);
+        var cookbook = await context.Cookbooks .FindAsync(keyValues: [request.Id], cancellationToken)
+            ?? throw new NotFoundException(key: request.Id.ToString(), nameof(Cookbook));
 
         if (!string.IsNullOrWhiteSpace(request.Title)) cookbook.Title = request.Title;
         if (!string.IsNullOrWhiteSpace(request.Image)) cookbook.Image = request.Image;

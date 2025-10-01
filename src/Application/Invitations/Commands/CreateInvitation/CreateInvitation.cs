@@ -1,5 +1,5 @@
-﻿using SharedCookbook.Application.Common.Extensions;
-using SharedCookbook.Domain.Enums;
+﻿using SharedCookbook.Application.Common.Exceptions;
+using SharedCookbook.Application.Common.Extensions;
 
 namespace SharedCookbook.Application.Invitations.Commands.CreateInvitation;
 
@@ -7,38 +7,28 @@ public sealed record CreateInvitationCommand(int CookbookId, string Email) : IRe
 
 public class CreateInvitationCommandHandler(
     IApplicationDbContext context,
-    IIdentityService identityService,
-    IUser user
+    IIdentityService identityService
 ) : IRequestHandler<CreateInvitationCommand, int>
 {
     public async Task<int> Handle(CreateInvitationCommand command, CancellationToken token)
     {
         string email = command.Email.Trim();
 
-        string? recipientId = await identityService.GetIdByEmailAsync(email);
-        Guard.Against.NotFound(key: email, input: recipientId);
+        string recipientId = await identityService.GetIdByEmailAsync(email)
+            ?? throw new NotFoundException(key: email, nameof(IUser));
 
-        bool alreadyMember = await context.CookbookMemberships
-            .IsMember(command.CookbookId, recipientId, token);
+        if (await context.CookbookMemberships.IsMember(command.CookbookId, recipientId, token))
+            throw new MembershipAlreadyExistsException(command.CookbookId, recipientId);
 
-        bool hasPending = await context.CookbookInvitations
-            .HasActiveInvite(command.CookbookId, recipientId, token);
+        if (await context.CookbookInvitations.HasActiveInvite(command.CookbookId, recipientId, token))
+            throw new InvitationAlreadyPendingException(command.CookbookId, recipientId);
 
-        Guard.Against.ExistingMembership(alreadyMember, command.CookbookId, user.Id!, recipientId);
-        Guard.Against.PendingInvitation(hasPending, command.CookbookId, user.Id!, recipientId);
+        var invitation = CookbookInvitation.Create(command.CookbookId, recipientId);
 
-        var entity = new CookbookInvitation
-        {
-            CookbookId = command.CookbookId,
-            CreatedBy = user.Id,
-            RecipientPersonId = recipientId,
-            Status = InvitationStatus.Active,
-        };
-
-        context.CookbookInvitations.Add(entity);
-        entity.AddDomainEvent(new InvitationCreatedEvent(entity));
+        context.CookbookInvitations.Add(invitation);
+        invitation.AddDomainEvent(new InvitationCreatedEvent(invitation));
         await context.SaveChangesAsync(token);
 
-        return entity.Id;
+        return invitation.Id;
     }
 }
