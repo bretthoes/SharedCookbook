@@ -17,7 +17,7 @@ public class GetMembershipQueryHandler : IRequestHandler<GetMembershipQuery, Mem
     {
         var membership = await _context.CookbookMemberships.FindOrThrowAsync(query.Id, cancellationToken);
 
-        var dto = new MembershipDto
+        return new MembershipDto
         {
             CanAddRecipe = membership.CanAddRecipe,
             IsCreator = membership.IsCreator,
@@ -29,7 +29,5 @@ public class GetMembershipQueryHandler : IRequestHandler<GetMembershipQuery, Mem
             Name = await _identityService.GetDisplayNameAsync(membership.CreatedBy ?? string.Empty),
             Email = await _identityService.GetEmailAsync(membership.CreatedBy ?? string.Empty)
         };
-
-        return dto;
     }
 }

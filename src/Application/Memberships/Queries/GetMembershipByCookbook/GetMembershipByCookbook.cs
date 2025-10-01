@@ -16,20 +16,17 @@ public class GetMembershipByCookbookAndEmailQueryHandler(
        
         var userDto = await identityService.FindByIdAsync(user.Id) ?? throw new UnauthorizedAccessException();
 
-        // TODO break this query into smaller extensions
-        var member = await context.CookbookMemberships
-            .SingleAsync(member => member.CookbookId == query.CookbookId && userDto.Id == member.CreatedBy, cancellationToken);
-
+        var membership = await context.CookbookMemberships.SingleForCookbookAndUser(query.CookbookId, userDto.Id, cancellationToken);
         var dto = new MembershipDto
         {
-            Id = member.Id,
-            CanAddRecipe = member.CanAddRecipe,
-            IsCreator = member.IsCreator,
-            CanUpdateRecipe = member.CanUpdateRecipe,
-            CanDeleteRecipe = member.CanDeleteRecipe,
-            CanRemoveMember = member.CanRemoveMember,
-            CanSendInvite = member.CanSendInvite,
-            CanEditCookbookDetails = member.CanEditCookbookDetails,
+            Id = membership.Id,
+            CanAddRecipe = membership.CanAddRecipe,
+            IsCreator = membership.IsCreator,
+            CanUpdateRecipe = membership.CanUpdateRecipe,
+            CanDeleteRecipe = membership.CanDeleteRecipe,
+            CanRemoveMember = membership.CanRemoveMember,
+            CanSendInvite = membership.CanSendInvite,
+            CanEditCookbookDetails = membership.CanEditCookbookDetails,
             Name = userDto.DisplayName,
             Email = userDto.Email
         };
