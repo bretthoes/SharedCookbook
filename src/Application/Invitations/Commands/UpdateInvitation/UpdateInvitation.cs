@@ -13,11 +13,9 @@ public sealed class UpdateInvitationCommandHandler(
 {
     public async Task<int> Handle(UpdateInvitationCommand command, CancellationToken cancellationToken)
     {
-        var invitation = await context.CookbookInvitations.FindAsync(keyValues: [command.Id], cancellationToken) ?? 
-            throw new NotFoundException(key: command.Id.ToString(), nameof(CookbookInvitation));
+        var invitation = await context.CookbookInvitations.FindOrThrowAsync(command.Id, cancellationToken);
 
-        if (invitation.IsFor(user.Id)) 
-            throw new ForbiddenAccessException();
+        if (invitation.IsFor(user.Id)) throw new ForbiddenAccessException();
 
         return await responder.Respond(invitation, command.NewStatus, user.Id!, cancellationToken);
     }

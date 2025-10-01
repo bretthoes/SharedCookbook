@@ -5,10 +5,7 @@ public class DeleteMembershipCommandHandler(IApplicationDbContext context) : IRe
 {
     public async Task Handle(DeleteMembershipCommand request, CancellationToken cancellationToken)
     {
-        var membership = await context.CookbookMemberships
-            .FindAsync(keyValues: [request.Id], cancellationToken);
-
-        Guard.Against.NotFound(request.Id, membership);
+        var membership = await context.CookbookMemberships.FindOrThrowAsync(request.Id, cancellationToken);
 
         context.CookbookMemberships.Remove(membership);
         membership.MarkDeleted();

@@ -4,12 +4,9 @@ public record DeleteInvitationCommand(int Id) : IRequest;
 
 public class DeleteInvitationCommandHandler(IApplicationDbContext context) : IRequestHandler<DeleteInvitationCommand>
 {
-    public async Task Handle(DeleteInvitationCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteInvitationCommand command, CancellationToken cancellationToken)
     {
-        var invitation = await context.CookbookInvitations
-            .FindAsync(keyValues: [request.Id], cancellationToken);
-
-        Guard.Against.NotFound(request.Id, invitation);
+        var invitation = await context.CookbookInvitations.FindOrThrowAsync(command.Id, cancellationToken);
 
         context.CookbookInvitations.Remove(invitation);
 

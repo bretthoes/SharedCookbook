@@ -9,16 +9,16 @@ public class GetMembershipByCookbookAndEmailQueryHandler(
     : IRequestHandler<GetMembershipByCookbookQuery, MembershipDto>
 {
     public async Task<MembershipDto> Handle(
-        GetMembershipByCookbookQuery request,
+        GetMembershipByCookbookQuery query,
         CancellationToken cancellationToken)
     {
-        Guard.Against.Null(user.Id);
-        
+        ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
+       
         var userDto = await identityService.FindByIdAsync(user.Id) ?? throw new UnauthorizedAccessException();
 
         // TODO break this query into smaller extensions
         var member = await context.CookbookMemberships
-            .SingleAsync(member => member.CookbookId == request.CookbookId && userDto.Id == member.CreatedBy, cancellationToken);
+            .SingleAsync(member => member.CookbookId == query.CookbookId && userDto.Id == member.CreatedBy, cancellationToken);
 
         var dto = new MembershipDto
         {
