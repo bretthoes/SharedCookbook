@@ -28,8 +28,6 @@ public class UpdateMembershipCommandHandler(IApplicationDbContext context)
     {
         var membership = await context.CookbookMemberships.FindOrThrowAsync(command.Id, cancellationToken);
 
-        Guard.Against.NotFound(command.Id, membership);
-
         // TODO If they are not currently the creator, but are being promoted to creator in this update,
         // we need to handle demoting the current creator. (Creator verbiage should be changed to owner, or
         // needs a new column). This should be handled with a domain event / handler.

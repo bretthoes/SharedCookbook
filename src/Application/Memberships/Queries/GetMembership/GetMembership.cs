@@ -30,8 +30,6 @@ public class GetMembershipQueryHandler : IRequestHandler<GetMembershipQuery, Mem
             Email = await _identityService.GetEmailAsync(membership.CreatedBy ?? string.Empty)
         };
 
-        Guard.Against.NotFound(query.Id, dto);
-
         return dto;
     }
 }
