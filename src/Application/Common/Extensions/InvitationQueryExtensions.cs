@@ -9,10 +9,7 @@ public static class InvitationQueryExtensions
         this IQueryable<CookbookInvitation> query,
         string? userId,
         InvitationStatus status)
-        => query
-            .Where(invitation
-                => invitation.RecipientPersonId == userId
-                   && invitation.Status == status);
+        => query.Where(invitation => invitation.RecipientPersonId == userId && invitation.Status == status);
     
     public static Task<CookbookInvitation?> FirstLinkInviteWithTokens(
         this IQueryable<CookbookInvitation> query,

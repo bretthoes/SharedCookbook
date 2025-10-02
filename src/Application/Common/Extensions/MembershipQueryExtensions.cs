@@ -36,6 +36,5 @@ public static class MembershipQueryExtensions
         string personId,
         CancellationToken token = default)
         => memberships
-            .AsNoTracking()
-            .AnyAsync(membership => membership.CookbookId == cookbookId && membership.CreatedBy == personId, token);
+            .AnytAsync(membership => membership.CookbookId == cookbookId && membership.CreatedBy == personId, token);
 }
