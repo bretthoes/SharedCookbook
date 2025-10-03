@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SharedCookbook.Application.Common.Interfaces;
+using SharedCookbook.Application.Images.Commands.CreateImages;
 using SharedCookbook.Domain.Constants;
 using SharedCookbook.Infrastructure.Data;
 using SharedCookbook.Infrastructure.Data.Interceptors;

@@ -4,12 +4,13 @@ public static class RecipeQueryExtensions
 {
     public static async Task<RecipeDetailedDto?> QueryRecipeDetailedDto(this IQueryable<Recipe> query,
         int id,
+        string imageBaseUrl,
         CancellationToken cancellationToken)
         => (await query
             .AsNoTracking()
             .IncludeRecipeDetails()
             .SingleOrDefaultAsync(recipe => recipe.Id == id, cancellationToken))?
-            .ProjectToDetailedDto();
+            .ProjectToDetailedDto(imageBaseUrl);
 
     public static IQueryable<Recipe> IncludeRecipeDetails(this IQueryable<Recipe> query)
         => query
@@ -17,20 +18,28 @@ public static class RecipeQueryExtensions
             .Include(recipe => recipe.Images)
             .Include(recipe => recipe.Ingredients);
 
-    private static RecipeDetailedDto ProjectToDetailedDto(this Recipe recipe)
+    private static RecipeDetailedDto ProjectToDetailedDto(this Recipe recipe, string imageBaseUrl)
         => new()
         {
             Id = recipe.Id,
             Title = recipe.Title,
             Summary = recipe.Summary,
-            Thumbnail = recipe.Thumbnail,
-            VideoPath = recipe.VideoPath,
+            Thumbnail = string.IsNullOrEmpty(recipe.Thumbnail) ? "" : imageBaseUrl + recipe.Thumbnail,
+            VideoPath = string.IsNullOrEmpty(recipe.VideoPath) ? "" : imageBaseUrl + recipe.VideoPath,
             PreparationTimeInMinutes = recipe.PreparationTimeInMinutes,
             CookingTimeInMinutes = recipe.CookingTimeInMinutes,
             BakingTimeInMinutes = recipe.BakingTimeInMinutes,
             Servings = recipe.Servings,
             Directions = recipe.Directions,
-            Images = recipe.Images,
+            Images = recipe.Images
+                .OrderBy(image => image.Ordinal)
+                .Select(image => new RecipeImage
+                {
+                    Id = image.Id,
+                    Name = imageBaseUrl + image.Name,
+                    Ordinal = image.Ordinal,
+                })
+                .ToList(),
             Ingredients = recipe.Ingredients,
             IsVegan = recipe.IsVegan,
             IsVegetarian = recipe.IsVegetarian,

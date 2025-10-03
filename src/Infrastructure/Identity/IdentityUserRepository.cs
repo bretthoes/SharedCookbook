@@ -5,13 +5,13 @@ using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Application.Common.Mappings;
 using SharedCookbook.Application.Common.Models;
 using SharedCookbook.Application.Cookbooks.Queries.GetCookbooksWithPagination;
+using SharedCookbook.Application.Images.Commands.CreateImages;
 using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
 using SharedCookbook.Application.Memberships.Queries;
 using SharedCookbook.Application.Memberships.Queries.GetMembershipsWithPagination;
 using SharedCookbook.Application.Recipes.Queries.GetRecipe;
 using SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
 using SharedCookbook.Infrastructure.Data;
-using SharedCookbook.Infrastructure.FileStorage;
 using SharedCookbook.Infrastructure.Identity.Projections;
 
 namespace SharedCookbook.Infrastructure.Identity;

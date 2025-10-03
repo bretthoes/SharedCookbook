@@ -1,4 +1,4 @@
-﻿namespace SharedCookbook.Infrastructure.FileStorage;
+﻿namespace SharedCookbook.Application.Images.Commands.CreateImages;
 
 public class ImageUploadOptions
 {

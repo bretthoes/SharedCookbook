@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using RestSharp;
 using SharedCookbook.Application.Common;
 using SharedCookbook.Application.Common.Interfaces;
+using SharedCookbook.Application.Images.Commands.CreateImages;
 
 namespace SharedCookbook.Infrastructure.FileStorage;
 
