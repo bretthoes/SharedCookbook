@@ -1,5 +1,4 @@
-﻿using SharedCookbook.Application.Common.Exceptions;
-using SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
+﻿using SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
 using SharedCookbook.Domain.Entities;
 
 namespace SharedCookbook.Application.FunctionalTests.Cookbooks.Commands;
@@ -8,28 +7,31 @@ using static Testing;
 
 public class CreateCookbookTests : BaseTestFixture
 {
-    [Test]
-    public async Task ShouldRequireMinimumFields()
+    
+    [TestCase(null!)]
+    [TestCase("")]
+    public async Task ShouldRequireMinimumFields(string title)
     {
-        var command = new CreateCookbookCommand(Title: null!);
+        var command = new CreateCookbookCommand(Title: title);
 
-        await FluentActions.Invoking((() =>
-            SendAsync(command))).Should().ThrowAsync<ValidationException>();
+        await FluentActions.Invoking((() => SendAsync(command))).Should().ThrowAsync<ValidationException>();
     }
 
-    [Test]
-    public async Task ShouldCreateCookbook()
+    [TestCase(null!)]
+    [TestCase("image")]
+    public async Task ShouldCreateCookbook(string image)
     {
         string userId = await RunAsDefaultUserAsync();
 
-        var command = new CreateCookbookCommand(Title: "Another New Cookbook");
+        var command = new CreateCookbookCommand(Title: "New Cookbook", Image: image);
 
         int itemId = await SendAsync(command);
 
         var item = await FindAsync<Cookbook>(itemId);
 
         item.Should().NotBeNull();
-        item!.Title.Should().Be(command.Title);
+        item.Title.Should().Be(command.Title);
+        item.Image.Should().Be(command.Image);
         item.CreatedBy.Should().Be(userId);
         item.Created.Should().BeCloseTo(DateTime.Now, precision: TimeSpan.FromSeconds(10));
         item.LastModifiedBy.Should().Be(userId);
