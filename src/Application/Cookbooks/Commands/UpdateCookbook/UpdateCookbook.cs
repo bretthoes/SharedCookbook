@@ -11,6 +11,8 @@ public class UpdateCookbookCommandHandler(IApplicationDbContext context) : IRequ
         if (!string.IsNullOrWhiteSpace(request.Title)) cookbook.Title = request.Title;
         if (!string.IsNullOrWhiteSpace(request.Image)) cookbook.Image = request.Image;
 
+        cookbook.AddDomainEvent(new CookbookUpdatedEvent(cookbook));
+        
         return await context.SaveChangesAsync(cancellationToken);
     }
 }

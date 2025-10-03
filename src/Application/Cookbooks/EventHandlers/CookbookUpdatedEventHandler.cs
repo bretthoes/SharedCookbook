@@ -1,9 +1,9 @@
 ﻿namespace SharedCookbook.Application.Cookbooks.EventHandlers;
 
-public class CookbookDeletedEventHandler(ILogger<CookbookDeletedEventHandler> logger)
-    : INotificationHandler<CookbookDeletedEvent>
+public class CookbookUpdatedEventHandler(ILogger<CookbookUpdatedEventHandler> logger)
+    : INotificationHandler<CookbookUpdatedEvent>
 {
-    public Task Handle(CookbookDeletedEvent deletedEvent, CancellationToken cancellationToken)
+    public Task Handle(CookbookUpdatedEvent deletedEvent, CancellationToken cancellationToken)
     {
         var cookbook = deletedEvent.Cookbook;
 
