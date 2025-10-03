@@ -29,7 +29,7 @@ public class Recipes : EndpointGroupBase
         return sender.Send(query);
     }
 
-    private static Task<PaginatedList<RecipeDetailedDto>> GetRecipesWithPagination(
+    private static Task<PaginatedList<RecipeBriefDto>> GetRecipesWithPagination(
         ISender sender,
         [AsParameters] GetRecipesWithPaginationQuery query)
     {

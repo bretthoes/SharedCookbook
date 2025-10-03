@@ -1,5 +1,5 @@
-﻿using SharedCookbook.Application.Common.Models;
-using SharedCookbook.Application.Recipes.Queries.GetRecipe;
+﻿using SharedCookbook.Application.Common.Mappings;
+using SharedCookbook.Application.Common.Models;
 
 namespace SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
 
@@ -8,12 +8,31 @@ public record GetRecipesWithPaginationQuery(
     string? Search = null,
     int PageNumber = 1,
     int PageSize = 10)
-    : IRequest<PaginatedList<RecipeDetailedDto>>;
+    : IRequest<PaginatedList<RecipeBriefDto>>;
 
-public class GetRecipesWithPaginationQueryHandler(IIdentityUserRepository repository)
-    : IRequestHandler<GetRecipesWithPaginationQuery, PaginatedList<RecipeDetailedDto>>
+public class GetRecipesWithPaginationQueryHandler(IApplicationDbContext context)
+    : IRequestHandler<GetRecipesWithPaginationQuery, PaginatedList<RecipeBriefDto>>
 {
-    public Task<PaginatedList<RecipeDetailedDto>> Handle(GetRecipesWithPaginationQuery query,
+    public Task<PaginatedList<RecipeBriefDto>> Handle(GetRecipesWithPaginationQuery query,
         CancellationToken cancellationToken)
-        => repository.GetRecipes(query, cancellationToken);
+        => context.Recipes.GetBriefRecipes(query.CookbookId, query.PageNumber, query.PageSize, cancellationToken);
 }
+
+public static class RecipeQueryExtensions
+{
+    public static Task<PaginatedList<RecipeBriefDto>> GetBriefRecipes(this IQueryable<Recipe> query,
+        int cookbookId,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken)
+        => query.AsNoTracking()
+            .HasCookbookId(cookbookId)
+            .OrderByTitle()
+            .Select(recipe => new RecipeBriefDto
+            {
+                Id = recipe.Id,
+                Title = recipe.Title
+            })
+            .PaginatedListAsync(pageNumber, pageSize, cancellationToken);
+}
+
