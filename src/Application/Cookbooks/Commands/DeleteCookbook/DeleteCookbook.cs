@@ -10,7 +10,7 @@ public class DeleteCookbookCommandHandler(IApplicationDbContext context) : IRequ
 
         context.Cookbooks.Remove(cookbook);
 
-        // TODO add domain event for logging
+        cookbook.AddDomainEvent(new CookbookDeletedEvent(cookbook));
 
         await context.SaveChangesAsync(cancellationToken);
     }
