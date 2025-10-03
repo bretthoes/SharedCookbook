@@ -699,7 +699,6 @@
           {
             "name": "PageNumber",
             "in": "query",
-            "required": true,
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -709,7 +708,6 @@
           {
             "name": "PageSize",
             "in": "query",
-            "required": true,
             "schema": {
               "type": "integer",
               "format": "int32"
