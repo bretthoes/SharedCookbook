@@ -19,6 +19,8 @@ public interface IApplicationDbContext
     DbSet<RecipeIngredient> RecipeIngredients { get; }
 
     DbSet<RecipeNutrition> RecipeNutritions { get; }
-
+    
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+    
+    bool HasChanges();
 }

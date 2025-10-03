@@ -30,6 +30,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public DbSet<RecipeNutrition> RecipeNutritions => Set<RecipeNutrition>();
 
+    public bool HasChanges() => ChangeTracker.HasChanges();
+    
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
