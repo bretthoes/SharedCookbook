@@ -9,7 +9,5 @@ public class CreateImagesCommandHandler(IImageUploadService uploadService)
     : IRequestHandler<CreateImagesCommand, string[]>
 {
     public Task<string[]> Handle(CreateImagesCommand request, CancellationToken cancellationToken)
-    {
-        return uploadService.UploadFiles(request.Files);
-    }
+        => uploadService.UploadFiles(request.Files);
 }

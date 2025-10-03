@@ -10,6 +10,7 @@ using SharedCookbook.Application.Common.Interfaces;
 
 namespace SharedCookbook.Infrastructure.FileStorage;
 
+// TODO refactoring and better DI, throwing, and logging needed here
 public class S3ImageUploadService(IOptions<ImageUploadOptions> options) : IImageUploadService
 {
     public async Task<string[]> UploadFiles(IFormFileCollection files)
