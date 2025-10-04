@@ -7,7 +7,8 @@ public class CookbookCreatedEventHandler(ILogger<CookbookCreatedEventHandler> lo
     {
         var cookbook = acceptedEvent.Cookbook;
 
-        logger.LogInformation("CookbookCreatedEvent handled: Cookbook '{Title}' (ID: {Id}) was created by User ID {UserId}.",
+        logger.LogInformation(
+            "CookbookCreatedEvent handled: Cookbook '{Title}' (ID: {Id}) was created by User ID {UserId}.",
             cookbook.Title,
             cookbook.Id,
             cookbook.CreatedBy);

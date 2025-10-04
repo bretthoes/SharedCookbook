@@ -25,7 +25,7 @@ public class UpdateCookbookTests : BaseTestFixture
         var command = new UpdateCookbookCommand(cookbookId, "Other List");
         (await FluentActions.Invoking((() =>
                     SendAsync(command)))
-                .Should().ThrowAsync<ValidationException>().Where(ex => ex.Errors.ContainsKey("Title")))
+                .Should().ThrowAsync<ValidationException>().Where(exception => exception.Errors.ContainsKey("Title")))
             .And.Errors["Title"].Should().Contain("'Title must be unique.");
     }
 

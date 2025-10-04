@@ -7,7 +7,8 @@ public class CookbookDeletedEventHandler(ILogger<CookbookDeletedEventHandler> lo
     {
         var cookbook = deletedEvent.Cookbook;
 
-        logger.LogInformation("CookbookUpdatedEvent handled: Cookbook '{Title}' (ID: {Id}) was updated by User ID {UserId}.",
+        logger.LogInformation(
+            "CookbookUpdatedEvent handled: Cookbook '{Title}' (ID: {Id}) was updated by User ID {UserId}.",
             cookbook.Title,
             cookbook.Id,
             cookbook.LastModifiedBy);
