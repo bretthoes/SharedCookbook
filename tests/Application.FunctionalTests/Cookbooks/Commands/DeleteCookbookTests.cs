@@ -21,10 +21,12 @@ public class DeleteCookbookTests : BaseTestFixture
 
         var cookbookId = await SendAsync(new CreateCookbookCommand(Title: "New Cookbook"));
 
+        var cookbook = await FindAsync<Cookbook>(cookbookId);
+        cookbook.Should().NotBeNull();
+        
         await SendAsync(new DeleteCookbookCommand(cookbookId));
 
-        var cookbook = await FindAsync<Cookbook>(cookbookId);
-
+        cookbook = await FindAsync<Cookbook>(cookbookId);
         cookbook.Should().BeNull();
     }
 }

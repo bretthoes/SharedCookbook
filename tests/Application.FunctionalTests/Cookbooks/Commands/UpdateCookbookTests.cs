@@ -1,5 +1,4 @@
-﻿using SharedCookbook.Application.Common.Exceptions;
-using SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
+﻿using SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
 using SharedCookbook.Application.Cookbooks.Commands.UpdateCookbook;
 using SharedCookbook.Domain.Entities;
 
@@ -16,32 +15,19 @@ public class UpdateCookbookTests : BaseTestFixture
         await FluentActions.Invoking((() => SendAsync(command))).Should().ThrowAsync<NotFoundException>();
     }
 
-    // [Test]
-    // public async Task ShouldRequireUniqueTitle()
-    // {
-    //     await RunAsDefaultUserAsync();
-    //     
-    //     var cookbookId = await SendAsync(new CreateCookbookCommand
-    //     {
-    //         Title = "New Cookbook"
-    //     });
-    //
-    //     await SendAsync(new CreateCookbookCommand
-    //     {
-    //         Title = "Other Cookbook"
-    //     });
-    //
-    //     var command = new UpdateCookbookCommand
-    //     {
-    //         Id = cookbookId,
-    //         Title = "Other List"
-    //     };
-    //
-    //     (await FluentActions.Invoking((() =>
-    //                 SendAsync(command)))
-    //             .Should().ThrowAsync<ValidationException>().Where(ex => ex.Errors.ContainsKey("Title")))
-    //         .And.Errors["Title"].Should().Contain("'Title must be unique.");
-    // }
+    [Test]
+    public async Task ShouldRequireUniqueTitle()
+    {
+        await RunAsDefaultUserAsync();
+
+        var cookbookId = await SendAsync(new CreateCookbookCommand("New Cookbook"));
+        await SendAsync(new CreateCookbookCommand("Other Cookbook"));
+        var command = new UpdateCookbookCommand(cookbookId, "Other List");
+        (await FluentActions.Invoking((() =>
+                    SendAsync(command)))
+                .Should().ThrowAsync<ValidationException>().Where(ex => ex.Errors.ContainsKey("Title")))
+            .And.Errors["Title"].Should().Contain("'Title must be unique.");
+    }
 
     [Test]
     public async Task ShouldUpdateCookbook()
