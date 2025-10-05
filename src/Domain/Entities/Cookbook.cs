@@ -25,7 +25,7 @@ public sealed class Cookbook : BaseAuditableEntity
         {
             Title = title,
             Image = image,
-            Memberships = [CookbookMembership.GetNewCreatorMembership()]
+            Memberships = [CookbookMembership.NewOwner()]
         };
 
         cookbook.AddDomainEvent(new CookbookCreatedEvent(cookbook));

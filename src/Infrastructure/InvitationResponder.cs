@@ -49,7 +49,7 @@ public sealed class InvitationResponder(
         bool exists = await context.CookbookMemberships.ExistsFor(cookbookId, userId, ct);
         if (!exists)
         {
-            var membership = CookbookMembership.GetDefaultMembership(cookbookId);
+            var membership = CookbookMembership.NewDefault(cookbookId);
             await context.CookbookMemberships.AddAsync(membership, ct);
         }
     }

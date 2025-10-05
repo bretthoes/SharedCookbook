@@ -1,55 +1,36 @@
-﻿namespace SharedCookbook.Domain.Entities;
+﻿using SharedCookbook.Domain.ValueObjects;
+
+namespace SharedCookbook.Domain.Entities;
 
 public sealed class CookbookMembership : BaseAuditableEntity
 {
     public int CookbookId { get; init; }
 
-    // TODO change to IsOwner. We have CreatedBy to verify identity, and this
-    // property name does not reflect that ownership of a cookbook can change.
-    public required bool IsCreator { get; init; }
+    public bool IsOwner { get; private set; }
 
-    public required bool CanAddRecipe { get; set; }
-
-    public required bool CanUpdateRecipe { get; set; }
-
-    public required bool CanDeleteRecipe { get; set; }
-
-    public required bool CanSendInvite { get; set; }
-
-    public required bool CanRemoveMember { get; set; }
-
-    public required bool CanEditCookbookDetails { get; set; }
+    public Permissions Permissions { get; private set; } = Permissions.None;
 
     public Cookbook? Cookbook { get; init; }
 
-    public void MarkDeleted()
-    {
-        AddDomainEvent(new MembershipDeletedEvent(this));
-    }
-    
-    public static CookbookMembership GetNewCreatorMembership()
-        => new()
-        {
-            IsCreator = true,
-            CanAddRecipe = true,
-            CanDeleteRecipe = true,
-            CanEditCookbookDetails = true,
-            CanRemoveMember = true,
-            CanSendInvite = true,
-            CanUpdateRecipe = true,
-        };
+    public void MarkDeleted() => AddDomainEvent(new MembershipDeletedEvent(this));
 
-    // TODO change to AddWithDefaultMembership, and raise a domain event here as well
-    public static CookbookMembership GetDefaultMembership(int cookbookId)
-        => new()
-        {
-            CookbookId = cookbookId,
-            IsCreator = false,
-            CanAddRecipe = true,
-            CanUpdateRecipe = false,
-            CanDeleteRecipe = false,
-            CanSendInvite = true,
-            CanRemoveMember = false,
-            CanEditCookbookDetails = false
-        };
+    public void MakeOwner()
+    {
+        IsOwner = true;
+        Permissions = Permissions.Owner;
+    }
+
+    public void MakeNonOwner() { IsOwner = false; }
+    
+    public void SetPermissions(Permissions permissions) => Permissions = permissions;
+
+    public static CookbookMembership NewOwner() => new()
+    {
+        IsOwner = true, Permissions = Permissions.Owner
+    };
+
+    public static CookbookMembership NewDefault(int cookbookId) => new()
+    {
+        CookbookId = cookbookId, IsOwner = false, Permissions = Permissions.Contributor
+    };
 }

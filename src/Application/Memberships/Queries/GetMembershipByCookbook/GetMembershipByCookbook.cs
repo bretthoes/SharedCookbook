@@ -20,13 +20,13 @@ public class GetMembershipByCookbookAndEmailQueryHandler(
         var dto = new MembershipDto
         {
             Id = membership.Id,
-            CanAddRecipe = membership.CanAddRecipe,
-            IsCreator = membership.IsCreator,
-            CanUpdateRecipe = membership.CanUpdateRecipe,
-            CanDeleteRecipe = membership.CanDeleteRecipe,
-            CanRemoveMember = membership.CanRemoveMember,
-            CanSendInvite = membership.CanSendInvite,
-            CanEditCookbookDetails = membership.CanEditCookbookDetails,
+            CanAddRecipe = membership.Permissions.CanAddRecipe,
+            IsCreator = membership.IsOwner,
+            CanUpdateRecipe = membership.Permissions.CanUpdateRecipe,
+            CanDeleteRecipe = membership.Permissions.CanDeleteRecipe,
+            CanRemoveMember = membership.Permissions.CanRemoveMember,
+            CanSendInvite = membership.Permissions.CanSendInvite,
+            CanEditCookbookDetails = membership.Permissions.CanEditCookbookDetails,
             Name = userDto.DisplayName,
             Email = userDto.Email
         };

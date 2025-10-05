@@ -15,9 +15,7 @@ public class CreateMembershipCommandHandler(IApplicationDbContext context, IUser
         if (await context.CookbookMemberships.IsMember(command.CookbookId, user.Id, token))
             throw new MembershipAlreadyExistsException(command.CookbookId, user.Id);
         
-        var membership = CookbookMembership.GetDefaultMembership(command.CookbookId);
-
-        await context.CookbookMemberships.AddAsync(membership, token);
+        await context.CookbookMemberships.AddAsync(CookbookMembership.NewDefault(command.CookbookId), token);
         await context.SaveChangesAsync(token);
     }
 }
