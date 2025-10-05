@@ -19,7 +19,7 @@ public sealed class CookbookMembership : BaseAuditableEntity
         if (IsOwner) return;
         IsOwner = true;
         Permissions = Permissions.Owner;
-        AddDomainEvent(new PromotedToOwnerEvent(membership: this));
+        AddDomainEvent(new PromotedToOwnerEvent(Id, CookbookId));
     }
 
     public void Demote()

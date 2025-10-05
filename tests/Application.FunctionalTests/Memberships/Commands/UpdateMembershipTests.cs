@@ -15,6 +15,7 @@ public class UpdateMembershipTests : BaseTestFixture
     {
         string userId = await RunAsDefaultUserAsync();
 
+        // TODO complete this test
         // Create an owner membership and regular membership
         // Update regular to owner
         // Verify the previous owner gets demoted

@@ -1,6 +1,7 @@
 namespace SharedCookbook.Domain.Events;
 
-public class PromotedToOwnerEvent(CookbookMembership membership) : BaseEvent
+public class PromotedToOwnerEvent(int membershipId, int cookbookId) : BaseEvent
 {
-    public CookbookMembership Membership { get; } = membership;
+    public int MembershipId { get; } =  membershipId;
+    public int CookbookId { get; } = cookbookId;
 }

@@ -37,4 +37,14 @@ public static class MembershipQueryExtensions
         CancellationToken token = default)
         => memberships
             .AnyAsync(membership => membership.CookbookId == cookbookId && membership.CreatedBy == personId, token);
+    
+    public static IQueryable<CookbookMembership> OwnersForCookbookExcept(
+        this IQueryable<CookbookMembership> q, int cookbookId, int exceptMembershipId) =>
+        q.AsNoTracking().HasCookbookId(cookbookId).IsOwner().ExcludingId(exceptMembershipId);
+    
+    private static IQueryable<CookbookMembership> IsOwner(this IQueryable<CookbookMembership> q) =>
+        q.Where(membership => membership.IsOwner);
+
+    private static IQueryable<CookbookMembership> ExcludingId(this IQueryable<CookbookMembership> q, int id) =>
+        q.Where(membership => membership.Id != id);
 }

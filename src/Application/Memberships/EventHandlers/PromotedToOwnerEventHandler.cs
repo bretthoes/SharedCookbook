@@ -5,13 +5,10 @@ public class PromotedToOwnerEventHandler(IApplicationDbContext context)
 {
     public async Task Handle(PromotedToOwnerEvent notification, CancellationToken cancellationToken)
     {
-        var membership = notification.Membership; // TODO only pass the id and cookbookId, dont need to pass whole obj. change domain event to a record
-        // TODO move to query extensions
         var others = await context.CookbookMemberships
-            .Where(otherMembership => otherMembership.CookbookId == membership.CookbookId
-                                      && otherMembership.Id != membership.Id && otherMembership.IsOwner)
+            .OwnersForCookbookExcept(notification.CookbookId, notification.MembershipId)
             .ToListAsync(cancellationToken);
-
+        
         foreach (var otherMembership in others) otherMembership.Demote();
     }
 }
