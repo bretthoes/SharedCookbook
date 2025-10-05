@@ -21,15 +21,11 @@ public class UpdateMembershipCommandHandler(IApplicationDbContext context)
         var membership = await context.CookbookMemberships.FindOrThrowAsync(command.Id, ct);
 
         // TODO handle ownership change in a new OwnerPromoted domain event; handle the side effect in the event handler and create a test to ensure it runs as a proper transaction
-        if (command.IsCreator)
-        {
-            membership.MakeOwner();
-        }
+        if (command.IsCreator) membership.Promote();
         else
         {
-            if (membership.IsOwner) membership.MakeNonOwner();
-
-            var updated = membership.Permissions
+            // TODO add domain event for updated membership permissions
+            var updatedPermissions = membership.Permissions
                 .WithAddRecipe(command.CanAddRecipe)
                 .WithUpdateRecipe(command.CanUpdateRecipe)
                 .WithDeleteRecipe(command.CanDeleteRecipe)
@@ -37,7 +33,7 @@ public class UpdateMembershipCommandHandler(IApplicationDbContext context)
                 .WithRemoveMember(command.CanRemoveMember)
                 .WithEditCookbookDetails(command.CanEditCookbookDetails);
 
-            membership.SetPermissions(updated);
+            membership.SetPermissions(updatedPermissions);
         }
 
         await context.SaveChangesAsync(ct);

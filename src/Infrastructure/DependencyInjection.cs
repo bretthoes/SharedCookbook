@@ -26,8 +26,8 @@ public static class DependencyInjection
         var connectionString = builder.Configuration.GetConnectionString(name: "DefaultConnection");
         ArgumentException.ThrowIfNullOrWhiteSpace(connectionString, nameof(connectionString));
 
-        builder.Services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         builder.Services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
+        builder.Services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
 
         builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {

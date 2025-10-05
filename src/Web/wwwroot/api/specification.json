@@ -2363,26 +2363,11 @@
                 "type": "integer",
                 "format": "int32"
               },
-              "isCreator": {
+              "isOwner": {
                 "type": "boolean"
               },
-              "canAddRecipe": {
-                "type": "boolean"
-              },
-              "canUpdateRecipe": {
-                "type": "boolean"
-              },
-              "canDeleteRecipe": {
-                "type": "boolean"
-              },
-              "canSendInvite": {
-                "type": "boolean"
-              },
-              "canRemoveMember": {
-                "type": "boolean"
-              },
-              "canEditCookbookDetails": {
-                "type": "boolean"
+              "permissions": {
+                "$ref": "#/components/schemas/Permissions"
               },
               "cookbook": {
                 "nullable": true,
@@ -2395,6 +2380,30 @@
             }
           }
         ]
+      },
+      "Permissions": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "canAddRecipe": {
+            "type": "boolean"
+          },
+          "canUpdateRecipe": {
+            "type": "boolean"
+          },
+          "canDeleteRecipe": {
+            "type": "boolean"
+          },
+          "canSendInvite": {
+            "type": "boolean"
+          },
+          "canRemoveMember": {
+            "type": "boolean"
+          },
+          "canEditCookbookDetails": {
+            "type": "boolean"
+          }
+        }
       },
       "CookbookNotification": {
         "allOf": [
