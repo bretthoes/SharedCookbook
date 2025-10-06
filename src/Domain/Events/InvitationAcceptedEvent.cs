@@ -1,6 +1,9 @@
 namespace SharedCookbook.Domain.Events;
 
-public sealed class InvitationAcceptedEvent(CookbookInvitation invitation) : BaseEvent
+using MediatR;
+
+public class InvitationAcceptedEvent(int invitationId, int cookbookId) : BaseEvent
 {
-    public CookbookInvitation Invitation { get; } = invitation;
+    public int InvitationId { get; } = invitationId;
+    public int CookbookId { get; } = cookbookId;
 }

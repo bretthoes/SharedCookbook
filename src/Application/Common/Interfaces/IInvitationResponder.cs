@@ -7,6 +7,5 @@ public interface IInvitationResponder
 {
  Task<int> Respond(BaseInvitation invite,
      InvitationStatus decision,
-     string userId,
      CancellationToken cancellationToken);   
 }

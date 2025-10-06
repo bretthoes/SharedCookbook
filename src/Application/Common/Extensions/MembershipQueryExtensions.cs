@@ -40,7 +40,7 @@ public static class MembershipQueryExtensions
     
     public static IQueryable<CookbookMembership> OwnersForCookbookExcept(
         this IQueryable<CookbookMembership> q, int cookbookId, int exceptMembershipId) =>
-        q.AsNoTracking().HasCookbookId(cookbookId).IsOwner().ExcludingId(exceptMembershipId);
+        q.AsTracking().HasCookbookId(cookbookId).IsOwner().ExcludingId(exceptMembershipId);
     
     private static IQueryable<CookbookMembership> IsOwner(this IQueryable<CookbookMembership> q) =>
         q.Where(membership => membership.IsOwner);

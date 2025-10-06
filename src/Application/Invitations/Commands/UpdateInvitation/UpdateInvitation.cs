@@ -13,10 +13,12 @@ public sealed class UpdateInvitationCommandHandler(
 {
     public async Task<int> Handle(UpdateInvitationCommand command, CancellationToken cancellationToken)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
+        
         var invitation = await context.CookbookInvitations.FindOrThrowAsync(command.Id, cancellationToken);
 
         if (invitation.IsNotFor(user.Id)) throw new ForbiddenAccessException();
 
-        return await responder.Respond(invitation, command.NewStatus, user.Id!, cancellationToken);
+        return await responder.Respond(invitation, command.NewStatus, cancellationToken);
     }
 }

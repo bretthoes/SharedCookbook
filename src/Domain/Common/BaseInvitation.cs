@@ -16,10 +16,10 @@ public abstract class BaseInvitation : BaseAuditableEntity
     
     public Cookbook? Cookbook { get; init; }
     
-    public virtual void Accept(DateTime timestamp)
+    public void Accept(DateTime timestamp)
     {
         if (IsAccepted) return;
-
+        AddDomainEvent(new InvitationAcceptedEvent(Id, CookbookId));
         Status = InvitationStatus.Accepted;
         ResponseDate = timestamp;
     }
