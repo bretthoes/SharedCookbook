@@ -11,44 +11,38 @@ using static Testing;
 public class UpdateMembershipTests : BaseTestFixture
 {
     [Test]
-    public async Task ShouldUpdateCookbook()
+    public async Task ShouldUpdateMembership()
     {
-        string userId = await RunAsDefaultUserAsync();
+        var actingUserId = await RunAsDefaultUserAsync();
 
-        // TODO complete this test
-        // Create an owner membership and regular membership
-        // Update regular to owner
-        // Verify the previous owner gets demoted
+        // Arrange: cookbook + initial owner
+        var cookbookId = await SendAsync(new CreateCookbookCommand("Title"));
+        var originalOwner = await FindAsync<CookbookMembership>(1); // ok in test DB
+        originalOwner!.IsOwner.Should().BeTrue();
 
-        int cookbookId = await SendAsync(new CreateCookbookCommand("Title"));
-        var creator = await FindAsync<CookbookMembership>(1);
-
-        string otherUserId = await RunAsUserAsync("test@test.com", "Testing1234!", []);
-        var member = new CookbookMembership
-        {
-            CookbookId = cookbookId,
-            Id = 0,
-            CreatedBy = otherUserId,
-        };
+        // Arrange: second member
+        var otherUserId = await RunAsUserAsync("test@test.com", "Testing1234!", []);
+        var member = new CookbookMembership { CookbookId = cookbookId, CreatedBy = otherUserId };
         member.SetPermissions(Permissions.Contributor);
         await AddAsync(member);
 
-        var command = new UpdateMembershipCommand
+        // Act: promote second member to owner
+        var cmd = new UpdateMembershipCommand
         {
-            Id = member.Id,
-            IsCreator = true
+            Id = member.Id, IsCreator = true // if you renamed, use IsOwner = true
         };
+        await SendAsync(cmd);
 
-        await SendAsync(command);
+        // Assert: requery fresh
+        // TODO check if modified by is updated from 2nd update
+        var demotedOwner = await FindAsync<CookbookMembership>(originalOwner.Id);
+        var promotedOwner = await FindAsync<CookbookMembership>(member.Id);
 
-        var cookbook = await FindAsync<Cookbook>(cookbookId);
-        // shouldn't be creator anymore
-        creator = await FindAsync<CookbookMembership>(1);
+        demotedOwner!.IsOwner.Should().BeFalse();
+        promotedOwner!.IsOwner.Should().BeTrue();
 
-        cookbook.Should().NotBeNull();
-        //cookbook!.Title.Should().Be(command.Title);
-        cookbook.LastModifiedBy.Should().NotBeNull();
-        cookbook.LastModifiedBy.Should().Be(userId);
-        cookbook.LastModified.Should().BeCloseTo(DateTime.Now, TimeSpan.FromMilliseconds(10000));
+        // Audit on the demoted membership should reflect acting user and recent timestamp
+        demotedOwner.LastModifiedBy.Should().Be(actingUserId);
+        demotedOwner.LastModified.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(10));
     }
 }
