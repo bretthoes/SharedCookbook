@@ -6,6 +6,7 @@ namespace SharedCookbook.Infrastructure;
 
 public sealed class InvitationResponder(
     IApplicationDbContext context,
+    IUser user,
     TimeProvider clock) : IInvitationResponder
 {
     public async Task<int> Respond(BaseInvitation invite,
@@ -13,13 +14,14 @@ public sealed class InvitationResponder(
         CancellationToken cancellationToken)
     {
         if (invite.Status == decision) return invite.Id;
+        ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
 
         var now = clock.GetUtcNow().UtcDateTime;
 
         switch (decision)
         {
             case InvitationStatus.Accepted:
-                invite.Accept(now);
+                invite.Accept(now, user.Id);
                 break;
             case InvitationStatus.Rejected:
                 invite.Reject(now);

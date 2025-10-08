@@ -1,9 +1,9 @@
 ﻿namespace SharedCookbook.Application.Memberships.Commands.UpdateMembership;
 
-public record UpdateMembershipCommand : IRequest
+public sealed record UpdateMembershipCommand : IRequest
 {
     public required int Id { get; init; }
-    public bool IsCreator { get; init; } // TODO change to isOwner; dont break api though
+    public bool IsCreator { get; init; } // TODO change to isOwner; don't break api though
 
     public bool CanAddRecipe { get; init; }
     public bool CanUpdateRecipe { get; init; }
@@ -13,14 +13,13 @@ public record UpdateMembershipCommand : IRequest
     public bool CanEditCookbookDetails { get; init; }
 }
 
-public class UpdateMembershipCommandHandler(IApplicationDbContext context)
+public sealed class UpdateMembershipCommandHandler(IApplicationDbContext context)
     : IRequestHandler<UpdateMembershipCommand>
 {
     public async Task Handle(UpdateMembershipCommand command, CancellationToken ct)
     {
         var membership = await context.CookbookMemberships.FindOrThrowAsync(command.Id, ct);
 
-        // TODO handle ownership change in a new OwnerPromoted domain event; handle the side effect in the event handler and create a test to ensure it runs as a proper transaction
         if (command.IsCreator) membership.Promote();
         else
         {
