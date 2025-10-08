@@ -18,10 +18,8 @@ public sealed class UpdateInvitationTokenCommandHandler(
         var token = await context.InvitationTokens.SingleById(link.TokenId, cancellationToken)
                     ?? throw new NotFoundException(key: link.TokenId.ToString(), nameof(InvitationToken));
         
-        if (!factory.Verify(link.Secret, token.Digest))
-            throw new TokenDigestMismatchException();
-        if (!token.IsRedeemable)
-            throw new TokenIsNotConsumableException();
+        if (!factory.Verify(link.Secret, token.Digest)) throw new TokenDigestMismatchException();
+        if (!token.IsRedeemable) throw new TokenIsNotRedeemableException();
         
         return await responder.Respond(token, command.NewStatus, cancellationToken);
     }

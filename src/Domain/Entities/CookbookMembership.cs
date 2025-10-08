@@ -12,8 +12,6 @@ public sealed class CookbookMembership : BaseAuditableEntity
 
     public Cookbook? Cookbook { get; init; }
 
-    public void MarkDeleted() => AddDomainEvent(new MembershipDeletedEvent(this));
-
     public void Promote()
     {
         if (IsOwner) return;

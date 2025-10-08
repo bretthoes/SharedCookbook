@@ -4,7 +4,7 @@ namespace SharedCookbook.Application.Invitations.Commands.CreateInvitation;
 
 public sealed record CreateInvitationCommand(int CookbookId, string Email) : IRequest<int>;
 
-public class CreateInvitationCommandHandler(
+public sealed class CreateInvitationCommandHandler(
     IApplicationDbContext context,
     IIdentityService identityService
 ) : IRequestHandler<CreateInvitationCommand, int>

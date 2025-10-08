@@ -1,9 +1,9 @@
 ﻿namespace SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
 
 // TODO use a dto here; shouldn't tie this to domain model
-public record UpdateRecipeCommand(Recipe Recipe) : IRequest<int>;
+public sealed record UpdateRecipeCommand(Recipe Recipe) : IRequest<int>;
 
-public class UpdateRecipeCommandHandler(IApplicationDbContext context) 
+public sealed class UpdateRecipeCommandHandler(IApplicationDbContext context) 
     : IRequestHandler<UpdateRecipeCommand, int>
 {
     public async Task<int> Handle(UpdateRecipeCommand command, CancellationToken cancellationToken)

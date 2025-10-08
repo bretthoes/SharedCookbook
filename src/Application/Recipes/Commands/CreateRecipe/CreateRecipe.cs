@@ -1,19 +1,12 @@
 ﻿namespace SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 
-public record CreateRecipeCommand : IRequest<int>
+public sealed record CreateRecipeCommand : IRequest<int>
 {
     public required CreateRecipeDto Recipe { get; init; }
 }
 
-public class CreateRecipeCommandHandler : IRequestHandler<CreateRecipeCommand, int>
+public sealed class CreateRecipeCommandHandler(IApplicationDbContext context) : IRequestHandler<CreateRecipeCommand, int>
 {
-    private readonly IApplicationDbContext _context;
-
-    public CreateRecipeCommandHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<int> Handle(CreateRecipeCommand request, CancellationToken cancellationToken)
     {
         var entity = new Recipe
@@ -48,9 +41,9 @@ public class CreateRecipeCommandHandler : IRequestHandler<CreateRecipeCommand, i
 
         entity.AddDomainEvent(new RecipeCreatedEvent(entity));
 
-        _context.Recipes.Add(entity);
+        context.Recipes.Add(entity);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
 
         return entity.Id;
     }

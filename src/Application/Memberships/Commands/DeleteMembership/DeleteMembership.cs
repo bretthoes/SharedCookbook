@@ -8,7 +8,7 @@ public class DeleteMembershipCommandHandler(IApplicationDbContext context) : IRe
         var membership = await context.CookbookMemberships.FindOrThrowAsync(request.Id, cancellationToken);
 
         context.CookbookMemberships.Remove(membership);
-        membership.MarkDeleted();
+        membership.AddDomainEvent(new MembershipDeletedEvent(membership));
 
         await context.SaveChangesAsync(cancellationToken);
     }

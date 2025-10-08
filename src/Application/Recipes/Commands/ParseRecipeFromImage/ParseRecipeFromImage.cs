@@ -4,9 +4,10 @@ using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 
 namespace SharedCookbook.Application.Recipes.Commands.ParseRecipeFromImage;
 
-public record ParseRecipeFromImageCommand(IFormFile File) : IRequest<CreateRecipeDto>;
+public sealed record ParseRecipeFromImageCommand(IFormFile File) : IRequest<CreateRecipeDto>;
 
-public partial class ParseRecipeFromImageCommandHandler(IOcrService ocrService)
+// TODO refactor parsing logic to a separate service
+public sealed partial class ParseRecipeFromImageCommandHandler(IOcrService ocrService)
     : IRequestHandler<ParseRecipeFromImageCommand, CreateRecipeDto>
 {
     public async Task<CreateRecipeDto> Handle(

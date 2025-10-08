@@ -1,11 +1,11 @@
 ﻿namespace SharedCookbook.Application.Cookbooks.EventHandlers;
 
-public class CookbookUpdatedEventHandler(ILogger<CookbookUpdatedEventHandler> logger)
+public sealed class CookbookUpdatedEventHandler(ILogger<CookbookUpdatedEventHandler> logger)
     : INotificationHandler<CookbookUpdatedEvent>
 {
-    public Task Handle(CookbookUpdatedEvent deletedEvent, CancellationToken cancellationToken)
+    public Task Handle(CookbookUpdatedEvent updatedEvent, CancellationToken cancellationToken)
     {
-        var cookbook = deletedEvent.Cookbook;
+        var cookbook = updatedEvent.Cookbook;
 
         logger.LogInformation(
             "CookbookUpdatedEvent handled: Cookbook '{Title}' (ID: {Id}) was updated by User ID {UserId}.",
