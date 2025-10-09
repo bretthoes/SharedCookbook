@@ -109,8 +109,7 @@ public partial class Testing
         _userId = null;
     }
 
-    internal static async Task<TEntity?> FindAsync<TEntity>(params object[] keyValues)
-        where TEntity : class
+    internal static async Task<TEntity?> FindAsync<TEntity>(params object[] keyValues) where TEntity : class
     {
         using var scope = _scopeFactory.CreateScope();
 
@@ -118,9 +117,16 @@ public partial class Testing
 
         return await context.FindAsync<TEntity>(keyValues);
     }
+    internal static async Task<List<TEntity>> ListAsync<TEntity>() where TEntity : class
+    {
+        using var scope = _scopeFactory.CreateScope();
 
-    internal static async Task AddAsync<TEntity>(TEntity entity)
-        where TEntity : class
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        return await context.Set<TEntity>().AsNoTracking().ToListAsync();
+    }
+    
+    internal static async Task AddAsync<TEntity>(TEntity entity) where TEntity : class
     {
         using var scope = _scopeFactory.CreateScope();
 
