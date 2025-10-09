@@ -15,10 +15,10 @@ public class UpdateMembershipTests : BaseTestFixture
     {
         // This test should simulate a cookbook with two members, where one is the owner and the other a contributor.
         // When the contributor is promoted to owner BY the owner, the original owner should be demoted to contributor
-        var newOwnerUserId = await RunAsUserAsync("test@test.com", "Testing1234!", []);
+        string newOwnerUserId = await RunAsUserAsync("test@test.com", "Testing1234!", []);
         var contributorMembership = new CookbookMembership { CreatedBy = newOwnerUserId };
 
-        var originalOwnerUserId = await RunAsDefaultUserAsync();
+        string originalOwnerUserId = await RunAsDefaultUserAsync();
         var ownerMembership = CookbookMembership.NewOwner();
         ownerMembership.CreatedBy = originalOwnerUserId;
 
