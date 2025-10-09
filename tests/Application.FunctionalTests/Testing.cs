@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using SharedCookbook.Application.Common.Extensions;
 
 namespace SharedCookbook.Application.FunctionalTests;
 
@@ -26,7 +27,14 @@ public partial class Testing
         _scopeFactory = _factory.Services.GetRequiredService<IServiceScopeFactory>();
     }
 
-    public static async Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request)
+    [OneTimeTearDown]
+    public async Task RunAfterAnyTests()
+    {
+        await _database.DisposeAsync();
+        await _factory.DisposeAsync();
+    }
+    
+    internal static async Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request)
     {
         using var scope = _scopeFactory.CreateScope();
 
@@ -35,7 +43,7 @@ public partial class Testing
         return await mediator.Send(request);
     }
 
-    public static async Task SendAsync(IBaseRequest request)
+    internal static async Task SendAsync(IBaseRequest request)
     {
         using var scope = _scopeFactory.CreateScope();
 
@@ -44,22 +52,22 @@ public partial class Testing
         await mediator.Send(request);
     }
 
-    public static string? GetUserId()
+    internal static string? GetUserId()
     {
         return _userId;
     }
 
-    public static async Task<string> RunAsDefaultUserAsync()
+    internal static async Task<string> RunAsDefaultUserAsync()
     {
         return await RunAsUserAsync("test@local", "Testing1234!", Array.Empty<string>());
     }
 
-    public static async Task<string> RunAsAdministratorAsync()
+    internal static async Task<string> RunAsAdministratorAsync()
     {
         return await RunAsUserAsync("administrator@local", "Administrator1234!", new[] { Roles.Administrator });
     }
 
-    public static async Task<string> RunAsUserAsync(string userName, string password, string[] roles)
+    internal static async Task<string> RunAsUserAsync(string userName, string password, string[] roles)
     {
         using var scope = _scopeFactory.CreateScope();
 
@@ -69,7 +77,7 @@ public partial class Testing
 
         var result = await userManager.CreateAsync(user, password);
 
-        if (roles.Any())
+        if (roles.IsNotEmpty())
         {
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
@@ -93,20 +101,15 @@ public partial class Testing
         throw new Exception($"Unable to create {userName}.{Environment.NewLine}{errors}");
     }
 
-    public static async Task ResetState()
+    internal static async Task ResetState()
     {
-        try
-        {
-            await _database.ResetAsync();
-        }
-        catch (Exception)
-        {
-        }
+        try { await _database.ResetAsync(); }
+        catch (Exception) { /* Ignore */ }
 
         _userId = null;
     }
 
-    public static async Task<TEntity?> FindAsync<TEntity>(params object[] keyValues)
+    internal static async Task<TEntity?> FindAsync<TEntity>(params object[] keyValues)
         where TEntity : class
     {
         using var scope = _scopeFactory.CreateScope();
@@ -116,7 +119,7 @@ public partial class Testing
         return await context.FindAsync<TEntity>(keyValues);
     }
 
-    public static async Task AddAsync<TEntity>(TEntity entity)
+    internal static async Task AddAsync<TEntity>(TEntity entity)
         where TEntity : class
     {
         using var scope = _scopeFactory.CreateScope();
@@ -128,19 +131,12 @@ public partial class Testing
         await context.SaveChangesAsync();
     }
 
-    public static async Task<int> CountAsync<TEntity>() where TEntity : class
+    internal static async Task<int> CountAsync<TEntity>() where TEntity : class
     {
         using var scope = _scopeFactory.CreateScope();
 
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
         return await context.Set<TEntity>().CountAsync();
-    }
-
-    [OneTimeTearDown]
-    public async Task RunAfterAnyTests()
-    {
-        await _database.DisposeAsync();
-        await _factory.DisposeAsync();
     }
 }

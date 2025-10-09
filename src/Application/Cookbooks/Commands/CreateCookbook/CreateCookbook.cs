@@ -10,6 +10,7 @@ public sealed class CreateCookbookCommandHandler(IApplicationDbContext context)
         var cookbook = Cookbook.Create(request.Title, request.Image);
         
         await context.Cookbooks.AddAsync(cookbook, cancellationToken);
+        cookbook.AddDomainEvent(new CookbookCreatedEvent(cookbook));
         await context.SaveChangesAsync(cancellationToken);
 
         return cookbook.Id;

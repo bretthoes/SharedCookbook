@@ -37,4 +37,23 @@ public class CreateCookbookTests : BaseTestFixture
         item.LastModifiedBy.Should().Be(userId);
         item.LastModified.Should().BeCloseTo(DateTime.Now, precision: TimeSpan.FromSeconds(10));
     }
+
+    [Test]
+    public async Task ShouldCreateOwnerMembership()
+    {
+        string userId = await RunAsDefaultUserAsync();
+        
+        var command = new CreateCookbookCommand(Title: "New Cookbook");
+
+        int cookbookId = await SendAsync(command);
+
+        var membership = await FindAsync<CookbookMembership>(cookbookId);
+
+        membership.Should().NotBeNull();
+        membership.CookbookId.Should().Be(cookbookId);
+        membership.CreatedBy.Should().Be(userId);
+        membership.Created.Should().BeCloseTo(DateTime.Now, precision: TimeSpan.FromSeconds(10));
+        membership.LastModifiedBy.Should().Be(userId);
+        membership.LastModified.Should().BeCloseTo(DateTime.Now, precision: TimeSpan.FromSeconds(10));
+    }
 }
