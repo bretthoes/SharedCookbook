@@ -16,16 +16,12 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
             .GetCustomAttributes<AuthorizeAttribute>()
             .ToArray();
 
-        if (authorizeAttributes.IsEmpty())
-        {
-            return await next(cancellationToken);
-        }
-
         // Must be authenticated user
         if (user.Id == null || user.Id == Guid.Empty.ToString())
-        {
             throw new UnauthorizedAccessException();
-        }
+        
+        if (authorizeAttributes.IsEmpty())
+            return await next(cancellationToken);
 
         // Role-based authorization
         var authorizeAttributesWithRoles = authorizeAttributes
@@ -39,16 +35,12 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
             foreach (string[] roles in authorizeAttributesWithRoles.Select(attribute => attribute.Roles.Split(',')))
             {
                 if (roles.Select(role => user.Roles?.Any(userRole => role == userRole) ?? false).Any(isInRole => isInRole))
-                {
                     authorized = true;
-                }
             }
 
             // Must be a member of at least one role in roles
             if (!authorized)
-            {
                 throw new ForbiddenAccessException();
-            }
         }
 
         // Policy-based authorization
@@ -57,9 +49,7 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
             .ToArray();
         
         if (authorizeAttributesWithPolicies.IsEmpty())
-        {
             return await next(cancellationToken);
-        }
 
         {
             foreach (string policy in authorizeAttributesWithPolicies.Select(a => a.Policy))
@@ -67,9 +57,7 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
                 bool authorized = await identityService.AuthorizeAsync(user.Id, policy);
 
                 if (!authorized)
-                {
                     throw new ForbiddenAccessException();
-                }
             }
         }
 
