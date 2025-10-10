@@ -18,12 +18,11 @@ namespace SharedCookbook.Infrastructure.Identity;
 
 /// <summary>
 /// Repository for handling queries with joins to the AspNetUsers table,
-/// which is managed by the Identity framework. This repository is defined
-/// in the Infrastructure layer (and injected through an interface in the
-/// Application layer) to avoid directly referencing the IdentityUser in
-/// the Application project. The tradeoff here is that knowledge of
+/// which is managed by the Identity framework. This repository is implemented
+/// in the Infrastructure layer to avoid directly referencing the IdentityUser in
+/// the Application layer. The tradeoff here is that knowledge of
 /// Identity is kept out of the application layer, but the downside is
-/// the necessity of this repository and the verbose joining/mapping that
+/// the necessity of this repository and the verbose joining that
 /// must be defined in the query.
 /// </summary>
 /// <remarks>
