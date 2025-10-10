@@ -29,7 +29,7 @@ public class UpdateMembershipTests : BaseTestFixture
         });
 
         // Act: promote contributor to owner (performed by original owner)
-        await SendAsync(new UpdateMembershipCommand { Id = contributorMembership.Id, IsCreator = true });
+        await SendAsync(new UpdateMembershipCommand { Id = contributorMembership.Id, IsOwner = true });
 
         // Assert: resolve by CreatedBy (stable) instead of PKs
         var memberships = await ListAsync<CookbookMembership>();

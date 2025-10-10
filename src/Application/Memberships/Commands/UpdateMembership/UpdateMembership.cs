@@ -3,7 +3,8 @@
 public sealed record UpdateMembershipCommand : IRequest
 {
     public required int Id { get; init; }
-    public bool IsCreator { get; init; } // TODO change to isOwner; don't break api though
+    
+    public bool IsOwner { get; init; }
 
     public bool CanAddRecipe { get; init; }
     public bool CanUpdateRecipe { get; init; }
@@ -20,7 +21,7 @@ public sealed class UpdateMembershipCommandHandler(IApplicationDbContext context
     {
         var membership = await context.CookbookMemberships.FindOrThrowAsync(command.Id, ct);
 
-        if (command.IsCreator) membership.Promote();
+        if (command.IsOwner) membership.Promote();
         else
         {
             // TODO add domain event for updated membership permissions

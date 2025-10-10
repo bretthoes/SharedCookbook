@@ -8,7 +8,7 @@ public record MembershipDto
 
     public string? Email { get; set; }
 
-    public required bool IsCreator { get; set; }
+    public required bool IsOwner { get; set; }
 
     public required bool CanAddRecipe { get; set; }
 

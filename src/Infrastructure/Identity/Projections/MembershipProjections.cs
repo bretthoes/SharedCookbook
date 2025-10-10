@@ -13,7 +13,7 @@ internal static class MembershipProjections
         select new MembershipDto
         {
             Id = membership.Id,
-            IsCreator = membership.IsOwner,
+            IsOwner = membership.IsOwner,
             CanAddRecipe = membership.Permissions.CanAddRecipe,
             CanUpdateRecipe = membership.Permissions.CanUpdateRecipe,
             CanDeleteRecipe = membership.Permissions.CanDeleteRecipe,

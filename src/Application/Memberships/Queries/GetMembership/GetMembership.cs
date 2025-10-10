@@ -12,7 +12,7 @@ public class GetMembershipQueryHandler(IApplicationDbContext context, IIdentityS
         return new MembershipDto
         {
             CanAddRecipe = membership.Permissions.CanAddRecipe,
-            IsCreator = membership.IsOwner,
+            IsOwner = membership.IsOwner,
             CanUpdateRecipe = membership.Permissions.CanUpdateRecipe,
             CanDeleteRecipe = membership.Permissions.CanDeleteRecipe,
             CanRemoveMember = membership.Permissions.CanRemoveMember,
