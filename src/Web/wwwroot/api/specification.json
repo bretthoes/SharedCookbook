@@ -1583,7 +1583,7 @@
             "type": "string",
             "nullable": true
           },
-          "isCreator": {
+          "isOwner": {
             "type": "boolean"
           },
           "canAddRecipe": {
@@ -1644,7 +1644,7 @@
             "type": "integer",
             "format": "int32"
           },
-          "isCreator": {
+          "isOwner": {
             "type": "boolean"
           },
           "canAddRecipe": {

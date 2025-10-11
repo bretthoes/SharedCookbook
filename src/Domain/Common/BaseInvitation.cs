@@ -4,9 +4,9 @@ public abstract class BaseInvitation : BaseAuditableEntity
 {
     public required InvitationStatus Status { get; set; }
     
-    public required int CookbookId { get; init; }
+    public int CookbookId { get; init; }
     
-    public DateTime? ResponseDate { get; set; }
+    public DateTime? ResponseDate { get; private set; }
 
     protected bool IsActive => Status == InvitationStatus.Active;
     

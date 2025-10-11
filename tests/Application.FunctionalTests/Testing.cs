@@ -1,4 +1,5 @@
-﻿using SharedCookbook.Domain.Constants;
+﻿using System.Linq.Expressions;
+using SharedCookbook.Domain.Constants;
 using SharedCookbook.Infrastructure.Data;
 using SharedCookbook.Infrastructure.Identity;
 using MediatR;
@@ -33,7 +34,7 @@ public partial class Testing
         await _database.DisposeAsync();
         await _factory.DisposeAsync();
     }
-    
+
     internal static async Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request)
     {
         using var scope = _scopeFactory.CreateScope();
@@ -65,6 +66,33 @@ public partial class Testing
     internal static async Task<string> RunAsAdministratorAsync()
     {
         return await RunAsUserAsync("administrator@local", "Administrator1234!", new[] { Roles.Administrator });
+    }
+
+    internal static async Task<bool> AnyAsync<TEntity>(
+        Expression<Func<TEntity, bool>>? predicate = null,
+        CancellationToken cancellationToken = default)
+        where TEntity : class
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var set = context.Set<TEntity>().AsNoTracking();
+
+        return predicate is null
+            ? await set.AnyAsync(cancellationToken)
+            : await set.AnyAsync(predicate, cancellationToken);
+    }
+
+    internal static async Task<TEntity> SingleAsync<TEntity>(
+        Expression<Func<TEntity, bool>> predicate,
+        CancellationToken cancellationToken = default)
+        where TEntity : class
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        return await context.Set<TEntity>()
+            .AsNoTracking()
+            .SingleAsync(predicate, cancellationToken);
     }
 
     internal static async Task<string> RunAsUserAsync(string userName, string password, string[] roles)
@@ -104,7 +132,10 @@ public partial class Testing
     internal static async Task ResetState()
     {
         try { await _database.ResetAsync(); }
-        catch (Exception) { /* Ignore */ }
+        catch (Exception)
+        {
+            /* Ignore */
+        }
 
         _userId = null;
     }
@@ -117,6 +148,7 @@ public partial class Testing
 
         return await context.FindAsync<TEntity>(keyValues);
     }
+
     internal static async Task<List<TEntity>> ListAsync<TEntity>() where TEntity : class
     {
         using var scope = _scopeFactory.CreateScope();
@@ -125,7 +157,7 @@ public partial class Testing
 
         return await context.Set<TEntity>().AsNoTracking().ToListAsync();
     }
-    
+
     internal static async Task AddAsync<TEntity>(TEntity entity) where TEntity : class
     {
         using var scope = _scopeFactory.CreateScope();
