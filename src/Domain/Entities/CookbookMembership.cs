@@ -31,14 +31,8 @@ public sealed class CookbookMembership : BaseAuditableEntity
 
     public static CookbookMembership NewOwner() => new() { IsOwner = true, Permissions = Permissions.Owner };
 
-    public static CookbookMembership NewDefault(int cookbookId) => new()
+    public static CookbookMembership NewDefault(int cookbookId, string? userId = null) => new()
     {
-        CookbookId = cookbookId, IsOwner = false, Permissions = Permissions.Contributor
-    };
-
-    public static CookbookMembership NewDefault(int cookbookId, string userId) => new()
-    {
-        // TODO check if CreatedAt / other intercepted fields are actually being updated?
         CookbookId = cookbookId, IsOwner = false, Permissions = Permissions.Contributor, CreatedBy = userId
     };
 }
