@@ -13,10 +13,13 @@ public class GetMembershipByCookbookAndEmailQueryHandler(
         CancellationToken cancellationToken)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
-       
-        var identity = await identityService.FindByIdAsync(user.Id) ?? throw new UnauthorizedAccessException();
 
-        var membership = await context.CookbookMemberships.SingleForCookbookAndUser(query.CookbookId, user.Id, cancellationToken);
+        (string? email, string? name) =
+            await identityService.FindByIdAsync(user.Id) ?? throw new UnauthorizedAccessException();
+
+        var membership =
+            await context.CookbookMemberships.SingleForCookbookAndUser(query.CookbookId, user.Id, cancellationToken);
+        
         var dto = new MembershipDto
         {
             Id = membership.Id,
@@ -27,8 +30,8 @@ public class GetMembershipByCookbookAndEmailQueryHandler(
             CanRemoveMember = membership.Permissions.CanRemoveMember,
             CanSendInvite = membership.Permissions.CanSendInvite,
             CanEditCookbookDetails = membership.Permissions.CanEditCookbookDetails,
-            Name = identity?.DisplayName,
-            Email = identity?.Email
+            Name = name,
+            Email = email
         };
 
         return dto;

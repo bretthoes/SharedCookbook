@@ -11,28 +11,23 @@ public class IdentityService(
     IAuthorizationService authorizationService)
     : IIdentityService
 {
-    public async Task<Application.Common.Interfaces.Identity?> FindByEmailAsync(string email)
+    public async Task<(string? Email, string? DisplayName)?> FindByEmailAsync(string email)
     {
         var user = await userManager.FindByEmailAsync(email);
-        
-        return user == null ? null : new Application.Common.Interfaces.Identity(user.Email, user.DisplayName);
+        return user == null ? null : (user.Email, user.DisplayName);
+    }
+
+    public async Task<(string? Email, string? DisplayName)?> FindByIdAsync(string id)
+    {
+        var user = await userManager.FindByIdAsync(id);
+        return user == null ? null : (user.Email, user.DisplayName);
     }
 
     public async Task<string?> GetIdByEmailAsync(string email)
         => (await userManager.FindByEmailAsync(email))?.Id;
     
-    public async Task<Application.Common.Interfaces.Identity?> FindByIdAsync(string id)
-    {
-        var user = await userManager.FindByIdAsync(id);
-        return user == null ? null : new Application.Common.Interfaces.Identity(user.Email, user.DisplayName);
-    }
-
     public async Task<string?> GetUserNameAsync(string userId)
-    {
-        var user = await userManager.FindByIdAsync(userId);
-
-        return user?.UserName;
-    }
+        => (await userManager.FindByIdAsync(userId))?.UserName;
     
     public async Task<string?> GetDisplayNameAsync(string userId)
     {
