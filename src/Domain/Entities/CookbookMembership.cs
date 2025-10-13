@@ -29,7 +29,8 @@ public sealed class CookbookMembership : BaseAuditableEntity
 
     public void SetPermissions(Permissions permissions) => Permissions = permissions;
 
-    public static CookbookMembership NewOwner() => new() { IsOwner = true, Permissions = Permissions.Owner };
+    public static CookbookMembership NewOwner(string creatorId) =>
+        new() { IsOwner = true, Permissions = Permissions.Owner, CreatedBy = creatorId };
 
     public static CookbookMembership NewDefault(int cookbookId, string? userId = null) => new()
     {

@@ -1,8 +1,5 @@
-using SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
-using SharedCookbook.Application.Invitations.Commands.CreateInvitation;
 using SharedCookbook.Application.Memberships.Commands.UpdateMembership;
 using SharedCookbook.Domain.Entities;
-using SharedCookbook.Domain.ValueObjects;
 
 namespace SharedCookbook.Application.FunctionalTests.Memberships.Commands;
 
@@ -18,8 +15,7 @@ public class UpdateMembershipTests : BaseTestFixture
         var contributorMembership = new CookbookMembership { CreatedBy = newOwnerUserId };
 
         string originalOwnerUserId = await RunAsDefaultUserAsync(); // becomes current actor
-        var ownerMembership = CookbookMembership.NewOwner();
-        ownerMembership.CreatedBy = originalOwnerUserId;
+        var ownerMembership = CookbookMembership.NewOwner(originalOwnerUserId);
 
         await AddAsync(new Cookbook
         {

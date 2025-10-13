@@ -16,16 +16,13 @@ public sealed class Cookbook : BaseAuditableEntity
 
     public IReadOnlyCollection<Recipe> Recipes { get; init; } = [];
     
-    public bool HasMembership(string userId)
-        => Memberships.Any(membership => membership.CreatedBy == userId);
-    
-    public static Cookbook Create(string title, string? image)
+    public static Cookbook Create(string title, string creatorId, string? image)
     {
         var cookbook = new Cookbook
         {
             Title = title,
             Image = image,
-            Memberships = [CookbookMembership.NewOwner()]
+            Memberships = [CookbookMembership.NewOwner(creatorId)]
         };
 
         cookbook.AddDomainEvent(new CookbookCreatedEvent(cookbook));
