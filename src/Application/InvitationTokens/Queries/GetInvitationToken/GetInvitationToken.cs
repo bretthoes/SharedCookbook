@@ -23,14 +23,14 @@ public class GetInvitationPreviewQueryHandler(
         string? senderId = token.CreatedBy;
         ArgumentException.ThrowIfNullOrWhiteSpace(senderId);
         
-        var userDto = await service.FindByIdAsync(senderId)
-            ?? throw new NotFoundException(key: senderId, nameof(UserDto));
+        var identity = await service.FindByIdAsync(senderId)
+            ?? throw new NotFoundException(key: senderId, nameof(IUser));
 
         return new InvitationDto
         {
             Id = token.Id,
-            SenderName = userDto.DisplayName,
-            SenderEmail = userDto.Email,
+            SenderName = identity.DisplayName,
+            SenderEmail = identity.Email,
             CookbookImage = token.Cookbook?.Image,
             CookbookTitle = token.Cookbook?.Title ?? string.Empty,
         };

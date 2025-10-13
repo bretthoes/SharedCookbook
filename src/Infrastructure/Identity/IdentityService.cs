@@ -11,23 +11,20 @@ public class IdentityService(
     IAuthorizationService authorizationService)
     : IIdentityService
 {
-    public async Task<UserDto?> FindByEmailAsync(string email)
+    public async Task<Application.Common.Interfaces.Identity?> FindByEmailAsync(string email)
     {
         var user = await userManager.FindByEmailAsync(email);
-        return user == null
-            ? null
-            : MapApplicationUserToUserDto(user);
+        
+        return user == null ? null : new Application.Common.Interfaces.Identity(user.Email, user.DisplayName);
     }
 
     public async Task<string?> GetIdByEmailAsync(string email)
         => (await userManager.FindByEmailAsync(email))?.Id;
     
-    public async Task<UserDto?> FindByIdAsync(string id)
+    public async Task<Application.Common.Interfaces.Identity?> FindByIdAsync(string id)
     {
         var user = await userManager.FindByIdAsync(id);
-        return user == null
-            ? null
-            : MapApplicationUserToUserDto(user);
+        return user == null ? null : new Application.Common.Interfaces.Identity(user.Email, user.DisplayName);
     }
 
     public async Task<string?> GetUserNameAsync(string userId)
@@ -114,16 +111,5 @@ public class IdentityService(
         var result = await userManager.DeleteAsync(user);
 
         return result.ToApplicationResult();
-    }
-    
-    private static UserDto MapApplicationUserToUserDto(ApplicationUser user)
-    {
-        return new UserDto
-        {
-            Id = user.Id,
-            UserName = user.UserName,
-            Email = user.Email ?? string.Empty,
-            DisplayName = user.DisplayName
-        };
     }
 }

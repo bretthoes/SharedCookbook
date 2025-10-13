@@ -3,9 +3,9 @@ using SharedCookbook.Application.Images.Commands.CreateImages;
 
 namespace SharedCookbook.Application.Recipes.Queries.GetRecipe;
 
-public record GetRecipeQuery(int Id) : IRequest<RecipeDetailedDto>;
+public sealed record GetRecipeQuery(int Id) : IRequest<RecipeDetailedDto>;
 
-public class GetRecipeQueryHandler(IApplicationDbContext context, 
+public sealed class GetRecipeQueryHandler(IApplicationDbContext context, 
     IIdentityService identityService,
     IUser user,
     IOptions<ImageUploadOptions> options)
@@ -18,10 +18,10 @@ public class GetRecipeQueryHandler(IApplicationDbContext context,
         var dto = await context.Recipes .QueryRecipeDetailedDto(request.Id, options.Value.ImageBaseUrl, token)
             ?? throw new NotFoundException(key: request.Id.ToString(), nameof(Recipe));
 
-        var userDto = await identityService.FindByIdAsync(user.Id);
+        var identity = await identityService.FindByIdAsync(user.Id);
         
-        dto.AuthorEmail = userDto?.Email;
-        dto.Author = userDto?.DisplayName;
+        dto.AuthorEmail = identity?.Email;
+        dto.Author = identity?.DisplayName;
 
         return dto;
     }
