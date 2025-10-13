@@ -29,7 +29,7 @@ public class CookbookConfiguration : IEntityTypeConfiguration<Cookbook>
             .HasMaxLength(Cookbook.Constraints.ImageMaxLength);
 
         builder.HasOne<Identity.ApplicationUser>()
-            .WithMany(user => user.Cookbooks)
+            .WithMany()
             .HasForeignKey(cookbook => cookbook.CreatedBy)
             .HasConstraintName("FK_cookbook__created_by");
         builder.HasMany(cookbook => cookbook.Invitations)

@@ -41,7 +41,7 @@ public class CookbookMemberConfiguration : IEntityTypeConfiguration<CookbookMemb
         builder.Navigation(membership => membership.Permissions).IsRequired();
 
         builder.HasOne<ApplicationUser>()
-            .WithMany(u => u.CookbookMemberships)
+            .WithMany()
             .HasForeignKey(membership => membership.CreatedBy)
             .HasConstraintName("FK_cookbook_member__created_by")
             .OnDelete(DeleteBehavior.Cascade)

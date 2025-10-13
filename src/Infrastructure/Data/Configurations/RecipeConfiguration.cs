@@ -51,7 +51,7 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
             .HasConstraintName("FK_recipe__cookbook_id")
             .IsRequired();
         builder.HasOne<ApplicationUser>()
-            .WithMany(user => user.Recipes)
+            .WithMany()
             .HasForeignKey(recipe => recipe.CreatedBy)
             .HasConstraintName("FK_recipe__created_by");
         builder.HasMany(recipe => recipe.CookbookNotifications)

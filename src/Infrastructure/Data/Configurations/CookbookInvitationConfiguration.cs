@@ -45,11 +45,11 @@ public class CookbookInvitationConfiguration : IEntityTypeConfiguration<Cookbook
             .HasForeignKey(invitation => invitation.CookbookId)
             .HasConstraintName("FK_cookbook_invitation__cookbook_id");
         builder.HasOne<Identity.ApplicationUser>()
-            .WithMany(user => user.ReceivedInvitations)
+            .WithMany()
             .HasForeignKey(invitation => invitation.RecipientPersonId)
             .HasConstraintName("FK_cookbook_invitation__recipient_person_id");
         builder.HasOne<Identity.ApplicationUser>()
-            .WithMany(user => user.SentInvitations)
+            .WithMany()
             .HasForeignKey(invitation => invitation.CreatedBy)
             .HasConstraintName("FK_cookbook_invitation__created_by");
     }

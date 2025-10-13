@@ -46,7 +46,7 @@ public class InvitationTokenConfiguration : IEntityTypeConfiguration<InvitationT
             .HasForeignKey(invitation => invitation.CookbookId)
             .HasConstraintName("FK_invitation_token__cookbook_id");
         builder.HasOne<Identity.ApplicationUser>()
-            .WithMany(user => user.CreatedTokens)
+            .WithMany()
             .HasForeignKey(invitation => invitation.CreatedBy)
             .HasConstraintName("FK_invitation_token__created_by");
     }
