@@ -9,7 +9,7 @@ public class DeleteRecipeCommandHandler(IApplicationDbContext context) : IReques
 
         context.Recipes.Remove(recipe);
 
-        // TODO add domain event with logging
+        recipe.AddDomainEvent(new RecipeDeletedEvent(recipe.Id));
 
         await context.SaveChangesAsync(cancellationToken);
     }
