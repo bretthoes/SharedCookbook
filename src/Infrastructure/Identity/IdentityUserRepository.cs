@@ -6,6 +6,7 @@ using SharedCookbook.Application.Common.Mappings;
 using SharedCookbook.Application.Common.Models;
 using SharedCookbook.Application.Cookbooks.Queries.GetCookbooksWithPagination;
 using SharedCookbook.Application.Images.Commands.CreateImages;
+using SharedCookbook.Application.Invitations.Queries.GetInvitationsCount;
 using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
 using SharedCookbook.Application.Memberships.Queries;
 using SharedCookbook.Application.Memberships.Queries.GetMembershipsWithPagination;
@@ -52,6 +53,13 @@ public class IdentityUserRepository(ApplicationDbContext context, IUser user, IO
             .SelectInvitationDto(context.People.AsNoTracking(), options.Value.ImageBaseUrl)
             .OrderByMostRecentlyCreated()
             .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
+
+    public Task<int> GetInvitationsCount(
+        GetInvitationsCountQuery query,
+        CancellationToken cancellationToken)
+        => context.CookbookInvitations
+            .AsNoTracking()
+            .GetInvitationsCountForUserByStatus(user.Id, query.Status, cancellationToken);
 
     public Task<PaginatedList<CookbookBriefDto>> GetCookbooks(
         GetCookbooksWithPaginationQuery query,

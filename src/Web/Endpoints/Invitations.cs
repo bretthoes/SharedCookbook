@@ -2,6 +2,7 @@
 using SharedCookbook.Application.Invitations.Commands.CreateInvitation;
 using SharedCookbook.Application.Invitations.Commands.DeleteInvitation;
 using SharedCookbook.Application.Invitations.Commands.UpdateInvitation;
+using SharedCookbook.Application.Invitations.Queries.GetInvitationsCount;
 using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
 using SharedCookbook.Application.InvitationTokens.Queries.GetInvitationToken;
 
@@ -13,6 +14,7 @@ public class Invitations : EndpointGroupBase
     {
         builder.MapGet(GetInvitationPreview, pattern: "/preview").RequireAuthorization();
         builder.MapGet(GetInvitationsWithPagination).RequireAuthorization();
+        builder.MapGet(GetInvitationsCount, pattern: "/count").RequireAuthorization();
         builder.MapPost(CreateInvitation).RequireAuthorization();
         builder.MapPut(UpdateInvitation, pattern: "{id}").RequireAuthorization();
         builder.MapDelete(DeleteInvitation, pattern: "{id}").RequireAuthorization();
@@ -21,16 +23,15 @@ public class Invitations : EndpointGroupBase
     private static Task<InvitationDto> GetInvitationPreview(
         ISender sender,
         [AsParameters] GetInvitationTokenQuery query)
-    {
-        return sender.Send(query);
-    }
+        => sender.Send(query);
 
     private static Task<PaginatedList<InvitationDto>> GetInvitationsWithPagination(
         ISender sender,
         [AsParameters] GetInvitationsWithPaginationQuery query)
-    {
-        return sender.Send(query);
-    }
+        => sender.Send(query);
+    
+    private static Task<int> GetInvitationsCount(ISender sender, [AsParameters] GetInvitationsCountQuery query)
+        => sender.Send(query);
 
     private static Task<int> CreateInvitation(ISender sender, CreateInvitationCommand command)
     {
