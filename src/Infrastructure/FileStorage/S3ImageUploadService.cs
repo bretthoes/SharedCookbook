@@ -8,82 +8,139 @@ using RestSharp;
 using SharedCookbook.Application.Common;
 using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Application.Images.Commands.CreateImages;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Formats.Webp;
+using SixLabors.ImageSharp.Processing;
 
 namespace SharedCookbook.Infrastructure.FileStorage;
 
+public sealed class ProcessedImage : IAsyncDisposable
+{
+    public required MemoryStream Stream { get; init; }
+    public required string Extension { get; init; } // ".webp" | ".jpg" | ".png"
+    public required string ContentType { get; init; } // "image/webp" | "image/jpeg" | "image/png"
+
+    public ValueTask DisposeAsync()
+    {
+        Stream.Dispose();
+        
+        return ValueTask.CompletedTask;
+    }
+}
+
 // TODO refactoring and better DI, throwing, and logging needed here
-public class S3ImageUploadService(IOptions<ImageUploadOptions> options) : IImageUploadService
+public class S3ImageUploadService(IOptions<ImageUploadOptions> storage) : IImageUploadService
 {
     public async Task<string[]> UploadFiles(IFormFileCollection files)
     {
         using var client = GetS3Client();
-        using var fileTransferUtility = new TransferUtility(client);
+        using var transferUtility = new TransferUtility(client);
 
-        var uploadedFileKeys = new string[files.Count];
-        for (int i = 0; i < uploadedFileKeys.Length; i++)
+        var keys = new string[files.Count];
+        for (int i = 0; i < files.Count; i++)
         {
-            string key = await UploadSingleFile(files[i], fileTransferUtility);
-            uploadedFileKeys[i] = key;
+            await using var src = files[i].OpenReadStream();
+            await using var img = await ProcessToSquareAsync(src);
+
+            var key = ImageUtilities.GetUniqueFileName(img.Extension);
+            await transferUtility.UploadAsync(new TransferUtilityUploadRequest
+            {
+                InputStream = img.Stream,
+                Key = key,
+                BucketName = storage.Value.BucketName,
+                CannedACL = S3CannedACL.PublicRead,
+                ContentType = img.ContentType
+            });
+            keys[i] = key;
         }
 
-        return uploadedFileKeys;
+        return keys;
     }
 
     public async Task<string> UploadImageFromUrl(string imageUrl)
     {
         using var client = GetS3Client();
-        using var fileTransferUtility = new TransferUtility(client);
+        using var transferUtility = new TransferUtility(client);
 
-        var imageStream = await DownloadImageFromUrl(imageUrl);
+        await using var src = await DownloadImageFromUrl(imageUrl);
+        await using var img = await ProcessToSquareAsync(src);
 
-        string extension = Path.GetExtension(imageUrl).ToLower();
-        string key = ImageUtilities.GetUniqueFileName(extension);
+        var key = ImageUtilities.GetUniqueFileName(img.Extension);
+        await transferUtility.UploadAsync(new TransferUtilityUploadRequest
+        {
+            InputStream = img.Stream,
+            Key = key,
+            BucketName = storage.Value.BucketName,
+            CannedACL = S3CannedACL.PublicRead,
+            ContentType = img.ContentType
+        });
+        return key;
+    }
 
-        var uploadRequest = CreateUploadRequest(imageStream, key);
-        await fileTransferUtility.UploadAsync(uploadRequest);
+    private AmazonS3Client GetS3Client() => new(GetCredentials(), RegionEndpoint.USEast2);
+    
+    private BasicAWSCredentials GetCredentials() => new(storage.Value.AwsAccessKeyId, storage.Value.AwsSecretAccessKey);
+    
+    private static async Task<ProcessedImage> ProcessToSquareAsync(
+        Stream input, CancellationToken ct = default)
+    {
+        const int targetSizePixels = 1024; // square edge
+        const string outputFormat = "webp"; // "webp" | "jpeg" | "png"
+        const int quality = 80; // 1..100
+        
+        input.Position = 0;
+        using var image = await Image.LoadAsync(input, ct);
 
-        return uploadRequest.Key;
+        image.Mutate(operation: context =>
+        {
+            context.AutoOrient();
+            context.Resize(new ResizeOptions
+            {
+                Mode = ResizeMode.Crop,
+                Position = AnchorPositionMode.Center,
+                Size = new Size(width: targetSizePixels, height: targetSizePixels)
+            });
+        });
+
+        var output = new MemoryStream();
+        string ext;
+        string contentType;
+
+        switch (outputFormat.ToLowerInvariant())
+        {
+            case "jpeg":
+            case "jpg":
+                await image.SaveAsync(output, new JpegEncoder { Quality = quality }, ct);
+                ext = ".jpg";
+                contentType = "image/jpeg";
+                break;
+
+            case "png":
+                await image.SaveAsPngAsync(output, ct);
+                ext = ".png";
+                contentType = "image/png";
+                break;
+
+            default: // webp
+                await image.SaveAsync(output,
+                    new WebpEncoder { Quality = quality, FileFormat = WebpFileFormatType.Lossy }, ct);
+                ext = ".webp";
+                contentType = "image/webp";
+                break;
+        }
+
+        output.Position = 0;
+        return new ProcessedImage { Stream = output, Extension = ext, ContentType = contentType };
     }
 
     private static async Task<Stream> DownloadImageFromUrl(string imageUrl)
     {
         using var client = new RestClient(imageUrl);
-        var request = new RestRequest();
-        var response = await client.ExecuteAsync(request);
-
-        if (!response.IsSuccessful || response.RawBytes == null)
-        {
-            throw new Exception($"Failed to download image from URL: {imageUrl}");
-        }
-
+        var response = await client.ExecuteAsync(new RestRequest());
+        if (!response.IsSuccessful || response.RawBytes is null)
+            throw new InvalidOperationException($"Failed to download image from URL: {imageUrl}");
         return new MemoryStream(response.RawBytes);
     }
 
-    private AmazonS3Client GetS3Client() => new(GetCredentials(), RegionEndpoint.USEast2);
-    
-    private BasicAWSCredentials GetCredentials() 
-        => new(options.Value.AwsAccessKeyId, options.Value.AwsSecretAccessKey);
-
-    private async Task<string> UploadSingleFile(IFormFile file, TransferUtility fileTransferUtility)
-    {
-        string extension = Path.GetExtension(file.FileName).ToLower();
-        string key = ImageUtilities.GetUniqueFileName(extension);
-
-        await using var newMemoryStream = new MemoryStream();
-        await file.CopyToAsync(newMemoryStream);
-
-        var uploadRequest = CreateUploadRequest(newMemoryStream, key);
-        await fileTransferUtility.UploadAsync(uploadRequest);
-
-        return uploadRequest.Key;
-    }
-
-    private TransferUtilityUploadRequest CreateUploadRequest(Stream fileStream, string key)
-        => new()
-        {
-            InputStream = fileStream,
-            Key = key,
-            BucketName = options.Value.BucketName,
-            CannedACL = S3CannedACL.PublicRead
-        };
 }
