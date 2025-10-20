@@ -71,7 +71,7 @@ public class CreateRecipeCommandValidator : AbstractValidator<CreateRecipeComman
         RuleForEach(command => command.Recipe.Directions)
             .ChildRules(ingredient =>
             {
-                ingredient.RuleFor(i => i.Text)
+                ingredient.RuleFor(dto => dto.Text)
                     .MinimumLength(1)
                     .MaximumLength(255)
                     .WithMessage("Each direction's text must be at least 1 character and less than 255.");
@@ -86,7 +86,7 @@ public class CreateRecipeCommandValidator : AbstractValidator<CreateRecipeComman
         RuleForEach(command => command.Recipe.Ingredients)
             .ChildRules(ingredient =>
             {
-                ingredient.RuleFor(i => i.Name)
+                ingredient.RuleFor(dto => dto.Name)
                     .MinimumLength(1)
                     .MaximumLength(255)
                     .WithMessage("Each ingredient's name must be at least 1 character and less than 255.");
