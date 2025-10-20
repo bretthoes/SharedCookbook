@@ -37,7 +37,7 @@ public class DeleteRecipeTests : BaseTestFixture
                         Ordinal = 0
                     }
                 },
-                Ingredients = new List<CreateRecipeIngredientDto>
+                Ingredients = new List<RecipeIngredientDto>
                 {
                     new()
                     {

@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 
-public class CreateRecipeIngredientDto
+public class RecipeIngredientDto
 {
     public required string Name { get; init; }
 
@@ -14,6 +14,6 @@ public class CreateRecipeIngredientDto
 public static partial class Extensions
 {
     public static IEnumerable<RecipeIngredient> ToEntities(
-        this IEnumerable<CreateRecipeIngredientDto> recipeIngredients)
+        this IEnumerable<RecipeIngredientDto> recipeIngredients)
         => recipeIngredients.Select(ingredient => ingredient.ToEntity());
 }

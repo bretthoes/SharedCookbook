@@ -99,7 +99,7 @@ public class RecipeUrlParser(
             Title = title,
             Images = string.IsNullOrWhiteSpace(image)
                 ? []
-                : [new CreateRecipeImageDto { Name= image, Ordinal = 1 }],
+                : [new RecipeImageDto { Name= image, Ordinal = 1 }],
             CookbookId = 0,
             Summary = summaryDecoded.Truncate(Recipe.Constraints.SummaryMaxLength),
             Servings = apiResponse.Servings,
@@ -107,14 +107,14 @@ public class RecipeUrlParser(
             CookingTimeInMinutes = apiResponse.CookingMinutes,
             BakingTimeInMinutes = null,
             Ingredients = apiResponse.ExtendedIngredients?.Select((ingredient, index) =>
-                new CreateRecipeIngredientDto
+                new RecipeIngredientDto
                 {
                     Name = ingredient.Original.Truncate(RecipeIngredient.Constraints.NameMaxLength),
                     Optional = false,
                     Ordinal = index + 1
                 }).ToList() ?? [],
             Directions = steps.Select((stepString, index) =>
-                new CreateRecipeDirectionDto
+                new RecipeDirectionDto
                 {
                     Text = stepString.Length > RecipeDirection.Constraints.TextMaxLength
                         ? stepString[..RecipeDirection.Constraints.TextMaxLength]

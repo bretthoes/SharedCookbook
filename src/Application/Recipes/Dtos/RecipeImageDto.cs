@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 
-public class CreateRecipeImageDto
+public class RecipeImageDto
 {
     public required string Name { get; init; }
 
@@ -12,6 +12,6 @@ public class CreateRecipeImageDto
 public static partial class Extensions
 {
     public static IEnumerable<RecipeImage> ToEntities(
-        this IEnumerable<CreateRecipeImageDto> recipeImages)
+        this IEnumerable<RecipeImageDto> recipeImages)
         => recipeImages.Select(image => image.ToEntity());
 }
