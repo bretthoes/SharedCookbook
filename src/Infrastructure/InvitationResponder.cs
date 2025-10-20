@@ -16,7 +16,7 @@ public sealed class InvitationResponder(
         if (invite.Status == decision) return invite.Id;
         ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
 
-        var now = clock.GetUtcNow().UtcDateTime;
+        var now = clock.GetUtcNow();
 
         switch (decision)
         {
