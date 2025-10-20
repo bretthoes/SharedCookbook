@@ -19,7 +19,7 @@ public sealed class UpdateRecipeCommandHandler(IApplicationDbContext context)
                      ?? throw new NotFoundException(key: command.Recipe.Id.ToString(), nameof(Recipe));
 
         // Update primitive properties
-        recipe.Title = command.Recipe.Title;
+        if (!string.IsNullOrWhiteSpace(command.Recipe.Title)) recipe.Title = command.Recipe.Title;
         recipe.Summary = command.Recipe.Summary;
         recipe.Thumbnail = command.Recipe.Thumbnail;
         recipe.VideoPath = command.Recipe.VideoPath;
