@@ -33,7 +33,7 @@ public sealed class UpdateRecipeCommandHandler(IApplicationDbContext context)
         UpdateCollection(recipe.Images, newCollection: command.Recipe.Images);
         UpdateCollection(recipe.IngredientCategories, newCollection: command.Recipe.IngredientCategories);
         
-        // TODO add domain event with logging
+        recipe.AddDomainEvent(new RecipeUpdatedEvent(recipe.Id));
 
         await context.SaveChangesAsync(cancellationToken);
         
