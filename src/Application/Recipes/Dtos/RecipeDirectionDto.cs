@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 
-public class CreateRecipeDirectionDto
+public class RecipeDirectionDto
 {
     public required string Text { get; init; }
 
@@ -14,6 +14,6 @@ public class CreateRecipeDirectionDto
 public static partial class Extensions
 {
     public static IEnumerable<RecipeDirection> ToEntities(
-        this IEnumerable<CreateRecipeDirectionDto> recipeIngredients)
+        this IEnumerable<RecipeDirectionDto> recipeIngredients)
         => recipeIngredients.Select(direction => direction.ToEntity());
 }
