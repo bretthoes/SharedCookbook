@@ -7,31 +7,31 @@ public sealed record CreateRecipeCommand : IRequest<int>
 
 public sealed class CreateRecipeCommandHandler(IApplicationDbContext context) : IRequestHandler<CreateRecipeCommand, int>
 {
-    public async Task<int> Handle(CreateRecipeCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(CreateRecipeCommand command, CancellationToken cancellationToken)
     {
         var entity = new Recipe
         {
-            Title = request.Recipe.Title,
-            CookbookId = request.Recipe.CookbookId,
-            Summary = request.Recipe.Summary,
-            Thumbnail = request.Recipe.Thumbnail,
-            VideoPath = request.Recipe.VideoPath,
-            PreparationTimeInMinutes = request.Recipe.PreparationTimeInMinutes,
-            CookingTimeInMinutes = request.Recipe.CookingTimeInMinutes,
-            BakingTimeInMinutes = request.Recipe.BakingTimeInMinutes,
-            Servings = request.Recipe.Servings,
-            Directions = request.Recipe.Directions.Select(direction => new RecipeDirection
+            Title = command.Recipe.Title,
+            CookbookId = command.Recipe.CookbookId,
+            Summary = command.Recipe.Summary,
+            Thumbnail = command.Recipe.Thumbnail,
+            VideoPath = command.Recipe.VideoPath,
+            PreparationTimeInMinutes = command.Recipe.PreparationTimeInMinutes,
+            CookingTimeInMinutes = command.Recipe.CookingTimeInMinutes,
+            BakingTimeInMinutes = command.Recipe.BakingTimeInMinutes,
+            Servings = command.Recipe.Servings,
+            Directions = command.Recipe.Directions.Select(direction => new RecipeDirection
             {
                 Text = direction.Text,
                 Ordinal = direction.Ordinal,
                 Image = direction.Image,
             }).ToList(),
-            Images = request.Recipe.Images.Select(image => new RecipeImage
+            Images = command.Recipe.Images.Select(image => new RecipeImage
             {
                 Name = image.Name,
                 Ordinal = image.Ordinal,
             }).ToList(),
-            Ingredients = request.Recipe.Ingredients.Select(ingredient => new RecipeIngredient
+            Ingredients = command.Recipe.Ingredients.Select(ingredient => new RecipeIngredient
             {
                 Name = ingredient.Name,
                 Ordinal = ingredient.Ordinal,
@@ -53,37 +53,37 @@ public class CreateRecipeCommandValidator : AbstractValidator<CreateRecipeComman
 {
     public CreateRecipeCommandValidator()
     {
-        RuleFor(x => x.Recipe.Title)
+        RuleFor(command => command.Recipe.Title)
             .MinimumLength(1)
             .MaximumLength(255)
-            .WithMessage("New recipe title must be at least 3 characters and less than 255.");
+            .WithMessage("New recipe title must be at least 1 character and less than 255.");
 
-        RuleFor(x => x.Recipe.CookbookId)
+        RuleFor(command => command.Recipe.CookbookId)
             .GreaterThanOrEqualTo(1)
             .WithMessage("New recipe must be in a valid cookbook (CookbookId >= 0).");
 
-        RuleFor(x => x.Recipe.Directions)
+        RuleFor(command => command.Recipe.Directions)
             .NotEmpty()
             .WithMessage("New recipe must include directions.")
             .Must(directions => directions.Count < 20)
             .WithMessage("New recipe must have fewer than 20 directions.");
 
-        RuleForEach(x => x.Recipe.Directions)
+        RuleForEach(command => command.Recipe.Directions)
             .ChildRules(ingredient =>
             {
                 ingredient.RuleFor(i => i.Text)
                     .MinimumLength(1)
                     .MaximumLength(255)
-                    .WithMessage("Each direction's text must be at least 1 characters and less than 255.");
+                    .WithMessage("Each direction's text must be at least 1 character and less than 255.");
             });
 
-        RuleFor(x => x.Recipe.Ingredients)
+        RuleFor(command => command.Recipe.Ingredients)
             .NotEmpty()
             .WithMessage("New recipe must include ingredients.")
             .Must(directions => directions.Count < 40)
             .WithMessage("New recipe must have fewer than 40 directions.");
 
-        RuleForEach(x => x.Recipe.Ingredients)
+        RuleForEach(command => command.Recipe.Ingredients)
             .ChildRules(ingredient =>
             {
                 ingredient.RuleFor(i => i.Name)
@@ -92,7 +92,7 @@ public class CreateRecipeCommandValidator : AbstractValidator<CreateRecipeComman
                     .WithMessage("Each ingredient's name must be at least 1 character and less than 255.");
             });
 
-        RuleFor(x => x.Recipe.Images)
+        RuleFor(command => command.Recipe.Images)
             .Must(images => images.Count <= 6)
             .WithMessage("New recipe can only have up to 6 images.");
 
