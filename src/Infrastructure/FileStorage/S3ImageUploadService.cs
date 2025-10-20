@@ -11,7 +11,7 @@ using SharedCookbook.Application.Images.Commands.CreateImages;
 
 namespace SharedCookbook.Infrastructure.FileStorage;
 
-// TODO refactoring and better DI, throwing, and logging needed here
+// TODO DI for RestClient and S3Client
 public class S3ImageUploadService(IOptions<ImageUploadOptions> options) : IImageUploadService
 {
     public async Task<string[]> UploadFiles(IFormFileCollection files)
@@ -53,6 +53,7 @@ public class S3ImageUploadService(IOptions<ImageUploadOptions> options) : IImage
 
         if (!response.IsSuccessful || response.RawBytes == null)
         {
+            // TODO throw something more specific
             throw new Exception($"Failed to download image from URL: {imageUrl}");
         }
 

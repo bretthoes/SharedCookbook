@@ -11,7 +11,7 @@ using SharedCookbook.Infrastructure.RecipeUrlParser.Models;
 
 namespace SharedCookbook.Infrastructure.RecipeUrlParser;
 
-// TODO class needs refactoring
+// TODO class needs refactoring; also throw more specific exceptions
 public class RecipeUrlParser(
     IOptions<RecipeUrlParserOptions> options,
     IImageUploadService imageUploadService,
@@ -23,12 +23,10 @@ public class RecipeUrlParser(
         PropertyNameCaseInsensitive = true
     };
 
-    private readonly RecipeUrlParserOptions _options = options.Value;
-
     public async Task<CreateRecipeDto> Parse(string url, CancellationToken cancellationToken)
     {
         // Construct the full Spoonacular API URL with query parameters
-        var apiUrl = $"{_options.BaseUrl}/recipes/extract";
+        var apiUrl = $"{options.Value.BaseUrl}/recipes/extract";
         
         var request = GetRequest(url);
         
@@ -71,7 +69,7 @@ public class RecipeUrlParser(
             .AddParameter(name: "analyze", "false")
             .AddParameter(name: "includeNutrition", "false")
             .AddParameter(name: "includeTaste", "false")
-            .AddParameter(name: "apiKey", _options.ApiKey);
+            .AddParameter(name: "apiKey", options.Value.ApiKey);
 
     private async Task<CreateRecipeDto> MapToCreateRecipeDto(RecipeApiResponse apiResponse)
     {
