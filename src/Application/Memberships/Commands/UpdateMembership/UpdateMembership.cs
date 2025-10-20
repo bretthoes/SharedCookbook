@@ -17,14 +17,13 @@ public sealed record UpdateMembershipCommand : IRequest
 public sealed class UpdateMembershipCommandHandler(IApplicationDbContext context)
     : IRequestHandler<UpdateMembershipCommand>
 {
-    public async Task Handle(UpdateMembershipCommand command, CancellationToken ct)
+    public async Task Handle(UpdateMembershipCommand command, CancellationToken cancellationToken)
     {
-        var membership = await context.CookbookMemberships.FindOrThrowAsync(command.Id, ct);
+        var membership = await context.CookbookMemberships.FindOrThrowAsync(command.Id, cancellationToken);
 
         if (command.IsOwner) membership.Promote();
         else
         {
-            // TODO add domain event for updated membership permissions
             var updatedPermissions = membership.Permissions
                 .WithAddRecipe(command.CanAddRecipe)
                 .WithUpdateRecipe(command.CanUpdateRecipe)
@@ -36,7 +35,9 @@ public sealed class UpdateMembershipCommandHandler(IApplicationDbContext context
             membership.SetPermissions(updatedPermissions);
         }
 
-        await context.SaveChangesAsync(ct);
+        membership.AddDomainEvent(new MembershipUpdatedEvent(membership));
+        
+        await context.SaveChangesAsync(cancellationToken);
     }
 }
 
