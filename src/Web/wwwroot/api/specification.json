@@ -2076,8 +2076,7 @@
             "format": "int32"
           },
           "title": {
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "summary": {
             "type": "string",

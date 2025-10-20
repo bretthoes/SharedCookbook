@@ -6,24 +6,22 @@ using RestSharp.Authenticators;
 
 namespace SharedCookbook.Infrastructure.Email;
 
+// TODO inject RestClient
 public class EmailSender(IOptions<EmailApiOptions> options, ILogger<EmailSender> logger) : IEmailSender
 {
-    private readonly EmailApiOptions _options = options.Value;
-    
-
     public async Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
-        var options = new RestClientOptions(_options.BaseUrl)
+        var clientOptions = new RestClientOptions(options.Value.BaseUrl)
         {
-            Authenticator = new HttpBasicAuthenticator(username: "api", password: _options.ApiKey)
+            Authenticator = new HttpBasicAuthenticator(username: "api", password: options.Value.ApiKey)
         };
 
-        using var client = new RestClient(options);
+        using var client = new RestClient(clientOptions);
 
-        var request = new RestRequest(resource: $"v3/{_options.Domain}/messages", Method.Post);
+        var request = new RestRequest(resource: $"v3/{options.Value.Domain}/messages", Method.Post);
 
         // add email parameters to request
-        request.AddParameter(name: "from", _options.From);
+        request.AddParameter(name: "from", options.Value.From);
         request.AddParameter(name: "to", email);
         request.AddParameter(name: "subject", subject);
         request.AddParameter(name: "html", htmlMessage);

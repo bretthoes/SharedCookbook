@@ -11,7 +11,7 @@ using SharedCookbook.Application.Images.Commands.CreateImages;
 
 namespace SharedCookbook.Infrastructure.FileStorage;
 
-// TODO DI for RestClient and S3Client
+// TODO inject RestClient and S3Client
 public class S3ImageUploadService(IOptions<ImageUploadOptions> options) : IImageUploadService
 {
     public async Task<string[]> UploadFiles(IFormFileCollection files)
