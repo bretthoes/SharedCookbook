@@ -43,9 +43,9 @@ public sealed partial class ParseRecipeFromImageCommandHandler(IOcrService ocrSe
         return ingredients;
     }
 
-    private static List<CreateRecipeDirectionDto> ParseDirections(string text)
+    private static List<RecipeDirectionDto> ParseDirections(string text)
     {
-        var directions = new List<CreateRecipeDirectionDto>();
+        var directions = new List<RecipeDirectionDto>();
     
         string[] lines = text.Split('\n')
             .Select(line => line.Trim())
@@ -65,7 +65,7 @@ public sealed partial class ParseRecipeFromImageCommandHandler(IOcrService ocrSe
 
             if (isDirections)
             {
-                directions.Add(new CreateRecipeDirectionDto
+                directions.Add(new RecipeDirectionDto
                 {
                     Text = line,
                     Image = null,
@@ -81,7 +81,7 @@ public sealed partial class ParseRecipeFromImageCommandHandler(IOcrService ocrSe
     private static CreateRecipeDto CreateRecipeDto(
         string title,
         List<CreateRecipeIngredientDto> ingredients,
-        List<CreateRecipeDirectionDto> directions) => new()
+        List<RecipeDirectionDto> directions) => new()
     {
         Title = title,
         Summary = null,

@@ -11,7 +11,7 @@ public class CreateRecipeDto
     public int? CookingTimeInMinutes { get; init; }
     public int? BakingTimeInMinutes { get; init; }
     public int? Servings { get; init; }
-    public ICollection<CreateRecipeDirectionDto> Directions { get; init; } = [];
+    public ICollection<RecipeDirectionDto> Directions { get; init; } = [];
     public ICollection<CreateRecipeImageDto> Images { get; init; } = [];
     public ICollection<CreateRecipeIngredientDto> Ingredients { get; init; } = [];
 }
