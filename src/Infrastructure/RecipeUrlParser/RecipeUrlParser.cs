@@ -15,21 +15,17 @@ namespace SharedCookbook.Infrastructure.RecipeUrlParser;
 public class RecipeUrlParser(
     IOptions<RecipeUrlParserOptions> options,
     IImageUploadService imageUploadService,
-    ILogger<RecipeUrlParser> logger)
-    : IRecipeUrlParser
+    ILogger<RecipeUrlParser> logger) : IRecipeUrlParser
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
+    private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
 
     public async Task<CreateRecipeDto> Parse(string url, CancellationToken cancellationToken)
     {
         // Construct the full Spoonacular API URL with query parameters
         var apiUrl = $"{options.Value.BaseUrl}/recipes/extract";
-        
+
         var request = GetRequest(url);
-        
+
         // Create the RestClient
         using var client = new RestClient(apiUrl);
 
@@ -61,7 +57,7 @@ public class RecipeUrlParser(
             throw new Exception("Error parsing recipe data from API response.", ex);
         }
     }
-    
+
     private RestRequest GetRequest(string url) =>
         new RestRequest()
             .AddParameter(name: "url", url)
@@ -77,27 +73,25 @@ public class RecipeUrlParser(
         string summary = apiResponse.Summary?.RemoveHtml() ?? "";
         string summaryDecoded = WebUtility.HtmlDecode(summary);
         string instructionsDecoded = WebUtility.HtmlDecode(apiResponse.Instructions) ?? "";
-        
+
         string[] steps = instructionsDecoded
             .Split(["\n\n"], StringSplitOptions.RemoveEmptyEntries)
             .Select(stepString => stepString.RemoveHtml().Trim())
             .Where(stepString => stepString.Length > 0)
             .ToArray();
 
-        
-        var hasImage = apiResponse.Image?.IsValidUrl() ?? false;
         var image = "";
-        if (apiResponse.Image != null && hasImage)
-            image = await imageUploadService.UploadImageFromUrl(apiResponse.Image);
+        if (apiResponse.HasImage())
+            image = await imageUploadService.UploadImageFromUrl(apiResponse.Image!);
 
         string title = apiResponse.Title?.Truncate(Recipe.Constraints.TitleMaxLength) ?? "";
-        
+
         var createRecipeDto = new CreateRecipeDto
         {
             Title = title,
             Images = string.IsNullOrWhiteSpace(image)
                 ? []
-                : [new RecipeImageDto { Name= image, Ordinal = 1 }],
+                : [new RecipeImageDto { Name = image, Ordinal = 1 }],
             CookbookId = 0,
             Summary = summaryDecoded.Truncate(Recipe.Constraints.SummaryMaxLength),
             Servings = apiResponse.Servings,
@@ -124,4 +118,3 @@ public class RecipeUrlParser(
         return createRecipeDto;
     }
 }
-
