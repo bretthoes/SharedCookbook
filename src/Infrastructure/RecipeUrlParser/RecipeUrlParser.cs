@@ -11,27 +11,21 @@ using SharedCookbook.Infrastructure.RecipeUrlParser.Models;
 
 namespace SharedCookbook.Infrastructure.RecipeUrlParser;
 
-// TODO class needs refactoring
+// TODO class needs refactoring; also throw more specific exceptions
 public class RecipeUrlParser(
     IOptions<RecipeUrlParserOptions> options,
     IImageUploadService imageUploadService,
-    ILogger<RecipeUrlParser> logger)
-    : IRecipeUrlParser
+    ILogger<RecipeUrlParser> logger) : IRecipeUrlParser
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
-    private readonly RecipeUrlParserOptions _options = options.Value;
+    private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
 
     public async Task<CreateRecipeDto> Parse(string url, CancellationToken cancellationToken)
     {
         // Construct the full Spoonacular API URL with query parameters
-        var apiUrl = $"{_options.BaseUrl}/recipes/extract";
-        
+        var apiUrl = $"{options.Value.BaseUrl}/recipes/extract";
+
         var request = GetRequest(url);
-        
+
         // Create the RestClient
         using var client = new RestClient(apiUrl);
 
@@ -63,7 +57,7 @@ public class RecipeUrlParser(
             throw new Exception("Error parsing recipe data from API response.", ex);
         }
     }
-    
+
     private RestRequest GetRequest(string url) =>
         new RestRequest()
             .AddParameter(name: "url", url)
@@ -71,7 +65,7 @@ public class RecipeUrlParser(
             .AddParameter(name: "analyze", "false")
             .AddParameter(name: "includeNutrition", "false")
             .AddParameter(name: "includeTaste", "false")
-            .AddParameter(name: "apiKey", _options.ApiKey);
+            .AddParameter(name: "apiKey", options.Value.ApiKey);
 
     private async Task<CreateRecipeDto> MapToCreateRecipeDto(RecipeApiResponse apiResponse)
     {
@@ -79,27 +73,25 @@ public class RecipeUrlParser(
         string summary = apiResponse.Summary?.RemoveHtml() ?? "";
         string summaryDecoded = WebUtility.HtmlDecode(summary);
         string instructionsDecoded = WebUtility.HtmlDecode(apiResponse.Instructions) ?? "";
-        
+
         string[] steps = instructionsDecoded
             .Split(["\n\n"], StringSplitOptions.RemoveEmptyEntries)
             .Select(stepString => stepString.RemoveHtml().Trim())
             .Where(stepString => stepString.Length > 0)
             .ToArray();
 
-        
-        var hasImage = apiResponse.Image?.IsValidUrl() ?? false;
         var image = "";
-        if (apiResponse.Image != null && hasImage)
-            image = await imageUploadService.UploadImageFromUrl(apiResponse.Image);
+        if (apiResponse.HasImage())
+            image = await imageUploadService.UploadImageFromUrl(apiResponse.Image!);
 
         string title = apiResponse.Title?.Truncate(Recipe.Constraints.TitleMaxLength) ?? "";
-        
+
         var createRecipeDto = new CreateRecipeDto
         {
             Title = title,
             Images = string.IsNullOrWhiteSpace(image)
                 ? []
-                : [new CreateRecipeImageDto { Name= image, Ordinal = 1 }],
+                : [new RecipeImageDto { Name = image, Ordinal = 1 }],
             CookbookId = 0,
             Summary = summaryDecoded.Truncate(Recipe.Constraints.SummaryMaxLength),
             Servings = apiResponse.Servings,
@@ -107,14 +99,14 @@ public class RecipeUrlParser(
             CookingTimeInMinutes = apiResponse.CookingMinutes,
             BakingTimeInMinutes = null,
             Ingredients = apiResponse.ExtendedIngredients?.Select((ingredient, index) =>
-                new CreateRecipeIngredientDto
+                new RecipeIngredientDto
                 {
                     Name = ingredient.Original.Truncate(RecipeIngredient.Constraints.NameMaxLength),
                     Optional = false,
                     Ordinal = index + 1
                 }).ToList() ?? [],
             Directions = steps.Select((stepString, index) =>
-                new CreateRecipeDirectionDto
+                new RecipeDirectionDto
                 {
                     Text = stepString.Length > RecipeDirection.Constraints.TextMaxLength
                         ? stepString[..RecipeDirection.Constraints.TextMaxLength]
@@ -126,4 +118,3 @@ public class RecipeUrlParser(
         return createRecipeDto;
     }
 }
-

@@ -2,11 +2,11 @@
 
 public abstract class BaseInvitation : BaseAuditableEntity
 {
-    public required InvitationStatus Status { get; set; }
+    public InvitationStatus Status { get; protected set; }
     
-    public int CookbookId { get; init; }
+    public int CookbookId { get; protected init; }
     
-    public DateTime? ResponseDate { get; private set; }
+    public DateTimeOffset? ResponseDate { get; private set; }
 
     protected bool IsActive => Status == InvitationStatus.Active;
     
@@ -16,7 +16,7 @@ public abstract class BaseInvitation : BaseAuditableEntity
     
     public Cookbook? Cookbook { get; init; }
     
-    public void Accept(DateTime timestamp, string acceptedBy)
+    public void Accept(DateTimeOffset timestamp, string acceptedBy)
     {
         if (IsAccepted) return;
         AddDomainEvent(new InvitationAcceptedEvent(Id, CookbookId, acceptedBy));
@@ -24,7 +24,7 @@ public abstract class BaseInvitation : BaseAuditableEntity
         ResponseDate = timestamp;
     }
 
-    public virtual void Reject(DateTime timestamp)
+    public virtual void Reject(DateTimeOffset timestamp)
     {
         if (IsRejected) return;
 

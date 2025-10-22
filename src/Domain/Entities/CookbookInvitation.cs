@@ -6,7 +6,7 @@ public sealed class CookbookInvitation : BaseInvitation
 
     public bool IsNotFor(string? personId) => !IsFor(personId);
     
-    public override void Reject(DateTime timestamp)
+    public override void Reject(DateTimeOffset timestamp)
     {
         base.Reject(timestamp);
         AddDomainEvent(new InvitationRejectedEvent(this));

@@ -1,4 +1,6 @@
-﻿namespace SharedCookbook.Infrastructure.RecipeUrlParser.Models;
+﻿using SharedCookbook.Application.Common.Extensions;
+
+namespace SharedCookbook.Infrastructure.RecipeUrlParser.Models;
 
 // This class only exists to deserialize expected response based on
 // matching property names from Spoonacular. See below for more info: 
@@ -34,4 +36,7 @@ public static class RecipeApiResponseExtensions
 
         return response;
     }
+
+    public static bool HasImage(this RecipeApiResponse response)
+        => response.Image is not null && response.Image.IsValidUrl();
 }

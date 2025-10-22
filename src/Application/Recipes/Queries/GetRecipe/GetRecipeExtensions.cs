@@ -10,7 +10,7 @@ public static class RecipeQueryExtensions
             .AsNoTracking()
             .IncludeRecipeDetails()
             .SingleOrDefaultAsync(recipe => recipe.Id == id, cancellationToken))?
-            .ProjectToDetailedDto(imageBaseUrl);
+            .ToDetailedDto(imageBaseUrl);
 
     public static IQueryable<Recipe> IncludeRecipeDetails(this IQueryable<Recipe> query)
         => query
@@ -18,7 +18,7 @@ public static class RecipeQueryExtensions
             .Include(recipe => recipe.Images)
             .Include(recipe => recipe.Ingredients);
 
-    private static RecipeDetailedDto ProjectToDetailedDto(this Recipe recipe, string imageBaseUrl)
+    private static RecipeDetailedDto ToDetailedDto(this Recipe recipe, string imageBaseUrl)
         => new()
         {
             Id = recipe.Id,

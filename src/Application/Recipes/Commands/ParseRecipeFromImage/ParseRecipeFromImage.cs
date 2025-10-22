@@ -24,15 +24,15 @@ public sealed partial class ParseRecipeFromImageCommandHandler(IOcrService ocrSe
     private static string GetTitle(string[] lines) 
         => lines.FirstOrDefault()?.Trim() ?? string.Empty;
 
-    private static List<CreateRecipeIngredientDto> ParseIngredients(string text)
+    private static List<RecipeIngredientDto> ParseIngredients(string text)
     {
-        var ingredients = new List<CreateRecipeIngredientDto>();
+        var ingredients = new List<RecipeIngredientDto>();
         var ingredientRegex = MyRegex();
 
         int ordinal = 1;
         foreach (Match match in ingredientRegex.Matches(text))
         {
-            ingredients.Add(new CreateRecipeIngredientDto
+            ingredients.Add(new RecipeIngredientDto
             {
                 Name = match.Groups[1].Value,
                 Optional = match.Groups[2].Success,
@@ -43,9 +43,9 @@ public sealed partial class ParseRecipeFromImageCommandHandler(IOcrService ocrSe
         return ingredients;
     }
 
-    private static List<CreateRecipeDirectionDto> ParseDirections(string text)
+    private static List<RecipeDirectionDto> ParseDirections(string text)
     {
-        var directions = new List<CreateRecipeDirectionDto>();
+        var directions = new List<RecipeDirectionDto>();
     
         string[] lines = text.Split('\n')
             .Select(line => line.Trim())
@@ -65,7 +65,7 @@ public sealed partial class ParseRecipeFromImageCommandHandler(IOcrService ocrSe
 
             if (isDirections)
             {
-                directions.Add(new CreateRecipeDirectionDto
+                directions.Add(new RecipeDirectionDto
                 {
                     Text = line,
                     Image = null,
@@ -80,8 +80,8 @@ public sealed partial class ParseRecipeFromImageCommandHandler(IOcrService ocrSe
 
     private static CreateRecipeDto CreateRecipeDto(
         string title,
-        List<CreateRecipeIngredientDto> ingredients,
-        List<CreateRecipeDirectionDto> directions) => new()
+        List<RecipeIngredientDto> ingredients,
+        List<RecipeDirectionDto> directions) => new()
     {
         Title = title,
         Summary = null,

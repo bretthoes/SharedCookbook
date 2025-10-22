@@ -1,5 +1,6 @@
 ﻿namespace SharedCookbook.Infrastructure.Email;
 
+// TODO name after service
 public class EmailApiOptions
 {
     public required string ApiKey { get; init; }

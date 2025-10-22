@@ -29,7 +29,7 @@ public class DeleteRecipeTests : BaseTestFixture
             {
                 Title = "Another Recipe Title",
                 CookbookId = cookbook.Id,
-                Directions = new List<CreateRecipeDirectionDto>()
+                Directions = new List<RecipeDirectionDto>
                 {
                     new()
                     {
@@ -37,7 +37,7 @@ public class DeleteRecipeTests : BaseTestFixture
                         Ordinal = 0
                     }
                 },
-                Ingredients = new List<CreateRecipeIngredientDto>
+                Ingredients = new List<RecipeIngredientDto>
                 {
                     new()
                     {

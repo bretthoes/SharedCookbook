@@ -3,28 +3,25 @@
 public sealed record UpdateMembershipCommand : IRequest
 {
     public required int Id { get; init; }
-    
-    public bool IsOwner { get; init; }
-
-    public bool CanAddRecipe { get; init; }
-    public bool CanUpdateRecipe { get; init; }
-    public bool CanDeleteRecipe { get; init; }
-    public bool CanSendInvite { get; init; }
-    public bool CanRemoveMember { get; init; }
-    public bool CanEditCookbookDetails { get; init; }
+    public required bool IsOwner { get; init; }
+    public required bool CanAddRecipe { get; init; }
+    public required bool CanUpdateRecipe { get; init; }
+    public required bool CanDeleteRecipe { get; init; }
+    public required bool CanSendInvite { get; init; }
+    public required bool CanRemoveMember { get; init; }
+    public required bool CanEditCookbookDetails { get; init; }
 }
 
 public sealed class UpdateMembershipCommandHandler(IApplicationDbContext context)
     : IRequestHandler<UpdateMembershipCommand>
 {
-    public async Task Handle(UpdateMembershipCommand command, CancellationToken ct)
+    public async Task Handle(UpdateMembershipCommand command, CancellationToken cancellationToken)
     {
-        var membership = await context.CookbookMemberships.FindOrThrowAsync(command.Id, ct);
+        var membership = await context.CookbookMemberships.FindOrThrowAsync(command.Id, cancellationToken);
 
         if (command.IsOwner) membership.Promote();
         else
         {
-            // TODO add domain event for updated membership permissions
             var updatedPermissions = membership.Permissions
                 .WithAddRecipe(command.CanAddRecipe)
                 .WithUpdateRecipe(command.CanUpdateRecipe)
@@ -36,8 +33,23 @@ public sealed class UpdateMembershipCommandHandler(IApplicationDbContext context
             membership.SetPermissions(updatedPermissions);
         }
 
-        await context.SaveChangesAsync(ct);
+        membership.AddDomainEvent(new MembershipUpdatedEvent(membership));
+        
+        await context.SaveChangesAsync(cancellationToken);
     }
 }
 
-// TODO add validator
+public class UpdateMembershipCommandValidator : AbstractValidator<UpdateMembershipCommand>
+{
+    public UpdateMembershipCommandValidator()
+    {
+        RuleFor(command => command.Id).NotNull().GreaterThan(1);
+        RuleFor(command => command.IsOwner).NotNull();
+        RuleFor(command => command.CanAddRecipe).NotNull();
+        RuleFor(command => command.CanUpdateRecipe).NotNull();
+        RuleFor(command => command.CanDeleteRecipe).NotNull();
+        RuleFor(command => command.CanSendInvite).NotNull();
+        RuleFor(command => command.CanRemoveMember).NotNull();
+        RuleFor(command => command.CanEditCookbookDetails).NotNull();
+    }
+}
