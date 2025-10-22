@@ -2,9 +2,10 @@
 
 public enum InvitationStatus
 {
-    Error,
+    Unknown,
     Active,
     Accepted,
     Rejected,
-    Revoked
+    Revoked,
+    Error
 }

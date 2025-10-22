@@ -11,7 +11,7 @@ public sealed class InvitationResponder(
 {
     public async Task<int> Respond(BaseInvitation invite,
         InvitationStatus decision,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         if (invite.Status == decision) return invite.Id;
         ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
@@ -29,6 +29,7 @@ public sealed class InvitationResponder(
             case InvitationStatus.Error:
             case InvitationStatus.Active:
             case InvitationStatus.Revoked:
+            case InvitationStatus.Unknown:
             default:
                 return invite.Id;
         }
