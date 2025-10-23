@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Application.Common.Exceptions;
-using SharedCookbook.Application.Common.Extensions;
-using SharedCookbook.Application.Common.Security;
+﻿using SharedCookbook.Application.Common.Security;
 
 namespace SharedCookbook.Application.Common.Behaviours;
 

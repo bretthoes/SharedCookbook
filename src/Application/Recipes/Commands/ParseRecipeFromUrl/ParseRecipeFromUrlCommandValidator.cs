@@ -1,7 +1,4 @@
-﻿using System.Net;
-using SharedCookbook.Application.Common.Extensions;
-
-namespace SharedCookbook.Application.Recipes.Commands.ParseRecipeFromUrl;
+﻿namespace SharedCookbook.Application.Recipes.Commands.ParseRecipeFromUrl;
 
 public class ParseRecipeFromUrlCommandValidator : AbstractValidator<ParseRecipeFromUrlCommand>
 {

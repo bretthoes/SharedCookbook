@@ -1,5 +1,4 @@
-﻿using SharedCookbook.Application.Common.Exceptions;
-using SharedCookbook.Domain.Enums;
+﻿using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.Invitations.Commands.UpdateInvitation;
 

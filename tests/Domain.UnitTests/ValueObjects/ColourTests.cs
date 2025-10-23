@@ -1,7 +1,5 @@
 ﻿using SharedCookbook.Domain.Exceptions;
 using SharedCookbook.Domain.ValueObjects;
-using FluentAssertions;
-using NUnit.Framework;
 
 namespace SharedCookbook.Domain.UnitTests.ValueObjects;
 

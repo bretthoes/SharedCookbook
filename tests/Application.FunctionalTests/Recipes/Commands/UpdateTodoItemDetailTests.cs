@@ -1,7 +1,4 @@
-﻿using SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
-using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
-using SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
-using SharedCookbook.Domain.Entities;
+﻿using SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
 
 namespace SharedCookbook.Application.FunctionalTests.Recipes.Commands;
 

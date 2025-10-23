@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Application.Common.Exceptions;
-
-namespace SharedCookbook.Application.Invitations.Commands.CreateInvitation;
+﻿namespace SharedCookbook.Application.Invitations.Commands.CreateInvitation;
 
 public sealed record CreateInvitationCommand(int CookbookId, string Email) : IRequest<int>;
 

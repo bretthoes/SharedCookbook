@@ -1,4 +1,3 @@
-using System.Globalization;
 using SharedCookbook.Domain.ValueObjects;
 
 namespace SharedCookbook.Application.Common.Interfaces;

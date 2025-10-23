@@ -1,5 +1,4 @@
-﻿using SharedCookbook.Application.Common.Extensions;
-using ValidationException = SharedCookbook.Application.Common.Exceptions.ValidationException;
+﻿using ValidationException = SharedCookbook.Application.Common.Exceptions.ValidationException;
 
 namespace SharedCookbook.Application.Common.Behaviours;
 

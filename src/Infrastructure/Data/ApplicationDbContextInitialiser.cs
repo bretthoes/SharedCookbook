@@ -1,12 +1,10 @@
 ﻿using SharedCookbook.Domain.Constants;
-using SharedCookbook.Domain.Entities;
 using SharedCookbook.Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Infrastructure.Data;
 

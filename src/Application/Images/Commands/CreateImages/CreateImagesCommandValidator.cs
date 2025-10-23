@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using SharedCookbook.Application.Common;
-using SharedCookbook.Application.Common.Extensions;
 
 namespace SharedCookbook.Application.Images.Commands.CreateImages;
 

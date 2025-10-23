@@ -7,7 +7,6 @@ public sealed class CreateInvitationTokenCommandHandler(IApplicationDbContext co
 {
     public async Task<string> Handle(CreateInvitationTokenCommand command, CancellationToken cancellationToken)
     {
-        
         var mintedToken = factory.Mint();
         var issuedToken = InvitationToken.IssueNewToken(mintedToken.HashDetails, command.CookbookId);
 
