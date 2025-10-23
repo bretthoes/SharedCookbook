@@ -1,5 +1,6 @@
 namespace SharedCookbook.Domain.ValueObjects;
 
+// TODO should impl ValueObject
 public sealed record Permissions
 {
     public bool CanAddRecipe { get; init; }
