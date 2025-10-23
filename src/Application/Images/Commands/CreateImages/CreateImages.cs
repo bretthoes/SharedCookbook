@@ -5,9 +5,9 @@ namespace SharedCookbook.Application.Images.Commands.CreateImages;
 
 public sealed record CreateImagesCommand(IFormFileCollection Files) : IRequest<string[]>;
 
-public sealed class CreateImagesCommandHandler(IImageUploadService uploadService)
+public sealed class CreateImagesCommandHandler(IImageUploader uploader)
     : IRequestHandler<CreateImagesCommand, string[]>
 {
     public Task<string[]> Handle(CreateImagesCommand request, CancellationToken cancellationToken)
-        => uploadService.UploadFiles(request.Files);
+        => uploader.UploadFiles(request.Files);
 }

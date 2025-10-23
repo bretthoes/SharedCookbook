@@ -16,7 +16,7 @@ using SixLabors.ImageSharp.Processing;
 namespace SharedCookbook.Infrastructure.FileStorage;
 
 // TODO refactoring and better DI, throwing, and logging needed here
-public class S3ImageUploadService(IOptions<ImageUploadOptions> storage) : IImageUploadService
+public class S3ImageUploader(IOptions<ImageUploadOptions> storage) : IImageUploader
 {
     public async Task<string[]> UploadFiles(IFormFileCollection files)
     {
@@ -29,7 +29,7 @@ public class S3ImageUploadService(IOptions<ImageUploadOptions> storage) : IImage
             await using var src = files[i].OpenReadStream();
             await using var img = await ProcessToSquareAsync(src);
 
-            var key = ImageUtilities.GetUniqueFileName(img.Extension);
+            string key = ImageUtilities.GetUniqueFileName(img.Extension);
             await transferUtility.UploadAsync(new TransferUtilityUploadRequest
             {
                 InputStream = img.Stream,
@@ -44,12 +44,12 @@ public class S3ImageUploadService(IOptions<ImageUploadOptions> storage) : IImage
         return keys;
     }
 
-    public async Task<string> UploadImageFromUrl(string imageUrl)
+    public async Task<string> UploadImageFromUrl(string url)
     {
         using var client = GetS3Client();
         using var transferUtility = new TransferUtility(client);
 
-        await using var src = await DownloadImageFromUrl(imageUrl);
+        await using var src = await DownloadImageFromUrl(url);
         await using var img = await ProcessToSquareAsync(src);
 
         var key = ImageUtilities.GetUniqueFileName(img.Extension);
@@ -61,21 +61,21 @@ public class S3ImageUploadService(IOptions<ImageUploadOptions> storage) : IImage
             CannedACL = S3CannedACL.PublicRead,
             ContentType = img.ContentType
         });
-        
+
         return key;
     }
 
     private AmazonS3Client GetS3Client() => new(GetCredentials(), RegionEndpoint.USEast2);
-    
+
     private BasicAWSCredentials GetCredentials() => new(storage.Value.AwsAccessKeyId, storage.Value.AwsSecretAccessKey);
-    
+
     private static async Task<ProcessedImage> ProcessToSquareAsync(
         Stream input, CancellationToken ct = default)
     {
         const int targetSizePixels = 1024; // square edge
         const string outputFormat = "webp"; // "webp" | "jpeg" | "png"
         const int quality = 80; // 1..100
-        
+
         input.Position = 0;
         using var image = await Image.LoadAsync(input, ct);
 
@@ -129,5 +129,4 @@ public class S3ImageUploadService(IOptions<ImageUploadOptions> storage) : IImage
             throw new InvalidOperationException($"Failed to download image from URL: {imageUrl}");
         return new MemoryStream(response.RawBytes);
     }
-
 }

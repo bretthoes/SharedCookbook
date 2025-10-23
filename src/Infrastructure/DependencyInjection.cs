@@ -64,7 +64,7 @@ public static class DependencyInjection
         
         builder.Services.AddSingleton<IInvitationTokenFactory, Sha256TokenFactory>();
         
-        builder.Services.AddTransient<IImageUploadService, S3ImageUploadService>();
+        builder.Services.AddTransient<IImageUploader, S3ImageUploader>();
         builder.Services.Configure<ImageUploadOptions>(
             builder.Configuration.GetSection(key: nameof(ImageUploadOptions)));
         

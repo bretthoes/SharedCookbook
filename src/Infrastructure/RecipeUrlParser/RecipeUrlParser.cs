@@ -14,7 +14,7 @@ namespace SharedCookbook.Infrastructure.RecipeUrlParser;
 // TODO class needs refactoring; also throw more specific exceptions
 public class RecipeUrlParser(
     IOptions<RecipeUrlParserOptions> options,
-    IImageUploadService imageUploadService,
+    IImageUploader imageUploader,
     ILogger<RecipeUrlParser> logger) : IRecipeUrlParser
 {
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
@@ -82,7 +82,7 @@ public class RecipeUrlParser(
 
         var image = "";
         if (apiResponse.HasImage())
-            image = await imageUploadService.UploadImageFromUrl(apiResponse.Image!);
+            image = await imageUploader.UploadImageFromUrl(apiResponse.Image!);
 
         string title = apiResponse.Title?.Truncate(Recipe.Constraints.TitleMaxLength) ?? "";
 
