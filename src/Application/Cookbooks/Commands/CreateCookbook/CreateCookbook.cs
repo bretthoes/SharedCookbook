@@ -7,7 +7,7 @@ public sealed class CreateCookbookCommandHandler(IApplicationDbContext context, 
 {
     public async Task<int> Handle(CreateCookbookCommand request, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNullOrEmpty(user.Id);
+        ArgumentException.ThrowIfNullOrEmpty(user.Id);
         
         var cookbook = Cookbook.Create(request.Title, user.Id, request.Image);
         
