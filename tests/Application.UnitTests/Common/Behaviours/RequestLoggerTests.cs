@@ -24,7 +24,7 @@ public class RequestLoggerTests
     [Test]
     public async Task ShouldCallGetUserNameAsyncOnceIfAuthenticated()
     {
-        _user.Setup(x => x.Id).Returns(Guid.NewGuid().ToString());
+        _user.Setup(user => user.Id).Returns(Guid.NewGuid().ToString());
 
         var requestLogger = new LoggingBehaviour<CreateCookbookCommand>(_logger.Object, _user.Object, _identityService.Object);
 

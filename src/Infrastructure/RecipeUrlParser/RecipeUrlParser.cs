@@ -11,7 +11,7 @@ using SharedCookbook.Infrastructure.RecipeUrlParser.Models;
 
 namespace SharedCookbook.Infrastructure.RecipeUrlParser;
 
-// TODO class needs refactoring; also throw more specific exceptions
+// TODO class needs refactoring; also throw more specific exceptions; rename class indicating the impl (spoonocular)
 public class RecipeUrlParser(
     IOptions<RecipeUrlParserOptions> options,
     IImageUploader imageUploader,
