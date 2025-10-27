@@ -327,6 +327,42 @@
         ]
       }
     },
+    "/api/Invitations/count": {
+      "get": {
+        "tags": [
+          "Invitations"
+        ],
+        "operationId": "GetInvitationsCount",
+        "parameters": [
+          {
+            "name": "Status",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/InvitationStatus"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/Invitations/{id}": {
       "put": {
         "tags": [
@@ -1517,18 +1553,20 @@
         "type": "integer",
         "description": "",
         "x-enumNames": [
-          "Error",
+          "Unknown",
           "Active",
           "Accepted",
           "Rejected",
-          "Revoked"
+          "Revoked",
+          "Error"
         ],
         "enum": [
           0,
           1,
           2,
           3,
-          4
+          4,
+          5
         ]
       },
       "CreateInvitationCommand": {

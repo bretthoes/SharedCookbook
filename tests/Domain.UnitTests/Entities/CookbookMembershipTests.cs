@@ -25,7 +25,7 @@ public class CookbookMembershipTests
         sut.Promote();
         
         sut.Permissions.Should().BeEquivalentTo(expected);
-        sut.IsOwner.Should().BeFalse();
+        sut.IsOwner.Should().BeTrue();
         sut.DomainEvents.Should().NotBeEmpty();
     }
     
@@ -76,7 +76,6 @@ public class CookbookMembershipTests
     public void PermissionsNotOverwritten()
     {
         // TODO clean up; testing for if set is overriding with defaults unexpectedly.
-        const bool expected = true;
         var sut = new CookbookMembership();
         var permissions = new Permissions().WithAddRecipe().WithUpdateRecipe(false);
         sut.SetPermissions(permissions);

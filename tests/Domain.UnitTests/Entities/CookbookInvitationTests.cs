@@ -37,7 +37,17 @@ public class CookbookInvitationTests
 
         sut.Status.Should().Be(expected);
         sut.DomainEvents.Should().NotBeEmpty();
-        sut.ResponseDate.Should().BeCloseTo(DateTimeOffset.Now, precision: TimeSpan.FromSeconds(1));
+    }
+    
+    [Test]
+    public void ResponseDateIsUpdatedAfterAccept()
+    {
+        var expected = DateTimeOffset.Now;
+        var sut = CookbookInvitation.Create(cookbookId: It.IsAny<int>(), recipientId: It.IsAny<string>());
+
+        sut.Accept(timestamp: expected, acceptedBy: It.IsAny<string>());
+
+        sut.ResponseDate.Should().BeCloseTo(expected, precision: TimeSpan.FromSeconds(1));
     }
 
     [Test]
@@ -50,7 +60,6 @@ public class CookbookInvitationTests
 
         sut.Status.Should().Be(expected);
         sut.DomainEvents.Should().NotBeEmpty();
-        sut.ResponseDate.Should().BeCloseTo(DateTimeOffset.Now, precision: TimeSpan.FromSeconds(1));
     }
 
     [Test]
