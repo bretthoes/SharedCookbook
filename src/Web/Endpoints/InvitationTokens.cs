@@ -10,7 +10,5 @@ public class InvitationTokens : EndpointGroupBase
     }
     
     private static Task<string> CreateInvitationToken(ISender sender, CreateInvitationTokenCommand command)
-    {
-        return sender.Send(command);
-    }
+        => sender.Send(command);
 }
