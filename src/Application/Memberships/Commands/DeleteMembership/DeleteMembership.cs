@@ -13,13 +13,3 @@ public class DeleteMembershipCommandHandler(IApplicationDbContext context) : IRe
         await context.SaveChangesAsync(cancellationToken);
     }
 }
-
-public class DeleteMembershipCommandValidator : AbstractValidator<DeleteMembershipCommand>
-{
-    public DeleteMembershipCommandValidator()
-    {
-        RuleFor(command => command.Id)
-            .GreaterThan(0)
-            .WithMessage("Id must be greater than zero.");
-    }
-}

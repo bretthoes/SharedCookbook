@@ -38,18 +38,3 @@ public sealed class UpdateMembershipCommandHandler(IApplicationDbContext context
         await context.SaveChangesAsync(cancellationToken);
     }
 }
-
-public class UpdateMembershipCommandValidator : AbstractValidator<UpdateMembershipCommand>
-{
-    public UpdateMembershipCommandValidator()
-    {
-        RuleFor(command => command.Id).NotNull().GreaterThan(1);
-        RuleFor(command => command.IsOwner).NotNull();
-        RuleFor(command => command.CanAddRecipe).NotNull();
-        RuleFor(command => command.CanUpdateRecipe).NotNull();
-        RuleFor(command => command.CanDeleteRecipe).NotNull();
-        RuleFor(command => command.CanSendInvite).NotNull();
-        RuleFor(command => command.CanRemoveMember).NotNull();
-        RuleFor(command => command.CanEditCookbookDetails).NotNull();
-    }
-}

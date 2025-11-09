@@ -34,12 +34,3 @@ public class GetInvitationPreviewQueryHandler(
         };
     }
 }
-
-public class GetInvitationQueryValidator : AbstractValidator<GetInvitationTokenQuery>
-{
-    public GetInvitationQueryValidator()
-    {
-        RuleFor(query => query.Token)
-            .NotEmpty().WithMessage("Token cannot be empty.");
-    }
-}
