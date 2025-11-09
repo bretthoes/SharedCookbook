@@ -19,29 +19,24 @@ public class Memberships : EndpointGroupBase
         builder.MapDelete(DeleteMembership, pattern: "{id}").RequireAuthorization();
     }
 
-    private static Task<MembershipDto> GetMembership(
-        ISender sender,
-        [AsParameters] GetMembershipQuery query) 
-        => sender.Send(query);
+    private static Task<MembershipDto> GetMembership(ISender sender, [AsParameters] GetMembershipQuery query) =>
+        sender.Send(query);
 
-    private static Task<MembershipDto> GetMembershipByCookbook(
-        ISender sender,
-        int cookbookId)
-        => sender.Send(new GetMembershipByCookbookQuery(cookbookId));
+    private static Task<MembershipDto> GetMembershipByCookbook(ISender sender, [AsParameters] int cookbookId) =>
+        sender.Send(new GetMembershipByCookbookQuery(cookbookId));
 
-    private static Task<PaginatedList<MembershipDto>> GetMembershipsWithPagination(
-        ISender sender,
-        [AsParameters] GetMembershipsWithPaginationQuery query)
-        => sender.Send(query);
+    private static Task<PaginatedList<MembershipDto>> GetMembershipsWithPagination(ISender sender,
+        [AsParameters] GetMembershipsWithPaginationQuery query) => sender.Send(query);
 
-    private static async Task<IResult> UpdateMembership(ISender sender, int id, UpdateMembershipCommand command)
+    private static async Task<IResult> UpdateMembership(ISender sender, [FromRoute] int id,
+        [FromBody] UpdateMembershipCommand command)
     {
         if (id != command.Id) return Results.BadRequest();
         await sender.Send(command);
         return Results.NoContent();
     }
 
-    private static async Task<IResult> DeleteMembership(ISender sender, int id)
+    private static async Task<IResult> DeleteMembership(ISender sender, [FromRoute] int id)
     {
         await sender.Send(new DeleteMembershipCommand(id));
         return Results.NoContent();

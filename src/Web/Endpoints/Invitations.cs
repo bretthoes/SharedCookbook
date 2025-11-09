@@ -29,23 +29,24 @@ public class Invitations : EndpointGroupBase
         ISender sender,
         [AsParameters] GetInvitationsWithPaginationQuery query)
         => sender.Send(query);
-    
+
     private static Task<int> GetInvitationsCount(ISender sender, [AsParameters] GetInvitationsCountQuery query)
         => sender.Send(query);
 
-    private static Task<int> CreateInvitation(ISender sender, CreateInvitationCommand command)
+    private static Task<int> CreateInvitation(ISender sender, [FromBody] CreateInvitationCommand command)
     {
         return sender.Send(command);
     }
 
-    private static async Task<IResult> UpdateInvitation(ISender sender, int id, UpdateInvitationCommand command)
+    private static async Task<IResult> UpdateInvitation(ISender sender, [FromRoute] int id,
+        [FromBody] UpdateInvitationCommand command)
     {
         if (id != command.Id) return Results.BadRequest();
         await sender.Send(command);
         return Results.NoContent();
     }
 
-    private static async Task<IResult> DeleteInvitation(ISender sender, int id)
+    private static async Task<IResult> DeleteInvitation(ISender sender, [FromRoute] int id)
     {
         await sender.Send(new DeleteInvitationCommand(id));
         return Results.NoContent();

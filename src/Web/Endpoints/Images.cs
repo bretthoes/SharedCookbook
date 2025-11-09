@@ -10,7 +10,7 @@ public class Images : EndpointGroupBase
         builder.MapPost(CreateImages).RequireAuthorization();
     }
 
-    private static Task<string[]> CreateImages(ISender sender, IFormFileCollection files)
+    private static Task<string[]> CreateImages(ISender sender, [FromForm] IFormFileCollection files)
     {
         return sender.Send(new CreateImagesCommand(files));
     }

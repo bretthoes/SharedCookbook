@@ -1,2 +1,3 @@
-global using SharedCookbook.Web.Infrastructure;
 global using MediatR;
+global using Microsoft.AspNetCore.Mvc;
+global using SharedCookbook.Web.Infrastructure;

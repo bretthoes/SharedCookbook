@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SharedCookbook.Application.Common.Models;
+﻿using SharedCookbook.Application.Common.Models;
 using SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
 using SharedCookbook.Application.Cookbooks.Commands.DeleteCookbook;
 using SharedCookbook.Application.Cookbooks.Commands.UpdateCookbook;
@@ -24,14 +23,12 @@ public class Cookbooks : EndpointGroupBase
         return sender.Send(query);
     }
 
-    private static Task<int> CreateCookbook(ISender sender, CreateCookbookCommand command)
+    private static Task<int> CreateCookbook(ISender sender, [FromBody] CreateCookbookCommand command)
     {
         return sender.Send(command);
     }
 
-    private static async Task<IResult> UpdateCookbook(
-        ISender sender,
-        int id,
+    private static async Task<IResult> UpdateCookbook(ISender sender, [FromRoute] int id,
         [FromBody] UpdateCookbookCommand command)
     {
         if (id != command.Id) return Results.BadRequest();
@@ -39,7 +36,7 @@ public class Cookbooks : EndpointGroupBase
         return Results.NoContent();
     }
 
-    private static async Task<IResult> DeleteCookbook(ISender sender, int id)
+    private static async Task<IResult> DeleteCookbook(ISender sender, [FromRoute] int id)
     {
         await sender.Send(new DeleteCookbookCommand(id));
         return Results.NoContent();

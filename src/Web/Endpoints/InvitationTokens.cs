@@ -12,9 +12,9 @@ public class InvitationTokens : EndpointGroupBase
         builder.MapPost(CreateInvitationToken).RequireAuthorization();
     }
     
-    private static Task<InvitationDto> GetInvitationToken(ISender sender, GetInvitationTokenQuery query)
+    private static Task<InvitationDto> GetInvitationToken(ISender sender, [AsParameters] GetInvitationTokenQuery query)
         => sender.Send(query);
     
-    private static Task<string> CreateInvitationToken(ISender sender, CreateInvitationTokenCommand command)
+    private static Task<string> CreateInvitationToken(ISender sender, [FromBody] CreateInvitationTokenCommand command)
         => sender.Send(command);
 }
