@@ -9,8 +9,8 @@ public class PerformanceBehaviour<TRequest, TResponse>(
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull
 {
-    private readonly Stopwatch _timer = new();
     private const long ThresholdMilliseconds = 500;
+    private readonly Stopwatch _timer = new();
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
@@ -24,18 +24,14 @@ public class PerformanceBehaviour<TRequest, TResponse>(
         long elapsedMilliseconds = _timer.ElapsedMilliseconds;
 
         if (elapsedMilliseconds <= ThresholdMilliseconds)
-        {
             return response;
-        }
 
         string requestName = typeof(TRequest).Name;
         string userId = user.Id ?? string.Empty;
         string? userName = string.Empty;
 
         if (!string.IsNullOrEmpty(userId))
-        {
             userName = await identityService.GetUserNameAsync(userId);
-        }
 
         logger.LogWarning(
             "SharedCookbook Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@UserName} {@Request}",

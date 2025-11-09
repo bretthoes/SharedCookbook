@@ -45,14 +45,14 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
 
         // Policy-based authorization
         var authorizeAttributesWithPolicies = authorizeAttributes
-            .Where(a => !string.IsNullOrWhiteSpace(a.Policy))
+            .Where(attribute => !string.IsNullOrWhiteSpace(attribute.Policy))
             .ToArray();
         
         if (authorizeAttributesWithPolicies.IsEmpty())
             return await next(cancellationToken);
 
         {
-            foreach (string policy in authorizeAttributesWithPolicies.Select(a => a.Policy))
+            foreach (string policy in authorizeAttributesWithPolicies.Select(attribute => attribute.Policy))
             {
                 bool authorized = await identityService.AuthorizeAsync(user.Id, policy);
 

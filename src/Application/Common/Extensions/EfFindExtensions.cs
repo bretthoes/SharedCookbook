@@ -6,8 +6,6 @@ public static class EfFindExtensions
         object id,
         CancellationToken cancellationToken = default)
         where TEntity : class
-    {
-        var entity = await set.FindAsync(keyValues: [id], cancellationToken).AsTask();
-        return entity ?? throw new NotFoundException(key: id.ToString() ?? "<null>", typeof(TEntity).Name);
-    }
+        => await set.FindAsync(keyValues: [id], cancellationToken).AsTask() ??
+               throw new NotFoundException(key: id.ToString() ?? "<null>", typeof(TEntity).Name);
 }

@@ -10,9 +10,7 @@ public class ValidationBehaviour<TRequest, TResponse>(IEnumerable<IValidator<TRe
         CancellationToken cancellationToken)
     {
         if (!validators.Any())
-        {
             return await next(cancellationToken);
-        }
 
         var validationResults = await Task.WhenAll(
             tasks: validators.Select(validator =>
