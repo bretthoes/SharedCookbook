@@ -16,17 +16,12 @@ public class Cookbooks : EndpointGroupBase
         builder.MapDelete(DeleteCookbook, pattern: "{id}").RequireAuthorization();
     }
 
-    private static Task<PaginatedList<CookbookBriefDto>> GetCookbooksWithPagination(
-        ISender sender,
+    private static Task<PaginatedList<CookbookBriefDto>> GetCookbooksWithPagination(ISender sender,
         [AsParameters] GetCookbooksWithPaginationQuery query)
-    {
-        return sender.Send(query);
-    }
+        => sender.Send(query);
 
-    private static Task<int> CreateCookbook(ISender sender, [FromBody] CreateCookbookCommand command)
-    {
-        return sender.Send(command);
-    }
+    private static Task<int> CreateCookbook(ISender sender, [FromBody] CreateCookbookCommand command) =>
+        sender.Send(command);
 
     private static async Task<IResult> UpdateCookbook(ISender sender, [FromRoute] int id,
         [FromBody] UpdateCookbookCommand command)

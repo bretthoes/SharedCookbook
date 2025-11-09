@@ -35,7 +35,8 @@ public class Recipes : EndpointGroupBase
         return sender.Send(command);
     }
 
-    private static async Task<IResult> UpdateRecipe(ISender sender, [FromRoute] int id, [FromBody] UpdateRecipeCommand command)
+    private static async Task<IResult> UpdateRecipe(ISender sender, [FromRoute] int id,
+        [FromBody] UpdateRecipeCommand command)
     {
         if (id != command.Recipe.Id) return Results.BadRequest();
         await sender.Send(command);

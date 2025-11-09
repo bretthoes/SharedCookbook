@@ -14,7 +14,9 @@ public class InvitationTokens : EndpointGroupBase
     
     private static Task<InvitationDto> GetInvitationToken(ISender sender, [AsParameters] GetInvitationTokenQuery query)
         => sender.Send(query);
-    
+
     private static Task<string> CreateInvitationToken(ISender sender, [FromBody] CreateInvitationTokenCommand command)
-        => sender.Send(command);
+    {
+        return sender.Send(command);
+    }
 }
