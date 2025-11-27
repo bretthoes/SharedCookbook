@@ -1,4 +1,4 @@
-﻿namespace SharedCookbook.Application.Common.Models;
+﻿namespace SharedCookbook.Application.Contracts;
 
 public class PaginatedList<T>
 {
