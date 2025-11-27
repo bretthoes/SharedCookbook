@@ -4,7 +4,6 @@ using Amazon.S3;
 using Amazon.S3.Transfer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using RestSharp;
 using SharedCookbook.Application.Common;
 using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Application.Images.Commands.CreateImages;
@@ -16,7 +15,7 @@ using SixLabors.ImageSharp.Processing;
 namespace SharedCookbook.Infrastructure.FileStorage;
 
 // TODO refactoring and better DI, throwing, and logging needed here
-public class S3ImageUploader(IOptions<ImageUploadOptions> storage) : IImageUploader
+public class S3ImageUploader(IOptions<ImageUploadOptions> storage, IHttpClientFactory clientFactory) : IImageUploader
 {
     public async Task<string[]> UploadFiles(IFormFileCollection files)
     {
@@ -49,8 +48,8 @@ public class S3ImageUploader(IOptions<ImageUploadOptions> storage) : IImageUploa
         using var client = GetS3Client();
         using var transferUtility = new TransferUtility(client);
 
-        await using var src = await DownloadImageFromUrl(url);
-        await using var img = await ProcessToSquareAsync(src);
+        await using var stream = await DownloadImageFromUrl(url);
+        await using var img = await ProcessToSquareAsync(stream);
 
         var key = ImageUtilities.GetUniqueFileName(img.Extension);
         await transferUtility.UploadAsync(new TransferUtilityUploadRequest
@@ -102,13 +101,11 @@ public class S3ImageUploader(IOptions<ImageUploadOptions> storage) : IImageUploa
                 ext = ".jpg";
                 contentType = "image/jpeg";
                 break;
-
             case "png":
                 await image.SaveAsPngAsync(output, ct);
                 ext = ".png";
                 contentType = "image/png";
                 break;
-
             default: // webp
                 await image.SaveAsync(output,
                     new WebpEncoder { Quality = quality, FileFormat = WebpFileFormatType.Lossy }, ct);
@@ -120,13 +117,17 @@ public class S3ImageUploader(IOptions<ImageUploadOptions> storage) : IImageUploa
         output.Position = 0;
         return new ProcessedImage { Stream = output, Extension = ext, ContentType = contentType };
     }
-
-    private static async Task<Stream> DownloadImageFromUrl(string imageUrl)
+    
+    private async Task<Stream> DownloadImageFromUrl(string imageUrl)
     {
-        using var client = new RestClient(imageUrl);
-        var response = await client.ExecuteAsync(new RestRequest());
-        if (!response.IsSuccessful || response.RawBytes is null)
-            throw new InvalidOperationException($"Failed to download image from URL: {imageUrl}");
-        return new MemoryStream(response.RawBytes);
+        var httpClient = clientFactory.CreateClient();
+
+        var response = await httpClient.GetAsync(imageUrl);
+        if (DownloadFailed(response))
+            throw new InvalidOperationException($"Failed to download image from URL: {imageUrl}. Status: {response.StatusCode}");
+
+        return await response.Content.ReadAsStreamAsync();
     }
+
+    private static bool DownloadFailed(HttpResponseMessage? response) => response is { IsSuccessStatusCode: false };
 }
