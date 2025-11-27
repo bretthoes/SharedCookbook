@@ -22,7 +22,7 @@ public class RecipeUrlParser(
     public async Task<CreateRecipeDto> Parse(string url, CancellationToken cancellationToken)
     {
         // Construct the full Spoonacular API URL with query parameters
-        var apiUrl = $"{options.Value.BaseUrl}/recipes/extract";
+        string apiUrl = $"{options.Value.BaseUrl}/recipes/extract";
 
         var queryParams = new Dictionary<string, string?>
         {
@@ -33,7 +33,7 @@ public class RecipeUrlParser(
             ["includeTaste"] = "false",
             ["apiKey"] = options.Value.ApiKey
         };
-        var requestUri = QueryHelpers.AddQueryString(apiUrl, queryParams!);
+        string requestUri = QueryHelpers.AddQueryString(apiUrl, queryParams!);
 
         var http = clientFactory.CreateClient();
         using var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
@@ -51,22 +51,14 @@ public class RecipeUrlParser(
                 response.StatusCode,
                 response.ReasonPhrase);
 
-            throw new Exception("Failed to fetch or parse the recipe from the URL.");
+            throw new HttpRequestException("Failed to fetch or parse the recipe from the URL.");
         }
 
-        try
-        {
-            string content = await response.Content.ReadAsStringAsync(cancellationToken);
-            var apiResponse = JsonSerializer.Deserialize<RecipeApiResponse>(content, JsonOptions)
-                              ?? throw new Exception("Failed to deserialize the recipe data.");
+        string content = await response.Content.ReadAsStringAsync(cancellationToken);
+        var apiResponse = JsonSerializer.Deserialize<RecipeApiResponse>(content, JsonOptions)
+            ?? throw new JsonException("Received null payload.");
 
-            return await MapToCreateRecipeDto(apiResponse.ApplyDefaults());
-        }
-        catch (JsonException ex)
-        {
-            logger.LogError("Error deserializing response content: {Error}", ex.Message);
-            throw new Exception("Error parsing recipe data from API response.", ex);
-        }
+        return await MapToCreateRecipeDto(apiResponse.ApplyDefaults());
     }
 
     private async Task<CreateRecipeDto> MapToCreateRecipeDto(RecipeApiResponse apiResponse)
