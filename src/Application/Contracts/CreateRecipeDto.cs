@@ -1,11 +1,9 @@
-using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
+﻿namespace SharedCookbook.Application.Contracts;
 
-namespace SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
-
-public sealed class UpdateRecipeDto
+public class CreateRecipeDto
 {
-    public int Id { get; init; }
     public required string Title { get; init; }
+    public required int CookbookId { get; init; }
     public string? Summary { get; init; }
     public string? Thumbnail { get; init; }
     public string? VideoPath { get; init; }

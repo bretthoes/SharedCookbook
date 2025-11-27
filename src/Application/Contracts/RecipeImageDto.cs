@@ -1,4 +1,4 @@
-﻿namespace SharedCookbook.Application.Recipes.Commands.CreateRecipe;
+﻿namespace SharedCookbook.Application.Contracts;
 
 public class RecipeImageDto
 {

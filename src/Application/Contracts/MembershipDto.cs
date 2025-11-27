@@ -1,4 +1,4 @@
-namespace SharedCookbook.Application.Memberships.Queries;
+namespace SharedCookbook.Application.Contracts;
 
 public record MembershipDto
 {

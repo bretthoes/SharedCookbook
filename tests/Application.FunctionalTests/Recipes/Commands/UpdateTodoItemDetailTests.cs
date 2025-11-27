@@ -1,4 +1,5 @@
-﻿using SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
+﻿using SharedCookbook.Application.Contracts;
+using SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
 
 namespace SharedCookbook.Application.FunctionalTests.Recipes.Commands;
 

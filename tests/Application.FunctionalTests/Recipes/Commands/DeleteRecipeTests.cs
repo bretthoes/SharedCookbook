@@ -1,4 +1,5 @@
-﻿using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
+﻿using SharedCookbook.Application.Contracts;
+using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 using SharedCookbook.Application.Recipes.Commands.DeleteRecipe;
 using SharedCookbook.Domain.Entities;
 

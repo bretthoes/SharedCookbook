@@ -1,4 +1,4 @@
-﻿namespace SharedCookbook.Application.Recipes.Queries.GetRecipe;
+﻿namespace SharedCookbook.Application.Contracts;
 
 public class RecipeDetailedDto
 {

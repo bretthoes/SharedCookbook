@@ -1,4 +1,4 @@
-﻿namespace SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
+﻿namespace SharedCookbook.Application.Contracts;
 
 public record InvitationDto
 {

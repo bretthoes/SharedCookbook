@@ -1,4 +1,4 @@
-﻿namespace SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
+﻿namespace SharedCookbook.Application.Contracts;
 
 public class RecipeBriefDto
 {
