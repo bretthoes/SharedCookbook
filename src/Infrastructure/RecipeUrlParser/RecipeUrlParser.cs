@@ -1,10 +1,9 @@
 using System.Net;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using RestSharp;
 using SharedCookbook.Application.Common.Interfaces;
-using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 using System.Text.Json;
+using Microsoft.AspNetCore.WebUtilities;
 using SharedCookbook.Application.Common.Extensions;
 using SharedCookbook.Domain.Entities;
 using SharedCookbook.Infrastructure.RecipeUrlParser.Models;
@@ -15,6 +14,7 @@ namespace SharedCookbook.Infrastructure.RecipeUrlParser;
 public class RecipeUrlParser(
     IOptions<RecipeUrlParserOptions> options,
     IImageUploader imageUploader,
+    IHttpClientFactory clientFactory,
     ILogger<RecipeUrlParser> logger) : IRecipeUrlParser
 {
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
@@ -24,30 +24,41 @@ public class RecipeUrlParser(
         // Construct the full Spoonacular API URL with query parameters
         var apiUrl = $"{options.Value.BaseUrl}/recipes/extract";
 
-        var request = GetRequest(url);
+        var queryParams = new Dictionary<string, string?>
+        {
+            ["url"] = url,
+            ["forceExtraction"] = "true",
+            ["analyze"] = "false",
+            ["includeNutrition"] = "false",
+            ["includeTaste"] = "false",
+            ["apiKey"] = options.Value.ApiKey
+        };
+        var requestUri = QueryHelpers.AddQueryString(apiUrl, queryParams!);
 
-        // Create the RestClient
-        using var client = new RestClient(apiUrl);
+        var http = clientFactory.CreateClient();
+        using var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+        request.Headers.Accept.ParseAdd("application/json");
 
-        // Execute the request
-        var response = await client.ExecuteAsync(request, cancellationToken);
-
-        if (!response.IsSuccessful)
+        using var response = await http.SendAsync(
+            request,
+            HttpCompletionOption.ResponseHeadersRead,
+            cancellationToken);
+        
+        if (!response.IsSuccessStatusCode)
         {
             logger.LogError(
-                "Failed to parse recipe from URL: {StatusCode} {Content} {Exception}",
+                "Failed to parse recipe from URL: {StatusCode} {ReasonPhrase}",
                 response.StatusCode,
-                response.Content,
-                response.ErrorException?.Message);
+                response.ReasonPhrase);
 
             throw new Exception("Failed to fetch or parse the recipe from the URL.");
         }
 
         try
         {
-            var apiResponse = JsonSerializer.Deserialize<RecipeApiResponse>(response.Content ?? "", JsonOptions);
-            if (apiResponse is null)
-                throw new Exception("Failed to deserialize the recipe data.");
+            string content = await response.Content.ReadAsStringAsync(cancellationToken);
+            var apiResponse = JsonSerializer.Deserialize<RecipeApiResponse>(content, JsonOptions)
+                              ?? throw new Exception("Failed to deserialize the recipe data.");
 
             return await MapToCreateRecipeDto(apiResponse.ApplyDefaults());
         }
@@ -57,15 +68,6 @@ public class RecipeUrlParser(
             throw new Exception("Error parsing recipe data from API response.", ex);
         }
     }
-
-    private RestRequest GetRequest(string url) =>
-        new RestRequest()
-            .AddParameter(name: "url", url)
-            .AddParameter(name: "forceExtraction", "true")
-            .AddParameter(name: "analyze", "false")
-            .AddParameter(name: "includeNutrition", "false")
-            .AddParameter(name: "includeTaste", "false")
-            .AddParameter(name: "apiKey", options.Value.ApiKey);
 
     private async Task<CreateRecipeDto> MapToCreateRecipeDto(RecipeApiResponse apiResponse)
     {

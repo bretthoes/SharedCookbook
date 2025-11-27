@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
-
-namespace SharedCookbook.Application.Recipes.Commands.ParseRecipeFromUrl;
+﻿namespace SharedCookbook.Application.Recipes.Commands.ParseRecipeFromUrl;
 
 public sealed record ParseRecipeFromUrlCommand(string Url) : IRequest<CreateRecipeDto>;
 
