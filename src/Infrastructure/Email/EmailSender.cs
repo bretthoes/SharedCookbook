@@ -1,38 +1,45 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
+﻿using System.Net.Http.Headers;
+using System.Text;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using RestSharp;
-using RestSharp.Authenticators;
 
 namespace SharedCookbook.Infrastructure.Email;
 
-// TODO inject RestClient
-public class EmailSender(IOptions<EmailApiOptions> options, ILogger<EmailSender> logger) : IEmailSender
+public class EmailSender(
+    IHttpClientFactory clientFactory,
+    IOptions<EmailApiOptions> options,
+    ILogger<EmailSender> logger) : IEmailSender
 {
     public async Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
-        var clientOptions = new RestClientOptions(options.Value.BaseUrl)
+        var client = clientFactory.CreateClient();
+        client.BaseAddress = new Uri(options.Value.BaseUrl);
+
+        byte[] authBytes = Encoding.ASCII.GetBytes($"api:{options.Value.ApiKey}");
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue(scheme: "Basic", Convert.ToBase64String(authBytes));
+
+        var form = new Dictionary<string, string>
         {
-            Authenticator = new HttpBasicAuthenticator(username: "api", password: options.Value.ApiKey)
+            ["from"] = options.Value.From,
+            ["to"] = email,
+            ["subject"] = subject,
+            ["html"] = htmlMessage
         };
 
-        using var client = new RestClient(clientOptions);
+        using var content = new FormUrlEncodedContent(form);
+        using var response = await client.PostAsync($"v3/{options.Value.Domain}/messages", content);
 
-        var request = new RestRequest(resource: $"v3/{options.Value.Domain}/messages", Method.Post);
+        if (!response.IsSuccessStatusCode)
+        {
+            var body = await response.Content.ReadAsStringAsync();
 
-        // add email parameters to request
-        request.AddParameter(name: "from", options.Value.From);
-        request.AddParameter(name: "to", email);
-        request.AddParameter(name: "subject", subject);
-        request.AddParameter(name: "html", htmlMessage);
-
-        var response = await client.ExecuteAsync(request);
-        
-        if (!response.IsSuccessful)
             logger.LogError(
-                "SharedCookbook Email failed to send: {StatusCode} {Content} {Exception}",
-                 response.StatusCode,
-                 response.Content,
-                 response.ErrorException?.Message);
+                "SharedCookbook Email failed to send: {StatusCode} {ReasonPhrase} {Content}",
+                (int)response.StatusCode,
+                response.ReasonPhrase,
+                body);
+        }
     }
 }
