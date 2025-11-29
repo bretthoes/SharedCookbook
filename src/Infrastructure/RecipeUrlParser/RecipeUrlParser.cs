@@ -80,25 +80,17 @@ public class RecipeUrlParser(
 
         string title = apiResponse.Title?.Truncate(Recipe.Constraints.TitleMaxLength) ?? "";
 
-        var createRecipeDto = new CreateRecipeDto
+        return new CreateRecipeDto
         {
             Title = title,
-            Images = string.IsNullOrWhiteSpace(image)
-                ? []
-                : [new RecipeImageDto { Name = image, Ordinal = 1 }],
+            Images = string.IsNullOrWhiteSpace(image) ? [] : [new RecipeImageDto { Name = image, Ordinal = 1 }],
             CookbookId = 0,
             Summary = summaryDecoded.Truncate(Recipe.Constraints.SummaryMaxLength),
             Servings = apiResponse.Servings,
             PreparationTimeInMinutes = apiResponse.PreparationMinutes,
             CookingTimeInMinutes = apiResponse.CookingMinutes,
             BakingTimeInMinutes = null,
-            Ingredients = apiResponse.ExtendedIngredients?.Select((ingredient, index) =>
-                new RecipeIngredientDto
-                {
-                    Name = ingredient.Original.Truncate(RecipeIngredient.Constraints.NameMaxLength),
-                    Optional = false,
-                    Ordinal = index + 1
-                }).ToList() ?? [],
+            Ingredients = apiResponse.ExtendedIngredients.ToDtos(),
             Directions = steps.Select((stepString, index) =>
                 new RecipeDirectionDto
                 {
@@ -108,7 +100,5 @@ public class RecipeUrlParser(
                     Ordinal = index + 1
                 }).ToList()
         };
-
-        return createRecipeDto;
     }
 }
