@@ -43,7 +43,7 @@ public class RecipeUrlParser(
             request,
             HttpCompletionOption.ResponseHeadersRead,
             cancellationToken);
-        
+
         if (!response.IsSuccessStatusCode)
         {
             logger.LogError(
@@ -66,13 +66,6 @@ public class RecipeUrlParser(
         // Split instructions into individual steps based on double newline characters
         string summary = apiResponse.Summary?.RemoveHtml() ?? "";
         string summaryDecoded = WebUtility.HtmlDecode(summary);
-        string instructionsDecoded = WebUtility.HtmlDecode(apiResponse.Instructions) ?? "";
-
-        string[] steps = instructionsDecoded
-            .Split(["\n\n"], StringSplitOptions.RemoveEmptyEntries)
-            .Select(stepString => stepString.RemoveHtml().Trim())
-            .Where(stepString => stepString.Length > 0)
-            .ToArray();
 
         var image = "";
         if (apiResponse.HasImage())
@@ -91,14 +84,28 @@ public class RecipeUrlParser(
             CookingTimeInMinutes = apiResponse.CookingMinutes,
             BakingTimeInMinutes = null,
             Ingredients = apiResponse.ExtendedIngredients.ToDtos(),
-            Directions = steps.Select((stepString, index) =>
-                new RecipeDirectionDto
-                {
-                    Text = stepString.Length > RecipeDirection.Constraints.TextMaxLength
-                        ? stepString[..RecipeDirection.Constraints.TextMaxLength]
-                        : stepString,
-                    Ordinal = index + 1
-                }).ToList()
+            Directions = ExtractDirections(apiResponse.Instructions)
         };
     }
+
+    private static List<RecipeDirectionDto> ExtractDirections(string? instructionsFromResponse)
+        => string.IsNullOrWhiteSpace(instructionsFromResponse)
+            ? []
+            : WebUtility.HtmlDecode(instructionsFromResponse)
+                .Split(["\n\n"], StringSplitOptions.RemoveEmptyEntries)
+                .Select(stepString => stepString.RemoveHtml().Trim())
+                .Where(stepString => stepString.Length > 0)
+                .AsEnumerable()
+                .ToDtos();
+}
+
+internal static class RecipeUrlParserExtensions
+{
+    internal static List<RecipeDirectionDto> ToDtos(this IEnumerable<string>? directions) =>
+        directions is null
+            ? []
+            : directions.Select((direction, index) => new RecipeDirectionDto
+            {
+                Text = direction.Truncate(RecipeDirection.Constraints.TextMaxLength), Ordinal = index + 1
+            }).ToList();
 }

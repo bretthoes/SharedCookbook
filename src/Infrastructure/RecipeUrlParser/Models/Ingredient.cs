@@ -21,10 +21,8 @@ public static class IngredientExtensions
 {
     public static List<RecipeIngredientDto> ToDtos(
         this IEnumerable<Ingredient>? ingredients,
-        bool optional = false)
-    {
-        return ingredients is null
+        bool optional = false) =>
+        ingredients is null
             ? []
-            : ingredients .Select((ingredient, index) => ingredient.ToDto(index + 1, optional)) .ToList();
-    }
+            : ingredients.Select((ingredient, index) => ingredient.ToDto(ordinal: index + 1, optional)).ToList();
 }
