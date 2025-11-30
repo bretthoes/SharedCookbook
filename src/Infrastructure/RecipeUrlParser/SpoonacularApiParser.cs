@@ -1,21 +1,17 @@
-using System.Net;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SharedCookbook.Application.Common.Interfaces;
 using System.Text.Json;
 using Microsoft.AspNetCore.WebUtilities;
-using SharedCookbook.Application.Common.Extensions;
-using SharedCookbook.Domain.Entities;
 using SharedCookbook.Infrastructure.RecipeUrlParser.Models;
 
 namespace SharedCookbook.Infrastructure.RecipeUrlParser;
 
-// TODO class needs refactoring; also throw more specific exceptions; rename class indicating the impl (spoonocular)
-public class RecipeUrlParser(
+public sealed class SpoonacularApiParser(
     IOptions<RecipeUrlParserOptions> options,
     IImageUploader imageUploader,
     IHttpClientFactory clientFactory,
-    ILogger<RecipeUrlParser> logger) : IRecipeUrlParser
+    ILogger<SpoonacularApiParser> logger) : IRecipeUrlParser
 {
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
 

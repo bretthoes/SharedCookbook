@@ -68,7 +68,7 @@ public static class DependencyInjection
         builder.Services.Configure<ImageUploadOptions>(
             builder.Configuration.GetSection(key: nameof(ImageUploadOptions)));
         
-        builder.Services.AddScoped<IRecipeUrlParser, RecipeUrlParser.RecipeUrlParser>();
+        builder.Services.AddScoped<IRecipeUrlParser, SpoonacularApiParser>();
         builder.Services.Configure<RecipeUrlParserOptions>(
             builder.Configuration.GetSection(key: nameof(RecipeUrlParserOptions)));
 
