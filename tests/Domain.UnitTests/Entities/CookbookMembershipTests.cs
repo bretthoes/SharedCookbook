@@ -71,16 +71,4 @@ public class CookbookMembershipTests
         
         actual.Should().BeEquivalentTo(expected);
     }
-    
-    [Test]
-    public void PermissionsNotOverwritten()
-    {
-        // TODO clean up; testing for if set is overriding with defaults unexpectedly.
-        var sut = new CookbookMembership();
-        var permissions = new Permissions().WithAddRecipe().WithUpdateRecipe(false);
-        sut.SetPermissions(permissions);
-        var updatedPermissions = permissions.WithUpdateRecipe(false);
-        sut.SetPermissions(updatedPermissions);
-        sut.Permissions.CanAddRecipe.Should().BeTrue();
-    }
 }

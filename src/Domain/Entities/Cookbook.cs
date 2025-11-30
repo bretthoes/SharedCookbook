@@ -16,7 +16,7 @@ public sealed class Cookbook : BaseAuditableEntity
 
     public IReadOnlyCollection<Recipe> Recipes { get; init; } = [];
     
-    public static Cookbook Create(string title, string creatorId, string? image)
+    public static Cookbook Create(string title, string creatorId, string? image = null)
     {
         var cookbook = new Cookbook
         {
