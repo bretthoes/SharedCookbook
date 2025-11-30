@@ -56,56 +56,13 @@ public class RecipeUrlParser(
 
         string content = await response.Content.ReadAsStringAsync(cancellationToken);
         var apiResponse = JsonSerializer.Deserialize<RecipeApiResponse>(content, JsonOptions)
-            ?? throw new JsonException("Received null payload.");
+                          ?? throw new JsonException("Received null payload.");
 
-        return await MapToCreateRecipeDto(apiResponse.ApplyDefaults());
+        string imageKey = "";
+        if (Uri.IsWellFormedUriString(apiResponse.Image, UriKind.Absolute))
+            imageKey = await imageUploader.UploadImageFromUrl(apiResponse.Image);
+        apiResponse.Image = imageKey;
+
+        return apiResponse.ToDto();
     }
-
-    private async Task<CreateRecipeDto> MapToCreateRecipeDto(RecipeApiResponse apiResponse)
-    {
-        // Split instructions into individual steps based on double newline characters
-        string summary = apiResponse.Summary?.RemoveHtml() ?? "";
-        string summaryDecoded = WebUtility.HtmlDecode(summary);
-
-        var image = "";
-        if (apiResponse.HasImage())
-            image = await imageUploader.UploadImageFromUrl(apiResponse.Image!);
-
-        string title = apiResponse.Title?.Truncate(Recipe.Constraints.TitleMaxLength) ?? "";
-
-        return new CreateRecipeDto
-        {
-            Title = title,
-            Images = string.IsNullOrWhiteSpace(image) ? [] : [new RecipeImageDto { Name = image, Ordinal = 1 }],
-            CookbookId = 0,
-            Summary = summaryDecoded.Truncate(Recipe.Constraints.SummaryMaxLength),
-            Servings = apiResponse.Servings,
-            PreparationTimeInMinutes = apiResponse.PreparationMinutes,
-            CookingTimeInMinutes = apiResponse.CookingMinutes,
-            BakingTimeInMinutes = null,
-            Ingredients = apiResponse.ExtendedIngredients.ToDtos(),
-            Directions = ExtractDirections(apiResponse.Instructions)
-        };
-    }
-
-    private static List<RecipeDirectionDto> ExtractDirections(string? instructionsFromResponse)
-        => string.IsNullOrWhiteSpace(instructionsFromResponse)
-            ? []
-            : WebUtility.HtmlDecode(instructionsFromResponse)
-                .Split(["\n\n"], StringSplitOptions.RemoveEmptyEntries)
-                .Select(stepString => stepString.RemoveHtml().Trim())
-                .Where(stepString => stepString.Length > 0)
-                .AsEnumerable()
-                .ToDtos();
-}
-
-internal static class RecipeUrlParserExtensions
-{
-    internal static List<RecipeDirectionDto> ToDtos(this IEnumerable<string>? directions) =>
-        directions is null
-            ? []
-            : directions.Select((direction, index) => new RecipeDirectionDto
-            {
-                Text = direction.Truncate(RecipeDirection.Constraints.TextMaxLength), Ordinal = index + 1
-            }).ToList();
 }
