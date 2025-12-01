@@ -8,7 +8,7 @@ public abstract class BaseInvitation : BaseAuditableEntity
     
     public DateTimeOffset? ResponseDate { get; private set; }
 
-    protected bool IsActive => Status == InvitationStatus.Active;
+    public bool IsActive => Status == InvitationStatus.Active;
     
     private bool IsAccepted => Status == InvitationStatus.Accepted;
     
