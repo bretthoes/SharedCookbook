@@ -11,7 +11,7 @@ public class InvitationResponderTests
     private Mock<IUser> _user = null!;
     private Mock<TimeProvider> _clock = null!;
     private InvitationResponder _sut = null!;
-    private CookbookInvitation _defaultInvitation = null!;
+    private CookbookInvitation _activeInvitation = null!;
 
     [SetUp]
     public void Setup()
@@ -20,63 +20,71 @@ public class InvitationResponderTests
         _user = new Mock<IUser>();
         _clock = new Mock<TimeProvider>();
         _sut = new InvitationResponder(_context.Object, _user.Object, _clock.Object);
-        _defaultInvitation = new CookbookInvitation();
+        _activeInvitation = CookbookInvitation.Create(It.IsAny<int>(), MockUserId);
+        _user.SetupGet(user => user.Id).Returns(MockUserId);
     }
 
     [Test]
     public async Task WhenCurrentStatusIsSameAsUpdatedReturnsId()
     {
-        int actual = await _sut.Respond(_defaultInvitation, _defaultInvitation.Status);
+        int actual = await _sut.Respond(_activeInvitation, _activeInvitation.Status);
 
-        Assert.That(actual, Is.EqualTo(_defaultInvitation.Id));
+        Assert.That(actual, Is.EqualTo(_activeInvitation.Id));
     }
 
     [Test]
     public async Task ThrowArgumentNullExceptionWhenUserIdIsNull()
     {
-        await FluentActions.Invoking(() => _sut.Respond(_defaultInvitation, InvitationStatus.Revoked))
+        _user.SetupGet(user => user.Id).Returns((string)null!);
+        
+        await FluentActions.Invoking(() => _sut.Respond(_activeInvitation, InvitationStatus.Revoked))
             .Should().ThrowAsync<ArgumentNullException>();
     }
 
     [TestCase(InvitationStatus.Error)]
-    [TestCase(InvitationStatus.Active)]
+    [TestCase(InvitationStatus.Unknown)]
     [TestCase(InvitationStatus.Revoked)]
     public async Task ThrowsNotSupportedExceptionForUnsupportedStatusUpdate(InvitationStatus status)
     {
-        _user.SetupGet(user => user.Id).Returns(MockUserId);
-        
-        await FluentActions.Invoking(() => _sut.Respond(_defaultInvitation, status))
-            .Should().ThrowAsync<NotSupportedException>();
-    }
-
-    // we can't easily include this case in the test above due to "Unknown" being the default status for an Invitation
-    [Test]
-    public async Task ThrowsNotSupportedExceptionWhenUpdatingToUnknownFromDifferentStatus()
-    {
-        _user.SetupGet(user => user.Id).Returns(MockUserId);
-        _defaultInvitation.Reject(It.IsAny<DateTimeOffset>());
-        
-        await FluentActions.Invoking(() => _sut.Respond(_defaultInvitation, InvitationStatus.Active))
+        await FluentActions.Invoking(() => _sut.Respond(_activeInvitation, status))
             .Should().ThrowAsync<NotSupportedException>();
     }
 
     [Test]
     public async Task InvitationStatusIsAcceptedAfterBeingAccepted()
     {
-        _user.SetupGet(user => user.Id).Returns(MockUserId);
+        await _sut.Respond(_activeInvitation, InvitationStatus.Accepted);
         
-        await _sut.Respond(_defaultInvitation, InvitationStatus.Accepted);
-        
-        _defaultInvitation.Status.Should().Be(InvitationStatus.Accepted);
+        _activeInvitation.Status.Should().Be(InvitationStatus.Accepted);
     }
     
     [Test]
     public async Task InvitationStatusIsRejectedAfterBeingRejected()
     {
-        _user.SetupGet(user => user.Id).Returns(MockUserId);
+        await _sut.Respond(_activeInvitation, InvitationStatus.Rejected);
         
-        await _sut.Respond(_defaultInvitation, InvitationStatus.Rejected);
+        _activeInvitation.Status.Should().Be(InvitationStatus.Rejected);
+    }
+
+    [Test]
+    public async Task InactiveInvitationStatusIsUnchangedAfterBeingAccepted()
+    {
+        var defaultInvitation = new CookbookInvitation();
+        var expected = defaultInvitation.Status;
         
-        _defaultInvitation.Status.Should().Be(InvitationStatus.Rejected);
+        await _sut.Respond(defaultInvitation, InvitationStatus.Accepted);
+        
+        defaultInvitation.Status.Should().Be(expected);
+    }
+    
+    [Test]
+    public async Task InactiveInvitationStatusIsUnchangedAfterBeingRejected()
+    {
+        var defaultInvitation = new CookbookInvitation();
+        var expected = defaultInvitation.Status;
+        
+        await _sut.Respond(defaultInvitation, InvitationStatus.Rejected);
+        
+        defaultInvitation.Status.Should().Be(expected);
     }
 }

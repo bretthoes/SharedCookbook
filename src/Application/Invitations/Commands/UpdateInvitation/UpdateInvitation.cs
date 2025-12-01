@@ -16,9 +16,7 @@ public sealed class UpdateInvitationCommandHandler(
         
         var invitation = await context.CookbookInvitations.FindOrThrowAsync(command.Id, cancellationToken);
 
-        // TODO add better logging or messages around these exceptions
         if (invitation.IsNotFor(user.Id)) throw new ForbiddenAccessException();
-        if (!invitation.IsActive) throw new NotSupportedException();
 
         return await responder.Respond(invitation, command.NewStatus, cancellationToken);
     }
