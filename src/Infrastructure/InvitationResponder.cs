@@ -14,7 +14,7 @@ public sealed class InvitationResponder(
         CancellationToken cancellationToken = default)
     {
         if (StatusUnchanged(current: invite.Status, updated: decision)) return invite.Id;
-        
+
         ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
 
         var now = clock.GetUtcNow();
@@ -32,7 +32,7 @@ public sealed class InvitationResponder(
             case InvitationStatus.Revoked:
             case InvitationStatus.Unknown:
             default:
-                throw new NotSupportedException($"Status {decision} with Id {invite.Id} not supported by user {user.Id}");
+                throw new NotSupportedException($"Status {decision} with Id {invite.Id} not supported.");
         }
 
         await context.SaveChangesAsync(cancellationToken);
