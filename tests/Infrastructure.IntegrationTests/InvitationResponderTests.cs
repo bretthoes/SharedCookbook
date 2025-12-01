@@ -59,4 +59,24 @@ public class InvitationResponderTests
         await FluentActions.Invoking(() => _sut.Respond(_defaultInvitation, InvitationStatus.Active))
             .Should().ThrowAsync<NotSupportedException>();
     }
+
+    [Test]
+    public async Task InvitationStatusIsAcceptedAfterBeingAccepted()
+    {
+        _user.SetupGet(user => user.Id).Returns(MockUserId);
+        
+        await _sut.Respond(_defaultInvitation, InvitationStatus.Accepted);
+        
+        _defaultInvitation.Status.Should().Be(InvitationStatus.Accepted);
+    }
+    
+    [Test]
+    public async Task InvitationStatusIsRejectedAfterBeingRejected()
+    {
+        _user.SetupGet(user => user.Id).Returns(MockUserId);
+        
+        await _sut.Respond(_defaultInvitation, InvitationStatus.Rejected);
+        
+        _defaultInvitation.Status.Should().Be(InvitationStatus.Rejected);
+    }
 }
