@@ -10,8 +10,8 @@ public class GetCookbooksTests : BaseTestFixture
     [Test]
     public async Task ShouldGetCookbook()
     {
-        string userId = await RunAsDefaultUserAsync();
-
+        string? userId = GetUserId();
+        
         await AddAsync(new Cookbook
         {
             Title = "Test Cookbook Title", Memberships = [new CookbookMembership { CreatedBy = userId }]

@@ -63,11 +63,6 @@ public partial class Testing
         return await RunAsUserAsync("test@local", "Testing1234!", Array.Empty<string>());
     }
 
-    internal static async Task<string> RunAsAdministratorAsync()
-    {
-        return await RunAsUserAsync("administrator@local", "Administrator1234!", new[] { Roles.Administrator });
-    }
-
     internal static async Task<bool> AnyAsync<TEntity>(
         Expression<Func<TEntity, bool>>? predicate = null,
         CancellationToken cancellationToken = default)

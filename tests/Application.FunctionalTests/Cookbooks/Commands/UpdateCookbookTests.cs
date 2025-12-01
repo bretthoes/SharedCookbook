@@ -33,7 +33,7 @@ public class UpdateCookbookTests : BaseTestFixture
     [Test]
     public async Task ShouldUpdateCookbook()
     {
-        var userId = await RunAsDefaultUserAsync();
+        string? userId = GetUserId();
 
         var cookbookId = await SendAsync(new CreateCookbookCommand(Title: "New Cookbook"));
 

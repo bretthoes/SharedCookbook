@@ -12,8 +12,8 @@ public class InvitationAcceptanceTests : BaseTestFixture
     [Test]
     public async Task AcceptingInvitation_UpdatesStatusAndResponseDate()
     {
-        string userId = await RunAsDefaultUserAsync();
-        var cookbook = WithActiveInvitation("Test", userId);
+        string? userId = GetUserId();
+        var cookbook = WithActiveInvitation("Test", userId!);
         await AddAsync(cookbook);
 
         int invitationId = await SendAsync(new UpdateInvitationCommand(cookbook.Id, InvitationStatus.Accepted));
@@ -28,8 +28,8 @@ public class InvitationAcceptanceTests : BaseTestFixture
     [Test]
     public async Task AcceptingInvitation_CreatesMembershipForRecipient()
     {
-        string userId = await RunAsDefaultUserAsync();
-        var cookbook = WithActiveInvitation("Test", userId);
+        string? userId = GetUserId();
+        var cookbook = WithActiveInvitation("Test", userId!);
         await AddAsync(cookbook);
 
         await SendAsync(new UpdateInvitationCommand(cookbook.Id, InvitationStatus.Accepted));
@@ -44,8 +44,8 @@ public class InvitationAcceptanceTests : BaseTestFixture
     [Test]
     public async Task RejectingInvitation_DoesNotCreateMembership()
     {
-        string userId = await RunAsDefaultUserAsync();
-        var cookbook = WithActiveInvitation("Test", userId);
+        string? userId = GetUserId();
+        var cookbook = WithActiveInvitation("Test", userId!);
         await AddAsync(cookbook);
 
         await SendAsync(new UpdateInvitationCommand(cookbook.Id, InvitationStatus.Rejected));

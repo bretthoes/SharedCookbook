@@ -21,7 +21,7 @@ public class CreateCookbookTests : BaseTestFixture
     [TestCase("image")]
     public async Task ShouldCreateCookbook(string image)
     {
-        string userId = await RunAsDefaultUserAsync();
+        string? userId = GetUserId();
 
         var command = new CreateCookbookCommand(Title: "New Cookbook", Image: image);
 
@@ -41,8 +41,7 @@ public class CreateCookbookTests : BaseTestFixture
     [Test]
     public async Task ShouldCreateOwnerMembership()
     {
-        string userId = await RunAsDefaultUserAsync();
-        
+        string? userId = GetUserId();
         var command = new CreateCookbookCommand(Title: "New Cookbook");
 
         int cookbookId = await SendAsync(command);
