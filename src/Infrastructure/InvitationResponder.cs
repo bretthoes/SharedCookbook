@@ -13,7 +13,8 @@ public sealed class InvitationResponder(
         InvitationStatus decision,
         CancellationToken cancellationToken = default)
     {
-        if (invite.Status == decision) return invite.Id;
+        if (StatusUnchanged(current: invite.Status, updated: decision)) return invite.Id;
+        
         ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
 
         var now = clock.GetUtcNow();
@@ -31,10 +32,12 @@ public sealed class InvitationResponder(
             case InvitationStatus.Revoked:
             case InvitationStatus.Unknown:
             default:
-                return invite.Id;
+                throw new NotSupportedException($"Status {decision} with Id {invite.Id} not supported by user {user.Id}");
         }
 
         await context.SaveChangesAsync(cancellationToken);
         return invite.Id;
     }
+    
+    private static bool StatusUnchanged(InvitationStatus current,  InvitationStatus updated) =>  current == updated;
 }
