@@ -22,7 +22,7 @@ public class Memberships : EndpointGroupBase
     private static Task<MembershipDto> GetMembership(ISender sender, [AsParameters] GetMembershipQuery query) =>
         sender.Send(query);
 
-    private static Task<MembershipDto> GetMembershipByCookbook(ISender sender, [AsParameters] int cookbookId) =>
+    private static Task<MembershipDto> GetMembershipByCookbook(ISender sender, [FromRoute] int cookbookId) =>
         sender.Send(new GetMembershipByCookbookQuery(cookbookId));
 
     private static Task<PaginatedList<MembershipDto>> GetMembershipsWithPagination(ISender sender,
