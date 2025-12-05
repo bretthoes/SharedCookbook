@@ -2,29 +2,23 @@ using System.Text.RegularExpressions;
 
 namespace SharedCookbook.Application.Common.Extensions;
 
-public static partial class StringExtensions
+public static class StringExtensions
 {
-    [GeneratedRegex(pattern: @"\s+")]
-    private static partial Regex ReplaceWithSpacesRegex();
-        
-    [GeneratedRegex(pattern: "<.*?>", RegexOptions.Compiled)]
-    private static partial Regex HtmlTagRegex();
-        
-    public static bool IsValidUrl(this string url)
-        => (Uri.TryCreate(url, UriKind.Absolute, out Uri? uriResult)) 
-           && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+    private static readonly Regex ReplaceWithSpacesRegex = new(@"\s+", RegexOptions.Compiled);
+    private static readonly Regex HtmlTagRegex = new("<.*?>", RegexOptions.Compiled);
 
-    public static bool HasValidImageExtension(this string fileName)
-        => ImageUtilities.AllowedExtensions
-            .Contains(Path.GetExtension(fileName)
-                .ToLowerInvariant());
-        
-    public static string RemoveHtml(this string html)
-        => ReplaceWithSpacesRegex()
-            .Replace(input: HtmlTagRegex()
-                .Replace(input: html, replacement: string.Empty), replacement: " ")
+    public static bool IsValidUrl(this string url) =>
+        Uri.TryCreate(url, UriKind.Absolute, out var uri) &&
+        (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+
+    public static bool HasValidImageExtension(this string fileName) =>
+        ImageUtilities.AllowedExtensions.Contains(Path.GetExtension(fileName).ToLowerInvariant());
+
+    public static string RemoveHtml(this string html) =>
+        ReplaceWithSpacesRegex
+            .Replace(HtmlTagRegex.Replace(html, string.Empty), " ")
             .Trim();
-        
+
     public static string Truncate(this string input, int maxLength) =>
         input.Length <= maxLength ? input : input[..maxLength];
 }
