@@ -9,12 +9,12 @@ public class Users : EndpointGroupBase
 {
     public override void Map(RouteGroupBuilder builder)
     {
-        builder.MapPost(UpdateUser, pattern: "/update");
+        builder.MapPost(Update, pattern: "/update");
         builder.MapGet(GetDisplayName, pattern: "/display-name");
         builder.MapIdentityApi<ApplicationUser>();
     }
 
-    private static async Task<IResult> UpdateUser(ISender sender, [FromBody] UpdateUserCommand command)
+    private static async Task<IResult> Update(ISender sender, [FromBody] UpdateUserCommand command)
     {
         await sender.Send(command);
         return Results.NoContent();

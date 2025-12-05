@@ -7,10 +7,10 @@ public class Images : EndpointGroupBase
     public override void Map(RouteGroupBuilder builder)
     {
         builder.DisableAntiforgery();
-        builder.MapPost(CreateImages).RequireAuthorization();
+        builder.MapPost(Upload).RequireAuthorization();
     }
 
-    private static Task<string[]> CreateImages(ISender sender, [FromForm] IFormFileCollection files)
+    private static Task<string[]> Upload(ISender sender, [FromForm] IFormFileCollection files)
     {
         return sender.Send(new CreateImagesCommand(files));
     }

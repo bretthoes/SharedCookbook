@@ -1,5 +1,4 @@
-﻿using SharedCookbook.Application.Common.Models;
-using SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
+﻿using SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
 using SharedCookbook.Application.Cookbooks.Commands.DeleteCookbook;
 using SharedCookbook.Application.Cookbooks.Commands.UpdateCookbook;
 using SharedCookbook.Application.Cookbooks.Queries.GetCookbooksWithPagination;
@@ -10,20 +9,20 @@ public class Cookbooks : EndpointGroupBase
 {
     public override void Map(RouteGroupBuilder builder)
     {
-        builder.MapGet(GetCookbooksWithPagination).RequireAuthorization();
-        builder.MapPost(CreateCookbook).RequireAuthorization();
-        builder.MapPut(UpdateCookbook, pattern: "{id}").RequireAuthorization();
-        builder.MapDelete(DeleteCookbook, pattern: "{id}").RequireAuthorization();
+        builder.MapGet(List).RequireAuthorization();
+        builder.MapPost(Create).RequireAuthorization();
+        builder.MapPut(Update, pattern: "{id}").RequireAuthorization();
+        builder.MapDelete(Delete, pattern: "{id}").RequireAuthorization();
     }
 
-    private static Task<PaginatedList<CookbookBriefDto>> GetCookbooksWithPagination(ISender sender,
+    private static Task<PaginatedList<CookbookBriefDto>> List(ISender sender,
         [AsParameters] GetCookbooksWithPaginationQuery query)
         => sender.Send(query);
 
-    private static Task<int> CreateCookbook(ISender sender, [FromBody] CreateCookbookCommand command) =>
+    private static Task<int> Create(ISender sender, [FromBody] CreateCookbookCommand command) =>
         sender.Send(command);
 
-    private static async Task<IResult> UpdateCookbook(ISender sender, [FromRoute] int id,
+    private static async Task<IResult> Update(ISender sender, [FromRoute] int id,
         [FromBody] UpdateCookbookCommand command)
     {
         if (id != command.Id) return Results.BadRequest();
@@ -31,7 +30,7 @@ public class Cookbooks : EndpointGroupBase
         return Results.NoContent();
     }
 
-    private static async Task<IResult> DeleteCookbook(ISender sender, [FromRoute] int id)
+    private static async Task<IResult> Delete(ISender sender, [FromRoute] int id)
     {
         await sender.Send(new DeleteCookbookCommand(id));
         return Results.NoContent();

@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
-
-namespace SharedCookbook.Application.InvitationTokens.Queries.GetInvitationToken;
+﻿namespace SharedCookbook.Application.InvitationTokens.Queries.GetInvitationToken;
 
 public record GetInvitationTokenQuery(string Token) : IRequest<InvitationDto>;
 
