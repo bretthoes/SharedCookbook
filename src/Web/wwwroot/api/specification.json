@@ -11,7 +11,7 @@
         "tags": [
           "Cookbooks"
         ],
-        "operationId": "List",
+        "operationId": "CookbooksList",
         "parameters": [
           {
             "name": "PageNumber",
@@ -54,7 +54,7 @@
         "tags": [
           "Cookbooks"
         ],
-        "operationId": "Create",
+        "operationId": "CookbooksCreate",
         "requestBody": {
           "x-name": "command",
           "content": {
@@ -92,7 +92,7 @@
         "tags": [
           "Cookbooks"
         ],
-        "operationId": "UpdatePUT",
+        "operationId": "CookbooksUpdate",
         "parameters": [
           {
             "name": "id",
@@ -132,7 +132,7 @@
         "tags": [
           "Cookbooks"
         ],
-        "operationId": "Delete",
+        "operationId": "CookbooksDelete",
         "parameters": [
           {
             "name": "id",
@@ -162,7 +162,7 @@
         "tags": [
           "Images"
         ],
-        "operationId": "Upload",
+        "operationId": "ImagesUpload",
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -206,7 +206,7 @@
         "tags": [
           "Invitations"
         ],
-        "operationId": "List2",
+        "operationId": "InvitationsList",
         "parameters": [
           {
             "name": "Status",
@@ -257,7 +257,7 @@
         "tags": [
           "Invitations"
         ],
-        "operationId": "Create2",
+        "operationId": "InvitationsCreate",
         "requestBody": {
           "x-name": "command",
           "content": {
@@ -295,7 +295,7 @@
         "tags": [
           "Invitations"
         ],
-        "operationId": "Count",
+        "operationId": "InvitationsCount",
         "parameters": [
           {
             "name": "Status",
@@ -331,7 +331,7 @@
         "tags": [
           "Invitations"
         ],
-        "operationId": "UpdatePUT2",
+        "operationId": "InvitationsUpdate",
         "parameters": [
           {
             "name": "id",
@@ -371,7 +371,7 @@
         "tags": [
           "Invitations"
         ],
-        "operationId": "Delete2",
+        "operationId": "InvitationsDelete",
         "parameters": [
           {
             "name": "id",
@@ -401,7 +401,7 @@
         "tags": [
           "InvitationTokens"
         ],
-        "operationId": "Single",
+        "operationId": "InvitationTokensSingle",
         "parameters": [
           {
             "name": "Token",
@@ -435,7 +435,7 @@
         "tags": [
           "InvitationTokens"
         ],
-        "operationId": "CreateInvitationToken",
+        "operationId": "InvitationTokensCreateInvitationToken",
         "requestBody": {
           "x-name": "command",
           "content": {
@@ -472,7 +472,7 @@
         "tags": [
           "Memberships"
         ],
-        "operationId": "GetById",
+        "operationId": "MembershipsGetById",
         "parameters": [
           {
             "name": "id",
@@ -507,7 +507,7 @@
         "tags": [
           "Memberships"
         ],
-        "operationId": "UpdatePUT3",
+        "operationId": "MembershipsUpdate",
         "parameters": [
           {
             "name": "id",
@@ -547,7 +547,7 @@
         "tags": [
           "Memberships"
         ],
-        "operationId": "Delete3",
+        "operationId": "MembershipsDelete",
         "parameters": [
           {
             "name": "id",
@@ -577,7 +577,7 @@
         "tags": [
           "Memberships"
         ],
-        "operationId": "GetByCookbookIdAndCurrentUser",
+        "operationId": "MembershipsGetByCookbookIdAndCurrentUser",
         "parameters": [
           {
             "name": "cookbookId",
@@ -614,7 +614,7 @@
         "tags": [
           "Memberships"
         ],
-        "operationId": "List3",
+        "operationId": "MembershipsList",
         "parameters": [
           {
             "name": "CookbookId",
@@ -671,7 +671,7 @@
         "tags": [
           "Recipes"
         ],
-        "operationId": "GetById2",
+        "operationId": "RecipesGetById",
         "parameters": [
           {
             "name": "id",
@@ -706,7 +706,7 @@
         "tags": [
           "Recipes"
         ],
-        "operationId": "UpdatePUT4",
+        "operationId": "RecipesUpdate",
         "parameters": [
           {
             "name": "id",
@@ -746,7 +746,7 @@
         "tags": [
           "Recipes"
         ],
-        "operationId": "Delete4",
+        "operationId": "RecipesDelete",
         "parameters": [
           {
             "name": "id",
@@ -776,7 +776,7 @@
         "tags": [
           "Recipes"
         ],
-        "operationId": "List4",
+        "operationId": "RecipesList",
         "parameters": [
           {
             "name": "CookbookId",
@@ -838,7 +838,7 @@
         "tags": [
           "Recipes"
         ],
-        "operationId": "Create3",
+        "operationId": "RecipesCreate",
         "requestBody": {
           "x-name": "command",
           "content": {
@@ -876,7 +876,7 @@
         "tags": [
           "Recipes"
         ],
-        "operationId": "ParseFromUrl",
+        "operationId": "RecipesParseFromUrl",
         "parameters": [
           {
             "name": "Url",
@@ -912,7 +912,7 @@
         "tags": [
           "Recipes"
         ],
-        "operationId": "ParseFromImage",
+        "operationId": "RecipesParseFromImage",
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -953,7 +953,7 @@
         "tags": [
           "Users"
         ],
-        "operationId": "UpdatePOST",
+        "operationId": "UsersUpdate",
         "requestBody": {
           "x-name": "command",
           "content": {
@@ -978,7 +978,7 @@
         "tags": [
           "Users"
         ],
-        "operationId": "GetDisplayName",
+        "operationId": "UsersGetDisplayName",
         "responses": {
           "200": {
             "description": "",

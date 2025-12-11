@@ -34,6 +34,6 @@ public static class EndpointRouteBuilderExtensions
         if (methodInfo.IsAnonymous())
             throw new ArgumentException("The endpoint name must be specified when using anonymous handlers.",
                 nameof(handler));
-        return methodInfo.Name;
+        return methodInfo.DeclaringType?.Name + methodInfo.Name;
     }
 }
