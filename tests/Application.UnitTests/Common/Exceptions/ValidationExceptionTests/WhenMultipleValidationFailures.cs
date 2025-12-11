@@ -5,8 +5,10 @@ namespace SharedCookbook.Application.UnitTests.Common.Exceptions.ValidationExcep
 
 public class WhenMultipleValidationFailures
 {
-    [Test]
-    public void ThenCreatesAMultipleElementErrorDictionaryEachWithMultipleValues()
+    private ValidationException _actual = null!;
+
+    [OneTimeSetUp]
+    public void OneTimeSetUp()
     {
         var failures = new List<ValidationFailure>
         {
@@ -18,16 +20,28 @@ public class WhenMultipleValidationFailures
             new("Password", "must contain lower case letter"),
         };
 
-        var actual = new ValidationException(failures).Errors;
+        _actual = new ValidationException(failures);
+    }
 
-        using (Assert.EnterMultipleScope())
-        {
-            Assert.That(actual.Keys, Is.EquivalentTo(["Password", "Age"]));
-            Assert.That(actual["Age"], Is.EquivalentTo(["must be 25 or younger", "must be 18 or older"]));
-            Assert.That(actual["Password"], Is.EquivalentTo(["must contain lower case letter",
-            "must contain upper case letter",
-            "must contain at least 8 characters",
-            "must contain a digit"
-            ]));
-        }
-    }}
+    [Test]
+    public void ThenCreatesErrorsDictionaryWithMultipleKeys()
+    {
+        string[] expected = ["Password", "Age"];
+        
+        Assert.That(_actual.Errors.Keys, Is.EquivalentTo(expected));
+    }
+    
+    [TestCase("Age", new[]{"must be 18 or older", "must be 25 or younger"})]
+    [TestCase("Password", new[]
+    {
+        "must contain at least 8 characters",
+        "must contain a digit",
+        "must contain upper case letter",
+        "must contain lower case letter"
+    })]
+    public void ThenKeyContainsExpectedValidationErrors(string key, string[] expected)
+    {
+        Assert.That(_actual.Errors[key], Is.EquivalentTo(expected));;
+    }
+}
+
