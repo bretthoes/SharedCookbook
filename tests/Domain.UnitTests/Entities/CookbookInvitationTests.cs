@@ -14,7 +14,7 @@ public class CookbookInvitationTests
             .Create(cookbookId: It.IsAny<int>(), recipientId: It.IsAny<string>())
             .Status;
 
-        actual.Should().Be(expected);
+        Assert.That(actual, Is.EqualTo(expected));
     }
 
     [Test]
@@ -24,7 +24,7 @@ public class CookbookInvitationTests
 
         var actual = (new CookbookInvitation()).Status;
 
-        actual.Should().Be(expected);
+        Assert.That(actual, Is.EqualTo(expected));
     }
 
     [Test]
@@ -35,8 +35,17 @@ public class CookbookInvitationTests
 
         sut.Accept(timestamp: It.IsAny<DateTimeOffset>(), acceptedBy: It.IsAny<string>());
 
-        sut.Status.Should().Be(expected);
-        sut.DomainEvents.Should().NotBeEmpty();
+        Assert.That(sut.Status, Is.EqualTo(expected));
+    }
+    
+    [Test]
+    public void DomainEventsNotEmptyAfterAccept()
+    {
+        var sut = CookbookInvitation.Create(cookbookId: It.IsAny<int>(), recipientId: It.IsAny<string>());
+
+        sut.Accept(timestamp: It.IsAny<DateTimeOffset>(), acceptedBy: It.IsAny<string>());
+
+        Assert.That(sut.DomainEvents, Is.Not.Empty);
     }
     
     [Test]
@@ -47,7 +56,7 @@ public class CookbookInvitationTests
 
         sut.Accept(timestamp: expected, acceptedBy: It.IsAny<string>());
 
-        sut.ResponseDate.Should().BeCloseTo(expected, precision: TimeSpan.FromSeconds(1));
+        Assert.That(sut.ResponseDate, Is.EqualTo(expected).Within(TimeSpan.FromSeconds(1)));
     }
 
     [Test]
@@ -58,17 +67,28 @@ public class CookbookInvitationTests
 
         sut.Reject(timestamp: It.IsAny<DateTimeOffset>());
 
-        sut.Status.Should().Be(expected);
-        sut.DomainEvents.Should().NotBeEmpty();
+        Assert.That(sut.Status, Is.EqualTo(expected));
     }
 
+    [Test]
+    public void DomainEventsNotEmptyAfterReject()
+    {
+        var sut = CookbookInvitation.Create(cookbookId: It.IsAny<int>(), recipientId: It.IsAny<string>());
+
+        sut.Reject(timestamp: It.IsAny<DateTimeOffset>());
+
+        Assert.That(sut.DomainEvents, Is.Not.Empty);
+    }
+    
     [Test]
     public void CreatedInvitationIsForSpecifiedUser()
     {
         string expected = Guid.NewGuid().ToString();
         
-        var sut = CookbookInvitation.Create(cookbookId: It.IsAny<int>(), recipientId: expected);
+        var actual = CookbookInvitation
+            .Create(cookbookId: It.IsAny<int>(), recipientId: expected)
+            .IsNotFor(expected);
         
-        sut.IsNotFor(expected).Should().BeFalse();
+        Assert.That(actual, Is.False);
     }
 }
