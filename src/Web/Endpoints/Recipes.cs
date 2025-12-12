@@ -52,7 +52,6 @@ public class Recipes : EndpointGroupBase
     private static Task<CreateRecipeDto> ParseFromImage(ISender sender, [FromForm] IFormFile file) =>
         sender.Send(new ParseRecipeFromImageCommand(file));
 
-    private static Task<CreateRecipeDto> ParseFromUrl(ISender sender,
-        [AsParameters] ParseRecipeFromUrlCommand command) =>
+    private static Task<CreateRecipeDto> ParseFromUrl(ISender sender, [FromBody] ParseRecipeFromUrlCommand command) =>
         sender.Send(command);
 }

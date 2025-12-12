@@ -877,17 +877,18 @@
           "Recipes"
         ],
         "operationId": "RecipesParseFromUrl",
-        "parameters": [
-          {
-            "name": "Url",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "x-position": 1
-          }
-        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParseRecipeFromUrlCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
         "responses": {
           "200": {
             "description": "",
@@ -2159,6 +2160,15 @@
             "items": {
               "$ref": "#/components/schemas/RecipeIngredientDto"
             }
+          }
+        }
+      },
+      "ParseRecipeFromUrlCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "url": {
+            "type": "string"
           }
         }
       },
