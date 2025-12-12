@@ -54,6 +54,5 @@ public sealed class Recipe : BaseAuditableEntity
         public const int SummaryMaxLength = 2048;
         public const int ThumbnailMaxLength = 2048;
         public const int VideoPathMaxLength = 2048;
-        
     }
 }
