@@ -5,23 +5,27 @@ public class UpdateRecipeCommandValidator : AbstractValidator<UpdateRecipeComman
     public UpdateRecipeCommandValidator()
     {
         RuleFor(command => command.Recipe.Title)
-            .MinimumLength(1)
-            .MaximumLength(255)
-            .WithMessage("Recipe title must be at least 1 character and less than 255.");
+            .NotEmpty()
+            .MaximumLength(Recipe.Constraints.TitleMaxLength)
+            .WithMessage($"Recipe title must not be empty and less than {Recipe.Constraints.TitleMaxLength}.");
 
+        RuleFor(command => command.Recipe.CookbookId)
+            .GreaterThanOrEqualTo(1)
+            .WithMessage("New recipe must be in a valid cookbook.");
+        
         RuleFor(command => command.Recipe.Directions)
             .NotEmpty()
             .WithMessage("Recipe must include directions.")
-            .Must(directions => directions.Count < 20)
-            .WithMessage("Recipe must have fewer than 20 directions.");
+            .Must(directions => directions.Count < 40)
+            .WithMessage("Recipe must have fewer than 40 directions.");
 
         RuleForEach(command => command.Recipe.Directions)
             .ChildRules(ingredient =>
             {
                 ingredient.RuleFor(dto => dto.Text)
-                    .MinimumLength(1)
-                    .MaximumLength(255)
-                    .WithMessage("Each direction's text must be at least 1 character and less than 255.");
+                    .NotEmpty()
+                    .MaximumLength(RecipeDirection.Constraints.TextMaxLength)
+                    .WithMessage("Each direction's text must be at least 1 character and less than 2048.");
             });
 
         RuleFor(command => command.Recipe.Ingredients)
@@ -34,14 +38,13 @@ public class UpdateRecipeCommandValidator : AbstractValidator<UpdateRecipeComman
             .ChildRules(ingredient =>
             {
                 ingredient.RuleFor(dto => dto.Name)
-                    .MinimumLength(1)
-                    .MaximumLength(255)
+                    .NotEmpty()
+                    .MaximumLength(RecipeIngredient.Constraints.NameMaxLength)
                     .WithMessage("Each ingredient's name must be at least 1 character and less than 255.");
             });
 
         RuleFor(command => command.Recipe.Images)
             .Must(images => images.Count <= 6)
             .WithMessage("Recipe can only have up to 6 images.");
-
     }
 }
