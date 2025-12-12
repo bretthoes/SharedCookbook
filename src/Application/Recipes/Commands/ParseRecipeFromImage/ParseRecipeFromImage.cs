@@ -1,15 +1,16 @@
 ﻿using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
-using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 
 namespace SharedCookbook.Application.Recipes.Commands.ParseRecipeFromImage;
 
 public sealed record ParseRecipeFromImageCommand(IFormFile File) : IRequest<CreateRecipeDto>;
 
 // TODO refactor parsing logic to a separate service
-public sealed partial class ParseRecipeFromImageCommandHandler(IOcrService ocrService)
+public sealed class ParseRecipeFromImageCommandHandler(IOcrService ocrService)
     : IRequestHandler<ParseRecipeFromImageCommand, CreateRecipeDto>
 {
+    private static readonly Regex IngredientRegex = new (pattern: @"^- (.+?)( \(optional\))?$", RegexOptions.Multiline);
+    
     public async Task<CreateRecipeDto> Handle(
         ParseRecipeFromImageCommand request,
         CancellationToken cancellationToken)
@@ -27,10 +28,9 @@ public sealed partial class ParseRecipeFromImageCommandHandler(IOcrService ocrSe
     private static List<RecipeIngredientDto> ParseIngredients(string text)
     {
         var ingredients = new List<RecipeIngredientDto>();
-        var ingredientRegex = MyRegex();
 
         int ordinal = 1;
-        foreach (Match match in ingredientRegex.Matches(text))
+        foreach (Match match in IngredientRegex.Matches(text))
         {
             ingredients.Add(new RecipeIngredientDto
             {
@@ -77,7 +77,6 @@ public sealed partial class ParseRecipeFromImageCommandHandler(IOcrService ocrSe
         return directions;
     }
 
-
     private static CreateRecipeDto CreateRecipeDto(
         string title,
         List<RecipeIngredientDto> ingredients,
@@ -94,6 +93,4 @@ public sealed partial class ParseRecipeFromImageCommandHandler(IOcrService ocrSe
         Images = [],
         CookbookId = 0
     };
-    [GeneratedRegex(pattern: @"^- (.+?)( \(optional\))?$", RegexOptions.Multiline)]
-    private static partial Regex MyRegex();
 }
