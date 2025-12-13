@@ -1,5 +1,4 @@
-﻿using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
-using SharedCookbook.Domain.Enums;
+﻿using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.Common.Extensions;
 
@@ -45,19 +44,18 @@ public static class InvitationQueryExtensions
         int cookbookId,
         string recipientPersonId,
         CancellationToken token = default)
-        => invitations.HasInviteWithStatus(
-            cookbookId, recipientPersonId, token, statuses: InvitationStatus.Active);
+        => invitations.HasInviteWithStatus(cookbookId, recipientPersonId, InvitationStatus.Active, token);
 
     private static Task<bool> HasInviteWithStatus(
         this IQueryable<CookbookInvitation> invitations,
         int cookbookId,
         string recipientPersonId,
-        CancellationToken token = default,
-        params InvitationStatus[] statuses)
+        InvitationStatus status,
+        CancellationToken token = default)
         => invitations
             .AsNoTracking()
             .AnyAsync(invitation =>
                 invitation.CookbookId == cookbookId
                 && invitation.RecipientPersonId == recipientPersonId
-                && statuses.Contains(invitation.Status), token);
+                && invitation.Status == status, token);
 }
