@@ -1,5 +1,4 @@
 ﻿using SharedCookbook.Application.Common.Mappings;
-using SharedCookbook.Application.Common.Models;
 
 namespace SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
 

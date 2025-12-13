@@ -1,5 +1,3 @@
-using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
-
 namespace SharedCookbook.Application.Common.Interfaces;
 
 public interface IRecipeUrlParser

@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Application.Common.Models;
-
-namespace SharedCookbook.Application.Common.Mappings;
+﻿namespace SharedCookbook.Application.Common.Mappings;
 
 public static class MappingExtensions
 {

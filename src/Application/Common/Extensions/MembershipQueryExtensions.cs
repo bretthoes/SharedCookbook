@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Application.Memberships.Queries;
-
-namespace SharedCookbook.Application.Common.Extensions;
+﻿namespace SharedCookbook.Application.Common.Extensions;
 
 public static class MembershipQueryExtensions
 {

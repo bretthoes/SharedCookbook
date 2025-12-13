@@ -3,7 +3,6 @@ using SharedCookbook.Application.Invitations.Commands.DeleteInvitation;
 using SharedCookbook.Application.Invitations.Commands.UpdateInvitation;
 using SharedCookbook.Application.Invitations.Queries.GetInvitationsCount;
 using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
-using SharedCookbook.Application.InvitationTokens.Queries.GetInvitationToken;
 
 namespace SharedCookbook.Web.Endpoints;
 

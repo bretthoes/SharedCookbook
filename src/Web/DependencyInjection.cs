@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using NSwag;
+﻿using NSwag;
 using NSwag.Generation.Processors.Security;
 using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Infrastructure.Data;

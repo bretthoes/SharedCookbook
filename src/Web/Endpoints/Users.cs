@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SharedCookbook.Application.Users.Commands.UpdateUser;
+﻿using SharedCookbook.Application.Users.Commands.UpdateUser;
 using SharedCookbook.Application.Users.Queries;
 using SharedCookbook.Infrastructure.Identity;
 

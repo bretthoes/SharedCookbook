@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Application.Common.Models;
-
-namespace SharedCookbook.Application.Memberships.Queries.GetMembershipsWithPagination;
+﻿namespace SharedCookbook.Application.Memberships.Queries.GetMembershipsWithPagination;
 
 public record GetMembershipsWithPaginationQuery : IRequest<PaginatedList<MembershipDto>>
 {

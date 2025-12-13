@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
-
-namespace SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
+﻿namespace SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
 
 public sealed record UpdateRecipeCommand(UpdateRecipeDto Recipe) : IRequest<int>;
 

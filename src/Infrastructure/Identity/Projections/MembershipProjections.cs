@@ -1,5 +1,4 @@
-﻿using SharedCookbook.Application.Memberships.Queries;
-using SharedCookbook.Domain.Entities;
+﻿using SharedCookbook.Domain.Entities;
 
 namespace SharedCookbook.Infrastructure.Identity.Projections;
 

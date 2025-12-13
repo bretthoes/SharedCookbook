@@ -1,5 +1,4 @@
-﻿using SharedCookbook.Application.Common.Models;
-using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
+﻿using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 using SharedCookbook.Application.Recipes.Commands.DeleteRecipe;
 using SharedCookbook.Application.Recipes.Commands.ParseRecipeFromImage;
 using SharedCookbook.Application.Recipes.Commands.ParseRecipeFromUrl;

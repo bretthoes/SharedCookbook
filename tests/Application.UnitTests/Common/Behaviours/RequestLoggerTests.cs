@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
 using SharedCookbook.Application.Common.Behaviours;
 using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
