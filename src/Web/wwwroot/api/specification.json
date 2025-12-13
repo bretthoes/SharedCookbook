@@ -1983,15 +1983,29 @@
         }
       },
       "CreateRecipeDto": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RecipeDto"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "cookbookId": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        ]
+      },
+      "RecipeDto": {
         "type": "object",
+        "x-abstract": true,
         "additionalProperties": false,
         "properties": {
           "title": {
             "type": "string"
-          },
-          "cookbookId": {
-            "type": "integer",
-            "format": "int32"
           },
           "summary": {
             "type": "string",
@@ -2101,67 +2115,21 @@
         }
       },
       "UpdateRecipeDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RecipeDto"
           },
-          "title": {
-            "type": "string"
-          },
-          "summary": {
-            "type": "string",
-            "nullable": true
-          },
-          "thumbnail": {
-            "type": "string",
-            "nullable": true
-          },
-          "videoPath": {
-            "type": "string",
-            "nullable": true
-          },
-          "preparationTimeInMinutes": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "cookingTimeInMinutes": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "bakingTimeInMinutes": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "servings": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "directions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/RecipeDirectionDto"
-            }
-          },
-          "images": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/RecipeImageDto"
-            }
-          },
-          "ingredients": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/RecipeIngredientDto"
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int32"
+              }
             }
           }
-        }
+        ]
       },
       "ParseRecipeFromUrlCommand": {
         "type": "object",
