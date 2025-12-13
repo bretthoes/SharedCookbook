@@ -8,10 +8,6 @@ public class UpdateRecipeCommandValidator : AbstractValidator<UpdateRecipeComman
             .NotEmpty()
             .MaximumLength(Recipe.Constraints.TitleMaxLength)
             .WithMessage($"Recipe title must not be empty and less than {Recipe.Constraints.TitleMaxLength}.");
-
-        RuleFor(command => command.Recipe.CookbookId)
-            .GreaterThanOrEqualTo(1)
-            .WithMessage("New recipe must be in a valid cookbook.");
         
         RuleFor(command => command.Recipe.Directions)
             .NotEmpty()
