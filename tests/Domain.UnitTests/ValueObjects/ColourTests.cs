@@ -12,7 +12,7 @@ public class ColourTests
 
         var colour = Colour.From(code);
 
-        colour.Code.Should().Be(code);
+        Assert.That(colour.Code, Is.EqualTo(code));
     }
 
     [Test]
@@ -20,7 +20,7 @@ public class ColourTests
     {
         var colour = Colour.White;
 
-        colour.ToString().Should().Be(colour.Code);
+        Assert.That(colour.Code.ToString(), Is.EqualTo(colour.Code));
     }
 
     [Test]
