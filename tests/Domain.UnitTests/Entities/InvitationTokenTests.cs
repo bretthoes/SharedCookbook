@@ -12,7 +12,7 @@ public class InvitationTokenTests
         
         sut.Created = DateTimeOffset.Now.AddDays(-15);
         
-        sut.IsRedeemable.Should().BeFalse();
+        Assert.That(sut.IsRedeemable, Is.False);
     }
 
     [Test]
@@ -21,7 +21,7 @@ public class InvitationTokenTests
         var sut = InvitationToken.IssueNewToken(digest: It.IsAny<TokenDigest>(), cookbookId: It.IsAny<int>());
         
         sut.Created = DateTimeOffset.Now.AddDays(-13);
-        
-        sut.IsRedeemable.Should().BeTrue();
+
+        Assert.That(sut.IsRedeemable, Is.True);
     }
 }

@@ -12,7 +12,7 @@ public class CookbookTests
         
         var actual = sut.Memberships.Single();
         
-        actual.Permissions.Should().BeEquivalentTo(expected);
+        Assert.That(actual.Permissions, Is.EqualTo(expected));
     }
 
     [Test]
@@ -22,7 +22,7 @@ public class CookbookTests
         
         var actual = Cookbook.Create(title: expected, creatorId: It.IsAny<string>());
         
-        actual.Title.Should().Be(expected);
+        Assert.That(actual.Title, Is.EqualTo(expected));
     }
 
     [Test]
@@ -30,7 +30,7 @@ public class CookbookTests
     {
         var actual = Cookbook.Create(title: It.IsAny<string>(), creatorId: It.IsAny<string>());
         
-        actual.Image.Should().BeNull();
+        Assert.That(actual.Image, Is.Null);
     }
 
     [Test]
@@ -40,7 +40,7 @@ public class CookbookTests
         
         var actual  = Cookbook.Create(title: It.IsAny<string>(), creatorId: It.IsAny<string>(), image: expected);
         
-        actual.Image.Should().Be(expected);
+        Assert.That(actual.Image, Is.EqualTo(expected));
     }
 
     [Test]
@@ -48,6 +48,6 @@ public class CookbookTests
     {
         var actual = new Cookbook { Title = It.IsAny<string>() };
         
-        actual.Memberships.Should().BeEmpty();
+        Assert.That(actual.Memberships, Is.Empty);
     }
 }
