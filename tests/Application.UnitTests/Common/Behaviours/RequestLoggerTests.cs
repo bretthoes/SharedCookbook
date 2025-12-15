@@ -10,6 +10,7 @@ public class RequestLoggerTests
     private Mock<ILogger<CreateCookbookCommand>> _logger = null!;
     private Mock<IUser> _user = null!;
     private Mock<IIdentityService> _identityService = null!;
+    private LoggingBehaviour<CreateCookbookCommand> _sut = null!;
 
     [SetUp]
     public void Setup()
@@ -17,6 +18,7 @@ public class RequestLoggerTests
         _logger = new Mock<ILogger<CreateCookbookCommand>>();
         _user = new Mock<IUser>();
         _identityService = new Mock<IIdentityService>();
+        _sut = new LoggingBehaviour<CreateCookbookCommand>(_logger.Object, _user.Object, _identityService.Object);
     }
 
     [Test]
@@ -24,9 +26,7 @@ public class RequestLoggerTests
     {
         _user.Setup(user => user.Id).Returns(Guid.NewGuid().ToString());
 
-        var requestLogger = new LoggingBehaviour<CreateCookbookCommand>(_logger.Object, _user.Object, _identityService.Object);
-
-        await requestLogger.Process(new CreateCookbookCommand(Title: "title"), CancellationToken.None);
+        await _sut.Process(new CreateCookbookCommand(Title: "title"), CancellationToken.None);
 
         _identityService.Verify(i => i.GetUserNameAsync(It.IsAny<string>()), Times.Once);
     }
@@ -34,9 +34,7 @@ public class RequestLoggerTests
     [Test]
     public async Task ShouldNotCallGetUserNameAsyncOnceIfUnauthenticated()
     {
-        var requestLogger = new LoggingBehaviour<CreateCookbookCommand>(_logger.Object, _user.Object, _identityService.Object);
-
-        await requestLogger.Process(new CreateCookbookCommand(Title: "title"), CancellationToken.None);
+        await _sut.Process(new CreateCookbookCommand(Title: "title"), CancellationToken.None);
 
         _identityService.Verify(i => i.GetUserNameAsync(It.IsAny<string>()), Times.Never);
     }
