@@ -21,16 +21,14 @@ public class GetCookbooksTests : BaseTestFixture
 
         var result = await SendAsync(query);
 
-        result.Items.Should().NotBeEmpty();
+        Assert.That(result.Items, Has.Count.EqualTo(1));
     }
 
     [Test]
-    public async Task ShouldDenyAnonymousUser()
+    public void ShouldDenyAnonymousUser()
     {
         var query = new GetCookbooksWithPaginationQuery();
 
-        var action = () => SendAsync(query);
-
-        await action.Should().ThrowAsync<UnauthorizedAccessException>();
+        Assert.ThrowsAsync<UnauthorizedAccessException>(() => SendAsync(query));
     }
 }
