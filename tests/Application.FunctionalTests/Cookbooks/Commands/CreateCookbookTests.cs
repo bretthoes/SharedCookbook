@@ -10,11 +10,11 @@ public class CreateCookbookTests : BaseTestFixture
     
     [TestCase(null!)]
     [TestCase("")]
-    public async Task ShouldRequireMinimumFields(string title)
+    public void ShouldRequireMinimumFields(string title)
     {
         var command = new CreateCookbookCommand(Title: title);
 
-        await FluentActions.Invoking((() => SendAsync(command))).Should().ThrowAsync<ValidationException>();
+        Assert.That(() => SendAsync(command), Throws.TypeOf<ValidationException>());
     }
 
     [TestCase(null!)]
@@ -29,13 +29,16 @@ public class CreateCookbookTests : BaseTestFixture
 
         var item = await FindAsync<Cookbook>(itemId);
 
-        item.Should().NotBeNull();
-        item.Title.Should().Be(command.Title);
-        item.Image.Should().Be(command.Image);
-        item.CreatedBy.Should().Be(userId);
-        item.Created.Should().BeCloseTo(DateTime.Now, precision: TimeSpan.FromSeconds(10));
-        item.LastModifiedBy.Should().Be(userId);
-        item.LastModified.Should().BeCloseTo(DateTime.Now, precision: TimeSpan.FromSeconds(10));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(item, Is.Not.Null);
+            Assert.That(item!.Title, Is.EqualTo(command.Title));
+            Assert.That(item.Image, Is.EqualTo(command.Image));
+            Assert.That(item.CreatedBy, Is.EqualTo(userId));
+            Assert.That(item.LastModifiedBy, Is.EqualTo(userId));
+            Assert.That(item.Created, Is.EqualTo(DateTimeOffset.Now).Within(1).Seconds);
+            Assert.That(item.LastModified, Is.EqualTo(DateTimeOffset.Now).Within(1).Seconds);
+        }
     }
 
     [Test]
@@ -48,11 +51,14 @@ public class CreateCookbookTests : BaseTestFixture
 
         var membership = await FindAsync<CookbookMembership>(cookbookId);
 
-        membership.Should().NotBeNull();
-        membership.CookbookId.Should().Be(cookbookId);
-        membership.CreatedBy.Should().Be(userId);
-        membership.Created.Should().BeCloseTo(DateTime.Now, precision: TimeSpan.FromSeconds(10));
-        membership.LastModifiedBy.Should().Be(userId);
-        membership.LastModified.Should().BeCloseTo(DateTime.Now, precision: TimeSpan.FromSeconds(10));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(membership, Is.Not.Null);
+            Assert.That(membership!.CookbookId, Is.EqualTo(cookbookId));
+            Assert.That(membership.CreatedBy, Is.EqualTo(userId));
+            Assert.That(membership.LastModifiedBy, Is.EqualTo(userId));
+            Assert.That(membership.Created, Is.EqualTo(DateTimeOffset.Now).Within(1).Seconds);
+            Assert.That(membership.LastModified, Is.EqualTo(DateTimeOffset.Now).Within(1).Seconds);
+        }
     }
 }
