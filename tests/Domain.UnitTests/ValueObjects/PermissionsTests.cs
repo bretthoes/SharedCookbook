@@ -9,12 +9,15 @@ public class PermissionsTests
     {
         var actual = Permissions.None;
 
-        actual.CanAddRecipe.Should().BeFalse();
-        actual.CanDeleteRecipe.Should().BeFalse();
-        actual.CanEditCookbookDetails.Should().BeFalse();
-        actual.CanRemoveMember.Should().BeFalse();
-        actual.CanSendInvite.Should().BeFalse();
-        actual.CanUpdateRecipe.Should().BeFalse();
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(actual.CanAddRecipe, Is.False);
+            Assert.That(actual.CanDeleteRecipe, Is.False);
+            Assert.That(actual.CanEditCookbookDetails, Is.False);
+            Assert.That(actual.CanRemoveMember, Is.False);
+            Assert.That(actual.CanSendInvite, Is.False);
+            Assert.That(actual.CanUpdateRecipe, Is.False);
+        }
     }
     
     [Test]
@@ -22,12 +25,15 @@ public class PermissionsTests
     {
         var actual = Permissions.Owner;
 
-        actual.CanAddRecipe.Should().BeTrue();
-        actual.CanDeleteRecipe.Should().BeTrue();
-        actual.CanEditCookbookDetails.Should().BeTrue();
-        actual.CanRemoveMember.Should().BeTrue();
-        actual.CanSendInvite.Should().BeTrue();
-        actual.CanUpdateRecipe.Should().BeTrue();
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(actual.CanAddRecipe, Is.True);
+            Assert.That(actual.CanDeleteRecipe, Is.True);
+            Assert.That(actual.CanEditCookbookDetails, Is.True);
+            Assert.That(actual.CanRemoveMember, Is.True);
+            Assert.That(actual.CanSendInvite, Is.True);
+            Assert.That(actual.CanUpdateRecipe, Is.True);
+        }
     }
     
     [Test]
@@ -35,11 +41,14 @@ public class PermissionsTests
     {
         var actual = Permissions.Contributor;
 
-        actual.CanAddRecipe.Should().BeTrue();
-        actual.CanDeleteRecipe.Should().BeFalse();
-        actual.CanEditCookbookDetails.Should().BeFalse();
-        actual.CanRemoveMember.Should().BeFalse();
-        actual.CanSendInvite.Should().BeTrue();
-        actual.CanUpdateRecipe.Should().BeFalse();
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(actual.CanAddRecipe, Is.True);
+            Assert.That(actual.CanDeleteRecipe, Is.False);
+            Assert.That(actual.CanEditCookbookDetails, Is.False);
+            Assert.That(actual.CanRemoveMember, Is.False);
+            Assert.That(actual.CanSendInvite, Is.True);
+            Assert.That(actual.CanUpdateRecipe, Is.False);
+        }
     }
 }

@@ -8,11 +8,11 @@ public class ColourTests
     [Test]
     public void ShouldReturnCorrectColourCode()
     {
-        var code = "#FFFFFF";
+        const string expected = "#FFFFFF";
 
-        var colour = Colour.From(code);
+        var colour = Colour.From(expected);
 
-        Assert.That(colour.Code, Is.EqualTo(code));
+        Assert.That(colour.Code, Is.EqualTo(expected));
     }
 
     [Test]
@@ -26,23 +26,26 @@ public class ColourTests
     [Test]
     public void ShouldPerformImplicitConversionToColourCodeString()
     {
+        const string expected = "White";
+        
         string code = Colour.White;
 
-        code.Should().Be("#FFFFFF");
+        Assert.That(code, Is.EqualTo(expected));
     }
 
     [Test]
     public void ShouldPerformExplicitConversionGivenSupportedColourCode()
     {
-        var colour = (Colour)"#FFFFFF";
+        const string expected = "White";
+        
+        var actual = (Colour)"#FFFFFF";
 
-        colour.Should().Be(Colour.White);
+        Assert.That(actual.Code, Is.EqualTo(expected));
     }
 
     [Test]
     public void ShouldThrowUnsupportedColourExceptionGivenNotSupportedColourCode()
     {
-        FluentActions.Invoking(() => Colour.From("##FF33CC"))
-            .Should().Throw<UnsupportedColourException>();
+        Assert.Throws<UnsupportedColourException>(() => Colour.From("#FF33CC"));
     }
 }

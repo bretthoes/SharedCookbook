@@ -1,7 +1,7 @@
 using SharedCookbook.Domain.Entities;
 using SharedCookbook.Domain.ValueObjects;
 
-namespace SharedCookbook.Domain.UnitTests.Entities;
+namespace SharedCookbook.Domain.UnitTests.Entities.CookbookMembershipTests;
 
 public class WhenInstantiated
 {
@@ -12,6 +12,6 @@ public class WhenInstantiated
 
         var expected = (new CookbookMembership()).Permissions;
         
-        actual.Should().BeEquivalentTo(expected);
+        Assert.That(actual, Is.EqualTo(expected));
     }
 }
