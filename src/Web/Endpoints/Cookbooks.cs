@@ -16,12 +16,12 @@ public class Cookbooks : EndpointGroupBase
     }
 
     private static Task<PaginatedList<CookbookBriefDto>> List(ISender sender,
-        [AsParameters] GetCookbooksWithPaginationQuery query)
-        => sender.Send(query);
+        [AsParameters] GetCookbooksWithPaginationQuery query) => sender.Send(query);
 
     private static Task<int> Create(ISender sender, [FromBody] CreateCookbookCommand command) => sender.Send(command);
 
-    private static async Task<IResult> Update(ISender sender,[FromRoute] int id,
+    private static async Task<IResult> Update(ISender sender,
+        [FromRoute] int id,
         [FromBody] UpdateCookbookCommand command)
     {
         if (id != command.Id) return Results.BadRequest();
