@@ -33,37 +33,36 @@ public class InvitationResponderTests
     }
 
     [Test]
-    public async Task ThrowArgumentNullExceptionWhenUserIdIsNull()
+    public void ThrowArgumentNullExceptionWhenUserIdIsNull()
     {
         _user.SetupGet(user => user.Id).Returns((string)null!);
-        
-        await FluentActions.Invoking(() => _sut.Respond(_activeInvitation, InvitationStatus.Revoked))
-            .Should().ThrowAsync<ArgumentNullException>();
+
+        Assert.ThrowsAsync<ArgumentNullException>(() =>
+            _sut.Respond(_activeInvitation, InvitationStatus.Revoked));
     }
 
     [TestCase(InvitationStatus.Error)]
     [TestCase(InvitationStatus.Unknown)]
     [TestCase(InvitationStatus.Revoked)]
-    public async Task ThrowsNotSupportedExceptionForUnsupportedStatusUpdate(InvitationStatus status)
+    public void ThrowsNotSupportedExceptionForUnsupportedStatusUpdate(InvitationStatus status)
     {
-        await FluentActions.Invoking(() => _sut.Respond(_activeInvitation, status))
-            .Should().ThrowAsync<NotSupportedException>();
+        Assert.ThrowsAsync<NotSupportedException>(() => _sut.Respond(_activeInvitation, status));
     }
 
     [Test]
     public async Task InvitationStatusIsAcceptedAfterBeingAccepted()
     {
         await _sut.Respond(_activeInvitation, InvitationStatus.Accepted);
-        
-        _activeInvitation.Status.Should().Be(InvitationStatus.Accepted);
+
+        Assert.That(_activeInvitation.Status, Is.EqualTo(InvitationStatus.Accepted));
     }
-    
+
     [Test]
     public async Task InvitationStatusIsRejectedAfterBeingRejected()
     {
         await _sut.Respond(_activeInvitation, InvitationStatus.Rejected);
-        
-        _activeInvitation.Status.Should().Be(InvitationStatus.Rejected);
+
+        Assert.That(_activeInvitation.Status, Is.EqualTo(InvitationStatus.Rejected));
     }
 
     [Test]
@@ -71,20 +70,20 @@ public class InvitationResponderTests
     {
         var defaultInvitation = new CookbookInvitation();
         var expected = defaultInvitation.Status;
-        
+
         await _sut.Respond(defaultInvitation, InvitationStatus.Accepted);
-        
-        defaultInvitation.Status.Should().Be(expected);
+
+        Assert.That(defaultInvitation.Status, Is.EqualTo(expected));
     }
-    
+
     [Test]
     public async Task InactiveInvitationStatusIsUnchangedAfterBeingRejected()
     {
         var defaultInvitation = new CookbookInvitation();
         var expected = defaultInvitation.Status;
-        
+
         await _sut.Respond(defaultInvitation, InvitationStatus.Rejected);
-        
-        defaultInvitation.Status.Should().Be(expected);
+
+        Assert.That(defaultInvitation.Status, Is.EqualTo(expected));
     }
 }

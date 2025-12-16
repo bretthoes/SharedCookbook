@@ -26,7 +26,7 @@ public class ColourTests
     [Test]
     public void ShouldPerformImplicitConversionToColourCodeString()
     {
-        const string expected = "White";
+        const string expected = "#FFFFFF";
         
         string code = Colour.White;
 
@@ -36,7 +36,7 @@ public class ColourTests
     [Test]
     public void ShouldPerformExplicitConversionGivenSupportedColourCode()
     {
-        const string expected = "White";
+        string expected = Colour.White;
         
         var actual = (Colour)"#FFFFFF";
 

@@ -13,30 +13,22 @@ namespace SharedCookbook.Application.FunctionalTests;
 
 using static Testing;
 
-public class CustomWebApplicationFactory : WebApplicationFactory<Program>
+public class CustomWebApplicationFactory(DbConnection connection)
+    : WebApplicationFactory<Program>
 {
-    private readonly DbConnection _connection;
-    private readonly string _connectionString;
-
-    public CustomWebApplicationFactory(DbConnection connection, string connectionString)
-    {
-        _connection = connection;
-        _connectionString = connectionString;
-    }
-
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureTestServices(services =>
         {
             services
                 .RemoveAll<IUser>()
-                .AddTransient(provider => Mock.Of<IUser>(s => s.Id == GetUserId()));
+                .AddTransient(_ => Mock.Of<IUser>(user => user.Id == GetUserId()));
             services
                 .RemoveAll<DbContextOptions<ApplicationDbContext>>()
                 .AddDbContext<ApplicationDbContext>((sp, options) =>
                 {
                     options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
-                    options.UseNpgsql(_connection);
+                    options.UseNpgsql(connection);
                 });
         });
     }

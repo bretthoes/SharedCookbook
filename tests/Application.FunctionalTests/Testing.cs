@@ -10,7 +10,7 @@ using SharedCookbook.Application.Common.Extensions;
 namespace SharedCookbook.Application.FunctionalTests;
 
 [SetUpFixture]
-public partial class Testing
+public class Testing
 {
     private static ITestDatabase _database = null!;
     private static CustomWebApplicationFactory _factory = null!;
@@ -22,7 +22,7 @@ public partial class Testing
     {
         _database = await TestDatabaseFactory.CreateAsync();
 
-        _factory = new CustomWebApplicationFactory(_database.GetConnection(), _database.GetConnectionString());
+        _factory = new CustomWebApplicationFactory(_database.GetConnection());
 
         _scopeFactory = _factory.Services.GetRequiredService<IServiceScopeFactory>();
     }
