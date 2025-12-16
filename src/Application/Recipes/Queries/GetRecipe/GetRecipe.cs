@@ -17,10 +17,10 @@ public sealed class GetRecipeQueryHandler(
         ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
 
         var dto = await context.Recipes.QueryRecipeDetailedDto(request.Id, options.Value.ImageBaseUrl, token)
-                  ?? throw new NotFoundException(key: request.Id.ToString(), nameof(Recipe));
+            ?? throw new NotFoundException(key: request.Id.ToString(), nameof(Recipe));
 
-        (string? email, string? name) =
-            await identityService.FindByIdAsync(user.Id) ?? throw new UnauthorizedAccessException();
+        (string? email, string? name) = await identityService.FindByIdAsync(user.Id)
+            ?? throw new UnauthorizedAccessException();
 
         dto.AuthorEmail = email;
         dto.Author = name;

@@ -27,7 +27,7 @@ public class Recipes : EndpointGroupBase
 
     private static Task<PaginatedList<RecipeBriefDto>> List(
         ISender sender,
-        [AsParameters] GetRecipesWithPaginationQuery query) => sender.Send(query);
+        [AsParameters] GetRecipesQuery query) => sender.Send(query);
 
     private static Task<int> Create(ISender sender, [FromBody] CreateRecipeCommand command)
     {

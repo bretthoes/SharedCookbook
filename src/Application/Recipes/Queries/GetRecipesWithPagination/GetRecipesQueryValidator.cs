@@ -1,8 +1,8 @@
 ﻿namespace SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
 
-public class GetRecipesWithPaginationQueryValidator : AbstractValidator<GetRecipesWithPaginationQuery>
+public class GetRecipesQueryValidator : AbstractValidator<GetRecipesQuery>
 {
-    public GetRecipesWithPaginationQueryValidator()
+    public GetRecipesQueryValidator()
     {
         RuleFor(query => query.CookbookId)
             .GreaterThanOrEqualTo(1)

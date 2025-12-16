@@ -3,7 +3,7 @@ using SharedCookbook.Application.Common.Mappings;
 
 namespace SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
 
-public static class GetRecipesWithPaginationDbQuery
+internal static class GetRecipesDbQuery
 {
     extension(IQueryable<Recipe> query)
     {
