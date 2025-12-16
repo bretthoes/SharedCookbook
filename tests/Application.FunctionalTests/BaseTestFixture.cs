@@ -3,6 +3,7 @@
 using static Testing;
 
 [TestFixture]
+[NonParallelizable]
 public abstract class BaseTestFixture
 {
     [SetUp]
