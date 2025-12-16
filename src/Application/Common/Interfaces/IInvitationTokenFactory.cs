@@ -37,6 +37,8 @@ public sealed record MintedToken(string InviteToken, TokenDigest HashDetails);
 
 public readonly record struct TokenLink(Guid TokenId, string Secret)
 {
+    public static implicit operator string(TokenLink link) => link.ToString();
+
     // "<tokenId>.<secret>"
     public override string ToString() => $"{TokenId:D}.{Secret}";
 
@@ -49,10 +51,10 @@ public readonly record struct TokenLink(Guid TokenId, string Secret)
             throw new FormatException("TokenLink must be in the form '<tokenId>.<secret>'.");
 
         var idSpan = raw.AsSpan(start: 0, length: dot);
-        if (!Guid.TryParse(idSpan, out Guid id))
-            throw new FormatException("TokenLink tokenId must be a GUID.");
-
-        return new TokenLink(id, raw[(dot + 1)..]);
+        
+        return !Guid.TryParse(idSpan, out Guid id)
+            ? throw new FormatException("TokenLink tokenId must be a GUID.")
+            : new TokenLink(id, raw[(dot + 1)..]);
     }
 }
 
