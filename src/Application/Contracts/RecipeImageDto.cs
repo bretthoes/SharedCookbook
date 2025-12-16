@@ -1,5 +1,6 @@
 ﻿namespace SharedCookbook.Application.Contracts;
 
+// TODO move all projection logic elsewhere
 public sealed record RecipeImageDto
 {
     public required string Name { get; init; }
