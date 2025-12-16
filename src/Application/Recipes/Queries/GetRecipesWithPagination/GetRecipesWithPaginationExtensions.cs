@@ -2,37 +2,24 @@ using SharedCookbook.Application.Common.Mappings;
 
 namespace SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
 
-public static class GetRecipesWithPaginationExtensions
+public static class GetRecipesWithPaginationDbQuery
 {
-    public static Task<PaginatedList<Recipe>> QueryRecipesInCookbook(this IQueryable<Recipe> recipes,
+    public static Task<PaginatedList<RecipeBriefDto>> GetBriefRecipeDtos(this IQueryable<Recipe> query,
         int cookbookId,
-        string? search,
-        int page,
+        int pageNumber,
         int pageSize,
         CancellationToken cancellationToken)
-            => recipes
-                .AsNoTracking()
-                .HasCookbookId(cookbookId)
-                .TitleContains(search)
-                .OrderByTitle()
-                .PaginatedListAsync(page, pageSize, cancellationToken);
-
-    public static IQueryable<Recipe> HasCookbookId(this IQueryable<Recipe> query, int cookbookId)
+        => query.AsNoTracking()
+            .HasCookbookId(cookbookId)
+            .OrderByTitle()
+            .ToDtos()
+            .PaginatedListAsync(pageNumber, pageSize, cancellationToken);
+    
+    private static IQueryable<Recipe> HasCookbookId(this IQueryable<Recipe> query, int cookbookId)
         => query
             .Where(recipe => recipe.CookbookId == cookbookId);
 
-    public static IQueryable<Recipe> TitleContains(this IQueryable<Recipe> query, string? search)
-        => string.IsNullOrWhiteSpace(search) 
-            ? query 
-            : query
-                .Where(recipe => recipe.Title
-                    .ToLower()
-                    .Contains(search
-                        .Trim()
-                        .ToLower()));
-
-
-    public static IQueryable<Recipe> OrderByTitle(this IQueryable<Recipe> query)
+    private static IQueryable<Recipe> OrderByTitle(this IQueryable<Recipe> query)
         => query
             .OrderBy(recipe => recipe.Title);
 }
