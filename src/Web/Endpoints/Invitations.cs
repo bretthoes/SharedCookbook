@@ -22,8 +22,7 @@ public class Invitations : EndpointGroupBase
         [AsParameters] GetInvitationsWithPaginationQuery query)
         => sender.Send(query);
 
-    private static Task<int> Count(ISender sender, [AsParameters] GetInvitationsCountQuery query)
-        => sender.Send(query);
+    private static Task<int> Count(ISender sender, [AsParameters] GetInvitationsCountQuery query) => sender.Send(query);
 
     private static Task<int> Create(ISender sender, [FromBody] CreateInvitationCommand command)
     {
