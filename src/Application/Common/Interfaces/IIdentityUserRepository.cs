@@ -23,8 +23,4 @@ public interface IIdentityUserRepository
     Task<PaginatedList<CookbookBriefDto>> GetCookbooks(
         GetCookbooksWithPaginationQuery query,
         CancellationToken cancellationToken);
-
-    Task<PaginatedList<RecipeDetailedDto>> GetRecipes(
-        GetRecipesWithPaginationQuery query,
-        CancellationToken cancellationToken);
 }

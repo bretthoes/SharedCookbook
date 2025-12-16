@@ -68,15 +68,4 @@ public class IdentityUserRepository(ApplicationDbContext context, IUser user, IO
             .OrderByTitle()
             .SelectBriefDto(context.People.AsNoTracking(), options.Value.ImageBaseUrl)
             .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
-
-    public Task<PaginatedList<RecipeDetailedDto>> GetRecipes(
-        GetRecipesWithPaginationQuery query,
-        CancellationToken cancellationToken)
-        => context.Recipes.AsNoTracking()
-            .HasCookbookId(query.CookbookId)
-            .TitleContains(query.Search)
-            .IncludeRecipeDetails()
-            .OrderByTitle()
-            .SelectRecipeDetailedDto(context.People.AsNoTracking(), options.Value.ImageBaseUrl)
-            .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
 }
