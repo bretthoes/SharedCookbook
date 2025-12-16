@@ -20,20 +20,13 @@ public class EmailSender(
         client.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue(scheme: "Basic", Convert.ToBase64String(authBytes));
 
-        var form = new Dictionary<string, string>
-        {
-            ["from"] = options.Value.From,
-            ["to"] = email,
-            ["subject"] = subject,
-            ["html"] = htmlMessage
-        };
-
-        using var content = new FormUrlEncodedContent(form);
+        var requestBody = GetRequestBody(email, subject, subject, htmlMessage);
+        using var content = new FormUrlEncodedContent(requestBody);
         using var response = await client.PostAsync($"v3/{options.Value.Domain}/messages", content);
 
         if (!response.IsSuccessStatusCode)
         {
-            var body = await response.Content.ReadAsStringAsync();
+            string body = await response.Content.ReadAsStringAsync();
 
             logger.LogError(
                 "SharedCookbook Email failed to send: {StatusCode} {ReasonPhrase} {Content}",
@@ -42,4 +35,7 @@ public class EmailSender(
                 body);
         }
     }
+
+    private static Dictionary<string, string> GetRequestBody(string from, string to, string subject, string htmlMessage)
+        => new() { ["from"] = from, ["to"] = to, ["subject"] = subject, ["html"] = htmlMessage };
 }
