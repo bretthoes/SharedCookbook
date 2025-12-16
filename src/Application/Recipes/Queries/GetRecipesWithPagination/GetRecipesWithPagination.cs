@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Application.Common.Mappings;
-
-namespace SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
+﻿namespace SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
 
 public record GetRecipesWithPaginationQuery(
     int CookbookId,
