@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Application.Contracts;
 
-public class RecipeImageDto
+public sealed record RecipeImageDto
 {
     public required string Name { get; init; }
 

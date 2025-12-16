@@ -1,6 +1,6 @@
 namespace SharedCookbook.Application.Contracts;
 
-public record MembershipDto
+public sealed record MembershipDto
 {
     public int Id { get; set; }
 

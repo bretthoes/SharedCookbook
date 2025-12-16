@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Application.Contracts;
 
-public class RecipeDirectionDto
+public sealed record RecipeDirectionDto
 {
     public required string Text { get; init; }
 
@@ -16,4 +16,7 @@ public static partial class Extensions
     public static IEnumerable<RecipeDirection> ToEntities(
         this IEnumerable<RecipeDirectionDto> recipeIngredients)
         => recipeIngredients.Select(direction => direction.ToEntity());
+
+    public static RecipeDirectionDto ToDto(this RecipeDirection recipeDirection)
+        => new() { Text = recipeDirection.Text, Ordinal = recipeDirection.Ordinal, Image = recipeDirection.Image };
 }

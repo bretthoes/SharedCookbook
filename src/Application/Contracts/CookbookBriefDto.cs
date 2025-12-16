@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Application.Contracts;
 
-public class CookbookBriefDto
+public sealed record CookbookBriefDto
 {
     public required int Id { get; init; }
 
