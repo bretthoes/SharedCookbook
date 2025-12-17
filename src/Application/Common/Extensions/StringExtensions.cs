@@ -20,5 +20,8 @@ public static class StringExtensions
             .Trim();
 
     public static string Truncate(this string input, int maxLength) =>
-        input.Length <= maxLength ? input : input[..maxLength];
+        input.Length <= maxLength ? input : input[..maxLength];    
+    
+    public static string PrefixIfNotEmpty(this string? path, string prefix)
+        => string.IsNullOrWhiteSpace(path) ? "" : prefix + path;
 }

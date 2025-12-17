@@ -9,11 +9,7 @@ public static class RecipeQueryExtensions
         public async Task<RecipeDetailedDto?> QueryDetailedDto(int id,
             string imageBaseUrl,
             CancellationToken cancellationToken)
-            => (await query
-                    .AsNoTracking()
-                    .IncludeRecipeDetails()
-                    .SingleOrDefaultAsync(recipe => recipe.Id == id, cancellationToken))?
-                .ToDetailedDto(imageBaseUrl);
+            => await query.Select(ToDetailedDto(imageBaseUrl)).Where(dto => dto.Id == id).SingleOrDefaultAsync(cancellationToken);
 
         public IQueryable<Recipe> IncludeRecipeDetails()
             => query
@@ -21,31 +17,34 @@ public static class RecipeQueryExtensions
                 .Include(recipe => recipe.Images)
                 .Include(recipe => recipe.Ingredients);
     }
-    
 
-    private static RecipeDetailedDto ToDetailedDto(this Recipe recipe, string imageBaseUrl)
-        => new()
+    private static Expression<Func<Recipe, RecipeDetailedDto>> ToDetailedDto(string imageBaseUrl) =>
+        recipe => new RecipeDetailedDto
         {
             Id = recipe.Id,
             Title = recipe.Title,
             Summary = recipe.Summary,
-            Thumbnail = string.IsNullOrEmpty(recipe.Thumbnail) ? "" : imageBaseUrl + recipe.Thumbnail,
-            VideoPath = string.IsNullOrEmpty(recipe.VideoPath) ? "" : imageBaseUrl + recipe.VideoPath,
+            Thumbnail = recipe.Thumbnail.PrefixIfNotEmpty(imageBaseUrl),
+            VideoPath = recipe.VideoPath.PrefixIfNotEmpty(imageBaseUrl),
             PreparationTimeInMinutes = recipe.PreparationTimeInMinutes,
             CookingTimeInMinutes = recipe.CookingTimeInMinutes,
             BakingTimeInMinutes = recipe.BakingTimeInMinutes,
             Servings = recipe.Servings,
-            Directions = recipe.Directions,
+            Directions = recipe.Directions
+                .OrderBy(d => d.Ordinal)
+                .Select(d => new RecipeDirection { Id = d.Id, Ordinal = d.Ordinal, Text = d.Text })
+                .ToList(),
             Images = recipe.Images
-                .OrderBy(image => image.Ordinal)
-                .Select(image => new RecipeImage
+                .OrderBy(i => i.Ordinal)
+                .Select(i => new RecipeImage { Id = i.Id, Name = imageBaseUrl + i.Name, Ordinal = i.Ordinal })
+                .ToList(),
+            Ingredients = recipe.Ingredients
+                .OrderBy(i => i.Ordinal)
+                .Select(i => new RecipeIngredient
                 {
-                    Id = image.Id,
-                    Name = imageBaseUrl + image.Name,
-                    Ordinal = image.Ordinal,
+                    Id = i.Id, Ordinal = i.Ordinal, Name = i.Name, Optional = i.Optional
                 })
                 .ToList(),
-            Ingredients = recipe.Ingredients,
             IsVegan = recipe.IsVegan,
             IsVegetarian = recipe.IsVegetarian,
             IsCheap = recipe.IsCheap,
