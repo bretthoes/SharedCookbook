@@ -8,5 +8,5 @@ public class GetRecipesWithPaginationQueryHandler(IApplicationDbContext context)
 {
     public Task<PaginatedList<RecipeBriefDto>> Handle(GetRecipesQuery query,
         CancellationToken token)
-        => context.Recipes.GetBriefRecipeDtos(query.CookbookId, query.PageNumber, query.PageSize, token);
+        => context.Recipes.QueryBriefDtos(query.CookbookId, query.PageNumber, query.PageSize, token);
 }

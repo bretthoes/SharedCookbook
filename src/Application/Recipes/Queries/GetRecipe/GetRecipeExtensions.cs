@@ -1,22 +1,27 @@
+using System.Linq.Expressions;
+
 namespace SharedCookbook.Application.Recipes.Queries.GetRecipe;
 
 public static class RecipeQueryExtensions
 {
-    public static async Task<RecipeDetailedDto?> QueryRecipeDetailedDto(this IQueryable<Recipe> query,
-        int id,
-        string imageBaseUrl,
-        CancellationToken cancellationToken)
-        => (await query
-            .AsNoTracking()
-            .IncludeRecipeDetails()
-            .SingleOrDefaultAsync(recipe => recipe.Id == id, cancellationToken))?
-            .ToDetailedDto(imageBaseUrl);
+    extension(IQueryable<Recipe> query)
+    {
+        public async Task<RecipeDetailedDto?> QueryDetailedDto(int id,
+            string imageBaseUrl,
+            CancellationToken cancellationToken)
+            => (await query
+                    .AsNoTracking()
+                    .IncludeRecipeDetails()
+                    .SingleOrDefaultAsync(recipe => recipe.Id == id, cancellationToken))?
+                .ToDetailedDto(imageBaseUrl);
 
-    public static IQueryable<Recipe> IncludeRecipeDetails(this IQueryable<Recipe> query)
-        => query
-            .Include(recipe => recipe.Directions)
-            .Include(recipe => recipe.Images)
-            .Include(recipe => recipe.Ingredients);
+        public IQueryable<Recipe> IncludeRecipeDetails()
+            => query
+                .Include(recipe => recipe.Directions)
+                .Include(recipe => recipe.Images)
+                .Include(recipe => recipe.Ingredients);
+    }
+    
 
     private static RecipeDetailedDto ToDetailedDto(this Recipe recipe, string imageBaseUrl)
         => new()
