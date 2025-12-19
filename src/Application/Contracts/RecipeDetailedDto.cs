@@ -38,9 +38,9 @@ public class RecipeDetailedDto
     
     public bool? IsLowFodmap { get; set; }
 
-    public virtual ICollection<RecipeDirection> Directions { get; init; } = [];
+    public virtual IReadOnlyCollection<RecipeDirectionDto> Directions { get; init; } = [];
 
-    public virtual ICollection<RecipeImage> Images { get; init; } = [];
+    public virtual IReadOnlyCollection<RecipeImageDto> Images { get; init; } = [];
 
-    public virtual ICollection<RecipeIngredient> Ingredients { get; init; } = [];
+    public virtual IReadOnlyCollection<RecipeIngredientDto> Ingredients { get; init; } = [];
 }
