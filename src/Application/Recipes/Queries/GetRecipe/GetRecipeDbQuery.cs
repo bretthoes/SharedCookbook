@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using SharedCookbook.Application.Common.Mappings;
 
 namespace SharedCookbook.Application.Recipes.Queries.GetRecipe;
 
@@ -36,52 +37,5 @@ public static class GetRecipeDbQuery
             IsDairyFree = recipe.IsDairyFree,
             IsGlutenFree = recipe.IsGlutenFree,
             IsLowFodmap = recipe.IsLowFodmap,
-        };
-
-    extension(IEnumerable<RecipeDirection> directions)
-    {
-        private IEnumerable<RecipeDirection> Order() => directions.OrderBy(direction => direction.Ordinal);
-        private List<RecipeDirectionDto> ToDtos() => directions.Select(ToDirectionDto).ToList();
-    }
-
-    private static readonly Func<RecipeDirection, RecipeDirectionDto> ToDirectionDto =
-        direction => new RecipeDirectionDto
-        {
-            Id = direction.Id,
-            Text = direction.Text,
-            Ordinal = direction.Ordinal,
-            Image = direction.Image
-        };
-    
-    extension(IEnumerable<RecipeImage> images)
-    {
-        private IEnumerable<RecipeImage> Order() => images.OrderBy(direction => direction.Ordinal);
-
-        private List<RecipeImageDto> ToDtos(string imageBaseUrl) =>
-            images.Select(i => ToImageDto(i, imageBaseUrl)).ToList();
-    }
-
-    
-private static readonly Func<RecipeImage, string, RecipeImageDto> ToImageDto =
-    (image, imageBaseUrl) => new RecipeImageDto
-    {
-        Id = image.Id,
-        Name = image.Name.PrefixIfNotEmpty(imageBaseUrl),
-        Ordinal = image.Ordinal
-    };
-    
-    extension(IEnumerable<RecipeIngredient> ingredients)
-    {
-        private IEnumerable<RecipeIngredient> Order() => ingredients.OrderBy(ingredient => ingredient.Ordinal);
-        private List<RecipeIngredientDto> ToDtos() => ingredients.Select(ToIngredientDto).ToList();
-    }
-
-    private static readonly Func<RecipeIngredient, RecipeIngredientDto> ToIngredientDto =
-        ingredient => new RecipeIngredientDto
-        {
-            Id = ingredient.Id,
-            Name = ingredient.Name,
-            Ordinal = ingredient.Ordinal,
-            Optional = ingredient.Optional
         };
 }
