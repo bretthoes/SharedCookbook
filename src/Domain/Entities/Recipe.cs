@@ -50,9 +50,13 @@ public sealed class Recipe : BaseAuditableEntity
 
     public struct Constraints
     {
+        public const int MaxImageLength = 6;
+        public const int MaxDirectionCount = 40;
+        public const int MaxIngredientCount = 40;
         public const int TitleMaxLength = 255;
         public const int SummaryMaxLength = 2048;
         public const int ThumbnailMaxLength = 2048;
         public const int VideoPathMaxLength = 2048;
+        public const int MaxTimeInMinutes = 10080; // one week
     }
 }
