@@ -17,7 +17,7 @@ public class ValidationBehaviour<TRequest, TResponse>(IEnumerable<IValidator<TRe
                 validator.ValidateAsync(new ValidationContext<TRequest>(request), cancellationToken)));
 
         var failures = validationResults
-            .Where(result => result.Errors.Count != 0)
+            .Where(result => result.Errors.IsNotEmpty())
             .SelectMany(result => result.Errors)
             .ToList();
 

@@ -11,16 +11,6 @@ public interface IApplicationDbContext
     DbSet<CookbookMembership> CookbookMemberships { get; }
 
     DbSet<Recipe> Recipes { get; }
-
-    DbSet<RecipeImage> RecipeImages { get; }
-
-    DbSet<RecipeDirection> RecipeDirections { get; }
-
-    DbSet<RecipeIngredient> RecipeIngredients { get; }
-
-    DbSet<RecipeNutrition> RecipeNutritions { get; }
     
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
-    
-    bool HasChanges();
 }

@@ -2,7 +2,9 @@
 
 public static class EnumeratorExtensions
 {
-    public static bool IsEmpty<T>(this IEnumerable<T> source) => !source.Any();
-
-    public static bool IsNotEmpty<T>(this IEnumerable<T> source) => source.Any();
+    extension<T>(IEnumerable<T> source)
+    {
+        public bool IsEmpty() => !source.Any();
+        public bool IsNotEmpty() => source.Any();
+    }
 }

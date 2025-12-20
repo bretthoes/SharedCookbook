@@ -8,8 +8,6 @@ using SharedCookbook.Application.Images.Commands.CreateImages;
 using SharedCookbook.Application.Invitations.Queries.GetInvitationsCount;
 using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
 using SharedCookbook.Application.Memberships.Queries.GetMembershipsWithPagination;
-using SharedCookbook.Application.Recipes.Queries.GetRecipe;
-using SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
 using SharedCookbook.Infrastructure.Data;
 using SharedCookbook.Infrastructure.Identity.Projections;
 
