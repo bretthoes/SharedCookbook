@@ -9,6 +9,12 @@ using static Testing;
 
 public class DeleteRecipeTests : BaseTestFixture
 {
+    [SetUp]
+    public async Task SetUp()
+    {
+        await RunAsDefaultUserAsync();
+    }
+
     [Test]
     public async Task ShouldRequireValidRecipeId()
     {

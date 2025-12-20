@@ -8,6 +8,12 @@ using static Testing;
 
 public class CreateRecipeTests : BaseTestFixture
 {
+    [SetUp]
+    public async Task SetUp()
+    {
+        await RunAsDefaultUserAsync();
+    }
+
     [Test]
     public async Task ShouldRequireMinimumFields()
     {
@@ -19,7 +25,7 @@ public class CreateRecipeTests : BaseTestFixture
                 CookbookId = 0
             }
         };
-    
+
         await FluentActions.Invoking((() =>
             SendAsync(command))).Should().ThrowAsync<ValidationException>();
     }
@@ -27,8 +33,8 @@ public class CreateRecipeTests : BaseTestFixture
     [Test]
     public async Task ShouldCreateRecipe()
     {
-        var userId = await RunAsDefaultUserAsync();
-    
+        var userId = GetUserId();
+
         var command = new CreateRecipeCommand
         {
             Recipe = new CreateRecipeDto
@@ -37,11 +43,11 @@ public class CreateRecipeTests : BaseTestFixture
                 CookbookId = 0
             }
         };
-    
+
         var itemId = await SendAsync(command);
-    
+
         var item = await FindAsync<Recipe>(itemId);
-    
+
         item.Should().NotBeNull();
         item!.Title.Should().Be(command.Recipe.Title);
         item.CreatedBy.Should().Be(userId);
