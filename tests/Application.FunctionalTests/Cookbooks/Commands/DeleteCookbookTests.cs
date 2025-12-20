@@ -8,6 +8,12 @@ using static Testing;
 
 public class DeleteCookbookTests : BaseTestFixture
 {
+    [SetUp]
+    public async Task SetUp()
+    {
+        await RunAsDefaultUserAsync();
+    }
+    
     [Test]
     public void ShouldRequireValidCookbookId()
     {

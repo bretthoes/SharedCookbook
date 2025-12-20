@@ -6,9 +6,14 @@ namespace SharedCookbook.Application.FunctionalTests.Invitations.Commands;
 
 using static Testing;
 
-[TestFixture]
 public class InvitationAcceptanceTests : BaseTestFixture
 {
+    [SetUp]
+    public async Task SetUp()
+    {
+        await RunAsDefaultUserAsync();
+    }
+
     [Test]
     public async Task AcceptingInvitation_UpdatesStatusAndResponseDate()
     {

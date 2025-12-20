@@ -8,6 +8,12 @@ using static Testing;
 
 public class UpdateCookbookTests : BaseTestFixture
 {
+    [SetUp]
+    public async Task SetUp()
+    {
+        await RunAsDefaultUserAsync();
+    }
+
     [Test]
     public void ShouldRequireValidCookbookId()
     {

@@ -7,6 +7,11 @@ using static Testing;
 
 public class CreateCookbookTests : BaseTestFixture
 {
+    [SetUp]
+    public async Task SetUp()
+    {
+        await RunAsDefaultUserAsync();
+    }
     
     [TestCase(null!)]
     [TestCase("")]

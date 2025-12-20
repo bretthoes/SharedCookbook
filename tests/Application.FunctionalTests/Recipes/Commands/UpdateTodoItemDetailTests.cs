@@ -7,6 +7,12 @@ using static Testing;
 
 public class UpdateRecipeTests : BaseTestFixture
 {
+    [SetUp]
+    public async Task SetUp()
+    {
+        await RunAsDefaultUserAsync();
+    }
+
     [Test]
     public async Task ShouldRequireValidRecipeId()
     {
