@@ -21,13 +21,15 @@ public class InvitationAcceptanceTests : BaseTestFixture
         var cookbook = WithActiveInvitation("Test", userId!);
         await AddAsync(cookbook);
 
-        int invitationId = await SendAsync(new UpdateInvitationCommand(cookbook.Id, InvitationStatus.Accepted));
+        var invitation = await SingleAsync<CookbookInvitation>(i =>
+            i.CookbookId == cookbook.Id && i.RecipientPersonId == userId);
+        int invitationId = await SendAsync(new UpdateInvitationCommand(invitation.Id, InvitationStatus.Accepted));
 
-        var invitation = await FindAsync<CookbookInvitation>(invitationId);
-        invitation.Should().NotBeNull();
-        invitation.Status.Should().Be(InvitationStatus.Accepted);
-        invitation.CookbookId.Should().Be(cookbook.Id);
-        invitation.ResponseDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(10));
+        var updatedInvitation = await FindAsync<CookbookInvitation>(invitationId);
+        updatedInvitation.Should().NotBeNull();
+        updatedInvitation.Status.Should().Be(InvitationStatus.Accepted);
+        updatedInvitation.CookbookId.Should().Be(cookbook.Id);
+        updatedInvitation.ResponseDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(10));
     }
 
     [Test]
@@ -37,7 +39,9 @@ public class InvitationAcceptanceTests : BaseTestFixture
         var cookbook = WithActiveInvitation("Test", userId!);
         await AddAsync(cookbook);
 
-        await SendAsync(new UpdateInvitationCommand(cookbook.Id, InvitationStatus.Accepted));
+        var invitation = await SingleAsync<CookbookInvitation>(i =>
+            i.CookbookId == cookbook.Id && i.RecipientPersonId == userId);
+        await SendAsync(new UpdateInvitationCommand(invitation.Id, InvitationStatus.Accepted));
 
         var membership = await SingleAsync<CookbookMembership>(m =>
             m.CookbookId == cookbook.Id && m.CreatedBy == userId);
@@ -53,7 +57,9 @@ public class InvitationAcceptanceTests : BaseTestFixture
         var cookbook = WithActiveInvitation("Test", userId!);
         await AddAsync(cookbook);
 
-        await SendAsync(new UpdateInvitationCommand(cookbook.Id, InvitationStatus.Rejected));
+        var invitation = await SingleAsync<CookbookInvitation>(i =>
+            i.CookbookId == cookbook.Id && i.RecipientPersonId == userId);
+        await SendAsync(new UpdateInvitationCommand(invitation.Id, InvitationStatus.Rejected));
 
         bool any = await AnyAsync<CookbookMembership>(m =>
             m.CookbookId == cookbook.Id && m.CreatedBy == userId);
