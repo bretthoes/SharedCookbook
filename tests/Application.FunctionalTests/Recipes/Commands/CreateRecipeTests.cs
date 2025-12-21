@@ -16,7 +16,7 @@ public class CreateRecipeTests : BaseTestFixture
     }
 
     [Test]
-    public async Task ShouldRequireMinimumFields()
+    public void ShouldRequireMinimumFields()
     {
         var command = new CreateRecipeCommand
         {

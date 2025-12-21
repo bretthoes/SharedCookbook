@@ -16,7 +16,7 @@ public class DeleteRecipeTests : BaseTestFixture
     }
 
     [Test]
-    public async Task ShouldRequireValidRecipeId()
+    public void ShouldRequireValidRecipeId()
     {
         var command = new DeleteRecipeCommand(Id: 99);
 

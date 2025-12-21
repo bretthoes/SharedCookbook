@@ -17,7 +17,7 @@ public class UpdateRecipeTests : BaseTestFixture
     }
 
     [Test]
-    public async Task ShouldRequireValidRecipeId()
+    public void ShouldRequireValidRecipeId()
     {
         var command = new UpdateRecipeCommand(new UpdateRecipeDto{ Title = "Test Title", Id = 99 });
         Assert.ThrowsAsync<NotFoundException>(() => SendAsync(command));
