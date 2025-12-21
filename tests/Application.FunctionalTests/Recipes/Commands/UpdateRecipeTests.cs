@@ -20,7 +20,7 @@ public class UpdateRecipeTests : BaseTestFixture
     public async Task ShouldRequireValidRecipeId()
     {
         var command = new UpdateRecipeCommand(new UpdateRecipeDto{ Title = "Test Title", Id = 99 });
-        await FluentActions.Invoking((() => SendAsync(command))).Should().ThrowAsync<NotFoundException>();
+        Assert.ThrowsAsync<NotFoundException>(() => SendAsync(command));
     }
     
     [Test]
@@ -43,10 +43,13 @@ public class UpdateRecipeTests : BaseTestFixture
     
          var item = await FindAsync<Recipe>(recipeId);
     
-         item.Should().NotBeNull();
-         item!.Title.Should().Be(command.Recipe.Title);
-         item.LastModifiedBy.Should().NotBeNull();
-         item.LastModifiedBy.Should().Be(userId);
-         item.LastModified.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(10));
+         using (Assert.EnterMultipleScope())
+         {
+             Assert.That(item, Is.Not.Null);
+             Assert.That(item!.Title, Is.EqualTo(command.Recipe.Title));
+             Assert.That(item.LastModifiedBy, Is.Not.Null);
+             Assert.That(item.LastModifiedBy, Is.EqualTo(userId));
+             Assert.That(item.LastModified, Is.EqualTo(DateTimeOffset.Now).Within(TimeSpan.FromSeconds(10)));
+         }
      }
 }

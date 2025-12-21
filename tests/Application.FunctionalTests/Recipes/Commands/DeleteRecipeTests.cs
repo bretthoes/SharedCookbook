@@ -20,8 +20,7 @@ public class DeleteRecipeTests : BaseTestFixture
     {
         var command = new DeleteRecipeCommand(Id: 99);
 
-        await FluentActions.Invoking(() =>
-            SendAsync(command)).Should().ThrowAsync<NotFoundException>();
+        Assert.ThrowsAsync<NotFoundException>(() => SendAsync(command));
     }
 
     [Test]
@@ -60,6 +59,6 @@ public class DeleteRecipeTests : BaseTestFixture
 
         var item = await FindAsync<Recipe>(itemId);
 
-        item.Should().BeNull();
+        Assert.That(item, Is.Null);
     }
 }

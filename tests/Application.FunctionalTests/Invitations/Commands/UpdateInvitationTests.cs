@@ -26,10 +26,13 @@ public class InvitationAcceptanceTests : BaseTestFixture
         int invitationId = await SendAsync(new UpdateInvitationCommand(invitation.Id, InvitationStatus.Accepted));
 
         var updatedInvitation = await FindAsync<CookbookInvitation>(invitationId);
-        updatedInvitation.Should().NotBeNull();
-        updatedInvitation.Status.Should().Be(InvitationStatus.Accepted);
-        updatedInvitation.CookbookId.Should().Be(cookbook.Id);
-        updatedInvitation.ResponseDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(10));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(updatedInvitation, Is.Not.Null);
+            Assert.That(updatedInvitation!.Status, Is.EqualTo(InvitationStatus.Accepted));
+            Assert.That(updatedInvitation.CookbookId, Is.EqualTo(cookbook.Id));
+            Assert.That(updatedInvitation.ResponseDate, Is.EqualTo(DateTimeOffset.UtcNow).Within(TimeSpan.FromSeconds(10)));
+        }
     }
 
     [Test]
@@ -45,9 +48,12 @@ public class InvitationAcceptanceTests : BaseTestFixture
 
         var membership = await SingleAsync<CookbookMembership>(m =>
             m.CookbookId == cookbook.Id && m.CreatedBy == userId);
-        membership.Should().NotBeNull();
-        membership.CreatedBy.Should().Be(userId);
-        membership.Created.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(10));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(membership, Is.Not.Null);
+            Assert.That(membership.CreatedBy, Is.EqualTo(userId));
+            Assert.That(membership.Created, Is.EqualTo(DateTimeOffset.UtcNow).Within(TimeSpan.FromSeconds(10)));
+        }
     }
 
     [Test]
@@ -63,7 +69,7 @@ public class InvitationAcceptanceTests : BaseTestFixture
 
         bool any = await AnyAsync<CookbookMembership>(m =>
             m.CookbookId == cookbook.Id && m.CreatedBy == userId);
-        any.Should().BeFalse();
+        Assert.That(any, Is.False);
     }
 
     private static Cookbook WithActiveInvitation(string title, string recipientUserId) => new()

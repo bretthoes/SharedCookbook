@@ -42,12 +42,15 @@ public class UpdateMembershipTests : BaseTestFixture
         var demotedOwner = memberships.Single(m => m.CreatedBy == originalOwnerUserId);
         var promotedOwner = memberships.Single(m => m.CreatedBy == newOwnerUserId);
 
-        demotedOwner.IsOwner.Should().BeFalse();
-        demotedOwner.LastModifiedBy.Should().Be(originalOwnerUserId);
-        demotedOwner.LastModified.Should().BeCloseTo(DateTimeOffset.UtcNow, precision: TimeSpan.FromSeconds(10));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(demotedOwner.IsOwner, Is.False);
+            Assert.That(demotedOwner.LastModifiedBy, Is.EqualTo(originalOwnerUserId));
+            Assert.That(demotedOwner.LastModified, Is.EqualTo(DateTimeOffset.UtcNow).Within(TimeSpan.FromSeconds(10)));
 
-        promotedOwner.IsOwner.Should().BeTrue();
-        promotedOwner.LastModifiedBy.Should().Be(originalOwnerUserId);
-        promotedOwner.LastModified.Should().BeCloseTo(DateTimeOffset.UtcNow, precision: TimeSpan.FromSeconds(10));
+            Assert.That(promotedOwner.IsOwner, Is.True);
+            Assert.That(promotedOwner.LastModifiedBy, Is.EqualTo(originalOwnerUserId));
+            Assert.That(promotedOwner.LastModified, Is.EqualTo(DateTimeOffset.UtcNow).Within(TimeSpan.FromSeconds(10)));
+        }
     }
 }

@@ -27,8 +27,7 @@ public class CreateRecipeTests : BaseTestFixture
             }
         };
 
-        await FluentActions.Invoking((() =>
-            SendAsync(command))).Should().ThrowAsync<ValidationException>();
+        Assert.ThrowsAsync<ValidationException>(() => SendAsync(command));
     }
 
     [Test]
@@ -51,11 +50,14 @@ public class CreateRecipeTests : BaseTestFixture
 
         var item = await FindAsync<Recipe>(itemId);
 
-        item.Should().NotBeNull();
-        item!.Title.Should().Be(command.Recipe.Title);
-        item.CreatedBy.Should().Be(userId);
-        item.Created.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(10));
-        item.LastModifiedBy.Should().Be(userId);
-        item.LastModified.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(10));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(item, Is.Not.Null);
+            Assert.That(item!.Title, Is.EqualTo(command.Recipe.Title));
+            Assert.That(item.CreatedBy, Is.EqualTo(userId));
+            Assert.That(item.Created, Is.EqualTo(DateTimeOffset.Now).Within(TimeSpan.FromSeconds(10)));
+            Assert.That(item.LastModifiedBy, Is.EqualTo(userId));
+            Assert.That(item.LastModified, Is.EqualTo(DateTimeOffset.Now).Within(TimeSpan.FromSeconds(10)));
+        }
     }
 }
