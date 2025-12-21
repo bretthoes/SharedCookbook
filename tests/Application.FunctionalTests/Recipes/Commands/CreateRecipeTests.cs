@@ -1,4 +1,5 @@
 ﻿using SharedCookbook.Application.Contracts;
+using SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
 using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 using SharedCookbook.Domain.Entities;
 
@@ -33,14 +34,16 @@ public class CreateRecipeTests : BaseTestFixture
     [Test]
     public async Task ShouldCreateRecipe()
     {
-        var userId = GetUserId();
+        string? userId = GetUserId();
+
+        int cookbookId = await SendAsync(new CreateCookbookCommand(Title: "New Cookbook"));
 
         var command = new CreateRecipeCommand
         {
             Recipe = new CreateRecipeDto
             {
                 Title = "Recipe Title",
-                CookbookId = 0
+                CookbookId = cookbookId
             }
         };
 
