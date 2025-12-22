@@ -10,13 +10,6 @@ public static class InvitationQueryExtensions
         InvitationStatus status)
         => query.Where(invitation => invitation.RecipientPersonId == userId && invitation.Status == status);
     
-    public static Task<int> GetInvitationsCountForUserByStatus(
-        this IQueryable<CookbookInvitation> query,
-        string? userId,
-        InvitationStatus status,
-        CancellationToken token)
-        => query.CountAsync(invitation => invitation.RecipientPersonId == userId && invitation.Status == status, token);
-    
     public static Task<CookbookInvitation?> FirstLinkInviteWithTokens(
         this IQueryable<CookbookInvitation> query,
         int cookbookId,

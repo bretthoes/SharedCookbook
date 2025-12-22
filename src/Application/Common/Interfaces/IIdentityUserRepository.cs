@@ -15,10 +15,6 @@ public interface IIdentityUserRepository
         GetInvitationsWithPaginationQuery query,
         CancellationToken cancellationToken);
 
-    public Task<int> GetInvitationsCount(
-        GetInvitationsCountQuery query,
-        CancellationToken cancellationToken);
-    
     Task<PaginatedList<CookbookBriefDto>> GetCookbooks(
         GetCookbooksWithPaginationQuery query,
         CancellationToken cancellationToken);
