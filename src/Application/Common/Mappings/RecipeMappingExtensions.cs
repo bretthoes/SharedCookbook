@@ -5,10 +5,10 @@ internal static class RecipeMappingExtensions
     extension(IEnumerable<RecipeDirection> directions)
     {
         internal IEnumerable<RecipeDirection> Order() => directions.OrderBy(direction => direction.Ordinal);
-        internal List<RecipeDirectionDto> ToDtos() => directions.Select(ToDirectionDto).ToList();
+        internal List<RecipeDirectionDto> ToDtos() => directions.Select(ToDto).ToList();
     }
 
-    private static readonly Func<RecipeDirection, RecipeDirectionDto> ToDirectionDto =
+    private static readonly Func<RecipeDirection, RecipeDirectionDto> ToDto =
         direction => new RecipeDirectionDto
         {
             Id = direction.Id, Text = direction.Text, Ordinal = direction.Ordinal, Image = direction.Image
