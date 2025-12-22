@@ -1,8 +1,8 @@
 ﻿namespace SharedCookbook.Application.Memberships.Queries.GetMembership;
 
-public record GetMembershipQuery(int Id) : IRequest<MembershipDto>;
+public sealed record GetMembershipQuery(int Id) : IRequest<MembershipDto>;
 
-public class GetMembershipQueryHandler(IApplicationDbContext context, IIdentityService identityService)
+public sealed class GetMembershipQueryHandler(IApplicationDbContext context, IIdentityService identityService)
     : IRequestHandler<GetMembershipQuery, MembershipDto>
 {
     public async Task<MembershipDto> Handle(GetMembershipQuery query, CancellationToken cancellationToken)

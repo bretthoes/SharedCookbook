@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Application.Memberships.Queries.GetMembership;
 
-public class GetMembershipQueryValidator : AbstractValidator<GetMembershipQuery>
+public sealed class GetMembershipQueryValidator : AbstractValidator<GetMembershipQuery>
 {
     public GetMembershipQueryValidator()
     {

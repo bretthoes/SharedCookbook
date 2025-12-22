@@ -1,8 +1,8 @@
 ﻿namespace SharedCookbook.Application.Memberships.Queries.GetMembershipByCookbook;
 
-public record GetMembershipByCookbookQuery(int CookbookId) : IRequest<MembershipDto>;
+public sealed record GetMembershipByCookbookQuery(int CookbookId) : IRequest<MembershipDto>;
 
-public class GetMembershipByCookbookAndEmailQueryHandler(
+public sealed class GetMembershipByCookbookAndEmailQueryHandler(
     IApplicationDbContext context,
     IIdentityService identityService,
     IUser user)
@@ -10,15 +10,14 @@ public class GetMembershipByCookbookAndEmailQueryHandler(
 {
     public async Task<MembershipDto> Handle(
         GetMembershipByCookbookQuery query,
-        CancellationToken cancellationToken)
+        CancellationToken ct)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
 
-        (string? email, string? name) =
-            await identityService.FindByIdAsync(user.Id) ?? throw new UnauthorizedAccessException();
+        (string? email, string? name) = await identityService.FindByIdAsync(user.Id) 
+            ?? throw new UnauthorizedAccessException();
 
-        var membership =
-            await context.CookbookMemberships.SingleForCookbookAndUser(query.CookbookId, user.Id, cancellationToken);
+        var membership = await context.CookbookMemberships.GetByCookbookAndUser(query.CookbookId, user.Id, ct);
         
         var dto = new MembershipDto
         {
