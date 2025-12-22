@@ -3,11 +3,11 @@ using SharedCookbook.Application.Common.Mappings;
 
 namespace SharedCookbook.Application.Recipes.Queries.GetRecipe;
 
-public static class GetRecipeDbQuery
+internal static class GetRecipeDbQuery
 {
     extension(IQueryable<Recipe> query)
     {
-        public async Task<RecipeDetailedDto?> QueryDetailedDto(int id,
+        internal async Task<RecipeDetailedDto?> QueryDetailedDto(int id,
             string imageBaseUrl,
             CancellationToken cancellationToken) =>
             await query.Select(ToDetailedDto(imageBaseUrl))
