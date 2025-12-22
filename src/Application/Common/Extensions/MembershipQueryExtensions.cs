@@ -9,6 +9,7 @@ public static class MembershipQueryExtensions
     public static Task<CookbookMembership> SingleForCookbookAndUser(
         this IQueryable<CookbookMembership> q, int cookbookId, string userId, CancellationToken ct) =>
         q.AsNoTracking().ForCookbookAndUser(cookbookId, userId).SingleAsync(ct);
+    
     public static IQueryable<CookbookMembership> HasCookbookId(
         this IQueryable<CookbookMembership> query, int cookbookId) =>
         query.Where(membership => membership.CookbookId == cookbookId);

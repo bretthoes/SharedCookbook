@@ -12,6 +12,6 @@ public sealed class GetInvitationsCountQueryHandler(IApplicationDbContext contex
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
         
-        return context.CookbookInvitations.QueryInvitationsCount(user.Id, query.Status, token);
+        return context.CookbookInvitations.GetCountByUserAndStatus(user.Id, query.Status, token);
     }
 }

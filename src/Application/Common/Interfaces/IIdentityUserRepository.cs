@@ -1,5 +1,4 @@
 ﻿using SharedCookbook.Application.Cookbooks.Queries.GetCookbooksWithPagination;
-using SharedCookbook.Application.Invitations.Queries.GetInvitationsCount;
 using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
 using SharedCookbook.Application.Memberships.Queries.GetMembershipsWithPagination;
 
