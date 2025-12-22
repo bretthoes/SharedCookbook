@@ -15,15 +15,19 @@ public class CreateRecipeTests : BaseTestFixture
         await RunAsDefaultUserAsync();
     }
 
-    [Test]
-    public void ShouldRequireMinimumFields()
+    [TestCase(null!, 1)]
+    [TestCase("", 1)]
+    [TestCase("   ", 1)]
+    [TestCase("title", 0)]
+    [TestCase("title", -1)]
+    public void ShouldRequireMinimumFields(string title, int cookbookId)
     {
         var command = new CreateRecipeCommand
         {
             Recipe = new CreateRecipeDto
             {
-                Title = null!,
-                CookbookId = 0
+                Title = title,
+                CookbookId = cookbookId
             }
         };
 
@@ -55,9 +59,9 @@ public class CreateRecipeTests : BaseTestFixture
             Assert.That(item, Is.Not.Null);
             Assert.That(item!.Title, Is.EqualTo(command.Recipe.Title));
             Assert.That(item.CreatedBy, Is.EqualTo(userId));
-            Assert.That(item.Created, Is.EqualTo(DateTimeOffset.Now).Within(TimeSpan.FromSeconds(10)));
+            Assert.That(item.Created, Is.EqualTo(DateTimeOffset.Now).Within(TimeSpan.FromSeconds(1)));
             Assert.That(item.LastModifiedBy, Is.EqualTo(userId));
-            Assert.That(item.LastModified, Is.EqualTo(DateTimeOffset.Now).Within(TimeSpan.FromSeconds(10)));
+            Assert.That(item.LastModified, Is.EqualTo(DateTimeOffset.Now).Within(TimeSpan.FromSeconds(1)));
         }
     }
 }
