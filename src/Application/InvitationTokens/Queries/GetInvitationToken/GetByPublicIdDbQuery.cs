@@ -1,8 +1,8 @@
 ﻿namespace SharedCookbook.Application.Common.Extensions;
 
-public static class GetInvitationTokenByPublicIdDbQuery
+internal static class GetByPublicIdDbQuery
 {
-    public static Task<InvitationToken?> SingleById(
+    public static Task<InvitationToken?> GetByPublicId(
         this IQueryable<InvitationToken> query, Guid tokenId, CancellationToken cancellationToken = default) =>
         query.Include(token => token.Cookbook)
         .SingleOrDefaultAsync(token => token.PublicId == tokenId, cancellationToken);

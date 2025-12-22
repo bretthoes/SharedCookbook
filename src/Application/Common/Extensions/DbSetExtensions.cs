@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Application.Common.Extensions;
 
-public static class EfFindExtensions
+public static class DbSetExtensions
 {
     public static async Task<TEntity> FindOrThrowAsync<TEntity>(this DbSet<TEntity> set,
         object id,
