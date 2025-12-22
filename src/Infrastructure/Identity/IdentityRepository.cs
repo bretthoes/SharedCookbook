@@ -26,8 +26,8 @@ namespace SharedCookbook.Infrastructure.Identity;
 /// AspNetUsers should be handled exclusively by Identity services provided
 /// by ASP.NET.
 /// </remarks>
-public class IdentityUserRepository(ApplicationDbContext context, IUser user, IOptions<ImageUploadOptions> options)
-    : IIdentityUserRepository
+public class IdentityRepository(ApplicationDbContext context, IUser user, IOptions<ImageUploadOptions> options)
+    : IIdentityRepository
 {
     public Task<PaginatedList<MembershipDto>> GetMemberships(
         GetMembershipsWithPaginationQuery query,

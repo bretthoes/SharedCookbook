@@ -8,7 +8,7 @@ public sealed record GetInvitationsWithPaginationQuery(
     int PageSize = 10)
     : IRequest<PaginatedList<InvitationDto>>;
 
-public sealed class GetInvitationsWithPaginationQueryHandler(IIdentityUserRepository repository)
+public sealed class GetInvitationsWithPaginationQueryHandler(IIdentityRepository repository)
     : IRequestHandler<GetInvitationsWithPaginationQuery, PaginatedList<InvitationDto>>
 {
     public Task<PaginatedList<InvitationDto>> Handle(GetInvitationsWithPaginationQuery query, CancellationToken token)

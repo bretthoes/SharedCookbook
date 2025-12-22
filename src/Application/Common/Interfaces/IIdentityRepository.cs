@@ -4,7 +4,7 @@ using SharedCookbook.Application.Memberships.Queries.GetMembershipsWithPaginatio
 
 namespace SharedCookbook.Application.Common.Interfaces;
 
-public interface IIdentityUserRepository
+public interface IIdentityRepository
 {
     Task<PaginatedList<MembershipDto>> GetMemberships(
         GetMembershipsWithPaginationQuery query,
