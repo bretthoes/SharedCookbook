@@ -2,40 +2,30 @@
 
 public static class MembershipQueryExtensions
 {
-    public static IQueryable<CookbookMembership> HasCookbookId(
-        this IQueryable<CookbookMembership> query, int cookbookId) =>
-        query.Where(membership => membership.CookbookId == cookbookId);
+    extension(IQueryable<CookbookMembership> query)
+    {
+        public IQueryable<CookbookMembership> HasCookbookId(int cookbookId) =>
+            query.Where(membership => membership.CookbookId == cookbookId);
+
+        public Task<bool> ExistsFor(int cookbookId,
+            string userId,
+            CancellationToken cancellationToken) 
+            => query.HasCookbookId(cookbookId).ForUserId(userId).AsNoTracking().AnyAsync(cancellationToken);
+
+        public IQueryable<CookbookMembership> ForUserId(string userId) =>
+            query.Where(membership => membership.CreatedBy == userId);
+
+        public IQueryable<CookbookMembership> OwnersForCookbookExcept(int cookbookId, int exceptMembershipId) =>
+            query.AsTracking().HasCookbookId(cookbookId).IsOwner().ExcludingId(exceptMembershipId);
+
+        private IQueryable<CookbookMembership> IsOwner() =>
+            query.Where(membership => membership.IsOwner);
+
+        private IQueryable<CookbookMembership> ExcludingId(int id) =>
+            query.Where(membership => membership.Id != id);
+    }
 
     public static IQueryable<MembershipDto> OrderByName(
         this IQueryable<MembershipDto> query)
         => query.OrderByDescending(dto => dto.Name);
-    
-    public static Task<bool> ExistsFor(
-        this IQueryable<CookbookMembership> query,
-        int cookbookId,
-        string userId,
-        CancellationToken cancellationToken) 
-        => query.HasCookbookId(cookbookId).ForUserId(userId).AsNoTracking().AnyAsync(cancellationToken);
-    
-    public static IQueryable<CookbookMembership> ForUserId(
-        this IQueryable<CookbookMembership> query, string userId) =>
-        query.Where(membership => membership.CreatedBy == userId);
-    
-    public static Task<bool> IsMember(
-        this IQueryable<CookbookMembership> memberships,
-        int cookbookId,
-        string personId,
-        CancellationToken token = default)
-        => memberships
-            .AnyAsync(membership => membership.CookbookId == cookbookId && membership.CreatedBy == personId, token);
-    
-    public static IQueryable<CookbookMembership> OwnersForCookbookExcept(
-        this IQueryable<CookbookMembership> q, int cookbookId, int exceptMembershipId) =>
-        q.AsTracking().HasCookbookId(cookbookId).IsOwner().ExcludingId(exceptMembershipId);
-    
-    private static IQueryable<CookbookMembership> IsOwner(this IQueryable<CookbookMembership> q) =>
-        q.Where(membership => membership.IsOwner);
-
-    private static IQueryable<CookbookMembership> ExcludingId(this IQueryable<CookbookMembership> q, int id) =>
-        q.Where(membership => membership.Id != id);
 }

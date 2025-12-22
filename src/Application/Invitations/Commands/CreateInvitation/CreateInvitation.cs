@@ -14,7 +14,7 @@ public sealed class CreateInvitationCommandHandler(
         string recipientId = await identityService.GetIdByEmailAsync(email)
             ?? throw new NotFoundException(key: email, nameof(IUser));
 
-        if (await context.CookbookMemberships.IsMember(command.CookbookId, recipientId, token))
+        if (await context.CookbookMemberships.ExistsFor(command.CookbookId, recipientId, token))
             throw new MembershipAlreadyExistsException(command.CookbookId, recipientId);
 
         if (await context.CookbookInvitations.HasActiveInvite(command.CookbookId, recipientId, token))
