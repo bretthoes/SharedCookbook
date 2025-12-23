@@ -4,6 +4,8 @@ namespace SharedCookbook.Domain.Entities;
 
 public sealed class InvitationToken : BaseInvitation
 {
+    private const int TwoWeeksAgo = -14;
+    
     public required Guid PublicId { get; init; }
     
     public string? RedeemerPersonId { get; init; }
@@ -12,7 +14,7 @@ public sealed class InvitationToken : BaseInvitation
 
     public bool IsRedeemable => IsActive && !IsExpired;
 
-    private bool IsExpired => Created <= DateTimeOffset.UtcNow.AddDays(-14) || Created >= DateTimeOffset.UtcNow; 
+    private bool IsExpired => Created <= DateTimeOffset.UtcNow.AddDays(TwoWeeksAgo) || Created >= DateTimeOffset.UtcNow; 
     
     public static InvitationToken IssueNewToken(TokenDigest digest, int cookbookId)
     {

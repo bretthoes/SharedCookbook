@@ -7,7 +7,7 @@ internal static class GetRecipesDbQuery
 {
     extension(IQueryable<Recipe> query)
     {
-        public Task<PaginatedList<RecipeBriefDto>> QueryBriefDtos(int cookbookId,
+        internal Task<PaginatedList<RecipeBriefDto>> QueryBriefDtos(int cookbookId,
             int pageNumber,
             int pageSize,
             CancellationToken cancellationToken)

@@ -2,10 +2,9 @@
 
 internal static class RecipeIngredientMapping
 {
-    extension(IEnumerable<RecipeIngredient> ingredients)
+    extension (IEnumerable<RecipeIngredient> ingredients)
     {
-        internal IEnumerable<RecipeIngredient> Order() => ingredients.OrderBy(ingredient => ingredient.Ordinal);
-        internal List<RecipeIngredientDto> ToDtos() => ingredients.Select(ToDto).ToList();
+        internal IEnumerable<RecipeIngredientDto> ToDtos() => ingredients.Select(ToDto);
     }
 
     private static readonly Func<RecipeIngredient, RecipeIngredientDto> ToDto =

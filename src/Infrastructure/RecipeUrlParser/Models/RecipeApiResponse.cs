@@ -7,20 +7,20 @@ namespace SharedCookbook.Infrastructure.RecipeUrlParser.Models;
 // This class exists to deserialize response from Spoonacular.
 // See below for more info:
 // https://spoonacular.com/food-api/docs#Extract-Recipe-from-Website
-public class RecipeApiResponse
+internal class RecipeApiResponse
 {
-    public string? Title { get; set; }
-    public string? Summary { get; set; }
-    public string? Image { get; set; }
-    public int? Servings { get; set; }
-    public List<Ingredient>? ExtendedIngredients { get; set; }
-    public string? Instructions { get; set; }
-    public int? PreparationMinutes { get; set; }
-    public int? CookingMinutes { get; set; }
+    internal string? Title { get; set; }
+    internal string? Summary { get; set; }
+    internal string? Image { get; set; }
+    internal int? Servings { get; set; }
+    internal List<Ingredient>? ExtendedIngredients { get; set; }
+    internal string? Instructions { get; set; }
+    internal int? PreparationMinutes { get; set; }
+    internal int? CookingMinutes { get; set; }
 
-    public bool HasImage() => Image is not null && Image.IsValidUrl();
+    internal bool HasImage() => Image is not null && Image.IsValidUrl();
 
-    public CreateRecipeDto ToDto() => new()
+    internal CreateRecipeDto ToDto() => new()
     {
         Title = Title?.Truncate(Recipe.Constraints.TitleMaxLength) ?? "",
         Images = string.IsNullOrWhiteSpace(Image)

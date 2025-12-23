@@ -4,9 +4,8 @@ internal static class RecipeImageMapping
 {
     extension(IEnumerable<RecipeImage> images)
     {
-        internal IEnumerable<RecipeImage> Order() => images.OrderBy(image => image.Ordinal);
-        internal List<RecipeImageDto> ToDtos(string imageBaseUrl) =>
-            images.Select(image => ToDto(image, imageBaseUrl)).ToList();
+        internal IEnumerable<RecipeImageDto> ToDtos(string imageBaseUrl) =>
+            images.Select(image => ToDto(image, imageBaseUrl));
     }
 
     private static readonly Func<RecipeImage, string, RecipeImageDto> ToDto =

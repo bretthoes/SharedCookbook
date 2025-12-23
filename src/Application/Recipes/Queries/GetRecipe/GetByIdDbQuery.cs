@@ -3,16 +3,14 @@ using SharedCookbook.Application.Common.Mappings;
 
 namespace SharedCookbook.Application.Recipes.Queries.GetRecipe;
 
-internal static class GetRecipeDbQuery
+internal static class GetByIdDbQuery
 {
     extension(IQueryable<Recipe> query)
     {
-        internal async Task<RecipeDetailedDto?> QueryDetailedDto(int id,
-            string imageBaseUrl,
-            CancellationToken cancellationToken) =>
-            await query.Select(ToDetailedDto(imageBaseUrl))
-                .Where(dto => dto.Id == id)
-                .SingleOrDefaultAsync(cancellationToken);
+        internal async Task<RecipeDetailedDto?> QueryDetailedDto(int id, string imageBaseUrl, CancellationToken ct) =>
+            await query.Where(recipe => recipe.Id == id)
+                .Select(ToDetailedDto(imageBaseUrl))
+                .SingleOrDefaultAsync(ct);
     }
 
     private static Expression<Func<Recipe, RecipeDetailedDto>> ToDetailedDto(string imageBaseUrl) =>
@@ -27,9 +25,9 @@ internal static class GetRecipeDbQuery
             CookingTimeInMinutes = recipe.CookingTimeInMinutes,
             BakingTimeInMinutes = recipe.BakingTimeInMinutes,
             Servings = recipe.Servings,
-            Directions = recipe.Directions.Order().ToDtos(),
-            Images = recipe.Images.Order().ToDtos(imageBaseUrl),
-            Ingredients = recipe.Ingredients.Order().ToDtos(),
+            Directions = recipe.Directions.ToDtos().ToList(),
+            Images = recipe.Images.ToDtos(imageBaseUrl).ToList(),
+            Ingredients = recipe.Ingredients.ToDtos().ToList(),
             IsVegan = recipe.IsVegan,
             IsVegetarian = recipe.IsVegetarian,
             IsCheap = recipe.IsCheap,
