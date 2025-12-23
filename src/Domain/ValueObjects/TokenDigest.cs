@@ -5,6 +5,7 @@ public sealed class TokenDigest : ValueObject
     public const int HashLength = 32; // SHA-256
     public const int SaltLength = 16; // 128-bit salt
 
+    // TODO this is still mutable publicly; expose these through a ReadOnlySpan
     public byte[] Hash { get; }
     public byte[] Salt { get; }
 
@@ -22,6 +23,7 @@ public sealed class TokenDigest : ValueObject
         Salt.AsSpan().SequenceEqual(other.Salt);
 
     public override bool Equals(object? o) => Equals(o as TokenDigest);
+
     public override int GetHashCode() => HashCode.Combine(
         HashCode.Combine(Hash.Length, Hash[0], Hash[^1]),
         HashCode.Combine(Salt.Length, Salt[0], Salt[^1]));
