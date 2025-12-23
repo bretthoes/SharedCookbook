@@ -16,7 +16,7 @@ public sealed class CookbookMembership : BaseAuditableEntity
     {
         if (IsOwner) return;
         IsOwner = true;
-        Permissions = Permissions.Owner;
+        SetPermissions(Permissions.Owner);
         AddDomainEvent(new PromotedToOwnerEvent(Id, CookbookId));
     }
 
