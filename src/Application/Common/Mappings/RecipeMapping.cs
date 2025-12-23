@@ -1,19 +1,10 @@
 using System.Linq.Expressions;
-using SharedCookbook.Application.Common.Mappings;
 
-namespace SharedCookbook.Application.Recipes.Queries.GetRecipe;
+namespace SharedCookbook.Application.Common.Mappings;
 
-internal static class GetByIdDbQuery
+internal static class RecipeMapping
 {
-    extension(IQueryable<Recipe> query)
-    {
-        internal async Task<RecipeDetailedDto?> QueryDetailedDto(int id, string imageBaseUrl, CancellationToken ct) =>
-            await query.Where(recipe => recipe.Id == id)
-                .Select(ToDetailedDto(imageBaseUrl))
-                .SingleOrDefaultAsync(ct);
-    }
-
-    private static Expression<Func<Recipe, RecipeDetailedDto>> ToDetailedDto(string imageBaseUrl) =>
+    internal static Expression<Func<Recipe, RecipeDetailedDto>> ToDetailedDto(string imageBaseUrl) =>
         recipe => new RecipeDetailedDto
         {
             Id = recipe.Id,

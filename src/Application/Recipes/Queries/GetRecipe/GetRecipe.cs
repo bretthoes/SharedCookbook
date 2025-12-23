@@ -16,7 +16,7 @@ public sealed class GetRecipeQueryHandler(
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
 
-        var dto = await context.Recipes.QueryDetailedDto(request.Id, options.Value.ImageBaseUrl, token)
+        var dto = await context.Recipes.GetDetailedDtoById(request.Id, options.Value.ImageBaseUrl, token)
             ?? throw new NotFoundException(key: request.Id.ToString(), nameof(Recipe));
 
         (string? email, string? name) = await identityService.FindByIdAsync(user.Id)
