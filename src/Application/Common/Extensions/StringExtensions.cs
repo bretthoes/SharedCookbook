@@ -7,21 +7,27 @@ public static class StringExtensions
     private static readonly Regex ReplaceWithSpacesRegex = new(@"\s+", RegexOptions.Compiled);
     private static readonly Regex HtmlTagRegex = new("<.*?>", RegexOptions.Compiled);
 
-    public static bool IsValidUrl(this string url) =>
-        Uri.TryCreate(url, UriKind.Absolute, out var uri) &&
-        (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+    extension(string input)
+    {
+        public bool IsValidUrl() =>
+            Uri.TryCreate(input.Trim(), UriKind.Absolute, out var uri) &&
+            (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
 
-    public static bool HasValidImageExtension(this string fileName) =>
-        ImageUtilities.AllowedExtensions.Contains(Path.GetExtension(fileName).ToLowerInvariant());
+        public bool HasValidImageExtension() =>
+            ImageUtilities.AllowedExtensions.Contains(Path.GetExtension(input).ToLowerInvariant());
 
-    public static string RemoveHtml(this string html) =>
-        ReplaceWithSpacesRegex
-            .Replace(HtmlTagRegex.Replace(html, string.Empty), " ")
-            .Trim();
+        public string RemoveHtml() =>
+            ReplaceWithSpacesRegex
+                .Replace(HtmlTagRegex.Replace(input, string.Empty), " ")
+                .Trim();
 
-    public static string Truncate(this string input, int maxLength) =>
-        input.Length <= maxLength ? input : input[..maxLength];    
-    
-    public static string PrefixIfNotEmpty(this string? path, string prefix)
-        => string.IsNullOrWhiteSpace(path) ? "" : prefix + path;
+        public string Truncate(int maxLength) =>
+            input.Length <= maxLength ? input : input[..maxLength];
+    }
+
+    extension(string? input)
+    {
+        public string PrefixIfNotEmpty(string prefix)
+            => string.IsNullOrWhiteSpace(input) ? "" : prefix + input;
+    }
 }
