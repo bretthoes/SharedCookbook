@@ -38,7 +38,6 @@ dotnet test
 - [MediatR](https://github.com/jbogard/MediatR)
 - [FluentValidation](https://fluentvalidation.net/)
 - [NUnit](https://nunit.org/)
-- [FluentAssertions](https://fluentassertions.com/)
 - [Moq](https://github.com/moq/moq4)
 - [Respawn](https://github.com/jbogard/Respawn)
 
