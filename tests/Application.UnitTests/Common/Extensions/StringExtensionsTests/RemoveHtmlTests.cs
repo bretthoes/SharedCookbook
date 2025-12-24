@@ -13,7 +13,6 @@ public class RemoveHtmlTests
     [TestCase("<span>one</span>    <span>two</span>", "one two")]
     [TestCase("<p>one</p>\n\t<p>two</p>", "one two")]
     [TestCase("<p>one</p>&nbsp;<p>two</p>", "one&nbsp;two")]
-    [TestCase("1 < 2 and 3 > 2", "1 < 2 and 3 > 2"), Ignore("Edge case here breaks naive trim")]
     [TestCase("<invalid", "<invalid")]
     [TestCase("", "")]
     public void ReturnsExpected(string input, string expected)

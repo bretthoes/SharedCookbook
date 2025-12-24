@@ -8,7 +8,6 @@ public class UpdateCookbookCommandValidator : AbstractValidator<UpdateCookbookCo
             .GreaterThan(0)
             .WithMessage("Id must be greater than zero.");
         RuleFor(command => command.Title)
-            .MinimumLength(Cookbook.Constraints.TitleMinLength)
             .MaximumLength(Cookbook.Constraints.TitleMaxLength)
             .NotEmpty()
             .NotNull();
