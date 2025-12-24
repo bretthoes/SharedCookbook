@@ -51,6 +51,6 @@ public sealed class Cookbook : BaseAuditableEntity
     public struct Constraints
     {
         public const int TitleMaxLength = 255;
-        public const int ImageMaxLength = 255;
+        public const int ImageMaxLength = 2048;
     }
 }

@@ -5,6 +5,7 @@ namespace SharedCookbook.Domain.UnitTests.Entities;
 public class CookbookTests
 {
     private static string AnyNonEmptyString() => "value";
+    private static char AnyNonEmptyChar() => 'x';
     
     [Test]
     public void CreatedCookbookShouldHaveOwner()
@@ -56,7 +57,7 @@ public class CookbookTests
     [Test]
     public void TitleExceedingConstraintShouldThrow()
     {
-        string veryLongString = new(c: 'x', count: Cookbook.Constraints.TitleMaxLength + 1);
+        string veryLongString = new(c: AnyNonEmptyChar(), count: Cookbook.Constraints.TitleMaxLength + 1);
         Assert.Throws<ArgumentOutOfRangeException>(
             () => Cookbook.Create(title: veryLongString, It.IsAny<string>()));
     }
@@ -77,7 +78,7 @@ public class CookbookTests
     [Test]
     public void ImageExceedingConstraintShouldThrow()
     {
-        string veryLongString = new('x', Cookbook.Constraints.ImageMaxLength + 1);
+        string veryLongString = new(c: AnyNonEmptyChar(), count: Cookbook.Constraints.ImageMaxLength + 1);
 
         Assert.Throws<ArgumentOutOfRangeException>(
             () => Cookbook.Create(title: AnyNonEmptyString(), It.IsAny<string>(), image: veryLongString));
