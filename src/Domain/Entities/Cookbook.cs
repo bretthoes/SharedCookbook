@@ -2,9 +2,29 @@
 
 public sealed class Cookbook : BaseAuditableEntity
 {
-    public required string Title { get; set; }
+    public required string Title
+    {
+        get;
+        set
+        {
+            ArgumentOutOfRangeException.ThrowIfNullOrWhiteSpace(value);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(value.Length, Constraints.TitleMaxLength, value);
 
-    public string? Image { get; set; }
+            field = value;
+        }
+    }
+
+    public string? Image
+    {
+        get;
+        set
+        {
+            if (value is not null)
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(value.Length, Constraints.ImageMaxLength, value);
+            
+            field = value;
+        }
+    }
 
     public IReadOnlyCollection<CookbookInvitation> Invitations { get; init; } = [];
     
@@ -32,7 +52,6 @@ public sealed class Cookbook : BaseAuditableEntity
     
     public struct Constraints
     {
-        public const int TitleMinLength = 1;
         public const int TitleMaxLength = 255;
         public const int ImageMaxLength = 255;
     }

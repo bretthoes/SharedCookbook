@@ -2,7 +2,15 @@
 
 public sealed class IngredientCategory : BaseAuditableEntity
 {
-    public required string Title { get; init; }
+    public required string Title
+    {
+        get;
+        init
+        {
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(value.Length, Constraints.TitleMaxLength, value);
+            field = value;
+        }
+    }
 
     public required int RecipeId { get; init; }
 

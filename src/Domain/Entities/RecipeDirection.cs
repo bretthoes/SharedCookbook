@@ -2,14 +2,40 @@
 
 public sealed class RecipeDirection : BaseAuditableEntity
 {
-    public int RecipeId { get; set; }
+    public int RecipeId { get; init; }
 
-    public required string Text { get; set; }
+    public required string Text
+    {
+        get;
+        init
+        {
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(value.Length, Constraints.TextMaxLength, value);
+            field = value;
+        }
+    }
 
-    public required int Ordinal { get; set; }
+    public required int Ordinal
+    {
+        get;
+        init
+        {
+            ArgumentOutOfRangeException.ThrowIfNegative(value);
+            field = value;
+        }
+    }
 
-    public string? Image { get; set; }
-    
+    public string? Image
+    {
+        get;
+        init
+        {
+            if (value is not null)
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(value.Length,Constraints.TextMaxLength, value);
+
+            field = value;
+        }
+    }
+
     public struct Constraints
     {
         public const int TextMaxLength = 2048;
