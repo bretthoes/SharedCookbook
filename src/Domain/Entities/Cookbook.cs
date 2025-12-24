@@ -28,8 +28,6 @@ public sealed class Cookbook : BaseAuditableEntity
 
     public IReadOnlyCollection<CookbookInvitation> Invitations { get; init; } = [];
     
-    public IReadOnlyCollection<InvitationToken> Tokens { get; init; } = [];
-
     public ICollection<CookbookMembership> Memberships { get; init; } = [];
 
     public IReadOnlyCollection<CookbookNotification> Notifications { get; init; } = [];

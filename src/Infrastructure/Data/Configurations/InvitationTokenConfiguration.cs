@@ -42,7 +42,7 @@ public class InvitationTokenConfiguration : IEntityTypeConfiguration<InvitationT
             .HasColumnName("response_date");
 
         builder.HasOne(invitation => invitation.Cookbook)
-            .WithMany(cookbook => cookbook.Tokens)
+            .WithMany()
             .HasForeignKey(invitation => invitation.CookbookId)
             .HasConstraintName("FK_invitation_token__cookbook_id");
         builder.HasOne<Identity.ApplicationUser>()
