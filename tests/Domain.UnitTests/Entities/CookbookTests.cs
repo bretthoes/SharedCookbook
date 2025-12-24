@@ -52,4 +52,34 @@ public class CookbookTests
         
         Assert.That(actual.Memberships, Is.Empty);
     }
+
+    [Test]
+    public void TitleExceedingConstraintShouldThrow()
+    {
+        string veryLongString = new(c: 'x', count: Cookbook.Constraints.TitleMaxLength + 1);
+        Assert.Throws<ArgumentOutOfRangeException>(
+            () => Cookbook.Create(title: veryLongString, It.IsAny<string>()));
+    }
+
+    [TestCase("")]
+    [TestCase(" ")]
+    public void EmptyTitleShouldThrow(string title)
+    {
+        Assert.Throws<ArgumentException>(() => Cookbook.Create(title, It.IsAny<string>()));
+    }
+
+    [Test]
+    public void NullTitleShouldThrow()
+    {
+        Assert.Throws<ArgumentNullException>(() => Cookbook.Create(null!, It.IsAny<string>()));
+    }
+
+    [Test]
+    public void ImageExceedingConstraintShouldThrow()
+    {
+        string veryLongString = new('x', Cookbook.Constraints.ImageMaxLength + 1);
+
+        Assert.Throws<ArgumentOutOfRangeException>(
+            () => Cookbook.Create(title: AnyNonEmptyString(), It.IsAny<string>(), image: veryLongString));
+    }
 }

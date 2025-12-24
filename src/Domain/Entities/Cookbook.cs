@@ -7,7 +7,7 @@ public sealed class Cookbook : BaseAuditableEntity
         get;
         set
         {
-            ArgumentOutOfRangeException.ThrowIfNullOrWhiteSpace(value);
+            ArgumentException.ThrowIfNullOrWhiteSpace(value);
             ArgumentOutOfRangeException.ThrowIfGreaterThan(value.Length, Constraints.TitleMaxLength, value);
 
             field = value;
