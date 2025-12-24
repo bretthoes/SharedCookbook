@@ -28,7 +28,7 @@ public class IngredientCategoryConfiguration : IEntityTypeConfiguration<Ingredie
             .IsRequired();
 
         builder.HasOne<Recipe>()
-            .WithMany(recipe => recipe.IngredientCategories)
+            .WithMany()
             .HasForeignKey(category => category.RecipeId)
             .HasConstraintName("FK_ingredient_category__recipe_id")
             .IsRequired();

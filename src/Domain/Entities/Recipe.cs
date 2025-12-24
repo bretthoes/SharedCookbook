@@ -38,10 +38,6 @@ public sealed class Recipe : BaseAuditableEntity
 
     public RecipeNutrition? Nutrition { get; init; }
 
-    public IReadOnlyCollection<CookbookNotification> CookbookNotifications { get; init; } = [];
-
-    public ICollection<IngredientCategory> IngredientCategories { get; init; } = [];
-
     public ICollection<RecipeDirection> Directions { get; init; } = [];
 
     public ICollection<RecipeIngredient> Ingredients { get; init; } = [];

@@ -54,11 +54,11 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
             .WithMany()
             .HasForeignKey(recipe => recipe.CreatedBy)
             .HasConstraintName("FK_recipe__created_by");
-        builder.HasMany(recipe => recipe.CookbookNotifications)
+        builder.HasMany<CookbookNotification>()
             .WithOne(cn => cn.Recipe)
             .HasForeignKey(cn => cn.RecipeId)
             .HasConstraintName("FK_cookbook_notification__recipe_id");
-        builder.HasMany(recipe => recipe.IngredientCategories)
+        builder.HasMany<IngredientCategory>()
             .WithOne()
             .HasForeignKey(category => category.RecipeId)
             .HasConstraintName("FK_ingredient_category__recipe_id");

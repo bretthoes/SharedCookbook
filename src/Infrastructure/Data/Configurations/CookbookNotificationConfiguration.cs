@@ -45,7 +45,7 @@ public class CookbookNotificationConfiguration : IEntityTypeConfiguration<Cookbo
             .HasForeignKey(notification => notification.CookbookId)
             .HasConstraintName("FK_cookbook_notification__cookbook_id");
         builder.HasOne(notification => notification.Recipe)
-            .WithMany(recipe => recipe.CookbookNotifications)
+            .WithMany()
             .HasForeignKey(notification => notification.RecipeId)
             .HasConstraintName("FK_cookbook_notification__recipe_id");
         builder.HasOne<ApplicationUser>()

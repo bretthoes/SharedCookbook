@@ -12,7 +12,6 @@ public sealed class UpdateRecipeCommandHandler(IApplicationDbContext context)
                          .Include(navigationPropertyPath: recipe => recipe.Directions)
                          .Include(navigationPropertyPath: recipe => recipe.Images)
                          .Include(navigationPropertyPath: recipe => recipe.Nutrition)
-                         .Include(navigationPropertyPath: recipe => recipe.IngredientCategories)
                          .FirstOrDefaultAsync(recipe => recipe.Id == command.Recipe.Id, cancellationToken)
                      ?? throw new NotFoundException(key: command.Recipe.Id.ToString(), nameof(Recipe));
 
