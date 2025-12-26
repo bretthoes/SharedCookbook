@@ -1,4 +1,6 @@
-﻿namespace SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
+﻿using SharedCookbook.Application.Common.Mappings;
+
+namespace SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
 
 public sealed record UpdateRecipeCommand(UpdateRecipeDto Recipe) : IRequest<int>;
 
@@ -25,10 +27,9 @@ public sealed class UpdateRecipeCommandHandler(IApplicationDbContext context)
         recipe.BakingTimeInMinutes = command.Recipe.BakingTimeInMinutes;
         recipe.Servings = command.Recipe.Servings;
 
-        // Update collections
-        UpdateCollection(recipe.Ingredients, newCollection: command.Recipe.Ingredients.ToEntities());
-        UpdateCollection(recipe.Directions, newCollection: command.Recipe.Directions.ToEntities());
-        UpdateCollection(recipe.Images, newCollection: command.Recipe.Images.ToEntities());
+        ReplaceCollection(recipe.Ingredients, newCollection: command.Recipe.Ingredients.ToEntities());
+        ReplaceCollection(recipe.Directions, newCollection: command.Recipe.Directions.ToEntities());
+        ReplaceCollection(recipe.Images, newCollection: command.Recipe.Images.ToEntities());
 
         recipe.AddDomainEvent(new RecipeUpdatedEvent(recipe.Id));
 
@@ -38,7 +39,7 @@ public sealed class UpdateRecipeCommandHandler(IApplicationDbContext context)
     }
 
     // TODO find out if this is necessary. Can we replace a collection in EF Core without having to load it in memory?
-    private static void UpdateCollection<T>(ICollection<T> existingCollection, IEnumerable<T> newCollection)
+    private static void ReplaceCollection<T>(ICollection<T> existingCollection, IEnumerable<T> newCollection)
         where T : class
     {
         existingCollection.Clear();
