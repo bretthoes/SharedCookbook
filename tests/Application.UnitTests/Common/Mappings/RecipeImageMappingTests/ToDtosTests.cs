@@ -2,9 +2,9 @@ using SharedCookbook.Application.Common.Mappings;
 using SharedCookbook.Application.Contracts;
 using SharedCookbook.Domain.Entities;
 
-namespace SharedCookbook.Application.UnitTests.Common.Mappings;
+namespace SharedCookbook.Application.UnitTests.Common.Mappings.RecipeImageMappingTests;
 
-public class RecipeImageMappingTests
+public class ToDtosTests
 {
     private const int ExpectedId = 1;
     private const int ExpectedOrdinal = 2;
