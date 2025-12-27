@@ -2,26 +2,26 @@ using SharedCookbook.Application.Common.Mappings;
 using SharedCookbook.Application.Contracts;
 using SharedCookbook.Domain.Entities;
 
-namespace SharedCookbook.Application.UnitTests.Common.Mappings;
+namespace SharedCookbook.Application.UnitTests.Common.Mappings.RecipeIngredientMappingTests;
 
-public class RecipeIngredientMappingTests
+public class ToEntitiesTests
 {
     private const int ExpectedId = 1;
     private const int ExpectedOrdinal = 2;
     private const string ExpectedName = "TestIngredientName";
     private const bool ExpectedOptional = true;
 
-    private RecipeIngredientDto _actual = null!;
+    private RecipeIngredient _actual = null!;
 
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
-        var sut = new List<RecipeIngredient>
+        var sut = new List<RecipeIngredientDto>
         {
             new() { Id = ExpectedId, Name = ExpectedName, Ordinal = ExpectedOrdinal, Optional = ExpectedOptional }
         };
 
-        _actual = sut.ToDtos().Single();
+        _actual = sut.ToEntities().Single();
     }
 
     [Test]
@@ -39,7 +39,7 @@ public class RecipeIngredientMappingTests
     [Test]
     public void EmptyCollectionReturnsEmpty()
     {
-        var actual = new List<RecipeIngredient>().ToDtos();
+        var actual = new List<RecipeIngredientDto>().ToEntities();
 
         Assert.That(actual, Is.Empty);
     }
