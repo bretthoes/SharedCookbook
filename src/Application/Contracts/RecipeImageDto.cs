@@ -1,6 +1,5 @@
 ﻿namespace SharedCookbook.Application.Contracts;
 
-// TODO move all projection logic elsewhere
 public sealed record RecipeImageDto
 {
     public int Id { get; init; }
@@ -8,13 +7,4 @@ public sealed record RecipeImageDto
     public required string Name { get; init; }
 
     public required int Ordinal { get; init; }
-
-    public RecipeImage ToEntity() => new() { Name = Name, Ordinal = Ordinal };
-}
-
-public static partial class Extensions
-{
-    public static IEnumerable<RecipeImage> ToEntities(
-        this IEnumerable<RecipeImageDto> recipeImages)
-        => recipeImages.Select(image => image.ToEntity());
 }
