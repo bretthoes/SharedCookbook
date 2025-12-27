@@ -2,7 +2,7 @@
 
 internal static class RecipeIngredientMapping
 {
-    extension (IEnumerable<RecipeIngredient> ingredients)
+    extension(IEnumerable<RecipeIngredient> ingredients)
     {
         internal IEnumerable<RecipeIngredientDto> ToDtos() => ingredients.Select(ToDto);
     }

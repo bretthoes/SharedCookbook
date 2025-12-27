@@ -7,6 +7,14 @@ internal static class RecipeDirectionMapping
         internal IEnumerable<RecipeDirectionDto> ToDtos() => directions.Select(ToDto);
     }
 
+    extension(IEnumerable<RecipeDirectionDto> dtos)
+    {
+        internal IEnumerable<RecipeDirection> ToEntities() => dtos.Select(ToEntity);
+    }
+
+    private static readonly Func<RecipeDirectionDto, RecipeDirection> ToEntity =
+        dto => new RecipeDirection { Id = dto.Id, Text = dto.Text, Ordinal = dto.Ordinal, Image = dto.Image };
+
     private static readonly Func<RecipeDirection, RecipeDirectionDto> ToDto =
         direction => new RecipeDirectionDto
         {
