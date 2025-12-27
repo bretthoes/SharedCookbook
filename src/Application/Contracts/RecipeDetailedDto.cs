@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Application.Contracts;
 
-public class RecipeDetailedDto
+public sealed class RecipeDetailedDto
 {
     public required int Id { get; init; }
 
@@ -12,9 +12,9 @@ public class RecipeDetailedDto
     
     public string? Summary { get; init; }
 
-    public string? Thumbnail { get; init; }
+    public string? Thumbnail { get; }
 
-    public string? VideoPath { get; init; }
+    public string? VideoPath { get; }
 
     public int? PreparationTimeInMinutes { get; init; }
 
@@ -38,9 +38,9 @@ public class RecipeDetailedDto
     
     public bool? IsLowFodmap { get; set; }
 
-    public virtual IReadOnlyCollection<RecipeDirectionDto> Directions { get; init; } = [];
+    public IReadOnlyCollection<RecipeDirectionDto> Directions { get; init; } = [];
 
-    public virtual IReadOnlyCollection<RecipeImageDto> Images { get; init; } = [];
+    public IReadOnlyCollection<RecipeImageDto> Images { get; init; } = [];
 
-    public virtual IReadOnlyCollection<RecipeIngredientDto> Ingredients { get; init; } = [];
+    public IReadOnlyCollection<RecipeIngredientDto> Ingredients { get; init; } = [];
 }

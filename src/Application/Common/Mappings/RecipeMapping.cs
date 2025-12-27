@@ -10,8 +10,6 @@ internal static class RecipeMapping
             Id = recipe.Id,
             Title = recipe.Title,
             Summary = recipe.Summary,
-            Thumbnail = recipe.Thumbnail.PrefixIfNotEmpty(imageBaseUrl),
-            VideoPath = recipe.VideoPath.PrefixIfNotEmpty(imageBaseUrl),
             PreparationTimeInMinutes = recipe.PreparationTimeInMinutes,
             CookingTimeInMinutes = recipe.CookingTimeInMinutes,
             BakingTimeInMinutes = recipe.BakingTimeInMinutes,

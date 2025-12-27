@@ -14,8 +14,6 @@ public sealed class CreateRecipeCommandHandler(IApplicationDbContext context) : 
             Title = command.Recipe.Title,
             CookbookId = command.Recipe.CookbookId,
             Summary = command.Recipe.Summary,
-            Thumbnail = command.Recipe.Thumbnail, // TODO grab first image, compress, and set here. Same for update (if it changes)
-            VideoPath = command.Recipe.VideoPath,
             PreparationTimeInMinutes = command.Recipe.PreparationTimeInMinutes,
             CookingTimeInMinutes = command.Recipe.CookingTimeInMinutes,
             BakingTimeInMinutes = command.Recipe.BakingTimeInMinutes,
