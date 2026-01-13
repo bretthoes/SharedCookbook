@@ -1,6 +1,6 @@
 using SharedCookbook.Application.Common.Extensions;
 
-namespace SharedCookbook.Application.UnitTests.Common.Extensions;
+namespace SharedCookbook.Application.UnitTests.Common.Extensions.StringExtensionsTests;
 
 public class IsValidUrlTests
 {

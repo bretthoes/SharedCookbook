@@ -1,7 +1,7 @@
 using SharedCookbook.Domain.Entities;
 using SharedCookbook.Domain.ValueObjects;
 
-namespace SharedCookbook.Domain.UnitTests.Entities;
+namespace SharedCookbook.Domain.UnitTests.Entities.CookbookMembershipTests;
 
 public class WhenNewOwner
 {
@@ -37,8 +37,6 @@ public class WhenNewOwner
     [Test]
     public void AndDemotedThenShouldNotBeOwner()
     {
-        var expected = Permissions.Contributor;
-        
         _actual.Demote();
         
         Assert.That(_actual.IsOwner, Is.False);

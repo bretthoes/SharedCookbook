@@ -1,7 +1,7 @@
 using SharedCookbook.Domain.Entities;
 using SharedCookbook.Domain.ValueObjects;
 
-namespace SharedCookbook.Domain.UnitTests.Entities;
+namespace SharedCookbook.Domain.UnitTests.Entities.CookbookMembershipTests;
 
 public class WhenNewDefault
 {

@@ -2,7 +2,7 @@ using SharedCookbook.Application.Common.Mappings;
 using SharedCookbook.Application.Contracts;
 using SharedCookbook.Domain.Entities;
 
-namespace SharedCookbook.Application.UnitTests.Common.Mappings;
+namespace SharedCookbook.Application.UnitTests.Common.Mappings.RecipeIngredientMappingTests;
 
 public class ToDtosTests
 {

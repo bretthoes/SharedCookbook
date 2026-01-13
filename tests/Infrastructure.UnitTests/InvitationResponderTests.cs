@@ -2,7 +2,7 @@ using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Domain.Entities;
 using SharedCookbook.Domain.Enums;
 
-namespace SharedCookbook.Infrastructure.IntegrationTests;
+namespace SharedCookbook.Infrastructure.UnitTests;
 
 public class InvitationResponderTests
 {
