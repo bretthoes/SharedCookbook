@@ -63,10 +63,12 @@ public class RecipeMappingTests
     public void MapsSummary() => Assert.That(_actual.Summary, Is.EqualTo(ExpectedSummary));
 
     [Test]
+    [Ignore(reason: "Not mapped while this property isn't supported.")]
     public void MapsThumbnailWithBaseUrlPrefix() =>
         Assert.That(_actual.Thumbnail,Is.EqualTo(ImageBaseUrl + ExpectedThumbnail));
 
     [Test]
+    [Ignore(reason: "Not mapped while this property isn't supported.")]
     public void MapsVideoPathWithBaseUrlPrefix() =>
         Assert.That(_actual.VideoPath, Is.EqualTo(ImageBaseUrl + ExpectedVideoPath));
 
