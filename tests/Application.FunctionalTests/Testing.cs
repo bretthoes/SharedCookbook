@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using SharedCookbook.Infrastructure.Data;
 using SharedCookbook.Infrastructure.Identity;
-using MediatR;
+using SharedCookbook.Application.Common.Mediator;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,5 +1,3 @@
-﻿using MediatR;
-
-namespace SharedCookbook.Domain.Common;
+﻿namespace SharedCookbook.Domain.Common;
 
 public abstract class BaseEvent : INotification;

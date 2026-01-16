@@ -35,7 +35,6 @@ dotnet test
 - [.NET 10](https://dotnet.microsoft.com/)
 - [ASP.NET Core](https://learn.microsoft.com/aspnet/core)
 - [Entity Framework Core 10](https://learn.microsoft.com/ef/core)
-- [MediatR](https://github.com/jbogard/MediatR)
 - [FluentValidation](https://fluentvalidation.net/)
 - [NUnit](https://nunit.org/)
 - [Moq](https://github.com/moq/moq4)

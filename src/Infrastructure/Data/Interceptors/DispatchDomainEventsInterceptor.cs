@@ -1,5 +1,5 @@
 ﻿using SharedCookbook.Domain.Common;
-using MediatR;
+using SharedCookbook.Application.Common.Mediator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using SharedCookbook.Application.Common.Extensions;

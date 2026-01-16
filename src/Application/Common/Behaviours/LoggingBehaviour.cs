@@ -1,6 +1,4 @@
-﻿using MediatR.Pipeline;
-
-namespace SharedCookbook.Application.Common.Behaviours;
+﻿namespace SharedCookbook.Application.Common.Behaviours;
 
 public class LoggingBehaviour<TRequest>(ILogger<TRequest> logger, IUser user, IIdentityService identityService)
     : IRequestPreProcessor<TRequest>
