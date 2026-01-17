@@ -28,6 +28,7 @@ public static class StringExtensions
     extension(string? input)
     {
         public string PrefixIfNotEmpty(string prefix)
-            => string.IsNullOrWhiteSpace(input) ? "" : prefix + input;
+            => string.IsNullOrWhiteSpace(input) ? input ?? string.Empty
+                : prefix + input;
     }
 }

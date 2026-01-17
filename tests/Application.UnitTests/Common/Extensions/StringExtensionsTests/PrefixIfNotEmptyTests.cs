@@ -6,8 +6,8 @@ public class PrefixIfNotEmptyTests
 {
     [TestCase(null, "x", "")]
     [TestCase("", "x", "")]
-    [TestCase("   ", "x", "")]
-    [TestCase("\t\r\n", "x", "")]
+    [TestCase("   ", "x", "   ")]
+    [TestCase("\t\r\n", "x", "\t\r\n")]
     [TestCase("a", "x", "xa")]
     [TestCase(" a ", "x", "x a ")]
     [TestCase("0", "x", "x0")]
