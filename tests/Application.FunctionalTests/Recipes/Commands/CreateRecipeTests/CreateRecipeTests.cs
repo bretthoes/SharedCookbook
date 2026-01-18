@@ -3,37 +3,12 @@ using SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
 using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 using SharedCookbook.Domain.Entities;
 
-namespace SharedCookbook.Application.FunctionalTests.Recipes.Commands;
+namespace SharedCookbook.Application.FunctionalTests.Recipes.Commands.CreateRecipeTests;
 
 using static Testing;
 
-public class CreateRecipeTests : BaseTestFixture
+public class WhenRecipeIsValid : BaseTestFixture
 {
-    [SetUp]
-    public async Task SetUp()
-    {
-        await RunAsDefaultUserAsync();
-    }
-
-    [TestCase(null!, 1)]
-    [TestCase("", 1)]
-    [TestCase("   ", 1)]
-    [TestCase("title", 0)]
-    [TestCase("title", -1)]
-    public void ShouldRequireMinimumFields(string title, int cookbookId)
-    {
-        var command = new CreateRecipeCommand
-        {
-            Recipe = new CreateRecipeDto
-            {
-                Title = title,
-                CookbookId = cookbookId
-            }
-        };
-
-        Assert.ThrowsAsync<ValidationException>(() => SendAsync(command));
-    }
-
     [Test]
     public async Task ShouldCreateRecipe()
     {
