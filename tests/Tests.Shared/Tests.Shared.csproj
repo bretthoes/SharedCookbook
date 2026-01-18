@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>SharedCookbook.Tests.Shared</RootNamespace>
+    <AssemblyName>SharedCookbook.Tests.Shared</AssemblyName>
+  </PropertyGroup>
+
+</Project>

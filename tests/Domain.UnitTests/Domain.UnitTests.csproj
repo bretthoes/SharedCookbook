@@ -6,14 +6,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="Moq" />
-        <PackageReference Include="nunit"/>
+        <PackageReference Include="nunit" />
         <PackageReference Include="NUnit.Analyzers">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="NUnit3TestAdapter"/>
+        <PackageReference Include="NUnit3TestAdapter" />
         <PackageReference Include="coverlet.collector">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -21,7 +21,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Domain\Domain.csproj"/>
+        <ProjectReference Include="..\..\src\Domain\Domain.csproj" />
+        <ProjectReference Include="..\Tests.Shared\Tests.Shared.csproj" />
     </ItemGroup>
 
 </Project>

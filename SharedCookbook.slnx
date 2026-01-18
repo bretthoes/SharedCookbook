@@ -21,5 +21,6 @@
     <Project Path="tests\Domain.UnitTests\Domain.UnitTests.csproj" />
     <Project Path="tests\Infrastructure.IntegrationTests\Infrastructure.IntegrationTests.csproj" />
     <Project Path="tests\Infrastructure.UnitTests\Infrastructure.UnitTests.csproj" />
+    <Project Path="tests\Tests.Shared\Tests.Shared.csproj" />
   </Folder>
 </Solution>
