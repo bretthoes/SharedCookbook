@@ -14,7 +14,7 @@ public class LoggingBehaviour<TRequest>(ILogger<TRequest> logger, IUser user, II
 
         if (!string.IsNullOrEmpty(userId)) userName = await identityService.GetUserNameAsync(userId);
 
-        _logger.LogInformation("SharedCookbook Request: {Name} {@UserId} {@UserName} {@Request}",
+        _logger.LogInformation("Request: {Name} {@UserId} {@UserName} {@Request}",
             requestName, userId, userName, request);
     }
 }
