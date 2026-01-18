@@ -20,7 +20,7 @@ public class EmailSender(
         client.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue(scheme: "Basic", Convert.ToBase64String(authBytes));
 
-        var requestBody = GetRequestBody(email, subject, subject, htmlMessage);
+        var requestBody = GetRequestBody(options.Value.From, email, subject, htmlMessage);
         using var content = new FormUrlEncodedContent(requestBody);
         using var response = await client.PostAsync($"v3/{options.Value.Domain}/messages", content);
 
