@@ -7,16 +7,11 @@ using SharedCookbook.Tests.Shared;
 namespace SharedCookbook.Application.FunctionalTests.Recipes.Commands.CreateRecipeTests;
 
 using static Testing;
+using static TestData;
+using static RecipeTestData;
 
 public class WhenRecipeIsValid : BaseTestFixture
 {
-    private const string RecipeTitle = "Recipe Title";
-    private const string RecipeSummary = "Recipe Summary";
-    private const int RecipeServings = 1;
-    private const int PreparationTimeInMinutes = 2;
-    private const int CookingTimeInMinutes = 3;
-    private const int BakingTimeInMinutes = 4;
-    
     private CreateRecipeCommand _command = null!;
     private Recipe? _actual;
     private string _userId = null!;
@@ -27,19 +22,19 @@ public class WhenRecipeIsValid : BaseTestFixture
         await ResetState();
         _userId = await RunAsDefaultUserAsync();
         
-        int cookbookId = await SendAsync(new CreateCookbookCommand(Title: TestData.AnyNonEmptyString));
+        int cookbookId = await SendAsync(new CreateCookbookCommand(Title: AnyNonEmptyString));
 
         _command = new CreateRecipeCommand
         {
             Recipe = new CreateRecipeDto
             {
-                Title = RecipeTitle,
+                Title = Title,
                 CookbookId = cookbookId,
-                Summary = RecipeSummary,
+                Summary = Summary,
                 PreparationTimeInMinutes = PreparationTimeInMinutes,
                 CookingTimeInMinutes = CookingTimeInMinutes,
                 BakingTimeInMinutes = BakingTimeInMinutes,
-                Servings = RecipeServings,
+                Servings = Servings,
             }
         };
 
@@ -68,20 +63,20 @@ public class WhenRecipeIsValid : BaseTestFixture
         Assert.That(_actual!.LastModifiedBy, Is.EqualTo(_userId));
     
     [Test]
-    public void ShouldHaveTitle() => Assert.That(_actual!.Title, Is.EqualTo(expected: RecipeTitle));
+    public void ShouldHaveTitle() => Assert.That(_actual!.Title, Is.EqualTo(expected: Title));
     
     [Test]
-    public void ShouldHaveServings() => Assert.That(_actual!.Servings, Is.EqualTo(expected: RecipeServings));
+    public void ShouldHaveServings() => Assert.That(_actual!.Servings, Is.EqualTo(Servings));
     
     [Test]
     public void ShouldHavePreparationTimeInMinutes()
-        => Assert.That(_actual!.PreparationTimeInMinutes, Is.EqualTo(expected: PreparationTimeInMinutes));
+        => Assert.That(_actual!.PreparationTimeInMinutes, Is.EqualTo(PreparationTimeInMinutes));
     
     [Test]
     public void ShouldHaveCookingTimeInMinutes()
-        => Assert.That(_actual!.CookingTimeInMinutes, Is.EqualTo(expected: CookingTimeInMinutes));
+        => Assert.That(_actual!.CookingTimeInMinutes, Is.EqualTo(CookingTimeInMinutes));
     
     [Test]
     public void ShouldHaveBakingTimeInMinutes()
-        => Assert.That(_actual!.BakingTimeInMinutes, Is.EqualTo(expected: BakingTimeInMinutes));
+        => Assert.That(_actual!.BakingTimeInMinutes, Is.EqualTo(BakingTimeInMinutes));
 }
