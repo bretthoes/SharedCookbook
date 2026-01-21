@@ -45,6 +45,12 @@ public class WhenRecipeIsValid : BaseTestFixture
     
     [Test]
     public void ShouldNotBeNull() => Assert.That(_actual, Is.Not.Null);
+    
+    [Test]
+    public void ShouldHaveId() => Assert.That(_actual!.Id, Is.GreaterThan(expected: 0));
+    
+    [Test]
+    public void ShouldHaveCookbookId() => Assert.That(_actual!.CookbookId, Is.GreaterThan(expected: 0));
 
     [Test]
     public void ShouldHaveCreated() =>
