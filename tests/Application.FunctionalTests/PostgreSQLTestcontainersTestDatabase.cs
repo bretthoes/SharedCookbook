@@ -11,6 +11,7 @@ namespace SharedCookbook.Application.FunctionalTests;
 public class PostgreSQLTestcontainersTestDatabase : ITestDatabase
 {
     private const string DefaultDatabase = "SharedCookbookTestDb";
+    private const string PostgreSqlImage = "postgres:15.1"; // TODO move this to config and keep it same as prod db vers 
     private readonly PostgreSqlContainer _container;
     private DbConnection _connection = null!;
     private string _connectionString = null!;
@@ -18,7 +19,7 @@ public class PostgreSQLTestcontainersTestDatabase : ITestDatabase
 
     public PostgreSQLTestcontainersTestDatabase()
     {
-        _container = new PostgreSqlBuilder()
+        _container = new PostgreSqlBuilder(PostgreSqlImage)
             .WithAutoRemove(true)
             .Build();
     }

@@ -2,17 +2,17 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <AspnetVersion>10.0.1</AspnetVersion>
-    <EfcoreVersion>10.0.1</EfcoreVersion>
-    <MicrosoftExtensionsVersion>10.0.1</MicrosoftExtensionsVersion>
+    <AspnetVersion>10.0.2</AspnetVersion>
+    <EfcoreVersion>10.0.2</EfcoreVersion>
+    <MicrosoftExtensionsVersion>10.0.2</MicrosoftExtensionsVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="AWSSDK.S3" Version="4.0.15" />
+    <PackageVersion Include="AWSSDK.S3" Version="4.0.17.3" />
     <PackageVersion Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.3.2" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="[$(AspnetVersion), )" />
-    <PackageVersion Include="Microsoft.AspNetCore.Http" Version="[2.3.0, )" />
+    <PackageVersion Include="Microsoft.AspNetCore.Http" Version="2.3.9" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="[$(AspnetVersion), )" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="[$(AspnetVersion), )" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="[$(AspnetVersion), )" />
@@ -24,7 +24,7 @@
     <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.12" />
     <PackageVersion Include="Tesseract" Version="5.2.0" />
     <PackageVersion Include="Tesseract.Drawing" Version="5.2.0" />
-    <PackageVersion Include="Testcontainers.PostgreSql" Version="4.9.0" />
+    <PackageVersion Include="Testcontainers.PostgreSql" Version="4.10.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="[$(EfcoreVersion), )" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="[$(MicrosoftExtensionsVersion), )" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="[$(MicrosoftExtensionsVersion), )" />
