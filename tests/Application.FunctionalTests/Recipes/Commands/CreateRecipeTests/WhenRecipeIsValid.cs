@@ -1,18 +1,13 @@
-﻿using SharedCookbook.Application.Contracts;
-using SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
-using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 using SharedCookbook.Domain.Entities;
 using SharedCookbook.Tests.Shared;
 
 namespace SharedCookbook.Application.FunctionalTests.Recipes.Commands.CreateRecipeTests;
 
 using static Testing;
-using static TestData;
 using static RecipeTestData;
 
 public class WhenRecipeIsValid : BaseTestFixture
 {
-    private CreateRecipeCommand _command = null!;
     private Recipe? _actual;
     private string _userId = null!;
     
@@ -22,23 +17,7 @@ public class WhenRecipeIsValid : BaseTestFixture
         await ResetState();
         _userId = await RunAsDefaultUserAsync();
         
-        int cookbookId = await SendAsync(new CreateCookbookCommand(Title: AnyNonEmptyString));
-
-        _command = new CreateRecipeCommand
-        {
-            Recipe = new CreateRecipeDto
-            {
-                Title = Title,
-                CookbookId = cookbookId,
-                Summary = Summary,
-                PreparationTimeInMinutes = PreparationTimeInMinutes,
-                CookingTimeInMinutes = CookingTimeInMinutes,
-                BakingTimeInMinutes = BakingTimeInMinutes,
-                Servings = Servings,
-            }
-        };
-
-        int recipeId = await SendAsync(_command);
+        int recipeId = await CreateSimpleRecipe();
 
         _actual = await FindAsync<Recipe>([recipeId]);
     }

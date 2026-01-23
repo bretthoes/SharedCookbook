@@ -1,15 +1,18 @@
+using SharedCookbook.Application.Common.Extensions;
 using SharedCookbook.Application.Contracts;
+using SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
 using SharedCookbook.Application.Recipes.Queries.GetRecipe;
 using SharedCookbook.Tests.Shared;
 
-namespace SharedCookbook.Application.FunctionalTests.Recipes.Queries;
+namespace SharedCookbook.Application.FunctionalTests.Recipes.Commands.UpdateRecipeTest;
 
 using static Testing;
 using static RecipeTestData;
 
-public class GetRecipeTests : BaseTestFixture
+public class WhenTitleIsUpdated : BaseTestFixture
 {
     private RecipeDetailedDto? _actual;
+    const string UpdatedTitle = "UpdatedTitle";
     
     [OneTimeSetUp]
     public async Task OneTimeSetup()
@@ -17,7 +20,13 @@ public class GetRecipeTests : BaseTestFixture
         await ResetState();
         await RunAsDefaultUserAsync();
         
-        _actual = await SendAsync(new GetRecipeQuery(await CreateSimpleRecipe()));
+        int recipeId = await CreateSimpleRecipe();
+
+        var updateDto = GetSimpleUpdateRecipeDto(recipeId, UpdatedTitle);
+        
+        await SendAsync(new UpdateRecipeCommand(updateDto));
+        
+        _actual = await SendAsync(new GetRecipeQuery(recipeId));
     }
     
     [Test]
@@ -27,7 +36,7 @@ public class GetRecipeTests : BaseTestFixture
     public void ShouldHaveId() => Assert.That(_actual!.Id, Is.GreaterThan(expected: 0));
     
     [Test]
-    public void ShouldHaveTitle() => Assert.That(_actual!.Title, Is.EqualTo(expected: Title));
+    public void ShouldHaveNewTitle() => Assert.That(_actual!.Title, Is.EqualTo(expected: UpdatedTitle ));
     
     [Test]
     public void ShouldHaveSummary() => Assert.That(_actual!.Summary, Is.EqualTo(expected: Summary));
@@ -78,14 +87,14 @@ public class GetRecipeTests : BaseTestFixture
     [Test]
     public void ShouldHaveImages()
         => Assert.That(_actual!.Images, Has.Count.EqualTo(expected: 1));
-    
+
     [Test]
-    public void ShouldHaveImageUrlPrefix()
-        => Assert.That(_actual!.Images.First().Name, Does.StartWith(expected: "http"));
-    
-    [Test]
-    public void ShouldHaveImageNameSuffix()
-        => Assert.That(_actual!.Images.First().Name, Does.EndWith(expected: ImageName));
+    public void ShouldHaveFullImageName()
+    {
+        var expected = ImageName.EnsurePrefixUrl(GetImageBaseUrl());
+        
+        Assert.That(_actual!.Images.First().Name, Is.EqualTo(expected));
+    }
     
     [Test]
     public void ShouldHaveImageOrdinal()
