@@ -23,12 +23,29 @@ public static class StringExtensions
 
         public string Truncate(int maxLength) =>
             input.Length <= maxLength ? input : input[..maxLength];
-    }
 
-    extension(string? input)
-    {
-        public string PrefixIfNotEmpty(string prefix)
-            => string.IsNullOrWhiteSpace(input) ? input ?? string.Empty
-                : prefix + input;
+        public string EnsurePrefixUrl(string url)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return input;
+
+            ArgumentException.ThrowIfNullOrEmpty(url);
+
+            url = url.TrimEnd('/');
+            
+            return Uri.TryCreate(input, UriKind.Absolute, out _) ? input : $"{url}/{input.TrimStart('/')}";
+        }
+
+        public string StripPrefixUrl(string url)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return input;
+            
+            ArgumentException.ThrowIfNullOrEmpty(url);
+
+            url = url.TrimEnd('/') + "/"; // ensure exactly one at end of url
+
+            return !input.StartsWith(url, StringComparison.OrdinalIgnoreCase) ? input : input[url.Length..];
+        }
     }
 }
