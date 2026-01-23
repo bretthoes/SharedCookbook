@@ -29,7 +29,7 @@ public static class StringExtensions
             if (string.IsNullOrWhiteSpace(input))
                 return input;
 
-            ArgumentException.ThrowIfNullOrEmpty(url);
+            ArgumentException.ThrowIfNullOrWhiteSpace(url);
 
             url = url.TrimEnd('/');
             
@@ -41,7 +41,7 @@ public static class StringExtensions
             if (string.IsNullOrWhiteSpace(input))
                 return input;
             
-            ArgumentException.ThrowIfNullOrEmpty(url);
+            ArgumentException.ThrowIfNullOrWhiteSpace(url);
 
             url = url.TrimEnd('/') + "/"; // ensure exactly one at end of url
 

@@ -7,6 +7,10 @@ public static class TestData
     public const char AnyNonEmptyChar = 'x';
 
     public const string AnyEmail = "test@example.com";
+    
+    public const string AnyBaseUrl = "https://example.com";
+    
+    public const string AnyImageFile = "test.jpg";
 
     public const int AnyPositiveInt = 1;
 
