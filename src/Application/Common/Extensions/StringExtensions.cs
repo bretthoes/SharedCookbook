@@ -32,8 +32,8 @@ public static class StringExtensions
             ArgumentException.ThrowIfNullOrWhiteSpace(url);
 
             url = url.TrimEnd('/');
-            
-            return Uri.TryCreate(input, UriKind.Absolute, out _) ? input : $"{url}/{input.TrimStart('/')}";
+
+            return input.IsAbsoluteHttpUrl() ? input : $"{url}/{input.TrimStart('/')}";
         }
 
         public string StripPrefixUrl(string url)
@@ -46,6 +46,13 @@ public static class StringExtensions
             url = url.TrimEnd('/') + "/"; // ensure exactly one at end of url
 
             return !input.StartsWith(url, StringComparison.OrdinalIgnoreCase) ? input : input[url.Length..];
+        }
+        
+        internal bool IsAbsoluteHttpUrl()
+        {
+            return Uri.TryCreate(input, UriKind.Absolute, out var uri)
+                   && uri.IsAbsoluteUri
+                   && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
         }
     }
 }
