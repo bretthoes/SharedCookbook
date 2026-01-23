@@ -1,11 +1,16 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using SharedCookbook.Infrastructure.Data;
 using SharedCookbook.Infrastructure.Identity;
 using SharedCookbook.Application.Common.Mediator;
+using SharedCookbook.Application.Images.Commands.CreateImages;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using SharedCookbook.Application.Common.Extensions;
+using SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
+using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
+using SharedCookbook.Tests.Shared;
 
 namespace SharedCookbook.Application.FunctionalTests;
 
@@ -162,13 +167,25 @@ public class Testing
 
         await context.SaveChangesAsync();
     }
+    
+    internal static async Task<int> CreateSimpleRecipe()
+    {
+        int cookbookId = await SendAsync(new CreateCookbookCommand(Title: TestData.AnyNonEmptyString));
 
-    internal static async Task<int> CountAsync<TEntity>() where TEntity : class
+        var command = new CreateRecipeCommand
+        {
+            Recipe = RecipeTestData.GetSimpleCreateRecipeDto(cookbookId),
+        };
+
+        return await SendAsync(command);
+    }
+
+    internal static string  GetImageBaseUrl()
     {
         using var scope = _scopeFactory.CreateScope();
-
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-        return await context.Set<TEntity>().CountAsync();
+        
+        var imageUploadOptions = scope.ServiceProvider.GetRequiredService<IOptions<ImageUploadOptions>>();
+        
+        return imageUploadOptions.Value.ImageBaseUrl;
     }
 }

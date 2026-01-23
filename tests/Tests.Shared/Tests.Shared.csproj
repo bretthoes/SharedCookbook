@@ -5,4 +5,8 @@
     <AssemblyName>SharedCookbook.Tests.Shared</AssemblyName>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Application\Application.csproj" />
+  </ItemGroup>
+
 </Project>
