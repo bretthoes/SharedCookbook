@@ -1,4 +1,5 @@
-﻿using SharedCookbook.Domain.Entities;
+﻿using SharedCookbook.Application.Common.Extensions;
+using SharedCookbook.Domain.Entities;
 
 namespace SharedCookbook.Infrastructure.Identity.Projections;
 
@@ -16,9 +17,7 @@ internal static class CookbookProjections
             {
                 Id           = cookbook.Id,
                 Title        = cookbook.Title,
-                Image        = (cookbook.Image != null && cookbook.Image != "")
-                    ? (imageBaseUrl + cookbook.Image)
-                    : "",
+                Image        = cookbook.Image!.EnsurePrefixUrl(imageBaseUrl),
                 MembersCount = cookbook.Memberships.Count,
                 RecipeCount  = cookbook.Recipes.Count,
                 Author       = applicationUser.DisplayName,
