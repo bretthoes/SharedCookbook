@@ -10,6 +10,7 @@ public sealed class CreateInvitationTokenCommandHandler(IApplicationDbContext co
         var mintedToken = factory.Mint();
         var issuedToken = InvitationToken.IssueNewToken(mintedToken.HashDetails, command.CookbookId);
 
+        await context.InvitationTokens.AddAsync(issuedToken, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
 
         return new TokenLink(issuedToken.PublicId, mintedToken.InviteToken);
