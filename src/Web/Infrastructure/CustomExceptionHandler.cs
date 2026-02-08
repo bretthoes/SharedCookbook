@@ -1,4 +1,4 @@
-﻿using SharedCookbook.Application.Common.Exceptions;
+using SharedCookbook.Application.Common.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 
 namespace SharedCookbook.Web.Infrastructure;
@@ -19,16 +19,16 @@ public class CustomExceptionHandler : IExceptionHandler
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception,
         CancellationToken cancellationToken)
     {
-        var exceptionType = exception.GetType();
-
-        if (!_exceptionHandlers.TryGetValue(exceptionType, out Func<HttpContext, Exception, Task>? value))
+        foreach (var (exceptionType, handler) in _exceptionHandlers)
         {
-            return false;
+            if (!exceptionType.IsInstanceOfType(exception))
+                continue;
+
+            await handler.Invoke(httpContext, exception);
+            return true;
         }
 
-        await value.Invoke(httpContext, exception);
-        return true;
-
+        return false;
     }
 
     private static async Task HandleValidationException(HttpContext httpContext, Exception ex)
