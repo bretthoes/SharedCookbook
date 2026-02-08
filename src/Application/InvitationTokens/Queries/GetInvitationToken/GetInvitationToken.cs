@@ -12,7 +12,7 @@ public class GetInvitationPreviewQueryHandler(
         var link = TokenLink.Parse(query.Token);
 
         var token = await context.InvitationTokens.GetByPublicId(link.TokenId, cancellationToken)
-            ?? throw new NotFoundException(key: link.TokenId.ToString(), nameof(cancellationToken));
+            ?? throw new NotFoundException(key: link.TokenId.ToString(), nameof(InvitationToken));
 
         ArgumentNullException.ThrowIfNull(token.Cookbook);
         

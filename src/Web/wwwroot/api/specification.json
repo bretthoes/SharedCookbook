@@ -396,7 +396,7 @@
         ]
       }
     },
-    "/api/InvitationTokens": {
+    "/api/InvitationTokens/{token}": {
       "get": {
         "tags": [
           "InvitationTokens"
@@ -404,8 +404,8 @@
         "operationId": "InvitationTokensSingle",
         "parameters": [
           {
-            "name": "Token",
-            "in": "query",
+            "name": "token",
+            "in": "path",
             "required": true,
             "schema": {
               "type": "string"
@@ -430,7 +430,9 @@
             "JWT": []
           }
         ]
-      },
+      }
+    },
+    "/api/InvitationTokens": {
       "post": {
         "tags": [
           "InvitationTokens"
