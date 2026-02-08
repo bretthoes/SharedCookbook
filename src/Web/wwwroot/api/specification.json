@@ -430,6 +430,45 @@
             "JWT": []
           }
         ]
+      },
+      "put": {
+        "tags": [
+          "InvitationTokens"
+        ],
+        "operationId": "InvitationTokensUpdate",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateInvitationTokenCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/InvitationTokens": {
@@ -1525,6 +1564,11 @@
             "type": "integer",
             "format": "int32"
           },
+          "cookbookId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "senderName": {
             "type": "string",
             "nullable": true
@@ -1599,6 +1643,18 @@
           "cookbookId": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "UpdateInvitationTokenCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "newStatus": {
+            "$ref": "#/components/schemas/InvitationStatus"
           }
         }
       },

@@ -25,6 +25,7 @@ public class GetInvitationPreviewQueryHandler(
         return new InvitationDto
         {
             Id = token.Id,
+            CookbookId = token.Cookbook?.Id,
             SenderName = name,
             SenderEmail = email,
             CookbookImage = token.Cookbook?.Image,
