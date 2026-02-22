@@ -1,11 +1,11 @@
 ﻿namespace SharedCookbook.Application.InvitationTokens.Commands.CreateInvitationToken;
 
-public sealed record CreateInvitationTokenCommand(int CookbookId) : IRequest<string>;
+public sealed record CreateInvitationTokenCommand(int CookbookId) : IRequest<InvitationTokenDto>;
 
 public sealed class CreateInvitationTokenCommandHandler(IApplicationDbContext context, IInvitationTokenFactory factory)
-    : IRequestHandler<CreateInvitationTokenCommand, string>
+    : IRequestHandler<CreateInvitationTokenCommand, InvitationTokenDto>
 {
-    public async Task<string> Handle(CreateInvitationTokenCommand command, CancellationToken cancellationToken)
+    public async Task<InvitationTokenDto> Handle(CreateInvitationTokenCommand command, CancellationToken cancellationToken)
     {
         var mintedToken = factory.Mint();
         var issuedToken = InvitationToken.IssueNewToken(mintedToken.HashDetails, command.CookbookId);
@@ -13,6 +13,8 @@ public sealed class CreateInvitationTokenCommandHandler(IApplicationDbContext co
         await context.InvitationTokens.AddAsync(issuedToken, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
 
-        return new TokenLink(issuedToken.PublicId, mintedToken.InviteToken);
+        string token = new TokenLink(issuedToken.PublicId, mintedToken.InviteToken);
+
+        return new InvitationTokenDto(token);
     }
 }

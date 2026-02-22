@@ -16,7 +16,7 @@ public class InvitationTokens : EndpointGroupBase
     private static Task<InvitationDto> Single(ISender sender, [FromRoute] string token)
         => sender.Send(new GetInvitationTokenQuery(token));
 
-    private static Task<string> Create(ISender sender, [FromBody] CreateInvitationTokenCommand command)
+    private static Task<InvitationTokenDto> Create(ISender sender, [FromBody] CreateInvitationTokenCommand command)
     {
         return sender.Send(command);
     }

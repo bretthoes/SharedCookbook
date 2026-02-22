@@ -495,7 +495,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/InvitationTokenDto"
                 }
               }
             }
@@ -1633,6 +1633,15 @@
           },
           "newStatus": {
             "$ref": "#/components/schemas/InvitationStatus"
+          }
+        }
+      },
+      "InvitationTokenDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "token": {
+            "type": "string"
           }
         }
       },
