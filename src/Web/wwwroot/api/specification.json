@@ -476,7 +476,7 @@
         "tags": [
           "InvitationTokens"
         ],
-        "operationId": "InvitationTokensCreateInvitationToken",
+        "operationId": "InvitationTokensCreate",
         "requestBody": {
           "x-name": "command",
           "content": {

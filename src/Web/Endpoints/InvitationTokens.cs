@@ -9,14 +9,14 @@ public class InvitationTokens : EndpointGroupBase
     public override void Map(RouteGroupBuilder builder)
     {
         builder.MapGet(Single, pattern: "{token}").RequireAuthorization();
-        builder.MapPost(CreateInvitationToken).RequireAuthorization();
+        builder.MapPost(Create).RequireAuthorization();
         builder.MapPut(Update, pattern: "{token}").RequireAuthorization();
     }
     
     private static Task<InvitationDto> Single(ISender sender, [FromRoute] string token)
         => sender.Send(new GetInvitationTokenQuery(token));
 
-    private static Task<string> CreateInvitationToken(ISender sender, [FromBody] CreateInvitationTokenCommand command)
+    private static Task<string> Create(ISender sender, [FromBody] CreateInvitationTokenCommand command)
     {
         return sender.Send(command);
     }
