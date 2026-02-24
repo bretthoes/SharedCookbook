@@ -1027,7 +1027,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/DisplayNameDto"
                 }
               }
             }
@@ -2089,6 +2089,15 @@
         }
       },
       "UpdateUserCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "displayName": {
+            "type": "string"
+          }
+        }
+      },
+      "DisplayNameDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {

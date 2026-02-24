@@ -19,5 +19,5 @@ public class Users : EndpointGroupBase
         return Results.NoContent();
     }
 
-    private static async Task<string?> GetDisplayName(ISender sender) => await sender.Send(new GetDisplayNameQuery());
+    private static async Task<DisplayNameDto> GetDisplayName(ISender sender) => await sender.Send(new GetDisplayNameQuery());
 }

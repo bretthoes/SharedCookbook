@@ -1,11 +1,10 @@
 ﻿namespace SharedCookbook.Application.Users.Queries;
 
-public record GetDisplayNameQuery : IRequest<string>;
+public record GetDisplayNameQuery : IRequest<DisplayNameDto>;
 
 public class GetDisplayNameQueryHandler(IUser user, IIdentityService identityService)
-    : IRequestHandler<GetDisplayNameQuery, string>
+    : IRequestHandler<GetDisplayNameQuery, DisplayNameDto>
 {
-    public async Task<string> Handle(GetDisplayNameQuery query, CancellationToken cancellationToken)
-        => await identityService
-            .GetDisplayNameAsync(user.Id ?? throw new UnauthorizedAccessException()) ?? "";
+    public async Task<DisplayNameDto> Handle(GetDisplayNameQuery query, CancellationToken cancellationToken)
+        => new(await identityService.GetDisplayNameAsync(user.Id ?? throw new UnauthorizedAccessException()) ?? "");
 }
