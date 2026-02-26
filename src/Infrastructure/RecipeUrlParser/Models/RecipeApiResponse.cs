@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using SharedCookbook.Application.Common.Extensions;
 using SharedCookbook.Domain.Entities;
 
@@ -33,7 +33,7 @@ public class RecipeApiResponse
         CookingTimeInMinutes = CookingMinutes ?? 0,
         BakingTimeInMinutes = null,
         Ingredients = ExtendedIngredients.ToDtos(),
-        Directions = ExtractDirections(Instructions)
+        Directions = RecipeApiResponseExtensions.ExtractDirections(Instructions)
     };
 
     private static string ExtractSummary(string? rawSummary)
@@ -42,26 +42,4 @@ public class RecipeApiResponse
         string summaryDecoded = WebUtility.HtmlDecode(summary);
         return summaryDecoded.Truncate(Recipe.Constraints.SummaryMaxLength);
     }
-
-    // Split instructions into individual steps based on double newline characters
-    private static List<RecipeDirectionDto> ExtractDirections(string? rawDirections)
-        => string.IsNullOrWhiteSpace(rawDirections)
-            ? []
-            : WebUtility.HtmlDecode(rawDirections)
-                .Split(["\n\n"], StringSplitOptions.RemoveEmptyEntries)
-                .Select(stepString => stepString.RemoveHtml().Trim())
-                .Where(stepString => stepString.Length > 0)
-                .AsEnumerable()
-                .ToDtos();
-}
-
-internal static class RecipeUrlParserExtensions
-{
-    internal static List<RecipeDirectionDto> ToDtos(this IEnumerable<string>? directions) =>
-        directions is null
-            ? []
-            : directions.Select((direction, index) => new RecipeDirectionDto
-            {
-                Text = direction.Truncate(RecipeDirection.Constraints.TextMaxLength), Ordinal = index + 1
-            }).ToList();
 }
