@@ -1,11 +1,18 @@
-﻿namespace SharedCookbook.Application.Recipes.Commands.CreateRecipe;
+using Microsoft.Extensions.Options;
+using SharedCookbook.Application.Common.Mappings;
+using SharedCookbook.Application.Images.Commands.CreateImages;
+
+namespace SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 
 public sealed record CreateRecipeCommand : IRequest<int>
 {
     public required CreateRecipeDto Recipe { get; init; }
 }
 
-public sealed class CreateRecipeCommandHandler(IApplicationDbContext context) : IRequestHandler<CreateRecipeCommand, int>
+public sealed class CreateRecipeCommandHandler(
+    IApplicationDbContext context,
+    IOptions<ImageUploadOptions> options)
+    : IRequestHandler<CreateRecipeCommand, int>
 {
     public async Task<int> Handle(CreateRecipeCommand command, CancellationToken cancellationToken)
     {
@@ -18,23 +25,9 @@ public sealed class CreateRecipeCommandHandler(IApplicationDbContext context) : 
             CookingTimeInMinutes = command.Recipe.CookingTimeInMinutes,
             BakingTimeInMinutes = command.Recipe.BakingTimeInMinutes,
             Servings = command.Recipe.Servings,
-            Directions = command.Recipe.Directions.Select(direction => new RecipeDirection
-            {
-                Text = direction.Text,
-                Ordinal = direction.Ordinal,
-                Image = direction.Image,
-            }).ToList(),
-            Images = command.Recipe.Images.Select(image => new RecipeImage
-            {
-                Name = image.Name,
-                Ordinal = image.Ordinal,
-            }).ToList(),
-            Ingredients = command.Recipe.Ingredients.Select(ingredient => new RecipeIngredient
-            {
-                Name = ingredient.Name,
-                Ordinal = ingredient.Ordinal,
-                Optional = ingredient.Optional,
-            }).ToList()
+            Directions = command.Recipe.Directions.ToEntities().ToList(),
+            Images = command.Recipe.Images.ToEntities(options.Value.ImageBaseUrl).ToList(),
+            Ingredients = command.Recipe.Ingredients.ToEntities().ToList()
         };
 
         entity.AddDomainEvent(new RecipeCreatedEvent(entity));
