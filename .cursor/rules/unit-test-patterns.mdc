@@ -1,0 +1,59 @@
+---
+description: Unit test patterns - single assert, shared setup, constants for reuse
+globs: "tests/**/*.cs"
+alwaysApply: false
+---
+
+# Unit Test Patterns
+
+Write unit tests in this pattern when possible.
+
+## Single Assert per Test
+
+Each test method should have exactly one assertion. This keeps tests focused and makes failures easier to diagnose.
+
+```csharp
+// ❌ BAD - multiple asserts
+[Test]
+public void ParsesCorrectly()
+{
+    Assert.That(_actual[0].Text, Is.EqualTo("foo"));
+    Assert.That(_actual[0].Ordinal, Is.EqualTo(1));
+}
+
+// ✅ GOOD - one assert each
+[Test]
+public void Step0_HasExpectedText() => Assert.That(_actual[0].Text, Is.EqualTo(ExpectedStep0Text));
+
+[Test]
+public void Step0_HasExpectedOrdinal() => Assert.That(_actual[0].Ordinal, Is.EqualTo(ExpectedStep0Ordinal));
+```
+
+## Shared Setup
+
+Use `[OneTimeSetUp]` or `[SetUp]` to share expensive setup across tests. Prefer `OneTimeSetUp` when setup is immutable.
+
+```csharp
+private List<Result> _actual = [];
+
+[OneTimeSetUp]
+public void OneTimeSetup()
+{
+    _actual = Sut.Parse(Input);
+}
+```
+
+## Constants for Reuse
+
+Extract expected values into constants. Derive inputs from expected outputs when possible so expected values are the single source of truth.
+
+```csharp
+private const int ExpectedStepCount = 5;
+private const string ExpectedStep0Text = "1. Place oven on broil";
+private const string ExpectedStep1Text = "2. Mix ingredients";
+private const string InputWithNoNewlines = ExpectedStep0Text + ExpectedStep1Text;
+```
+
+## Scenario-Based Class Organization
+
+Structure test classes around scenarios (e.g. `WhenStepsAreNumbered`, `WhenStepsAreMissing`). Use descriptive test names that read like specifications.

@@ -1,4 +1,4 @@
-﻿using SharedCookbook.Application.Common.Security;
+using SharedCookbook.Application.Common.Security;
 
 namespace SharedCookbook.Application.Common.Behaviours;
 
@@ -11,6 +11,9 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
+        if (request.GetType().GetCustomAttributes<AllowAnonymousAttribute>().Any())
+            return await next(cancellationToken);
+
         var authorizeAttributes = request
             .GetType()
             .GetCustomAttributes<AuthorizeAttribute>()

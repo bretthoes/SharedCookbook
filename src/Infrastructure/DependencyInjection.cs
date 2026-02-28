@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -61,6 +61,10 @@ public static class DependencyInjection
 
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddTransient<IIdentityService, IdentityService>();
+        builder.Services.AddTransient<IExternalLoginService, ExternalLoginService>();
+        builder.Services.AddTransient<ISignInPrincipalFactory, SignInPrincipalFactory>();
+        builder.Services.Configure<GoogleAuthOptions>(
+            builder.Configuration.GetSection(GoogleAuthOptions.SectionName));
         
         builder.Services.AddSingleton<IInvitationTokenFactory, Sha256TokenFactory>();
         
