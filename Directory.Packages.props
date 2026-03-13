@@ -21,8 +21,10 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="[$(EfcoreVersion), )" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="[$(EfcoreVersion), )" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="[$(EfcoreVersion), )" />
+    <PackageVersion Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.16.0" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
     <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.12" />
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.16.0" />
     <PackageVersion Include="Tesseract" Version="5.2.0" />
     <PackageVersion Include="Tesseract.Drawing" Version="5.2.0" />
     <PackageVersion Include="Testcontainers.PostgreSql" Version="4.10.0" />

@@ -65,6 +65,8 @@ public static class DependencyInjection
         builder.Services.AddTransient<ISignInPrincipalFactory, SignInPrincipalFactory>();
         builder.Services.Configure<GoogleAuthOptions>(
             builder.Configuration.GetSection(GoogleAuthOptions.SectionName));
+        builder.Services.Configure<AppleAuthOptions>(
+            builder.Configuration.GetSection(AppleAuthOptions.SectionName));
         
         builder.Services.AddSingleton<IInvitationTokenFactory, Sha256TokenFactory>();
         
