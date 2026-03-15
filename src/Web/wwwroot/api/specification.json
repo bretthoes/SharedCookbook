@@ -990,6 +990,43 @@
         ]
       }
     },
+    "/api/Recipes/parse-recipe-voice": {
+      "post": {
+        "tags": [
+          "Recipes"
+        ],
+        "operationId": "RecipesParseFromVoice",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParseRecipeFromVoiceCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateRecipeDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/Users/update": {
       "post": {
         "tags": [
@@ -2134,6 +2171,15 @@
         "additionalProperties": false,
         "properties": {
           "url": {
+            "type": "string"
+          }
+        }
+      },
+      "ParseRecipeFromVoiceCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "transcript": {
             "type": "string"
           }
         }

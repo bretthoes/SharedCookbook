@@ -1,7 +1,8 @@
-﻿using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
+using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 using SharedCookbook.Application.Recipes.Commands.DeleteRecipe;
 using SharedCookbook.Application.Recipes.Commands.ParseRecipeFromImage;
 using SharedCookbook.Application.Recipes.Commands.ParseRecipeFromUrl;
+using SharedCookbook.Application.Recipes.Commands.ParseRecipeFromVoice;
 using SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
 using SharedCookbook.Application.Recipes.Queries.GetRecipe;
 using SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
@@ -20,6 +21,7 @@ public class Recipes : EndpointGroupBase
         builder.MapDelete(Delete, pattern: "{id}").RequireAuthorization();
         builder.MapPost(ParseFromUrl, pattern: "/parse-recipe-url").RequireAuthorization();
         builder.MapPost(ParseFromImage, pattern: "/parse-recipe-img").RequireAuthorization();
+        builder.MapPost(ParseFromVoice, pattern: "/parse-recipe-voice").RequireAuthorization();
     }
 
     private static Task<RecipeDetailedDto> GetById(ISender sender, [AsParameters] GetRecipeQuery query) =>
@@ -52,5 +54,8 @@ public class Recipes : EndpointGroupBase
         sender.Send(new ParseRecipeFromImageCommand(file));
 
     private static Task<CreateRecipeDto> ParseFromUrl(ISender sender, [FromBody] ParseRecipeFromUrlCommand command) =>
+        sender.Send(command);
+
+    private static Task<CreateRecipeDto> ParseFromVoice(ISender sender, [FromBody] ParseRecipeFromVoiceCommand command) =>
         sender.Send(command);
 }
