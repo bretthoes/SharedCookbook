@@ -13,6 +13,7 @@ using SharedCookbook.Infrastructure.Data.Interceptors;
 using SharedCookbook.Infrastructure.Email;
 using SharedCookbook.Infrastructure.FileStorage;
 using SharedCookbook.Infrastructure.Identity;
+using SharedCookbook.Infrastructure.Ai;
 using SharedCookbook.Infrastructure.Ocr;
 using SharedCookbook.Infrastructure.RecipeUrlParser;
 using SharedCookbook.Infrastructure.Security;
@@ -83,6 +84,10 @@ public static class DependencyInjection
             builder.Configuration.GetSection(key: nameof(EmailApiOptions)));
         
         builder.Services.AddTransient<IOcrService, TesseractOcrService>();
+        
+        builder.Services.AddTransient<IAiRecipeParser, OpenAiRecipeParser>();
+        builder.Services.Configure<AiRecipeParserOptions>(
+            builder.Configuration.GetSection(AiRecipeParserOptions.SectionName));
 
         builder.Services.AddScoped<IInvitationResponder, InvitationResponder>();
 
