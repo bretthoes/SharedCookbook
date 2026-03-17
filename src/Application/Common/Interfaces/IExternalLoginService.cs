@@ -13,4 +13,9 @@ public interface IExternalLoginService
     /// Validates the Apple identity token, finds or creates the user, and returns the user ID on success.
     /// </summary>
     Task<Result<string>> LoginWithAppleAsync(string identityToken, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Validates the Facebook access token, finds or creates the user, and returns the user ID on success.
+    /// </summary>
+    Task<Result<string>> LoginWithFacebookAsync(string accessToken, CancellationToken cancellationToken);
 }

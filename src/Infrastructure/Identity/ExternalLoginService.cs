@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Text.Json;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -17,11 +18,14 @@ public class ExternalLoginService(
     UserManager<ApplicationUser> userManager,
     IOptions<GoogleAuthOptions> googleOptions,
     IOptions<AppleAuthOptions> appleOptions,
+    IOptions<FacebookAuthOptions> facebookOptions,
+    IHttpClientFactory httpClientFactory,
     ILogger<ExternalLoginService> logger)
     : IExternalLoginService
 {
     private const string GoogleLoginProvider = "Google";
     private const string AppleLoginProvider = "Apple";
+    private const string FacebookLoginProvider = "Facebook";
     private const string AppleIssuer = "https://appleid.apple.com";
 
     private readonly string _googleClientId = googleOptions.Value.ClientId
@@ -29,6 +33,12 @@ public class ExternalLoginService(
 
     private readonly string _appleBundleId = appleOptions.Value.BundleId
         ?? throw new InvalidOperationException("Authentication:Apple:BundleId must be configured.");
+
+    private readonly string _facebookAppId = facebookOptions.Value.AppId
+        ?? throw new InvalidOperationException("Authentication:Facebook:AppId must be configured.");
+
+    private readonly string _facebookAppSecret = facebookOptions.Value.AppSecret
+        ?? throw new InvalidOperationException("Authentication:Facebook:AppSecret must be configured.");
 
     private static readonly ConfigurationManager<OpenIdConnectConfiguration> AppleConfigManager = new(
         "https://appleid.apple.com/.well-known/openid-configuration",
@@ -115,6 +125,78 @@ public class ExternalLoginService(
         }
 
         return await FindOrCreateUserAsync(AppleLoginProvider, subject, email);
+    }
+
+    public async Task<Result<string>> LoginWithFacebookAsync(string accessToken, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(accessToken))
+        {
+            logger.LogWarning("LoginWithFacebook: Access token is required but was empty");
+            return Result<string>.Failure(["Access token is required."]);
+        }
+
+        var httpClient = httpClientFactory.CreateClient("Facebook");
+
+        var appToken = $"{_facebookAppId}|{_facebookAppSecret}";
+        var debugUrl = $"https://graph.facebook.com/debug_token?input_token={Uri.EscapeDataString(accessToken)}&access_token={Uri.EscapeDataString(appToken)}";
+
+        JsonDocument debugDoc;
+        try
+        {
+            var debugResponse = await httpClient.GetAsync(debugUrl, cancellationToken);
+            debugResponse.EnsureSuccessStatusCode();
+            var debugJson = await debugResponse.Content.ReadAsStringAsync(cancellationToken);
+            debugDoc = JsonDocument.Parse(debugJson);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "LoginWithFacebook: Failed to reach Facebook debug_token endpoint");
+            return Result<string>.Failure(["Could not verify Facebook token."]);
+        }
+
+        var data = debugDoc.RootElement.GetProperty("data");
+        var isValid = data.TryGetProperty("is_valid", out var isValidProp) && isValidProp.GetBoolean();
+        var appId = data.TryGetProperty("app_id", out var appIdProp) ? appIdProp.GetString() : null;
+
+        if (!isValid || appId != _facebookAppId)
+        {
+            logger.LogWarning("LoginWithFacebook: Token is invalid or belongs to a different app. app_id={AppId}", appId);
+            return Result<string>.Failure(["Invalid or expired Facebook token."]);
+        }
+
+        var profileUrl = $"https://graph.facebook.com/me?fields=id,email&access_token={Uri.EscapeDataString(accessToken)}";
+
+        JsonDocument profileDoc;
+        try
+        {
+            var profileResponse = await httpClient.GetAsync(profileUrl, cancellationToken);
+            profileResponse.EnsureSuccessStatusCode();
+            var profileJson = await profileResponse.Content.ReadAsStringAsync(cancellationToken);
+            profileDoc = JsonDocument.Parse(profileJson);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "LoginWithFacebook: Failed to fetch user profile from Graph API");
+            return Result<string>.Failure(["Could not retrieve Facebook profile."]);
+        }
+
+        var root = profileDoc.RootElement;
+        var subject = root.TryGetProperty("id", out var idProp) ? idProp.GetString() : null;
+        var email = root.TryGetProperty("email", out var emailProp) ? emailProp.GetString() : null;
+
+        if (string.IsNullOrEmpty(email))
+        {
+            logger.LogWarning("LoginWithFacebook: Profile did not contain email. User may not have granted email permission.");
+            return Result<string>.Failure(["Facebook account did not provide an email address."]);
+        }
+
+        if (string.IsNullOrEmpty(subject))
+        {
+            logger.LogWarning("LoginWithFacebook: Profile did not contain id");
+            return Result<string>.Failure(["Facebook profile did not contain a user ID."]);
+        }
+
+        return await FindOrCreateUserAsync(FacebookLoginProvider, subject, email);
     }
 
     private async Task<Result<string>> FindOrCreateUserAsync(string loginProvider, string subject, string email)

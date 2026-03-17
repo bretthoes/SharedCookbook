@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using SharedCookbook.Application.Users.Commands.LoginWithApple;
+using SharedCookbook.Application.Users.Commands.LoginWithFacebook;
 using SharedCookbook.Application.Users.Commands.LoginWithGoogle;
 using SharedCookbook.Application.Users.Commands.UpdateUser;
 using SharedCookbook.Application.Users.Queries;
@@ -15,6 +16,7 @@ public class Users : EndpointGroupBase
         builder.MapGet(GetDisplayName, pattern: "/display-name");
         builder.MapPost(LoginGoogle, pattern: "/login-google");
         builder.MapPost(LoginApple, pattern: "/login-apple");
+        builder.MapPost(LoginFacebook, pattern: "/login-facebook");
         builder.MapIdentityApi<ApplicationUser>();
     }
 
@@ -27,6 +29,14 @@ public class Users : EndpointGroupBase
     }
 
     private static async Task<IResult> LoginApple(ISender sender, [FromBody] LoginWithAppleCommand command)
+    {
+        var result = await sender.Send(command);
+        return result.Succeeded
+            ? Results.SignIn(result.Value!, authenticationScheme: IdentityConstants.BearerScheme)
+            : Results.Unauthorized();
+    }
+
+    private static async Task<IResult> LoginFacebook(ISender sender, [FromBody] LoginWithFacebookCommand command)
     {
         var result = await sender.Send(command);
         return result.Succeeded

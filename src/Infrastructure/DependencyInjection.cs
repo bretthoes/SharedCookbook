@@ -68,6 +68,9 @@ public static class DependencyInjection
             builder.Configuration.GetSection(GoogleAuthOptions.SectionName));
         builder.Services.Configure<AppleAuthOptions>(
             builder.Configuration.GetSection(AppleAuthOptions.SectionName));
+        builder.Services.Configure<FacebookAuthOptions>(
+            builder.Configuration.GetSection(FacebookAuthOptions.SectionName));
+        builder.Services.AddHttpClient("Facebook");
         
         builder.Services.AddSingleton<IInvitationTokenFactory, Sha256TokenFactory>();
         

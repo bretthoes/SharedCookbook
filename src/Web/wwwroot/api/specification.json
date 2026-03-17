@@ -1122,6 +1122,31 @@
         }
       }
     },
+    "/api/Users/login-facebook": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "UsersLoginFacebook",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginWithFacebookCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/Users/register": {
       "post": {
         "tags": [
@@ -2216,6 +2241,15 @@
         "additionalProperties": false,
         "properties": {
           "identityToken": {
+            "type": "string"
+          }
+        }
+      },
+      "LoginWithFacebookCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "accessToken": {
             "type": "string"
           }
         }
