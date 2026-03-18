@@ -15,9 +15,8 @@ public sealed class SpoonacularApiParser(
 {
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
 
-    public async Task<CreateRecipeDto> Parse(string url, CancellationToken cancellationToken)
+    public async Task<CreateRecipeDto> Parse(string url, CancellationToken cancellationToken, bool extractFromVideo = false)
     {
-        // Construct the full Spoonacular API URL with query parameters
         string apiUrl = $"{options.Value.BaseUrl}/recipes/extract";
 
         var queryParams = new Dictionary<string, string?>
@@ -27,6 +26,7 @@ public sealed class SpoonacularApiParser(
             ["analyze"] = "false",
             ["includeNutrition"] = "false",
             ["includeTaste"] = "false",
+            ["extractFromVideo"] = extractFromVideo ? "true" : "false",
             ["apiKey"] = options.Value.ApiKey
         };
         string requestUri = QueryHelpers.AddQueryString(apiUrl, queryParams!);
