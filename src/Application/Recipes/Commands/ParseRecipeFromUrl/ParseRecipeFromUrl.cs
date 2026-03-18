@@ -4,7 +4,7 @@ using SharedCookbook.Application.Images.Commands.CreateImages;
 
 namespace SharedCookbook.Application.Recipes.Commands.ParseRecipeFromUrl;
 
-public sealed record ParseRecipeFromUrlCommand(string Url) : IRequest<CreateRecipeDto>;
+public sealed record ParseRecipeFromUrlCommand(string Url, bool ExtractFromVideo = false) : IRequest<CreateRecipeDto>;
 
 public sealed class ParseRecipeCommandHandler(
     IRecipeUrlParser recipeUrlParser,
@@ -13,7 +13,7 @@ public sealed class ParseRecipeCommandHandler(
 {
     public async Task<CreateRecipeDto> Handle(ParseRecipeFromUrlCommand request, CancellationToken cancellationToken)
     {
-        var dto = await recipeUrlParser.Parse(request.Url, cancellationToken);
+        var dto = await recipeUrlParser.Parse(request.Url, cancellationToken, request.ExtractFromVideo);
         return EnrichImagesWithBaseUrl(dto, options.Value.ImageBaseUrl);
     }
 

@@ -1027,43 +1027,6 @@
         ]
       }
     },
-    "/api/Recipes/parse-recipe-social": {
-      "post": {
-        "tags": [
-          "Recipes"
-        ],
-        "operationId": "RecipesParseFromSocialUrl",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ParseRecipeFromSocialUrlCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateRecipeDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
-      }
-    },
     "/api/Users/update": {
       "post": {
         "tags": [
@@ -2234,6 +2197,9 @@
         "properties": {
           "url": {
             "type": "string"
+          },
+          "extractFromVideo": {
+            "type": "boolean"
           }
         }
       },
@@ -2242,18 +2208,6 @@
         "additionalProperties": false,
         "properties": {
           "transcript": {
-            "type": "string"
-          }
-        }
-      },
-      "ParseRecipeFromSocialUrlCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "url": {
-            "type": "string"
-          },
-          "platform": {
             "type": "string"
           }
         }
