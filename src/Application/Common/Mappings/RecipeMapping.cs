@@ -14,7 +14,7 @@ internal static class RecipeMapping
             CookingTimeInMinutes = recipe.CookingTimeInMinutes,
             BakingTimeInMinutes = recipe.BakingTimeInMinutes,
             Servings = recipe.Servings,
-            Directions = recipe.Directions.ToDtos().ToList(),
+            Directions = recipe.Directions.ToDtos(imageBaseUrl).ToList(),
             Images = recipe.Images.ToDtos(imageBaseUrl).ToList(),
             Ingredients = recipe.Ingredients.ToDtos().ToList(),
             IsVegan = recipe.IsVegan,

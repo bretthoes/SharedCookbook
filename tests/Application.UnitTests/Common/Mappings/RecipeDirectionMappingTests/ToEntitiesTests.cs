@@ -10,6 +10,7 @@ public class ToEntitiesTests
     private const int ExpectedOrdinal = 2;
     private const string ExpectedText = "TestDirectionText";
     private const string ExpectedImage = "TestDirectionImage";
+    private const string ImageBaseUrl = "https://example.com/images/";
 
     private RecipeDirection _actual = null!;
 
@@ -18,10 +19,10 @@ public class ToEntitiesTests
     {
         var sut = new List<RecipeDirectionDto>
         {
-            new() { Id = ExpectedId, Text = ExpectedText, Ordinal = ExpectedOrdinal, Image = ExpectedImage }
+            new() { Id = ExpectedId, Text = ExpectedText, Ordinal = ExpectedOrdinal, Image = ImageBaseUrl + ExpectedImage }
         };
 
-        _actual = sut.ToEntities().Single();
+        _actual = sut.ToEntities(ImageBaseUrl).Single();
     }
 
     [Test]
@@ -34,12 +35,12 @@ public class ToEntitiesTests
     public void MapsOrdinal() => Assert.That(_actual.Ordinal, Is.EqualTo(ExpectedOrdinal));
 
     [Test]
-    public void MapsImage() => Assert.That(_actual.Image, Is.EqualTo(ExpectedImage));
+    public void MapsImageWithBaseUrlStripped() => Assert.That(_actual.Image, Is.EqualTo(ExpectedImage));
 
     [Test]
     public void EmptyCollectionReturnsEmpty()
     {
-        var actual = new List<RecipeDirectionDto>().ToEntities();
+        var actual = new List<RecipeDirectionDto>().ToEntities(ImageBaseUrl);
 
         Assert.That(actual, Is.Empty);
     }

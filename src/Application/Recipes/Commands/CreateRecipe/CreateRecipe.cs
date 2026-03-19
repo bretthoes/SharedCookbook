@@ -25,7 +25,7 @@ public sealed class CreateRecipeCommandHandler(
             CookingTimeInMinutes = command.Recipe.CookingTimeInMinutes,
             BakingTimeInMinutes = command.Recipe.BakingTimeInMinutes,
             Servings = command.Recipe.Servings,
-            Directions = command.Recipe.Directions.ToEntities().ToList(),
+            Directions = command.Recipe.Directions.ToEntities(options.Value.ImageBaseUrl).ToList(),
             Images = command.Recipe.Images.ToEntities(options.Value.ImageBaseUrl).ToList(),
             Ingredients = command.Recipe.Ingredients.ToEntities().ToList()
         };

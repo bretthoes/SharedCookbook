@@ -10,6 +10,7 @@ public class ToDtosTests
     private const int ExpectedOrdinal = 2;
     private const string ExpectedText = "TestDirectionText";
     private const string ExpectedImage = "TestDirectionImage";
+    private const string ImageBaseUrl = "https://example.com/images/";
 
     private RecipeDirectionDto _actual = null!;
 
@@ -21,7 +22,7 @@ public class ToDtosTests
             new() { Id = ExpectedId, Text = ExpectedText, Ordinal = ExpectedOrdinal, Image = ExpectedImage }
         };
 
-        _actual = sut.ToDtos().Single();
+        _actual = sut.ToDtos(ImageBaseUrl).Single();
     }
 
     [Test]
@@ -34,12 +35,12 @@ public class ToDtosTests
     public void MapsOrdinal() => Assert.That(_actual.Ordinal, Is.EqualTo(ExpectedOrdinal));
 
     [Test]
-    public void MapsImage() => Assert.That(_actual.Image, Is.EqualTo(ExpectedImage));
+    public void MapsImageWithBaseUrlPrefix() => Assert.That(_actual.Image, Is.EqualTo(ImageBaseUrl + ExpectedImage));
 
     [Test]
     public void EmptyCollectionReturnsEmpty()
     {
-        var actual = new List<RecipeDirection>().ToDtos();
+        var actual = new List<RecipeDirection>().ToDtos(ImageBaseUrl);
 
         Assert.That(actual, Is.Empty);
     }

@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options;
 using SharedCookbook.Application.Common.Mappings;
 using SharedCookbook.Application.Images.Commands.CreateImages;
 
@@ -30,7 +30,7 @@ public sealed class UpdateRecipeCommandHandler(IApplicationDbContext context, IO
         recipe.Servings = command.Recipe.Servings;
 
         ReplaceCollection(recipe.Ingredients, newCollection: command.Recipe.Ingredients.ToEntities());
-        ReplaceCollection(recipe.Directions, newCollection: command.Recipe.Directions.ToEntities());
+        ReplaceCollection(recipe.Directions, newCollection: command.Recipe.Directions.ToEntities(options.Value.ImageBaseUrl));
         ReplaceCollection(recipe.Images, newCollection: command.Recipe.Images.ToEntities(options.Value.ImageBaseUrl));
 
         recipe.AddDomainEvent(new RecipeUpdatedEvent(recipe.Id));
