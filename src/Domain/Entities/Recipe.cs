@@ -1,4 +1,4 @@
-﻿namespace SharedCookbook.Domain.Entities;
+namespace SharedCookbook.Domain.Entities;
 
 public sealed class Recipe : BaseAuditableEntity
 {
@@ -33,6 +33,18 @@ public sealed class Recipe : BaseAuditableEntity
     public bool? IsCheap { get; init; }
     
     public bool? IsLowFodmap { get; init; }
+
+    public bool? IsHighProtein { get; set; }
+
+    public bool? IsBreakfast { get; set; }
+
+    public bool? IsLunch { get; set; }
+
+    public bool? IsDinner { get; set; }
+
+    public bool? IsDessert { get; set; }
+
+    public bool? IsSnack { get; set; }
     
     public Cookbook? Cookbook { get; init; }
 
