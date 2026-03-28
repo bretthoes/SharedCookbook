@@ -30,6 +30,21 @@ public sealed class UpdateRecipeCommandHandler(IApplicationDbContext context, IO
             command.Recipe.CookingTimeInMinutes,
             command.Recipe.BakingTimeInMinutes);
         recipe.Servings = command.Recipe.Servings;
+        recipe.DietaryTags = new DietaryTags(
+            command.Recipe.IsVegetarian,
+            command.Recipe.IsVegan,
+            command.Recipe.IsGlutenFree,
+            command.Recipe.IsDairyFree,
+            command.Recipe.IsHealthy,
+            command.Recipe.IsCheap,
+            command.Recipe.IsLowFodmap,
+            command.Recipe.IsHighProtein);
+        recipe.MealTypes = new MealTypes(
+            command.Recipe.IsBreakfast,
+            command.Recipe.IsLunch,
+            command.Recipe.IsDinner,
+            command.Recipe.IsDessert,
+            command.Recipe.IsSnack);
 
         ReplaceCollection(recipe.Ingredients, newCollection: command.Recipe.Ingredients.ToEntities());
         ReplaceCollection(recipe.Directions, newCollection: command.Recipe.Directions.ToEntities(options.Value.ImageBaseUrl));

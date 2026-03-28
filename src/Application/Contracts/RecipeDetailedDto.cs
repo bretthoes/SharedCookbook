@@ -1,4 +1,4 @@
-﻿namespace SharedCookbook.Application.Contracts;
+namespace SharedCookbook.Application.Contracts;
 
 public sealed class RecipeDetailedDto
 {
@@ -25,18 +25,18 @@ public sealed class RecipeDetailedDto
     public int? Servings { get; init; }
     
     public bool? IsVegetarian { get; set; }
-    
     public bool? IsVegan { get; set; }
-    
     public bool? IsGlutenFree { get; set; }
-    
     public bool? IsDairyFree { get; set; }
-    
     public bool? IsHealthy { get; set; }
-    
     public bool? IsCheap { get; set; }
-    
     public bool? IsLowFodmap { get; set; }
+    public bool? IsHighProtein { get; set; }
+    public bool? IsBreakfast { get; set; }
+    public bool? IsLunch { get; set; }
+    public bool? IsDinner { get; set; }
+    public bool? IsDessert { get; set; }
+    public bool? IsSnack { get; set; }
 
     public IReadOnlyCollection<RecipeDirectionDto> Directions { get; init; } = [];
 

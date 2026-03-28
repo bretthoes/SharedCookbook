@@ -27,6 +27,21 @@ public sealed class CreateRecipeCommandHandler(
                 command.Recipe.CookingTimeInMinutes,
                 command.Recipe.BakingTimeInMinutes),
             Servings = command.Recipe.Servings,
+            DietaryTags = new DietaryTags(
+                command.Recipe.IsVegetarian,
+                command.Recipe.IsVegan,
+                command.Recipe.IsGlutenFree,
+                command.Recipe.IsDairyFree,
+                command.Recipe.IsHealthy,
+                command.Recipe.IsCheap,
+                command.Recipe.IsLowFodmap,
+                command.Recipe.IsHighProtein),
+            MealTypes = new MealTypes(
+                command.Recipe.IsBreakfast,
+                command.Recipe.IsLunch,
+                command.Recipe.IsDinner,
+                command.Recipe.IsDessert,
+                command.Recipe.IsSnack),
             Directions = command.Recipe.Directions.ToEntities(options.Value.ImageBaseUrl).ToList(),
             Images = command.Recipe.Images.ToEntities(options.Value.ImageBaseUrl).ToList(),
             Ingredients = command.Recipe.Ingredients.ToEntities().ToList()
