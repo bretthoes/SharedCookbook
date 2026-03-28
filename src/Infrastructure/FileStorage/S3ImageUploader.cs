@@ -1,10 +1,11 @@
-﻿using Amazon;
+using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Transfer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using SharedCookbook.Application.Common;
+using SharedCookbook.Application.Common.Extensions;
 using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Application.Images.Commands.CreateImages;
 using SixLabors.ImageSharp;
@@ -37,7 +38,7 @@ public class S3ImageUploader(IOptions<ImageUploadOptions> storage, IHttpClientFa
                 CannedACL = S3CannedACL.PublicRead,
                 ContentType = img.ContentType
             });
-            keys[i] = key;
+            keys[i] = key.EnsurePrefixUrl(storage.Value.ImageBaseUrl);
         }
 
         return keys;
@@ -61,7 +62,7 @@ public class S3ImageUploader(IOptions<ImageUploadOptions> storage, IHttpClientFa
             ContentType = img.ContentType
         });
 
-        return key;
+        return key.EnsurePrefixUrl(storage.Value.ImageBaseUrl);
     }
 
     private AmazonS3Client GetS3Client() => new(GetCredentials(), RegionEndpoint.USEast2);
