@@ -26,5 +26,22 @@ internal static class GetRecipesDbQuery
     }
     
     private static readonly Expression<Func<Recipe, RecipeBriefDto>> ToBriefDto =
-        recipe => new RecipeBriefDto { Id = recipe.Id, Title = recipe.Title };
+        recipe => new RecipeBriefDto
+        {
+            Id = recipe.Id,
+            Title = recipe.Title,
+            IsVegetarian = recipe.DietaryTags != null ? recipe.DietaryTags.IsVegetarian : null,
+            IsVegan = recipe.DietaryTags != null ? recipe.DietaryTags.IsVegan : null,
+            IsGlutenFree = recipe.DietaryTags != null ? recipe.DietaryTags.IsGlutenFree : null,
+            IsDairyFree = recipe.DietaryTags != null ? recipe.DietaryTags.IsDairyFree : null,
+            IsHealthy = recipe.DietaryTags != null ? recipe.DietaryTags.IsHealthy : null,
+            IsCheap = recipe.DietaryTags != null ? recipe.DietaryTags.IsCheap : null,
+            IsLowFodmap = recipe.DietaryTags != null ? recipe.DietaryTags.IsLowFodmap : null,
+            IsHighProtein = recipe.DietaryTags != null ? recipe.DietaryTags.IsHighProtein : null,
+            IsBreakfast = recipe.MealTypes != null ? recipe.MealTypes.IsBreakfast : null,
+            IsLunch = recipe.MealTypes != null ? recipe.MealTypes.IsLunch : null,
+            IsDinner = recipe.MealTypes != null ? recipe.MealTypes.IsDinner : null,
+            IsDessert = recipe.MealTypes != null ? recipe.MealTypes.IsDessert : null,
+            IsSnack = recipe.MealTypes != null ? recipe.MealTypes.IsSnack : null,
+        };
 }

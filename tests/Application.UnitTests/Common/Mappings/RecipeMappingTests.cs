@@ -23,6 +23,12 @@ public class RecipeMappingTests
     private const bool ExpectedIsDairyFree = true;
     private const bool ExpectedIsGlutenFree = true;
     private const bool ExpectedIsLowFodmap = true;
+    private const bool ExpectedIsHighProtein = true;
+    private const bool ExpectedIsBreakfast = true;
+    private const bool ExpectedIsLunch = true;
+    private const bool ExpectedIsDinner = true;
+    private const bool ExpectedIsDessert = true;
+    private const bool ExpectedIsSnack = true;
     private const string ImageBaseUrl = "https://example.com/images/";
 
     private RecipeDetailedDto _actual = null!;
@@ -47,7 +53,13 @@ public class RecipeMappingTests
                 isHealthy: ExpectedIsHealthy,
                 isCheap: ExpectedIsCheap,
                 isLowFodmap: ExpectedIsLowFodmap,
-                isHighProtein: null)
+                isHighProtein: ExpectedIsHighProtein),
+            MealTypes = new MealTypes(
+                isBreakfast: ExpectedIsBreakfast,
+                isLunch: ExpectedIsLunch,
+                isDinner: ExpectedIsDinner,
+                isDessert: ExpectedIsDessert,
+                isSnack: ExpectedIsSnack)
         };
 
         var mapper = RecipeMapping.ToDetailedDto(ImageBaseUrl).Compile();
@@ -108,5 +120,23 @@ public class RecipeMappingTests
 
     [Test]
     public void MapsIsLowFodmap() => Assert.That(_actual.IsLowFodmap, Is.EqualTo(ExpectedIsLowFodmap));
+
+    [Test]
+    public void MapsIsHighProtein() => Assert.That(_actual.IsHighProtein, Is.EqualTo(ExpectedIsHighProtein));
+
+    [Test]
+    public void MapsIsBreakfast() => Assert.That(_actual.IsBreakfast, Is.EqualTo(ExpectedIsBreakfast));
+
+    [Test]
+    public void MapsIsLunch() => Assert.That(_actual.IsLunch, Is.EqualTo(ExpectedIsLunch));
+
+    [Test]
+    public void MapsIsDinner() => Assert.That(_actual.IsDinner, Is.EqualTo(ExpectedIsDinner));
+
+    [Test]
+    public void MapsIsDessert() => Assert.That(_actual.IsDessert, Is.EqualTo(ExpectedIsDessert));
+
+    [Test]
+    public void MapsIsSnack() => Assert.That(_actual.IsSnack, Is.EqualTo(ExpectedIsSnack));
 }
 

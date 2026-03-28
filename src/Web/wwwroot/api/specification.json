@@ -2100,6 +2100,58 @@
           },
           "title": {
             "type": "string"
+          },
+          "isVegetarian": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "isVegan": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "isGlutenFree": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "isDairyFree": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "isHealthy": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "isCheap": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "isLowFodmap": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "isHighProtein": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "isBreakfast": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "isLunch": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "isDinner": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "isDessert": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "isSnack": {
+            "type": "boolean",
+            "nullable": true
           }
         }
       },
