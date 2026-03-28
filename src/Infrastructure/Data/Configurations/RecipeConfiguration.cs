@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SharedCookbook.Domain.Entities;
 using SharedCookbook.Infrastructure.Identity;
@@ -37,13 +37,37 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
         builder.Property(recipe => recipe.VideoPath)
             .HasMaxLength(Recipe.Constraints.VideoPathMaxLength)
             .HasColumnName("video_path");
-        builder.Property(recipe => recipe.PreparationTimeInMinutes)
-            .HasColumnName("preparation_time_in_minutes");
-        builder.Property(recipe => recipe.CookingTimeInMinutes)
-            .HasColumnName("cooking_time_in_minutes");
-        builder.Property(recipe => recipe.BakingTimeInMinutes)
-            .HasColumnName("baking_time_in_minutes");
 
+        builder.OwnsOne(recipe => recipe.Timing, timing =>
+        {
+            timing.Property(t => t.PreparationMinutes)
+                .HasColumnName("preparation_time_in_minutes");
+            timing.Property(t => t.CookingMinutes)
+                .HasColumnName("cooking_time_in_minutes");
+            timing.Property(t => t.BakingMinutes)
+                .HasColumnName("baking_time_in_minutes");
+        });
+
+        builder.OwnsOne(recipe => recipe.DietaryTags, tags =>
+        {
+            tags.Property(t => t.IsVegetarian).HasColumnName("IsVegetarian");
+            tags.Property(t => t.IsVegan).HasColumnName("IsVegan");
+            tags.Property(t => t.IsGlutenFree).HasColumnName("IsGlutenFree");
+            tags.Property(t => t.IsDairyFree).HasColumnName("IsDairyFree");
+            tags.Property(t => t.IsHealthy).HasColumnName("IsHealthy");
+            tags.Property(t => t.IsCheap).HasColumnName("IsCheap");
+            tags.Property(t => t.IsLowFodmap).HasColumnName("IsLowFodmap");
+            tags.Property(t => t.IsHighProtein).HasColumnName("IsHighProtein");
+        });
+
+        builder.OwnsOne(recipe => recipe.MealTypes, mealTypes =>
+        {
+            mealTypes.Property(t => t.IsBreakfast).HasColumnName("IsBreakfast");
+            mealTypes.Property(t => t.IsLunch).HasColumnName("IsLunch");
+            mealTypes.Property(t => t.IsDinner).HasColumnName("IsDinner");
+            mealTypes.Property(t => t.IsDessert).HasColumnName("IsDessert");
+            mealTypes.Property(t => t.IsSnack).HasColumnName("IsSnack");
+        });
 
         builder.HasOne(recipe => recipe.Cookbook)
             .WithMany(cookbook => cookbook.Recipes)

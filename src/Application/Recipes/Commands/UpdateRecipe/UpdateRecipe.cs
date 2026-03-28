@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Options;
 using SharedCookbook.Application.Common.Mappings;
 using SharedCookbook.Application.Images.Commands.CreateImages;
+using SharedCookbook.Domain.ValueObjects;
 
 namespace SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
 
@@ -24,9 +25,10 @@ public sealed class UpdateRecipeCommandHandler(IApplicationDbContext context, IO
         recipe.Summary = command.Recipe.Summary;
         recipe.Thumbnail = command.Recipe.Thumbnail;
         recipe.VideoPath = command.Recipe.VideoPath;
-        recipe.PreparationTimeInMinutes = command.Recipe.PreparationTimeInMinutes;
-        recipe.CookingTimeInMinutes = command.Recipe.CookingTimeInMinutes;
-        recipe.BakingTimeInMinutes = command.Recipe.BakingTimeInMinutes;
+        recipe.Timing = new Timing(
+            command.Recipe.PreparationTimeInMinutes,
+            command.Recipe.CookingTimeInMinutes,
+            command.Recipe.BakingTimeInMinutes);
         recipe.Servings = command.Recipe.Servings;
 
         ReplaceCollection(recipe.Ingredients, newCollection: command.Recipe.Ingredients.ToEntities());

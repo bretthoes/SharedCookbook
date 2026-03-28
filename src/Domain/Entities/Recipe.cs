@@ -1,3 +1,5 @@
+using SharedCookbook.Domain.ValueObjects;
+
 namespace SharedCookbook.Domain.Entities;
 
 public sealed class Recipe : BaseAuditableEntity
@@ -12,40 +14,14 @@ public sealed class Recipe : BaseAuditableEntity
 
     public string? VideoPath { get; set; }
 
-    public int? PreparationTimeInMinutes { get; set; }
-
-    public int? CookingTimeInMinutes { get; set; }
-
-    public int? BakingTimeInMinutes { get; set; }
-
     public int? Servings { get; set; }
-    
-    public bool? IsVegetarian { get; init; }
-    
-    public bool? IsVegan { get; init; }
-    
-    public bool? IsGlutenFree { get; init; }
-    
-    public bool? IsDairyFree { get; init; }
-    
-    public bool? IsHealthy { get; init; }
-    
-    public bool? IsCheap { get; init; }
-    
-    public bool? IsLowFodmap { get; init; }
 
-    public bool? IsHighProtein { get; set; }
+    public Timing? Timing { get; set; }
 
-    public bool? IsBreakfast { get; set; }
+    public DietaryTags? DietaryTags { get; set; }
 
-    public bool? IsLunch { get; set; }
+    public MealTypes? MealTypes { get; set; }
 
-    public bool? IsDinner { get; set; }
-
-    public bool? IsDessert { get; set; }
-
-    public bool? IsSnack { get; set; }
-    
     public Cookbook? Cookbook { get; init; }
 
     public RecipeNutrition? Nutrition { get; init; }

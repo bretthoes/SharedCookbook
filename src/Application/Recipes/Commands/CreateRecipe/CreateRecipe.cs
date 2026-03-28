@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Options;
 using SharedCookbook.Application.Common.Mappings;
 using SharedCookbook.Application.Images.Commands.CreateImages;
+using SharedCookbook.Domain.ValueObjects;
 
 namespace SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 
@@ -21,9 +22,10 @@ public sealed class CreateRecipeCommandHandler(
             Title = command.Recipe.Title,
             CookbookId = command.Recipe.CookbookId,
             Summary = command.Recipe.Summary,
-            PreparationTimeInMinutes = command.Recipe.PreparationTimeInMinutes,
-            CookingTimeInMinutes = command.Recipe.CookingTimeInMinutes,
-            BakingTimeInMinutes = command.Recipe.BakingTimeInMinutes,
+            Timing = new Timing(
+                command.Recipe.PreparationTimeInMinutes,
+                command.Recipe.CookingTimeInMinutes,
+                command.Recipe.BakingTimeInMinutes),
             Servings = command.Recipe.Servings,
             Directions = command.Recipe.Directions.ToEntities(options.Value.ImageBaseUrl).ToList(),
             Images = command.Recipe.Images.ToEntities(options.Value.ImageBaseUrl).ToList(),

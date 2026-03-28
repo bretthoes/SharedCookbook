@@ -1,6 +1,7 @@
 using SharedCookbook.Application.Common.Mappings;
 using SharedCookbook.Application.Contracts;
 using SharedCookbook.Domain.Entities;
+using SharedCookbook.Domain.ValueObjects;
 
 namespace SharedCookbook.Application.UnitTests.Common.Mappings;
 
@@ -36,17 +37,17 @@ public class RecipeMappingTests
             Summary = ExpectedSummary,
             Thumbnail = ExpectedThumbnail,
             VideoPath = ExpectedVideoPath,
-            PreparationTimeInMinutes = ExpectedPreparationTime,
-            CookingTimeInMinutes = ExpectedCookingTime,
-            BakingTimeInMinutes = ExpectedBakingTime,
+            Timing = new Timing(ExpectedPreparationTime, ExpectedCookingTime, ExpectedBakingTime),
             Servings = ExpectedServings,
-            IsVegan = ExpectedIsVegan,
-            IsVegetarian = ExpectedIsVegetarian,
-            IsCheap = ExpectedIsCheap,
-            IsHealthy = ExpectedIsHealthy,
-            IsDairyFree = ExpectedIsDairyFree,
-            IsGlutenFree = ExpectedIsGlutenFree,
-            IsLowFodmap = ExpectedIsLowFodmap
+            DietaryTags = new DietaryTags(
+                isVegetarian: ExpectedIsVegetarian,
+                isVegan: ExpectedIsVegan,
+                isGlutenFree: ExpectedIsGlutenFree,
+                isDairyFree: ExpectedIsDairyFree,
+                isHealthy: ExpectedIsHealthy,
+                isCheap: ExpectedIsCheap,
+                isLowFodmap: ExpectedIsLowFodmap,
+                isHighProtein: null)
         };
 
         var mapper = RecipeMapping.ToDetailedDto(ImageBaseUrl).Compile();
