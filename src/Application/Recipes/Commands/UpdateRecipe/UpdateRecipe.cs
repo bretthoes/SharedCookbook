@@ -13,7 +13,8 @@ public sealed class UpdateRecipeCommandHandler(IApplicationDbContext context, IO
     public async Task<int> Handle(UpdateRecipeCommand command, CancellationToken cancellationToken)
     {
         var recipe = await context.Recipes
-                         .Include(navigationPropertyPath: recipe => recipe.Ingredients)
+                         .Include(navigationPropertyPath: recipe => recipe.IngredientSections)
+                         .ThenInclude(section => section.Ingredients)
                          .Include(navigationPropertyPath: recipe => recipe.Directions)
                          .Include(navigationPropertyPath: recipe => recipe.Images)
                          .Include(navigationPropertyPath: recipe => recipe.Nutrition)
@@ -46,7 +47,7 @@ public sealed class UpdateRecipeCommandHandler(IApplicationDbContext context, IO
             command.Recipe.IsDessert,
             command.Recipe.IsSnack);
 
-        ReplaceCollection(recipe.Ingredients, newCollection: command.Recipe.Ingredients.ToEntities());
+        ReplaceCollection(recipe.IngredientSections, newCollection: command.Recipe.IngredientSections.ToEntities());
         ReplaceCollection(recipe.Directions, newCollection: command.Recipe.Directions.ToEntities(options.Value.ImageBaseUrl));
         ReplaceCollection(recipe.Images, newCollection: command.Recipe.Images.ToEntities(options.Value.ImageBaseUrl));
 

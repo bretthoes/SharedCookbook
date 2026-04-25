@@ -14,14 +14,14 @@ public class RecipeIngredientConfiguration : IEntityTypeConfiguration<RecipeIngr
             .HasName("PK_recipe_ingredient_id");
 
         builder.HasIndex(
-            recipeIngredient => recipeIngredient.RecipeId,
-            name: "IX_recipe_ingredient__recipe_id");
+            recipeIngredient => recipeIngredient.IngredientSectionId,
+            name: "IX_recipe_ingredient__ingredient_section_id");
 
         builder.Property(recipeIngredient => recipeIngredient.Id)
             .HasColumnName("recipe_ingredient_id")
             .IsRequired();
-        builder.Property(recipeIngredient => recipeIngredient.RecipeId)
-            .HasColumnName("recipe_id")
+        builder.Property(recipeIngredient => recipeIngredient.IngredientSectionId)
+            .HasColumnName("ingredient_section_id")
             .IsRequired();
         builder.Property(recipeIngredient => recipeIngredient.Name)
             .HasMaxLength(RecipeIngredient.Constraints.NameMaxLength)
@@ -34,9 +34,10 @@ public class RecipeIngredientConfiguration : IEntityTypeConfiguration<RecipeIngr
             .HasColumnName("optional")
             .IsRequired();
 
-        builder.HasOne<Recipe>()
-            .WithMany(recipe => recipe.Ingredients)
-            .HasForeignKey(recipeIngredient => recipeIngredient.RecipeId)
-            .HasConstraintName("FK_recipe_ingredient__recipe_id");
+        builder.HasOne<IngredientSection>()
+            .WithMany(section => section.Ingredients)
+            .HasForeignKey(recipeIngredient => recipeIngredient.IngredientSectionId)
+            .HasConstraintName("FK_recipe_ingredient__ingredient_section_id")
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

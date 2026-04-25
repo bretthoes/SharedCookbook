@@ -12,7 +12,7 @@ internal static class RecipeIngredientMapping
         internal IEnumerable<RecipeIngredient> ToEntities() => dtos.Select(ToEntity);
     }
 
-    private static readonly Func<RecipeIngredientDto, RecipeIngredient> ToEntity =
+    internal static readonly Func<RecipeIngredientDto, RecipeIngredient> ToEntity =
         dto => new RecipeIngredient
         {
             Id = dto.Id, Name = dto.Name, Ordinal = dto.Ordinal, Optional = dto.Optional

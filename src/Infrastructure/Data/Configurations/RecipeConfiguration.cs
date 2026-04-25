@@ -90,10 +90,6 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
             .WithOne()
             .HasForeignKey(rd => rd.RecipeId)
             .HasConstraintName("FK_recipe_direction__recipe_id");
-        builder.HasMany(recipe => recipe.Ingredients)
-            .WithOne()
-            .HasForeignKey(ingredient => ingredient.RecipeId)
-            .HasConstraintName("FK_recipe_ingredient__recipe_id");
         builder.HasOne(recipe => recipe.Nutrition)
             .WithOne()
             .HasForeignKey<RecipeNutrition>(nutrition => nutrition.RecipeId)

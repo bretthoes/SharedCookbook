@@ -23,30 +23,41 @@ public class UpdateRecipeCommandValidator : AbstractValidator<UpdateRecipeComman
         
         RuleFor(command => command.Recipe.Directions)
             .Must(directions => directions.Count <= Recipe.Constraints.MaxDirectionCount)
-            .WithMessage("Recipe can only have 40 directions.");
+            .WithMessage($"Recipe can only have {Recipe.Constraints.MaxDirectionCount} directions.");
 
         RuleForEach(command => command.Recipe.Directions)
             .ChildRules(ingredient =>
             {
                 ingredient.RuleFor(dto => dto.Text)
                     .MaximumLength(RecipeDirection.Constraints.TextMaxLength)
-                    .WithMessage("Each direction's text must be at least 1 character and less than 2048.");
+                    .WithMessage($"Each direction's text must be less than {RecipeDirection.Constraints.TextMaxLength}.");
             });
 
-        RuleFor(command => command.Recipe.Ingredients)
-            .Must(directions => directions.Count <= Recipe.Constraints.MaxIngredientCount)
-            .WithMessage("Recipe can only have 40 ingredients.");
+        RuleFor(command => command.Recipe.IngredientSections)
+            .Must(sections => sections.Count <= Recipe.Constraints.MaxIngredientSectionCount)
+            .WithMessage($"Recipe can only have {Recipe.Constraints.MaxIngredientSectionCount} ingredient sections.");
 
-        RuleForEach(command => command.Recipe.Ingredients)
-            .ChildRules(ingredient =>
+        RuleFor(command => command.Recipe.IngredientSections)
+            .Must(sections => sections.Sum(s => s.Ingredients.Count) <= Recipe.Constraints.MaxIngredientCount)
+            .WithMessage($"Recipe can only have {Recipe.Constraints.MaxIngredientCount} ingredients in total.");
+
+        RuleForEach(command => command.Recipe.IngredientSections)
+            .ChildRules(section =>
             {
-                ingredient.RuleFor(dto => dto.Name)
-                    .MaximumLength(RecipeIngredient.Constraints.NameMaxLength)
-                    .WithMessage("Ingredient must be less than 256 characters.");
+                section.RuleFor(s => s.Title)
+                    .MaximumLength(IngredientSection.Constraints.TitleMaxLength)
+                    .WithMessage($"Section title must be at most {IngredientSection.Constraints.TitleMaxLength} characters.");
+                section.RuleForEach(s => s.Ingredients)
+                    .ChildRules(ingredient =>
+                    {
+                        ingredient.RuleFor(dto => dto.Name)
+                            .MaximumLength(RecipeIngredient.Constraints.NameMaxLength)
+                            .WithMessage($"Ingredient must be less {RecipeIngredient.Constraints.NameMaxLength} 256 characters.");
+                    });
             });
 
         RuleFor(command => command.Recipe.Images)
             .Must(images => images.Count <= Recipe.Constraints.MaxImageLength)
-            .WithMessage("Recipe can only have up to 6 images.");
+            .WithMessage($"Recipe can only have up to {Recipe.Constraints.MaxImageLength} images.");
     }
 }
