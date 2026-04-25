@@ -88,7 +88,7 @@ public sealed class ParseRecipeFromImageCommandHandler(IOcrService ocrService)
         CookingTimeInMinutes = null,
         BakingTimeInMinutes = null,
         Servings = null,
-        Ingredients = ingredients,
+        IngredientSections = [IngredientSectionDto.DefaultWrapper(ingredients)],
         Directions = directions,
         Images = [],
         CookbookId = 0
