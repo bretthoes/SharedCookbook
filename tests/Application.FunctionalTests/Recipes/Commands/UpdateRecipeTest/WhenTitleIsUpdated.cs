@@ -57,20 +57,28 @@ public class WhenTitleIsUpdated : BaseTestFixture
         => Assert.That(_actual!.BakingTimeInMinutes, Is.EqualTo(BakingTimeInMinutes));
 
     [Test]
-    public void ShouldHaveIngredients()
-        => Assert.That(_actual!.Ingredients, Has.Count.EqualTo(expected: 1));
+    public void ShouldHaveIngredientSection()
+    {
+        Assert.That(_actual!.IngredientSections, Has.Count.EqualTo(expected: 1));
+    }
     
+    [Test]
+    public void ShouldHaveIngredients()
+    {
+        Assert.That(_actual!.IngredientSections.First().Ingredients, Has.Count.EqualTo(expected: 1));
+    }
+
     [Test]
     public void ShouldHaveIngredientName()
-        => Assert.That(_actual!.Ingredients.First().Name, Is.EqualTo(expected: IngredientName));
-    
+        => Assert.That(_actual!.IngredientSections.First().Ingredients[0].Name, Is.EqualTo(expected: IngredientName));
+
     [Test]
     public void ShouldHaveIngredientOrdinal()
-        => Assert.That(_actual!.Ingredients.First().Ordinal, Is.EqualTo(expected: IngredientOrdinal));
-    
+        => Assert.That(_actual!.IngredientSections.First().Ingredients[0].Ordinal, Is.EqualTo(expected: IngredientOrdinal));
+
     [Test]
     public void ShouldHaveIngredientOptional()
-        => Assert.That(_actual!.Ingredients.First().Optional, Is.EqualTo(expected: IngredientOptional));
+        => Assert.That(_actual!.IngredientSections.First().Ingredients[0].Optional, Is.EqualTo(expected: IngredientOptional));
 
     [Test]
     public void ShouldHaveDirections()

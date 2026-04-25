@@ -90,14 +90,16 @@ public sealed class OpenAiRecipeParser : IAiRecipeParser
             CookingTimeInMinutes = parsed.CookingTimeInMinutes,
             BakingTimeInMinutes = parsed.BakingTimeInMinutes,
             Servings = parsed.Servings,
-            Ingredients = parsed.Ingredients
-                .Select((ing, i) => new RecipeIngredientDto
+            IngredientSections = [
+                IngredientSectionDto.DefaultWrapper(parsed.Ingredients
+                .Select((ingredient, i) => new RecipeIngredientDto
                 {
-                    Name = ing.Name,
-                    Optional = ing.Optional,
+                    Name = ingredient.Name,
+                    Optional = ingredient.Optional,
                     Ordinal = i + 1,
                 })
-                .ToList(),
+                .ToList())
+            ],
             Directions = parsed.Directions
                 .Select((dir, i) => new RecipeDirectionDto
                 {

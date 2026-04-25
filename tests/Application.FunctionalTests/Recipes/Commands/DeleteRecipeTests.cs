@@ -43,15 +43,17 @@ public class DeleteRecipeTests : BaseTestFixture
                         Ordinal = 0
                     }
                 },
-                Ingredients = new List<RecipeIngredientDto>
-                {
-                    new()
-                    {
-                        Name = "Test Ingredient",
-                        Optional = false,
-                        Ordinal = 0
-                    }
-                }
+                IngredientSections = [
+                    IngredientSectionDto.DefaultWrapper(new List<RecipeIngredientDto>
+                    { 
+                        new()
+                        {
+                            Name = "Test Ingredient",
+                            Optional = false,
+                            Ordinal = 0,
+                        }
+                    })
+                ],
             }
         });
 

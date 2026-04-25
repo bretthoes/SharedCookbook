@@ -30,12 +30,14 @@ public static class RecipeTestData
         CookingTimeInMinutes = CookingTimeInMinutes,
         BakingTimeInMinutes = BakingTimeInMinutes,
         Servings = Servings,
-        Ingredients =
-        [
-            new RecipeIngredientDto
+        IngredientSections = [
+            IngredientSectionDto.DefaultWrapper(new List<RecipeIngredientDto>
             {
-                Name = IngredientName, Ordinal = IngredientOrdinal, Optional = IngredientOptional
-            }
+                new()
+                {
+                    Name = IngredientName, Ordinal = IngredientOrdinal, Optional = IngredientOptional
+                }
+            })
         ],
         Directions =
         [
@@ -56,12 +58,21 @@ public static class RecipeTestData
         CookingTimeInMinutes = CookingTimeInMinutes,
         BakingTimeInMinutes = BakingTimeInMinutes,
         Servings = Servings,
-        Ingredients =
+        IngredientSections =
         [
-            new RecipeIngredientDto
+            new IngredientSectionDto
             {
-                Name = IngredientName, Ordinal = IngredientOrdinal, Optional = IngredientOptional
-            }
+                Id = 0,
+                Title = "",
+                Ordinal = 0,
+                Ingredients =
+                [
+                    new RecipeIngredientDto
+                    {
+                        Name = IngredientName, Ordinal = IngredientOrdinal, Optional = IngredientOptional
+                    },
+                ],
+            },
         ],
         Directions =
         [

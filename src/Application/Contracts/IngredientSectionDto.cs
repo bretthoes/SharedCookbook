@@ -9,4 +9,7 @@ public sealed record IngredientSectionDto
     public required int Ordinal { get; init; }
 
     public required IReadOnlyList<RecipeIngredientDto> Ingredients { get; init; }
+    
+    public static IngredientSectionDto DefaultWrapper(IReadOnlyList<RecipeIngredientDto> ingredients) =>
+        new() { Id = 0, Title = string.Empty, Ordinal = 0, Ingredients = ingredients };
 }
