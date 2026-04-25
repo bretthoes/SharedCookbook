@@ -1994,10 +1994,10 @@
               "$ref": "#/components/schemas/RecipeImageDto"
             }
           },
-          "ingredients": {
+          "ingredientSections": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/RecipeIngredientDto"
+              "$ref": "#/components/schemas/IngredientSectionDto"
             }
           }
         }
@@ -2037,6 +2037,29 @@
           "ordinal": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "IngredientSectionDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "ordinal": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecipeIngredientDto"
+            }
           }
         }
       },
@@ -2285,10 +2308,10 @@
               "$ref": "#/components/schemas/RecipeImageDto"
             }
           },
-          "ingredients": {
+          "ingredientSections": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/RecipeIngredientDto"
+              "$ref": "#/components/schemas/IngredientSectionDto"
             }
           }
         }

@@ -25,5 +25,5 @@ public abstract record RecipeDto
     public bool? IsSnack { get; init; }
     public ICollection<RecipeDirectionDto> Directions { get; init; } = [];
     public ICollection<RecipeImageDto> Images { get; init; } = [];
-    public ICollection<RecipeIngredientDto> Ingredients { get; init; } = [];
+    public ICollection<IngredientSectionDto> IngredientSections { get; init; } = [];
 }

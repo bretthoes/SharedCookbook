@@ -42,5 +42,5 @@ public sealed class RecipeDetailedDto
 
     public IReadOnlyCollection<RecipeImageDto> Images { get; init; } = [];
 
-    public IReadOnlyCollection<RecipeIngredientDto> Ingredients { get; init; } = [];
+    public IReadOnlyCollection<IngredientSectionDto> IngredientSections { get; init; } = [];
 }
