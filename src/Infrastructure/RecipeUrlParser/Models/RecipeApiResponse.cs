@@ -32,7 +32,7 @@ public class RecipeApiResponse
         PreparationTimeInMinutes = PreparationMinutes ?? 0,
         CookingTimeInMinutes = CookingMinutes ?? 0,
         BakingTimeInMinutes = null,
-        Ingredients = ExtendedIngredients.ToDtos(),
+        IngredientSections = [IngredientSectionDto.DefaultWrapper(ExtendedIngredients.ToDtos())],
         Directions = RecipeApiResponseExtensions.ExtractDirections(Instructions)
     };
 
