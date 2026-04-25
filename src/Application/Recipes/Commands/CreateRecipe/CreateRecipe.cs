@@ -44,7 +44,7 @@ public sealed class CreateRecipeCommandHandler(
                 command.Recipe.IsSnack),
             Directions = command.Recipe.Directions.ToEntities(options.Value.ImageBaseUrl).ToList(),
             Images = command.Recipe.Images.ToEntities(options.Value.ImageBaseUrl).ToList(),
-            Ingredients = command.Recipe.Ingredients.ToEntities().ToList()
+            IngredientSections = command.Recipe.IngredientSections.ToEntities().ToList()
         };
 
         entity.AddDomainEvent(new RecipeCreatedEvent(entity));

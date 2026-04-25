@@ -36,16 +36,27 @@ public class CreateRecipeCommandValidator : AbstractValidator<CreateRecipeComman
                     .WithMessage("Each direction's text must be at least 1 character and less than 2048.");
             });
 
-        RuleFor(command => command.Recipe.Ingredients)
-            .Must(directions => directions.Count < 40)
-            .WithMessage("Recipe must have fewer than 40 directions.");
+        RuleFor(command => command.Recipe.IngredientSections)
+            .Must(sections => sections.Count <= Recipe.Constraints.MaxIngredientSectionCount)
+            .WithMessage($"Recipe can only have {Recipe.Constraints.MaxIngredientSectionCount} ingredient sections.");
 
-        RuleForEach(command => command.Recipe.Ingredients)
-            .ChildRules(ingredient =>
+        RuleFor(command => command.Recipe.IngredientSections)
+            .Must(sections => sections.Sum(s => s.Ingredients.Count) <= Recipe.Constraints.MaxIngredientCount)
+            .WithMessage($"Recipe can only have {Recipe.Constraints.MaxIngredientCount} ingredients in total.");
+
+        RuleForEach(command => command.Recipe.IngredientSections)
+            .ChildRules(section =>
             {
-                ingredient.RuleFor(dto => dto.Name)
-                    .MaximumLength(RecipeIngredient.Constraints.NameMaxLength)
-                    .WithMessage("Ingredient must be less than 256 characters.");
+                section.RuleFor(s => s.Title)
+                    .MaximumLength(IngredientSection.Constraints.TitleMaxLength)
+                    .WithMessage($"Section title must be at most {IngredientSection.Constraints.TitleMaxLength} characters.");
+                section.RuleForEach(s => s.Ingredients)
+                    .ChildRules(ingredient =>
+                    {
+                        ingredient.RuleFor(dto => dto.Name)
+                            .MaximumLength(RecipeIngredient.Constraints.NameMaxLength)
+                            .WithMessage("Ingredient must be less than 256 characters.");
+                    });
             });
 
         RuleFor(command => command.Recipe.Images)
