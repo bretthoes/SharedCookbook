@@ -2,7 +2,7 @@
 
 public sealed class RecipeIngredient : BaseAuditableEntity
 {
-    public int RecipeId { get; init; }
+    public int IngredientSectionId { get; init; }
 
     public required string Name
     {

@@ -28,7 +28,7 @@ public sealed class Recipe : BaseAuditableEntity
 
     public ICollection<RecipeDirection> Directions { get; init; } = [];
 
-    public ICollection<RecipeIngredient> Ingredients { get; init; } = [];
+    public ICollection<IngredientSection> IngredientSections { get; init; } = [];
 
     public ICollection<RecipeImage> Images { get; init; } = [];
 
@@ -37,6 +37,7 @@ public sealed class Recipe : BaseAuditableEntity
         public const int MaxImageLength = 6;
         public const int MaxDirectionCount = 40;
         public const int MaxIngredientCount = 40;
+        public const int MaxIngredientSectionCount = 6;
         public const int TitleMaxLength = 255;
         public const int SummaryMaxLength = 2048;
         public const int ThumbnailMaxLength = 2048;
