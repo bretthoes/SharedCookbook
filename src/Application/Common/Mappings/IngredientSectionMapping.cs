@@ -4,7 +4,7 @@ internal static class IngredientSectionMapping
 {
     extension(IEnumerable<IngredientSection> sections)
     {
-        internal IEnumerable<IngredientSectionDto> ToDtos() => sections.Select(ToDto);
+        internal IEnumerable<IngredientSectionDto> ToDtos() => sections.Select(ToDto).OrderBy(dto => dto.Ordinal);
     }
 
     extension(IEnumerable<IngredientSectionDto> dtos)
@@ -27,6 +27,6 @@ internal static class IngredientSectionMapping
             Id = section.Id,
             Title = section.Title,
             Ordinal = section.Ordinal,
-            Ingredients = section.Ingredients.ToDtos().ToList(),
+            Ingredients = section.Ingredients.OrderBy(ingredient => ingredient.Ordinal).ToDtos().ToList(),
         };
 }

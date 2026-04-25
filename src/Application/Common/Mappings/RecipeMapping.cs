@@ -16,7 +16,7 @@ internal static class RecipeMapping
             Servings = recipe.Servings,
             Directions = recipe.Directions.ToDtos(imageBaseUrl).ToList(),
             Images = recipe.Images.ToDtos(imageBaseUrl).ToList(),
-            Ingredients = recipe.Ingredients.ToDtos().ToList(),
+            IngredientSections = recipe.IngredientSections.ToDtos().ToList(),
             IsVegetarian = recipe.DietaryTags != null ? recipe.DietaryTags.IsVegetarian : null,
             IsVegan = recipe.DietaryTags != null ? recipe.DietaryTags.IsVegan : null,
             IsGlutenFree = recipe.DietaryTags != null ? recipe.DietaryTags.IsGlutenFree : null,
