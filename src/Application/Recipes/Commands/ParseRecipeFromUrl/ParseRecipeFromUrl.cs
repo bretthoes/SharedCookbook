@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Options;
-using SharedCookbook.Application.Common.Extensions;
 using SharedCookbook.Application.Images.Commands.CreateImages;
 
 namespace SharedCookbook.Application.Recipes.Commands.ParseRecipeFromUrl;

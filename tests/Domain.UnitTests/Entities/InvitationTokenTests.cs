@@ -3,10 +3,10 @@ using SharedCookbook.Domain.ValueObjects;
 
 namespace SharedCookbook.Domain.UnitTests.Entities;
 
-public class InvitationTokenTests
+public class InvitationTokenTests 
 {
     [Test]
-    public void TokenCreatedOverTwoWeeksAgoIsRedeemable()
+    public void TokenCreatedOverTwoWeeksAgoIsNotRedeemable()
     {
         var sut = InvitationToken.IssueNewToken(digest: It.IsAny<TokenDigest>(), cookbookId: It.IsAny<int>());
         
@@ -16,7 +16,7 @@ public class InvitationTokenTests
     }
 
     [Test]
-    public void TokenCreatedWithinTwoWeeksIsNotExpired()
+    public void TokenCreatedWithinTwoWeeksIsRedeemable()
     {
         var sut = InvitationToken.IssueNewToken(digest: It.IsAny<TokenDigest>(), cookbookId: It.IsAny<int>());
         
