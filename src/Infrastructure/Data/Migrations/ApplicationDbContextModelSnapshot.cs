@@ -596,6 +596,10 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
 
+                    b.Property<int>("IngredientSectionId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ingredient_section_id");
+
                     b.Property<DateTimeOffset>("LastModified")
                         .HasColumnType("timestamp with time zone");
 
@@ -616,16 +620,55 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("ordinal");
 
+                    b.HasKey("Id")
+                        .HasName("PK_recipe_ingredient_id");
+
+                    b.HasIndex(new[] { "IngredientSectionId" }, "IX_recipe_ingredient__ingredient_section_id");
+
+                    b.ToTable("recipe_ingredient", (string)null);
+                });
+
+            modelBuilder.Entity("SharedCookbook.Domain.Entities.IngredientSection", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("ingredient_section_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Ordinal")
+                        .HasColumnType("integer")
+                        .HasColumnName("ordinal");
+
                     b.Property<int>("RecipeId")
                         .HasColumnType("integer")
                         .HasColumnName("recipe_id");
 
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("title");
+
                     b.HasKey("Id")
-                        .HasName("PK_recipe_ingredient_id");
+                        .HasName("PK_ingredient_section_id");
 
-                    b.HasIndex(new[] { "RecipeId" }, "IX_recipe_ingredient__recipe_id");
+                    b.HasIndex(new[] { "RecipeId" }, "IX_ingredient_section__recipe_id");
 
-                    b.ToTable("recipe_ingredient", (string)null);
+                    b.ToTable("ingredient_section", (string)null);
                 });
 
             modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeNutrition", b =>
@@ -1067,7 +1110,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                                 .HasForeignKey("RecipeId");
                         });
 
-                    b.OwnsOne("SharedCookbook.Domain.ValueObjects.RecipeTiming", "Timing", b1 =>
+                    b.OwnsOne("SharedCookbook.Domain.ValueObjects.Timing", "Timing", b1 =>
                         {
                             b1.Property<int>("RecipeId")
                                 .HasColumnType("integer");
@@ -1123,12 +1166,22 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeIngredient", b =>
                 {
-                    b.HasOne("SharedCookbook.Domain.Entities.Recipe", null)
+                    b.HasOne("SharedCookbook.Domain.Entities.IngredientSection", null)
                         .WithMany("Ingredients")
+                        .HasForeignKey("IngredientSectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_recipe_ingredient__ingredient_section_id");
+                });
+
+            modelBuilder.Entity("SharedCookbook.Domain.Entities.IngredientSection", b =>
+                {
+                    b.HasOne("SharedCookbook.Domain.Entities.Recipe", null)
+                        .WithMany("IngredientSections")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK_recipe_ingredient__recipe_id");
+                        .HasConstraintName("FK_ingredient_section__recipe_id");
                 });
 
             modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeNutrition", b =>
@@ -1158,9 +1211,14 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
 
                     b.Navigation("Images");
 
-                    b.Navigation("Ingredients");
+                    b.Navigation("IngredientSections");
 
                     b.Navigation("Nutrition");
+                });
+
+            modelBuilder.Entity("SharedCookbook.Domain.Entities.IngredientSection", b =>
+                {
+                    b.Navigation("Ingredients");
                 });
 #pragma warning restore 612, 618
         }

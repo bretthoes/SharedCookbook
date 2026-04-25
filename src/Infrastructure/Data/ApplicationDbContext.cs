@@ -28,6 +28,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public DbSet<RecipeIngredient> RecipeIngredients => Set<RecipeIngredient>();
 
+    public DbSet<IngredientSection> IngredientSections => Set<IngredientSection>();
+
     public DbSet<RecipeNutrition> RecipeNutritions => Set<RecipeNutrition>();
 
     public bool HasChanges() => ChangeTracker.HasChanges();
