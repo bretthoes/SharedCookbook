@@ -50,12 +50,12 @@ public class Recipes : EndpointGroupBase
         return Results.NoContent();
     }
 
-    private static Task<CreateRecipeDto> ParseFromImage(ISender sender, [FromForm] IFormFile file) =>
-        sender.Send(new ParseRecipeFromImageCommand(file));
+    private static Task<CreateRecipeDto> ParseFromImage(ISender sender, [FromForm] IFormFile file)
+        => sender.Send(new ParseRecipeFromImageCommand(file));
 
-    private static Task<CreateRecipeDto> ParseFromUrl(ISender sender, [FromBody] ParseRecipeFromUrlCommand command) =>
-        sender.Send(command);
+    private static Task<CreateRecipeDto> ParseFromUrl(ISender sender, [FromBody] ParseRecipeFromUrlCommand command) 
+        => sender.Send(command);
 
-    private static Task<CreateRecipeDto> ParseFromVoice(ISender sender, [FromBody] ParseRecipeFromVoiceCommand command) =>
-        sender.Send(command);
+    private static Task<CreateRecipeDto> ParseFromVoice(ISender sender, [FromBody] ParseRecipeFromVoiceCommand command)
+        => sender.Send(command);
 }
