@@ -14,31 +14,29 @@ public sealed class SpoonacularApiParser(
     ILogger<SpoonacularApiParser> logger) : IRecipeUrlParser
 {
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
+    private readonly string _apiUrl = $"{options.Value.BaseUrl}/recipes/extract";
+    private readonly string _true = true.ToString().ToLowerInvariant();
+    private readonly string _false = false.ToString().ToLowerInvariant();
 
-    public async Task<CreateRecipeDto> Parse(string url, CancellationToken cancellationToken, bool extractFromVideo = false)
+    public async Task<CreateRecipeDto> Parse(string url, CancellationToken ct, bool extractFromVideo = false)
     {
-        string apiUrl = $"{options.Value.BaseUrl}/recipes/extract";
-
         var queryParams = new Dictionary<string, string?>
         {
             ["url"] = url,
-            ["forceExtraction"] = "true",
-            ["analyze"] = "false",
-            ["includeNutrition"] = "false",
-            ["includeTaste"] = "false",
-            ["extractFromVideo"] = extractFromVideo ? "true" : "false",
+            ["forceExtraction"] = _true,
+            ["analyze"] = _false,
+            ["includeNutrition"] = _false,
+            ["includeTaste"] = _false,
+            ["extractFromVideo"] = extractFromVideo ? _true : _false,
             ["apiKey"] = options.Value.ApiKey
         };
-        string requestUri = QueryHelpers.AddQueryString(apiUrl, queryParams!);
+        string requestUri = QueryHelpers.AddQueryString(_apiUrl, queryParams);
 
-        var http = clientFactory.CreateClient();
+        using var http = clientFactory.CreateClient();
         using var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
         request.Headers.Accept.ParseAdd("application/json");
 
-        using var response = await http.SendAsync(
-            request,
-            HttpCompletionOption.ResponseHeadersRead,
-            cancellationToken);
+        using var response = await http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ct);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -50,15 +48,26 @@ public sealed class SpoonacularApiParser(
             throw new HttpRequestException("Failed to fetch or parse the recipe from the URL.");
         }
 
-        string content = await response.Content.ReadAsStringAsync(cancellationToken);
-        var apiResponse = JsonSerializer.Deserialize<RecipeApiResponse>(content, JsonOptions)
-                          ?? throw new JsonException("Received null payload.");
+        var apiResponse = JsonSerializer.Deserialize<RecipeApiResponse>(
+            await response.Content.ReadAsStringAsync(ct), 
+            JsonOptions) 
+            ?? throw new JsonException("Received null payload.");
 
-        string imageKey = "";
-        if (Uri.IsWellFormedUriString(apiResponse.Image, UriKind.Absolute))
-            imageKey = await imageUploader.UploadImageFromUrl(apiResponse.Image);
-        apiResponse.Image = imageKey;
 
-        return apiResponse.ToDto();
+        string? uploadedKey = null;
+        if (!apiResponse.HasImage()) return apiResponse.ToDto(uploadedKey);
+        try { uploadedKey = await imageUploader.UploadImageFromUrl(apiResponse.Image!); }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested) { throw; }
+        // swallow exception if image upload fails; don't let a bad or
+        // missing image stop a user from importing a recipe from a URL
+        catch (Exception ex) 
+        {
+            logger.LogWarning(
+                ex,
+                message: "Spoonacular image upload failed, continuing without image: {ImageUrl}",
+                apiResponse.Image);
+        }
+
+        return apiResponse.ToDto(uploadedKey);
     }
 }

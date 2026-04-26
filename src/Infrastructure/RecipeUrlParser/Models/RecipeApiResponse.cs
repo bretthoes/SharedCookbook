@@ -11,7 +11,7 @@ public class RecipeApiResponse
 {
     public string? Title { get; init; }
     public string? Summary { get; init; }
-    public string? Image { get; set; }
+    public string? Image { get; init; }
     public int? Servings { get; init; }
     public List<Ingredient>? ExtendedIngredients { get; init; }
     public string? Instructions { get; init; }
@@ -20,12 +20,12 @@ public class RecipeApiResponse
 
     public bool HasImage() => Image is not null && Image.IsValidUrl();
 
-    public CreateRecipeDto ToDto() => new()
+    public CreateRecipeDto ToDto(string? imageKey) => new()
     {
         Title = Title?.Truncate(Recipe.Constraints.TitleMaxLength) ?? "",
-        Images = string.IsNullOrWhiteSpace(Image)
+        Images = string.IsNullOrWhiteSpace(imageKey)
             ? []
-            : [new RecipeImageDto { Name = Image, Ordinal = 1 }],
+            : [new RecipeImageDto { Name = imageKey, Ordinal = 1 }],
         CookbookId = 0,
         Summary = ExtractSummary(Summary),
         Servings = Servings ?? 0,

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using SharedCookbook.Application.Common;
 using SharedCookbook.Application.Common.Extensions;
+using SharedCookbook.Application.Common.Exceptions;
 using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Application.Images.Commands.CreateImages;
 using SixLabors.ImageSharp;
@@ -46,10 +47,12 @@ public class S3ImageUploader(IOptions<ImageUploadOptions> storage, IHttpClientFa
 
     public async Task<string> UploadImageFromUrl(string url)
     {
+        if (string.IsNullOrWhiteSpace(url)) throw new InvalidImageUrlException();
+            
         using var client = GetS3Client();
         using var transferUtility = new TransferUtility(client);
 
-        await using var stream = await DownloadImageFromUrl(url);
+        await using var stream = await DownloadImageFromUrl(url) ?? throw new ImageDownloadFailedException(url);
         await using var img = await ProcessToSquareAsync(stream);
 
         var key = ImageUtilities.GetUniqueFileName(img.Extension);
@@ -119,15 +122,17 @@ public class S3ImageUploader(IOptions<ImageUploadOptions> storage, IHttpClientFa
         return new ProcessedImage { Stream = output, Extension = ext, ContentType = contentType };
     }
     
-    private async Task<Stream> DownloadImageFromUrl(string imageUrl)
+    private async Task<Stream?> DownloadImageFromUrl(string imageUrl)
     {
         var httpClient = clientFactory.CreateClient();
 
         var response = await httpClient.GetAsync(imageUrl);
-        if (DownloadFailed(response))
-            throw new InvalidOperationException($"Failed to download image from URL: {imageUrl}. Status: {response.StatusCode}");
+        if (!DownloadFailed(response))
+            return await response.Content.ReadAsStreamAsync();
 
-        return await response.Content.ReadAsStreamAsync();
+        response.Dispose();
+        return null;
+
     }
 
     private static bool DownloadFailed(HttpResponseMessage? response) => response is { IsSuccessStatusCode: false };
