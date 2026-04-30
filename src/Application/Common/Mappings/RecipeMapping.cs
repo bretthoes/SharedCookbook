@@ -16,7 +16,11 @@ internal static class RecipeMapping
             Servings = recipe.Servings,
             Directions = recipe.Directions.ToDtos(imageBaseUrl).ToList(),
             Images = recipe.Images.ToDtos(imageBaseUrl).ToList(),
-            IngredientSections = recipe.IngredientSections.ToDtos().ToList(),
+            IngredientSections = recipe.IngredientSections // TODO we can't abstract these LINQ methods due to nested collection; EF Core can't resolve the query otherwise 
+                .OrderBy(section => section.Ordinal)
+                .AsQueryable()
+                .Select(IngredientSectionMapping.ToDtoExpression)
+                .ToList(),
             IsVegetarian = recipe.DietaryTags != null ? recipe.DietaryTags.IsVegetarian : null,
             IsVegan = recipe.DietaryTags != null ? recipe.DietaryTags.IsVegan : null,
             IsGlutenFree = recipe.DietaryTags != null ? recipe.DietaryTags.IsGlutenFree : null,

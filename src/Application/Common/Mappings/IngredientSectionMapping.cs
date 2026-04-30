@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 namespace SharedCookbook.Application.Common.Mappings;
 
 internal static class IngredientSectionMapping
@@ -21,12 +23,19 @@ internal static class IngredientSectionMapping
             Ingredients = dto.Ingredients.Select(RecipeIngredientMapping.ToEntity).ToList(),
         };
 
-    private static readonly Func<IngredientSection, IngredientSectionDto> ToDto =
+    internal static readonly Expression<Func<IngredientSection, IngredientSectionDto>> ToDtoExpression =
         section => new IngredientSectionDto
         {
             Id = section.Id,
             Title = section.Title,
             Ordinal = section.Ordinal,
-            Ingredients = section.Ingredients.OrderBy(ingredient => ingredient.Ordinal).ToDtos().ToList(),
+            Ingredients = section.Ingredients
+                .OrderBy(ingredient => ingredient.Ordinal)
+                .AsQueryable()
+                .Select(RecipeIngredientMapping.ToDtoExpression)
+                .ToList(),
         };
+
+    private static readonly Func<IngredientSection, IngredientSectionDto> ToDto =
+        ToDtoExpression.Compile();
 }
