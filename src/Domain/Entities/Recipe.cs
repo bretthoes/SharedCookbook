@@ -4,7 +4,7 @@ namespace SharedCookbook.Domain.Entities;
 
 public sealed class Recipe : BaseAuditableEntity
 {
-    public int CookbookId { get; set; }
+    public int CookbookId { get; init; }
 
     public required string Title { get; set; }
 
@@ -16,11 +16,11 @@ public sealed class Recipe : BaseAuditableEntity
 
     public int? Servings { get; set; }
 
-    public Timing? Timing { get; set; }
+    public required Timing Timing { get; set; }
 
-    public DietaryTags? DietaryTags { get; set; }
+    public required DietaryTags DietaryTags { get; set; }
 
-    public MealTypes? MealTypes { get; set; }
+    public required MealTypes MealTypes { get; set; }
 
     public Cookbook? Cookbook { get; init; }
 

@@ -55,13 +55,13 @@ public class WhenRecipeIsValid : BaseTestFixture
     
     [Test]
     public void ShouldHavePreparationTimeInMinutes()
-        => Assert.That(_actual!.Timing?.PreparationMinutes, Is.EqualTo(PreparationTimeInMinutes));
+        => Assert.That(_actual!.Timing.PreparationMinutes, Is.EqualTo(PreparationTimeInMinutes));
     
     [Test]
     public void ShouldHaveCookingTimeInMinutes()
-        => Assert.That(_actual!.Timing?.CookingMinutes, Is.EqualTo(CookingTimeInMinutes));
+        => Assert.That(_actual!.Timing.CookingMinutes, Is.EqualTo(CookingTimeInMinutes));
     
     [Test]
     public void ShouldHaveBakingTimeInMinutes()
-        => Assert.That(_actual!.Timing?.BakingMinutes, Is.EqualTo(BakingTimeInMinutes));
+        => Assert.That(_actual!.Timing.BakingMinutes, Is.EqualTo(BakingTimeInMinutes));
 }

@@ -1137,11 +1137,14 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
 
                     b.Navigation("Cookbook");
 
-                    b.Navigation("DietaryTags");
+                    b.Navigation("DietaryTags")
+                        .IsRequired();
 
-                    b.Navigation("MealTypes");
+                    b.Navigation("MealTypes")
+                        .IsRequired();
 
-                    b.Navigation("Timing");
+                    b.Navigation("Timing")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeDirection", b =>

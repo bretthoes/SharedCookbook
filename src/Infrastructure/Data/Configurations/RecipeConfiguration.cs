@@ -69,6 +69,11 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
             mealTypes.Property(t => t.IsSnack).HasColumnName("IsSnack");
         });
 
+        // Always materialize owned slices even when all mapped columns are null (see EF warning 20606).
+        builder.Navigation(recipe => recipe.Timing).IsRequired();
+        builder.Navigation(recipe => recipe.DietaryTags).IsRequired();
+        builder.Navigation(recipe => recipe.MealTypes).IsRequired();
+
         builder.HasOne(recipe => recipe.Cookbook)
             .WithMany(cookbook => cookbook.Recipes)
             .HasForeignKey(recipe => recipe.CookbookId)
