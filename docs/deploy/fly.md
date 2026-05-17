@@ -12,12 +12,7 @@ The full file is at the repo root: [fly.toml](../../fly.toml). Key sections:
 
 ### Build
 
-```toml
-[build]
-  dockerfile = "src/Web/Dockerfile"
-```
-
-Tells Fly to build from [src/Web/Dockerfile](../../src/Web/Dockerfile) instead of the repo root (the default). The Dockerfile is a 3-stage build: SDK build → publish → ASP.NET runtime with [Tesseract OCR](../features/tesseract-ocr.md) baked in.
+Fly uses the repo-root [Dockerfile](../../Dockerfile) by default (no `[build]` section in `fly.toml`). It is a 3-stage build: SDK build → publish → ASP.NET runtime with [Tesseract OCR](../features/tesseract-ocr.md) baked in.
 
 ### Env
 
@@ -63,11 +58,11 @@ Smallest practical size for a .NET API. Scale up later with `fly scale memory 10
 
 ## Postgres
 
-Created with **Fly Postgres (unmanaged)**, not Managed Postgres (MPG). MPG is $38/mo minimum; the unmanaged Postgres app uses the free volume allowance and costs near $0 for a side project.
+Created with **Fly Postgres (unmanaged)**.
 
 ```powershell
 fly postgres create --name sharedcookbook-db --region iad
-# Chose: Development (single node), 1 GB volume, scale-to-zero after 1 hour
+# Development (single node), 1 GB volume, scale-to-zero after 1 hour
 ```
 
 ### Connection string

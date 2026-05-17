@@ -12,9 +12,7 @@
       - "5432:5432"
 
   web:
-    build:
-      context: .
-      dockerfile: src/Web/Dockerfile
+    build: .
     depends_on:
       - database
     ports:

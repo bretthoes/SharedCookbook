@@ -25,7 +25,7 @@ Triggered by the CI workflow finishing on `master`. If CI passed, it installs `f
 2. On green, "Deploy to Fly.io" starts automatically.
 3. It runs `flyctl deploy --remote-only`, which:
   - Sends the source to a Fly remote builder.
-  - Builds the Docker image from [src/Web/Dockerfile](../../src/Web/Dockerfile).
+  - Builds the Docker image from [Dockerfile](../../Dockerfile).
   - Rolls out new machines, waiting for the `/health` check to pass before killing the old ones.
 4. ~5 mins later, `https://sharedcookbook-api.fly.dev/health` reflects the new version.
 

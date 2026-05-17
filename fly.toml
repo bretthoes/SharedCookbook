@@ -6,9 +6,6 @@
 app = 'sharedcookbook-api'
 primary_region = 'iad'
 
-[build]
-  dockerfile = 'src/Web/Dockerfile'
-
 [env]
   ASPNETCORE_ENVIRONMENT = 'Production'
   ASPNETCORE_URLS = 'http://+:8080'
