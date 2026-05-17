@@ -18,7 +18,11 @@ if (app.Environment.IsProduction())
 {
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
-    app.UseHttpsRedirection();
+    
+    // HTTPS redirection is handled by the Fly.io edge proxy (force_https = true in fly.toml);
+    // the app itself only ever receives plain HTTP from the proxy, so calling UseHttpsRedirection
+    // here would cause a redirect loop.
+    //app.UseHttpsRedirection();
 }
 
 app.UseRateLimiter();
