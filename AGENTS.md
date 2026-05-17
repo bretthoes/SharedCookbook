@@ -12,24 +12,18 @@ Backend API for the [cookbook-mobile](https://github.com/bretthoes/cookbook-mobi
 | Domain | `src/Domain/` | Entities, domain logic |
 | Infrastructure | `src/Infrastructure/` | EF Core, external services; migrations under `Data/Migrations/` |
 | Tests | `tests/*` | Unit, integration, functional (NUnit) |
-| Local DB | `compose.yaml` | Postgres only, or use with `web` service for full container run |
 | Solution | `SharedCookbook.slnx` | XML solution (not `.sln`); root also has `Directory.Build.props`, `Directory.Packages.props` |
+| Production image | `Dockerfile` | Fly.io deploy only; see `docs/deploy/` |
 | SDK pin | `global.json` | .NET 10.0.100, `rollForward: latestFeature` |
 
 ## Prerequisites
 
 - .NET SDK matching `global.json` (10.0.100+ as configured).
-- PostgreSQL for local dev: `appsettings.Development.json` uses `127.0.0.1:5432`, database `SharedCookbookDb`, user `postgres`, password `admin` — aligned with `compose.yaml` `database` service.
+- PostgreSQL for local dev: `src/Web/appsettings.Development.json` expects Postgres at `127.0.0.1:5432`, database `SharedCookbookDb`, user `postgres`, password `admin`. Ensure a matching instance is running before starting the API.
 
 ## Run locally
 
-1. Start Postgres (from repo root):
-
-   ```bash
-   docker compose up database
-   ```
-
-   Or run only the DB in the background as you prefer.
+1. Ensure Postgres is running and matches the connection string in `appsettings.Development.json`.
 
 2. Run the API:
 
@@ -45,10 +39,6 @@ Backend API for the [cookbook-mobile](https://github.com/bretthoes/cookbook-mobi
    - Health: `GET https://localhost:5001/health` (or HTTP on 5000)
 
 The mobile dev client is configured for **HTTP on port 5000** against the host (`http://127.0.0.1:5000/api` on iOS simulator; `http://10.0.2.2:5000/api` on Android emulator). Keep that profile when testing with cookbook-mobile.
-
-## Docker (full stack)
-
-From repo root, `docker compose up` builds `web` (depends on `database`). Compose maps **HTTP** on host port **8080** to the container; inside compose, the app uses the `database` hostname for Postgres (not `localhost`).
 
 ## Build and test
 
