@@ -12,7 +12,7 @@ The full file is at the repo root: [fly.toml](../../fly.toml). Key sections:
 
 ### Build
 
-Fly uses the repo-root [Dockerfile](../../Dockerfile) by default (no `[build]` section in `fly.toml`). It is a 3-stage build: SDK build → publish → ASP.NET runtime with [Tesseract OCR](../features/tesseract-ocr.md) baked in.
+Fly uses the repo-root [Dockerfile](../../Dockerfile) by default (no `[build]` section in `fly.toml`). It is a 3-stage build: SDK build → publish → ASP.NET runtime with [recipe from photo](../features/recipe-from-photo.md) baked in.
 
 ### Env
 
