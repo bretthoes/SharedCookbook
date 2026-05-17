@@ -1,4 +1,4 @@
-# Recipe from photo
+﻿# Recipe from photo
 
 The mobile app lets a user take a picture of a recipe (a cookbook page, a handwritten card, a screenshot). The API extracts text from the image, parses it into a recipe shape, and returns a draft the client can edit before saving.
 
@@ -21,14 +21,14 @@ private static Task<CreateRecipeDto> ParseFromImage(ISender sender, [FromForm] I
 
 [src/Application/Recipes/Commands/ParseRecipeFromImage/ParseRecipeFromImage.cs](../../src/Application/Recipes/Commands/ParseRecipeFromImage/ParseRecipeFromImage.cs)
 
-The handler runs OCR, then parses the resulting plain text into a `CreateRecipeDto`. Parsing is **deliberately simple** — string splits and one regex — because the user gets to review and edit the result on the mobile side before save:
+The handler runs OCR, then parses the resulting plain text into a `CreateRecipeDto`. Parsing is **deliberately simple** - string splits and one regex - because the user gets to review and edit the result on the mobile side before save:
 
 - **Title**: first non-empty line.
 - **Ingredients**: lines matching `^- (.+?)( \(optional\))?$`. A leading `-`  is required; `(optional)` is captured into the ingredient's `Optional` flag.
 - **Directions**: every non-empty line after a line that starts with `Directions`, `Steps`, or `Instructions` (case-insensitive).
 - Everything else (`Summary`, times, servings, images, cookbook id) is left blank and filled in by the user in the app.
 
-There is a `// TODO refactor parsing logic to a separate service` note — the parsing is fine inline for now but could move to its own class if it grows.
+There is a `// TODO refactor parsing logic to a separate service` note - the parsing is fine inline for now but could move to its own class if it grows.
 
 ## OCR implementation (Tesseract)
 
@@ -50,7 +50,7 @@ using var engine = new TesseractEngine(DataPath, Language, EngineMode.Default);
 
 ### NuGet packages
 
-[Directory.Packages.props](../../Directory.Packages.props) → [src/Infrastructure/Infrastructure.csproj](../../src/Infrastructure/Infrastructure.csproj):
+[Directory.Packages.props](../../Directory.Packages.props) -> [src/Infrastructure/Infrastructure.csproj](../../src/Infrastructure/Infrastructure.csproj):
 
 
 | Package             | Version | Purpose                                        |
@@ -59,7 +59,7 @@ using var engine = new TesseractEngine(DataPath, Language, EngineMode.Default);
 | `Tesseract.Drawing` | 5.2.0   | `Pix` adapters for `System.Drawing` types      |
 
 
-These NuGets do **not** ship the Tesseract C library or language data — they only call out to system-installed natives. That's what makes the Dockerfile a load-bearing part of this feature.
+These NuGets do **not** ship the Tesseract C library or language data - they only call out to system-installed natives. That's what makes the Dockerfile a load-bearing part of this feature.
 
 ### Language data (`tessdata`)
 
@@ -69,11 +69,11 @@ These NuGets do **not** ship the Tesseract C library or language data — they o
 
 **The English trained-data file (`eng.traineddata`) is required at runtime and must be present in `src/Web/wwwroot/tessdata/` before the Docker image is built.** Grab it from one of the official Tesseract repos and drop it into that folder:
 
-- [tessdata_fast](https://github.com/tesseract-ocr/tessdata_fast) — smaller / faster (~2 MB)
-- [tessdata](https://github.com/tesseract-ocr/tessdata) — middle ground
-- [tessdata_best](https://github.com/tesseract-ocr/tessdata_best) — slowest / most accurate
+- [tessdata_fast](https://github.com/tesseract-ocr/tessdata_fast) - smaller / faster (~2 MB)
+- [tessdata](https://github.com/tesseract-ocr/tessdata) - middle ground
+- [tessdata_best](https://github.com/tesseract-ocr/tessdata_best) - slowest / most accurate
 
-If the file is missing, `TesseractOcrService.ExtractText` will throw `DirectoryNotFoundException` (or Tesseract will fail to load the language) on the first OCR request — health checks still pass, so you only find out when someone scans a recipe.
+If the file is missing, `TesseractOcrService.ExtractText` will throw `DirectoryNotFoundException` (or Tesseract will fail to load the language) on the first OCR request - health checks still pass, so you only find out when someone scans a recipe.
 
 The folder also contains a `.gitmodules` referencing `tessconfigs`, which is unused at runtime today; safe to ignore.
 
@@ -100,7 +100,7 @@ What each piece does:
 
 | Step                                            | Why                                                                                                                                                                                                 |
 | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Install `tesseract-ocr`                         | The CLI/runtime. Also pulls Leptonica as a dep. We don't shell out to the binary — but it's the easiest way to get the runtime libraries on the system.                                             |
+| Install `tesseract-ocr`                         | The CLI/runtime. Also pulls Leptonica as a dep. We don't shell out to the binary - but it's the easiest way to get the runtime libraries on the system.                                             |
 | Install `libleptonica-dev` / `libtesseract-dev` | Provides the `.so` files the .NET wrapper P/Invokes into.                                                                                                                                           |
 | `libdl.so` symlink                              | Some Debian images ship only `libdl.so.2`. A few packages compiled against the unversioned `libdl.so` symbol. The symlink keeps the .NET P/Invoke happy.                                            |
 | `/app/x64/libleptonica-1.82.0.so`               | The `Tesseract` NuGet wrapper looks for Leptonica at this **exact filename** under `x64/`. Debian's `liblept.so.5` is the same binary; the symlink renames it where the wrapper expects to find it. |
@@ -121,7 +121,7 @@ The published .NET app is copied into `/app`, so `wwwroot/tessdata/eng.trainedda
 
 We have a TODO-ish path here. Tesseract is free, local, and offline-friendly, but it's also the dominant source of native-deps pain in the Docker image. Alternatives if it ever becomes a maintenance burden:
 
-- **Cloud OCR (Google Vision, AWS Textract, etc.)** — drop all native libs from the Dockerfile, swap `TesseractOcrService` for an HTTP-backed `IOcrService`. Costs per-page, but the rest of the architecture wouldn't change because the abstraction is already in place.
-- **OpenAI vision / multimodal** — we already have an `OpenAiRecipeParser` for the text-to-recipe step ([src/Infrastructure/Ai/](../../src/Infrastructure/Ai/)), so going directly from image to recipe is plausible.
+- **Cloud OCR (Google Vision, AWS Textract, etc.)** - drop all native libs from the Dockerfile, swap `TesseractOcrService` for an HTTP-backed `IOcrService`. Costs per-page, but the rest of the architecture wouldn't change because the abstraction is already in place.
+- **OpenAI vision / multimodal** - we already have an `OpenAiRecipeParser` for the text-to-recipe step ([src/Infrastructure/Ai/](../../src/Infrastructure/Ai/)), so going directly from image to recipe is plausible.
 
 Keep Tesseract for now; revisit if the Dockerfile or memory footprint becomes a problem.

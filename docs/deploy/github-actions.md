@@ -1,10 +1,10 @@
-# Auto-deploy via GitHub Actions
+﻿# Auto-deploy via GitHub Actions
 
 Every push to `master` deploys to Fly automatically, but **only if CI passes first**.
 
 ## The two workflows
 
-### CI — [.github/workflows/ci.yml](../../.github/workflows/ci.yml)
+### CI - [.github/workflows/ci.yml](../../.github/workflows/ci.yml)
 
 Existing workflow. Runs on push to `master` and on PRs.
 
@@ -15,13 +15,13 @@ Existing workflow. Runs on push to `master` and on PRs.
 
 This workflow does **not** deploy. It just gates the deploy workflow.
 
-### Deploy — [.github/workflows/deploy.yml](../../.github/workflows/deploy.yml)
+### Deploy - [.github/workflows/deploy.yml](../../.github/workflows/deploy.yml)
 
-Triggered by the CI workflow finishing on `master`. If CI passed, it installs `flyctl` and runs `flyctl deploy --remote-only` against the `sharedcookbook-api` app. The only secret it needs from GitHub is `FLY_API_TOKEN` — everything else lives in `fly secrets`.
+Triggered by the CI workflow finishing on `master`. If CI passed, it installs `flyctl` and runs `flyctl deploy --remote-only` against the `sharedcookbook-api` app. The only secret it needs from GitHub is `FLY_API_TOKEN` - everything else lives in `fly secrets`.
 
 ## Typical flow
 
-1. **Actions tab** → "CI" runs (≈ 2-5 min).
+1. **Actions tab** -> "CI" runs (≈ 2-5 min).
 2. On green, "Deploy to Fly.io" starts automatically.
 3. It runs `flyctl deploy --remote-only`, which:
   - Sends the source to a Fly remote builder.

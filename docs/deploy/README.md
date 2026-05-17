@@ -1,4 +1,4 @@
-# Deploy
+﻿# Deploy
 
 How the SharedCookbook API is deployed.
 
@@ -23,8 +23,8 @@ flowchart LR
 
 
 
-- **API**: `sharedcookbook-api.fly.dev` — .NET 10 Docker image built from [Dockerfile](../../Dockerfile).
-- **Database**: `sharedcookbook-db` — separate Fly app, Fly Postgres (unmanaged), persistent volume. **Not** rebuilt on API deploys.
+- **API**: `sharedcookbook-api.fly.dev` - .NET 10 Docker image built from [Dockerfile](../../Dockerfile).
+- **Database**: `sharedcookbook-db` - separate Fly app, Fly Postgres (unmanaged), persistent volume. **Not** rebuilt on API deploys.
 - **Secrets**: `fly secrets set` (never committed). See [fly.md](./fly.md#secrets).
 
 ## Common commands

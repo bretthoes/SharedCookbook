@@ -1,8 +1,8 @@
-# Recipe from voice
+﻿# Recipe from voice
 
 The mobile app records the user describing a recipe (speech-to-text on the device), then sends the **transcript** to the API. The API turns that text into a structured recipe draft the client can edit before saving.
 
-**Speech recognition is not in this backend** — only parsing the transcript. There is no Whisper or other STT service in SharedCookbook.
+**Speech recognition is not in this backend** - only parsing the transcript. There is no Whisper or other STT service in SharedCookbook.
 
 Implemented with **OpenAI Chat Completions** via [IAiRecipeParser](../../src/Application/Common/Interfaces/IAiRecipeParser.cs) (`OpenAiRecipeParser`).
 
@@ -23,15 +23,15 @@ Endpoint: `POST /api/recipes/parse-recipe-voice` in [Recipes.cs](../../src/Web/E
 | HTTP endpoint | [src/Web/Endpoints/Recipes.cs](../../src/Web/Endpoints/Recipes.cs) |
 | Command | [src/Application/Recipes/Commands/ParseRecipeFromVoice/](../../src/Application/Recipes/Commands/ParseRecipeFromVoice/) |
 | OpenAI client + prompt | [OpenAiRecipeParser.cs](../../src/Infrastructure/Ai/OpenAiRecipeParser.cs) |
-| Config (`ApiKey`, `Model`) | `AiRecipeParserOptions` — default model `gpt-4o-mini`; [DependencyInjection.cs](../../src/Infrastructure/DependencyInjection.cs), secrets in [fly.md](../deploy/fly.md#secrets) |
-| Rate limit → 429 | `RateLimitExceededException` in parser; handled in [CustomExceptionHandler.cs](../../src/Web/Infrastructure/CustomExceptionHandler.cs) |
+| Config (`ApiKey`, `Model`) | `AiRecipeParserOptions` - default model `gpt-4o-mini`; [DependencyInjection.cs](../../src/Infrastructure/DependencyInjection.cs), secrets in [fly.md](../deploy/fly.md#secrets) |
+| Rate limit -> 429 | `RateLimitExceededException` in parser; handled in [CustomExceptionHandler.cs](../../src/Web/Infrastructure/CustomExceptionHandler.cs) |
 
-The system prompt and mapping logic live entirely in `OpenAiRecipeParser` — that is the place to change behavior (e.g. stricter “is this a recipe?” checks).
+The system prompt and mapping logic live entirely in `OpenAiRecipeParser` - that is the place to change behavior (e.g. stricter “is this a recipe?” checks).
 
 ## Operational notes
 
 - **OpenAI API key** required; model name is configurable per environment.
-- **429 from OpenAI** is translated to “too many requests” for the client — distinct from the app’s own [rate limiter](../../src/Web/Infrastructure/RateLimiterExtension.cs) on HTTP.
+- **429 from OpenAI** is translated to “too many requests” for the client - distinct from the app’s own [rate limiter](../../src/Web/Infrastructure/RateLimiterExtension.cs) on HTTP.
 - Same pattern as URL and photo import: returns `CreateRecipeDto`, not a persisted recipe.
 
 ## Related imports

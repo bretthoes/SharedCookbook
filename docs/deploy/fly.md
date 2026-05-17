@@ -1,8 +1,8 @@
-# Fly.io deployment
+﻿# Fly.io deployment
 
 The API runs on [Fly.io](https://fly.io) as a Docker app, backed by a separate Fly Postgres app.
 
-- **App**: `sharedcookbook-api` → `https://sharedcookbook-api.fly.dev`
+- **App**: `sharedcookbook-api` -> `https://sharedcookbook-api.fly.dev`
 - **DB app**: `sharedcookbook-db` (Fly Postgres, unmanaged, single-node "Development" config with scale-to-zero)
 - **Region**: `iad` (Ashburn, VA). Both apps live in the same region so they talk over Fly's private network.
 
@@ -12,7 +12,7 @@ The full file is at the repo root: [fly.toml](../../fly.toml). Key sections:
 
 ### Build
 
-Fly uses the repo-root [Dockerfile](../../Dockerfile) by default (no `[build]` section in `fly.toml`). It is a 3-stage build: SDK build → publish → ASP.NET runtime with [recipe from photo](../features/recipe-from-photo.md) baked in.
+Fly uses the repo-root [Dockerfile](../../Dockerfile) by default (no `[build]` section in `fly.toml`). It is a 3-stage build: SDK build -> publish -> ASP.NET runtime with [recipe from photo](../features/recipe-from-photo.md) baked in.
 
 ### Env
 
@@ -42,7 +42,7 @@ Public, non-secret config. `ASPNETCORE_URLS` makes Kestrel listen on port 8080 i
     path = "/health"
 ```
 
-- `force_https`: Fly's edge proxy terminates TLS and redirects HTTP → HTTPS. The app itself only sees plain HTTP from the proxy — that's why [Program.cs](../../src/Web/Program.cs) does **not** call `UseHttpsRedirection()` in Production (would cause a redirect loop).
+- `force_https`: Fly's edge proxy terminates TLS and redirects HTTP -> HTTPS. The app itself only sees plain HTTP from the proxy - that's why [Program.cs](../../src/Web/Program.cs) does **not** call `UseHttpsRedirection()` in Production (would cause a redirect loop).
 - `auto_stop_machines = "stop"` + `min_machines_running = 0`: the API machine sleeps when idle to save money. First request after idle has a ~1-2s cold start.
 - Health check hits `/health`, which is registered in [Program.cs](../../src/Web/Program.cs) via `app.UseHealthChecks("/health")`.
 
@@ -156,7 +156,7 @@ fly deploy --app sharedcookbook-api
 
 | Action                               | Effect on DB data                                                    |
 | ------------------------------------ | -------------------------------------------------------------------- |
-| `git push` → auto-deploy             | Unchanged                                                            |
+| `git push` -> auto-deploy             | Unchanged                                                            |
 | `fly deploy` (API)                   | Unchanged                                                            |
 | EF migration on startup              | Schema updated, rows kept (unless a migration explicitly drops them) |
 | `fly apps destroy sharedcookbook-db` | **Wiped**                                                            |
