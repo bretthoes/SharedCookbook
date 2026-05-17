@@ -1,0 +1,29 @@
+name: Deploy to Fly.io
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [master]
+
+jobs:
+  deploy:
+    name: Deploy app
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    concurrency:
+      group: deploy-sharedcookbook-api
+      cancel-in-progress: false
+    steps:
+      - name: Checkout commit that CI tested
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Install flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly.io
+        run: flyctl deploy --remote-only --app sharedcookbook-api
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
