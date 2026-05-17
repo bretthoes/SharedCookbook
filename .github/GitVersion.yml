@@ -1,4 +1,5 @@
 ﻿mode: ContinuousDelivery
+label: null
 
 branches:
   main:
@@ -12,6 +13,6 @@ branches:
     increment: Minor
 
   feature:
-    regex: ^feature[/-]
+    regex: ^features?[\/-](?<BranchName>.+)
     label: alpha
     increment: Patch
