@@ -29,8 +29,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
-          # Match Directory.Packages.props AspnetVersion so functional tests use the same shared framework as package refs.
-          dotnet-version: "10.0.x"
 
       - name: Show .NET info
         run: |
@@ -38,50 +36,39 @@ jobs:
           dotnet --list-runtimes
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.9.14
+        uses: gittools/actions/gitversion/setup@v4.5.0
         with:
-          versionSpec: '5.x'
+          versionSpec: '6.7.x'
 
       - name: Run GitVersion
         id: gitversion
-        uses: gittools/actions/gitversion/execute@v0.9.14
+        uses: gittools/actions/gitversion/execute@v4.5.0
         with:
-          useConfigFile: true
           configFilePath: .github/GitVersion.yml
-          verbosity: Quiet
 
       - name: Show GitVersion info
         run: |
-          echo "FullSemVer      = ${{ steps.gitversion.outputs.FullSemVer }}"
-          echo "SemVer          = ${{ steps.gitversion.outputs.SemVer }}"
-          echo "AssemblySemVer  = ${{ steps.gitversion.outputs.AssemblySemVer }}"
-          echo "NuGetVersionV2  = ${{ steps.gitversion.outputs.NuGetVersionV2 }}"
+          echo "fullSemVer      = ${{ steps.gitversion.outputs.fullSemVer }}"
+          echo "semVer          = ${{ steps.gitversion.outputs.semVer }}"
+          echo "assemblySemVer  = ${{ steps.gitversion.outputs.assemblySemVer }}"
 
       - name: Tag commit with version
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         env:
-          SEMVER: ${{ steps.gitversion.outputs.SemVer }}
+          SEMVER: ${{ steps.gitversion.outputs.semVer }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag $SEMVER
           git push origin $SEMVER
 
-      - name: Restore NuGet packages
-        run: dotnet restore
-
-      - name: Build solution (skip NSwag)
+      - name: Build and test
         run: |
-          dotnet build --no-restore -c Release \
-            /p:Version=${{ steps.gitversion.outputs.FullSemVer }} \
-            /p:AssemblyVersion=${{ steps.gitversion.outputs.AssemblySemVer }} \
-            /p:FileVersion=${{ steps.gitversion.outputs.AssemblySemVer }} \
+          dotnet test -c Release \
+            /p:Version=${{ steps.gitversion.outputs.fullSemVer }} \
+            /p:AssemblyVersion=${{ steps.gitversion.outputs.assemblySemVer }} \
+            /p:FileVersion=${{ steps.gitversion.outputs.assemblySemVer }} \
             -p:SkipNSwag=true
-
-      - name: Run tests (skip NSwag)
-        run: |
-          dotnet test --no-build -c Release \
-            /p:Version=${{ steps.gitversion.outputs.FullSemVer }}
 
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/')

@@ -4,13 +4,14 @@ branches:
   main:
     regex: ^(master|main)$
     increment: Patch
+    label: null
 
   develop:
     regex: ^dev(elop)?$
-    tag: beta
+    label: beta
     increment: Minor
 
   feature:
     regex: ^feature[/-]
-    tag: alpha
+    label: alpha
     increment: Patch

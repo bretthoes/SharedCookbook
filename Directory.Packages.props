@@ -2,9 +2,10 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <AspnetVersion>10.0.8</AspnetVersion>
-    <EfcoreVersion>10.0.8</EfcoreVersion>
-    <MicrosoftExtensionsVersion>10.0.8</MicrosoftExtensionsVersion>
+    <!-- Pin to the ASP.NET/EF band shipped with the SDK (global.json). Exact versions, not floating [x, ) ranges. -->
+    <AspnetVersion>10.0.2</AspnetVersion>
+    <EfcoreVersion>10.0.2</EfcoreVersion>
+    <MicrosoftExtensionsVersion>10.0.2</MicrosoftExtensionsVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="AWSSDK.S3" Version="4.0.17.3" />
@@ -12,14 +13,14 @@
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageVersion Include="Google.Apis.Auth" Version="1.69.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="[$(AspnetVersion), )" />
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="[$(AspnetVersion), )" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="[$(AspnetVersion), )" />
-    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="[$(AspnetVersion), )" />
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.UI" Version="[$(AspnetVersion), )" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="[$(EfcoreVersion), )" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="[$(EfcoreVersion), )" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="[$(EfcoreVersion), )" />
+    <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="$(AspnetVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(AspnetVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(AspnetVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="$(AspnetVersion)" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.UI" Version="$(AspnetVersion)" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="$(EfcoreVersion)" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="$(EfcoreVersion)" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="$(EfcoreVersion)" />
     <PackageVersion Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.16.0" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
     <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.12" />
@@ -27,11 +28,10 @@
     <PackageVersion Include="Tesseract" Version="5.2.0" />
     <PackageVersion Include="Tesseract.Drawing" Version="5.2.0" />
     <PackageVersion Include="Testcontainers.PostgreSql" Version="4.10.0" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="[$(EfcoreVersion), )" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="[$(MicrosoftExtensionsVersion), )" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="[$(MicrosoftExtensionsVersion), )" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="[$(MicrosoftExtensionsVersion), )" />
-    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="[$(MicrosoftExtensionsVersion), )" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="$(EfcoreVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="$(MicrosoftExtensionsVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageVersion Include="Moq" Version="4.20.72" />
     <PackageVersion Include="OpenAI" Version="2.2.0" />
