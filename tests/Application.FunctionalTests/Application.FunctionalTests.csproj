@@ -3,6 +3,7 @@
     <PropertyGroup>
         <RootNamespace>SharedCookbook.Application.FunctionalTests</RootNamespace>
         <AssemblyName>SharedCookbook.Application.FunctionalTests</AssemblyName>
+        <RestoreEnablePackagePruning>false</RestoreEnablePackagePruning>
     </PropertyGroup>
 
     <ItemGroup>
@@ -21,6 +22,7 @@
         </Content>
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk"/>
         <PackageReference Include="nunit"/>
