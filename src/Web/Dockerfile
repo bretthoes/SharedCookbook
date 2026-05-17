@@ -55,4 +55,4 @@ COPY --from=publish /app/publish .
 
 # 5. Switch to non-root and run
 USER $APP_UID
-ENTRYPOINT ["dotnet", "SharedCookbook.Web.dll", "--urls", "http://*:$PORT"]
+ENTRYPOINT ["dotnet", "SharedCookbook.Web.dll"]
