@@ -57,18 +57,10 @@ jobs:
           echo "semVer          = ${{ steps.gitversion.outputs.semVer }}"
           echo "assemblySemVer  = ${{ steps.gitversion.outputs.assemblySemVer }}"
 
-      - name: Build
+      - name: Test
         run: |
-          dotnet build SharedCookbook.slnx -c Release \
+          dotnet test SharedCookbook.slnx -c Release \
             /p:Version=${{ steps.gitversion.outputs.fullSemVer }} \
             /p:AssemblyVersion=${{ steps.gitversion.outputs.assemblySemVer }} \
             /p:FileVersion=${{ steps.gitversion.outputs.assemblySemVer }} \
             -p:SkipNSwag=true
-
-      - name: Test
-        run: |
-          dotnet test tests/Domain.UnitTests/Domain.UnitTests.csproj -c Release --no-build
-          dotnet test tests/Application.UnitTests/Application.UnitTests.csproj -c Release --no-build
-          dotnet test tests/Infrastructure.UnitTests/Infrastructure.UnitTests.csproj -c Release --no-build
-          dotnet test tests/Infrastructure.IntegrationTests/Infrastructure.IntegrationTests.csproj -c Release --no-build
-          dotnet test tests/Application.FunctionalTests/Application.FunctionalTests.csproj -c Release --no-build
