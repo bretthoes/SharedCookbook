@@ -1,5 +1,5 @@
 {
-  "x-generator": "NSwag v14.6.3.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))",
+  "x-generator": "NSwag v14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))",
   "openapi": "3.0.0",
   "info": {
     "title": "SharedCookbook API",
@@ -1577,6 +1577,10 @@
       "CookbookBriefDto": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "id",
+          "title"
+        ],
         "properties": {
           "id": {
             "type": "integer",
@@ -1671,6 +1675,9 @@
       "InvitationDto": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "cookbookTitle"
+        ],
         "properties": {
           "id": {
             "type": "integer",
@@ -1782,6 +1789,15 @@
       "MembershipDto": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "isOwner",
+          "canAddRecipe",
+          "canUpdateRecipe",
+          "canDeleteRecipe",
+          "canSendInvite",
+          "canRemoveMember",
+          "canEditCookbookDetails"
+        ],
         "properties": {
           "id": {
             "type": "integer",
@@ -1851,6 +1867,16 @@
       "UpdateMembershipCommand": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "id",
+          "isOwner",
+          "canAddRecipe",
+          "canUpdateRecipe",
+          "canDeleteRecipe",
+          "canSendInvite",
+          "canRemoveMember",
+          "canEditCookbookDetails"
+        ],
         "properties": {
           "id": {
             "type": "integer",
@@ -1882,6 +1908,10 @@
       "RecipeDetailedDto": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "id",
+          "title"
+        ],
         "properties": {
           "id": {
             "type": "integer",
@@ -2005,6 +2035,10 @@
       "RecipeDirectionDto": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "text",
+          "ordinal"
+        ],
         "properties": {
           "id": {
             "type": "integer",
@@ -2026,6 +2060,10 @@
       "RecipeImageDto": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "name",
+          "ordinal"
+        ],
         "properties": {
           "id": {
             "type": "integer",
@@ -2043,6 +2081,11 @@
       "IngredientSectionDto": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "title",
+          "ordinal",
+          "ingredients"
+        ],
         "properties": {
           "id": {
             "type": "integer",
@@ -2066,6 +2109,11 @@
       "RecipeIngredientDto": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "name",
+          "optional",
+          "ordinal"
+        ],
         "properties": {
           "id": {
             "type": "integer",
@@ -2116,6 +2164,10 @@
       "RecipeBriefDto": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "id",
+          "title"
+        ],
         "properties": {
           "id": {
             "type": "integer",
@@ -2181,6 +2233,9 @@
       "CreateRecipeCommand": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "recipe"
+        ],
         "properties": {
           "recipe": {
             "$ref": "#/components/schemas/CreateRecipeDto"
@@ -2195,6 +2250,9 @@
           {
             "type": "object",
             "additionalProperties": false,
+            "required": [
+              "cookbookId"
+            ],
             "properties": {
               "cookbookId": {
                 "type": "integer",
@@ -2208,6 +2266,9 @@
         "type": "object",
         "x-abstract": true,
         "additionalProperties": false,
+        "required": [
+          "title"
+        ],
         "properties": {
           "title": {
             "type": "string"
@@ -2333,6 +2394,9 @@
           {
             "type": "object",
             "additionalProperties": false,
+            "required": [
+              "id"
+            ],
             "properties": {
               "id": {
                 "type": "integer",
@@ -2464,6 +2528,10 @@
       "RegisterRequest": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "email",
+          "password"
+        ],
         "properties": {
           "email": {
             "type": "string"
@@ -2476,6 +2544,11 @@
       "AccessTokenResponse": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "accessToken",
+          "expiresIn",
+          "refreshToken"
+        ],
         "properties": {
           "tokenType": {
             "type": "string"
@@ -2495,6 +2568,10 @@
       "LoginRequest": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "email",
+          "password"
+        ],
         "properties": {
           "email": {
             "type": "string"
@@ -2515,6 +2592,9 @@
       "RefreshRequest": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "refreshToken"
+        ],
         "properties": {
           "refreshToken": {
             "type": "string"
@@ -2524,6 +2604,9 @@
       "ResendConfirmationEmailRequest": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "email"
+        ],
         "properties": {
           "email": {
             "type": "string"
@@ -2533,6 +2616,9 @@
       "ForgotPasswordRequest": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "email"
+        ],
         "properties": {
           "email": {
             "type": "string"
@@ -2542,6 +2628,11 @@
       "ResetPasswordRequest": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "email",
+          "resetCode",
+          "newPassword"
+        ],
         "properties": {
           "email": {
             "type": "string"
@@ -2557,6 +2648,12 @@
       "TwoFactorResponse": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "sharedKey",
+          "recoveryCodesLeft",
+          "isTwoFactorEnabled",
+          "isMachineRemembered"
+        ],
         "properties": {
           "sharedKey": {
             "type": "string"
@@ -2606,6 +2703,10 @@
       "InfoResponse": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "email",
+          "isEmailConfirmed"
+        ],
         "properties": {
           "email": {
             "type": "string"
