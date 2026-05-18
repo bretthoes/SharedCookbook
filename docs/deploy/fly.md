@@ -65,6 +65,16 @@ fly postgres create --name sharedcookbook-db --region iad
 # Development (single node), 1 GB volume, scale-to-zero after 1 hour
 ```
 
+### Version
+
+| | |
+| --- | --- |
+| **Postgres** | **17.7** |
+| **Fly machine image** | `flyio/postgres-flex:17.2` |
+| **Running server** (check live) | `fly ssh console -a sharedcookbook-db -C "postgres --version"` |
+
+Functional tests use the same major/patch via Testcontainers: `postgres:17.7` in [PostgreSQLTestcontainersTestDatabase.cs](../../tests/Application.FunctionalTests/PostgreSQLTestcontainersTestDatabase.cs
+
 ### Connection string
 
 `fly postgres attach` sets `DATABASE_URL` on the API in `postgres://user:pass@host.flycast:5432/db?sslmode=disable` format. ASP.NET reads `ConnectionStrings:DefaultConnection` instead (see [src/Infrastructure/DependencyInjection.cs](../../src/Infrastructure/DependencyInjection.cs)), so we set it explicitly in Npgsql format:
