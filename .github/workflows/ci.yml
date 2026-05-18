@@ -1,38 +1,44 @@
 ﻿name: CI
 
 permissions:
-  contents: write
+  contents: read
 
 on:
   push:
     branches:
       - main
       - master
-    tags:
-      - '*'
   pull_request:
     branches:
       - main
       - master
 
 jobs:
-  build-and-test:
+  test:
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/dotnet/sdk:10.0
-      volumes:
-        - /var/run/docker.sock:/var/run/docker.sock
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      DOTNET_NOLOGO: '1'
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          persist-credentials: true
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
 
       - name: Show .NET info
         run: |
           dotnet --version
+          dotnet --list-sdks
           dotnet --list-runtimes
+
+      - name: Verify Docker
+        run: docker info
 
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v4.5.0
@@ -51,32 +57,10 @@ jobs:
           echo "semVer          = ${{ steps.gitversion.outputs.semVer }}"
           echo "assemblySemVer  = ${{ steps.gitversion.outputs.assemblySemVer }}"
 
-      - name: Tag commit with version
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        env:
-          SEMVER: ${{ steps.gitversion.outputs.semVer }}
+      - name: Test
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag $SEMVER
-          git push origin $SEMVER
-
-      - name: Build and test
-        run: |
-          dotnet test -c Release \
+          dotnet test SharedCookbook.slnx -c Release \
             /p:Version=${{ steps.gitversion.outputs.fullSemVer }} \
             /p:AssemblyVersion=${{ steps.gitversion.outputs.assemblySemVer }} \
             /p:FileVersion=${{ steps.gitversion.outputs.assemblySemVer }} \
             -p:SkipNSwag=true
-
-      - name: Create GitHub Release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
-          draft: false
-          prerelease: ${{ contains(github.ref_name, '-') }}
-          body: |
-            Release ${{ github.ref_name }}:
-            - (add your changelog or notes here)
