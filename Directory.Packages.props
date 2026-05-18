@@ -2,7 +2,6 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <!-- Pin to the ASP.NET/EF band shipped with the SDK (global.json). Exact versions, not floating [x, ) ranges. -->
     <AspnetVersion>10.0.2</AspnetVersion>
     <EfcoreVersion>10.0.2</EfcoreVersion>
     <MicrosoftExtensionsVersion>10.0.2</MicrosoftExtensionsVersion>

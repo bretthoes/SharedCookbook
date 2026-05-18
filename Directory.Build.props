@@ -6,7 +6,5 @@
     <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts</ArtifactsPath>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <!-- Allow 10.0.x shared frameworks on CI/dev machines without matching the pinned NuGet patch exactly. -->
-    <RollForward>LatestPatch</RollForward>
   </PropertyGroup>
 </Project>
