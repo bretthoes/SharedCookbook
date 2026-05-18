@@ -11,12 +11,15 @@ jobs:
     name: Deploy app
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    environment:
+      name: production
+      url: https://sharedcookbook-api.fly.dev
     concurrency:
       group: deploy-sharedcookbook-api
       cancel-in-progress: false
     steps:
       - name: Checkout commit that CI tested
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
 
