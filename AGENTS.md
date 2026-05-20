@@ -8,10 +8,10 @@ Backend API for the [cookbook-mobile](https://github.com/bretthoes/cookbook-mobi
 |------|------|--------|
 | Web host | `src/Web/` | ASP.NET Core entry, `appsettings*.json`, `Properties/launchSettings.json` |
 | OpenAPI spec | `src/Web/wwwroot/api/specification.json` | Source for mobile TypeScript codegen (sibling repo) |
-| Application | `src/Application/` | Use cases, validators |
+| Application | `src/Application/` | Use cases, validators — see `src/Application/AGENTS.md` |
 | Domain | `src/Domain/` | Entities, domain logic |
-| Infrastructure | `src/Infrastructure/` | EF Core, external services; migrations under `Data/Migrations/` |
-| Tests | `tests/*` | Unit, integration, functional (NUnit) |
+| Infrastructure | `src/Infrastructure/` | EF Core, external services; migrations under `Data/Migrations/` — see `src/Infrastructure/AGENTS.md` |
+| Tests | `tests/*` | Unit, integration, functional (NUnit) — see `tests/AGENTS.md` |
 | Solution | `SharedCookbook.slnx` | XML solution (not `.sln`); root also has `Directory.Build.props`, `Directory.Packages.props` |
 | Production image | `Dockerfile` | Fly.io deploy only; see `docs/deploy/` |
 | SDK pin | `global.json` | .NET 10.0.100, `rollForward: latestFeature` |
