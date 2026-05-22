@@ -24,7 +24,7 @@ Endpoint: `POST /api/recipes/parse-recipe-url` in [Recipes.cs](../../src/Web/End
 | Config (`ApiKey`, `BaseUrl`) | `RecipeUrlParserOptions` - [DependencyInjection.cs](../../src/Infrastructure/DependencyInjection.cs), secrets in [fly.md](../deploy/fly.md#secrets) |
 | Image re-host | [S3ImageUploader](../../src/Infrastructure/FileStorage/S3ImageUploader.cs) |
 
-Direction text from Spoonacular is HTML-decoded and split into steps in [RecipeApiResponseExtensions](../../src/Infrastructure/RecipeUrlParser/Models/RecipeApiResponseExtensions.cs) (paragraph breaks, numbered-step fallback).
+Direction text from Spoonacular uses `AnalyzedInstructionDirectionsParser` when structured steps are present, otherwise `RawInstructionDirectionsParser` (paragraph breaks, numbered-step fallback).
 
 ## Operational notes
 
