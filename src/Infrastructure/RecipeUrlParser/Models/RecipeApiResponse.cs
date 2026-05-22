@@ -15,6 +15,7 @@ public class RecipeApiResponse
     public int? Servings { get; init; }
     public List<Ingredient>? ExtendedIngredients { get; init; }
     public string? Instructions { get; init; }
+    public List<AnalyzedInstruction>? AnalyzedInstructions { get; init; }
     public int? PreparationMinutes { get; init; }
     public int? CookingMinutes { get; init; }
 
@@ -33,8 +34,12 @@ public class RecipeApiResponse
         CookingTimeInMinutes = CookingMinutes ?? 0,
         BakingTimeInMinutes = null,
         IngredientSections = [IngredientSectionDto.DefaultWrapper(ExtendedIngredients.ToDtos())],
-        Directions = RecipeApiResponseExtensions.ExtractDirections(Instructions)
+        Directions = ShouldUseAnalyzedInstructions()
+            ? AnalyzedInstructionDirectionsParser.Parse(AnalyzedInstructions)
+            : RawInstructionDirectionsParser.Parse(Instructions)
     };
+
+    private bool ShouldUseAnalyzedInstructions() => AnalyzedInstructions is { Count: > 0 };
 
     private static string ExtractSummary(string? rawSummary)
     {
