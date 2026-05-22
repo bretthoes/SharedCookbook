@@ -1,8 +1,7 @@
 using System.Net;
 using System.Text.RegularExpressions;
 using SharedCookbook.Application.Common.Extensions;
-using SharedCookbook.Application.Contracts;
-using SharedCookbook.Domain.Entities;
+using SharedCookbook.Infrastructure.RecipeUrlParser;
 
 namespace SharedCookbook.Infrastructure.RecipeUrlParser.Models;
 
@@ -29,13 +28,6 @@ internal static class RawInstructionDirectionsParser
                 .ToList();
         }
 
-        return ToDtos(segments);
+        return segments.ToDtos();
     }
-
-    private static List<RecipeDirectionDto> ToDtos(IEnumerable<string> directions) =>
-        directions.Select((direction, index) => new RecipeDirectionDto
-        {
-            Text = direction.Truncate(RecipeDirection.Constraints.TextMaxLength),
-            Ordinal = index + 1
-        }).ToList();
 }

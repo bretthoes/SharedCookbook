@@ -1,5 +1,4 @@
-using SharedCookbook.Application.Common.Extensions;
-using SharedCookbook.Domain.Entities;
+using SharedCookbook.Infrastructure.RecipeUrlParser;
 
 namespace SharedCookbook.Infrastructure.RecipeUrlParser.Models;
 
@@ -17,13 +16,6 @@ internal static class AnalyzedInstructionDirectionsParser
             .Cast<string>()
             .ToList();
 
-        return ToDtos(steps);
+        return steps.ToDtos();
     }
-
-    private static List<RecipeDirectionDto> ToDtos(IEnumerable<string> directions) =>
-        directions.Select((direction, index) => new RecipeDirectionDto
-        {
-            Text = direction.Truncate(RecipeDirection.Constraints.TextMaxLength),
-            Ordinal = index + 1
-        }).ToList();
 }
