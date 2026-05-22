@@ -26,7 +26,7 @@ public class WhenStepsAreNumbered
     [OneTimeSetUp]
     public void OneTimeSetup()
     {
-        _actual = RecipeApiResponseExtensions.ExtractDirections(InstructionsWithNumberedStepsNoNewlines);
+        _actual = RawInstructionDirectionsParser.Parse(InstructionsWithNumberedStepsNoNewlines);
     }
 
     [Test]

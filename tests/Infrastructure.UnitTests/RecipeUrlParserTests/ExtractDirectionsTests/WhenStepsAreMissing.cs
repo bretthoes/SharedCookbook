@@ -10,7 +10,7 @@ public class WhenStepsAreMissing
     [TestCase(null)]
     public void ShouldBeEmpty(string? input)
     {
-        var actual = RecipeApiResponseExtensions.ExtractDirections(input);
+        var actual = RawInstructionDirectionsParser.Parse(input);
 
         Assert.That(actual, Is.Empty);
     }
