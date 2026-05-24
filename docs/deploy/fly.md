@@ -166,7 +166,7 @@ fly deploy --app sharedcookbook-api
 
 | Action                               | Effect on DB data                                                    |
 | ------------------------------------ | -------------------------------------------------------------------- |
-| `git push` -> auto-deploy             | Unchanged                                                            |
+| `git push` to `master` -> auto-deploy | Unchanged                                                            |
 | `fly deploy` (API)                   | Unchanged                                                            |
 | EF migration on startup              | Schema updated, rows kept (unless a migration explicitly drops them) |
 | `fly apps destroy sharedcookbook-db` | **Wiped**                                                            |

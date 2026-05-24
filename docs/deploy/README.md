@@ -6,16 +6,16 @@ How the SharedCookbook API is deployed.
 | Doc                                      | What it covers                                                  |
 | ---------------------------------------- | --------------------------------------------------------------- |
 | [fly.md](./fly.md)                       | The Fly.io setup: `fly.toml`, Postgres, secrets, manual deploys |
-| [github-actions.md](./github-actions.md) | How changes to `master` auto-deploy via GitHub Actions          |
+| [github-actions.md](./github-actions.md) | `dev` for CI; auto-deploy on `master`                           |
 
 
 ## Quick mental model
 
 ```mermaid
 flowchart LR
-  Dev[git push to master] --> GH[GitHub]
-  GH --> CI["CI workflow (build + test)"]
-  CI -->|success| DeployWF["Deploy workflow (flyctl deploy --remote-only)"]
+  DevBranch[dev branch] -->|push| CI["CI workflow (test)"]
+  Master[master branch] -->|push| CI
+  CI -->|success on master| DeployWF["Deploy workflow"]
   DeployWF --> API[sharedcookbook-api on Fly]
   API -->|migrations on startup| DB[(sharedcookbook-db Fly Postgres)]
   API -->|HTTPS| S3[(AWS S3)]
@@ -36,4 +36,3 @@ fly deploy   --app sharedcookbook-api   # manual escape hatch
 fly secrets list --app sharedcookbook-api
 fly postgres connect -a sharedcookbook-db
 ```
-
