@@ -1035,7 +1035,14 @@
         "operationId": "SubscriptionsGetStatus",
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionStatusDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1051,6 +1058,17 @@
           "Subscriptions"
         ],
         "operationId": "SubscriptionsRevenueCatWebhook",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevenueCatWebhookPayload"
+              }
+            }
+          },
+          "x-position": 1
+        },
         "responses": {
           "200": {
             "description": ""
@@ -2455,6 +2473,47 @@
         "properties": {
           "transcript": {
             "type": "string"
+          }
+        }
+      },
+      "SubscriptionStatusDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "isPro": {
+            "type": "boolean"
+          }
+        }
+      },
+      "RevenueCatWebhookPayload": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "event": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RevenueCatEvent"
+              }
+            ]
+          }
+        }
+      },
+      "RevenueCatEvent": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "app_user_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "original_app_user_id": {
+            "type": "string",
+            "nullable": true
           }
         }
       },

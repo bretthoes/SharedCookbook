@@ -1,4 +1,5 @@
-﻿using SharedCookbook.Web.Infrastructure.RateLimiting;
+﻿using SharedCookbook.Application.Subscriptions;
+using SharedCookbook.Web.Infrastructure.RateLimiting;
 
 namespace SharedCookbook.Web.Infrastructure;
 

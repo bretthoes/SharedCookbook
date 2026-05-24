@@ -101,6 +101,26 @@ public class IdentityService(
         return result.ToApplicationResult();
     }
 
+    public async Task<SubscriptionTierUpdateResult> SetSubscriptionTierIfChangedAsync(
+        string userId,
+        string tierName,
+        CancellationToken cancellationToken = default)
+    {
+        var user = await userManager.FindByIdAsync(userId);
+        if (user is null)
+            return new SubscriptionTierUpdateResult(Result.Success(), IsUserNotFound: true, WasUpdated: false);
+
+        if (!Enum.TryParse<SubscriptionTier>(tierName, ignoreCase: false, out var tier))
+            return new SubscriptionTierUpdateResult(Result.Failure(["Invalid subscription tier."]), IsUserNotFound: false, WasUpdated: false);
+
+        if (user.SubscriptionTier == tier)
+            return new SubscriptionTierUpdateResult(Result.Success(), IsUserNotFound: false, WasUpdated: false);
+
+        user.SubscriptionTier = tier;
+        var result = (await userManager.UpdateAsync(user)).ToApplicationResult();
+        return new SubscriptionTierUpdateResult(result, IsUserNotFound: false, WasUpdated: result.Succeeded);
+    }
+
     public async Task<Result> DeleteUserAsync(ApplicationUser user)
     {
         var result = await userManager.DeleteAsync(user);

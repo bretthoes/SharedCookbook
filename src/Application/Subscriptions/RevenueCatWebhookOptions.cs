@@ -1,4 +1,4 @@
-namespace SharedCookbook.Web.Infrastructure.RateLimiting;
+namespace SharedCookbook.Application.Subscriptions;
 
 public sealed class RevenueCatWebhookOptions
 {
