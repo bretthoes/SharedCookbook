@@ -56,13 +56,7 @@ ASP.NET `[RequireAuthorization()]` on endpoints is separate; both layers can app
 
 ## Mediator pipeline
 
-Registered via `AddMediator` in `DependencyInjection.cs` (order matters):
-
-1. `LoggingBehaviour` (pre-processor)
-2. `UnhandledExceptionBehaviour`
-3. `AuthorizationBehaviour`
-4. `ValidationBehaviour` (FluentValidation)
-5. `PerformanceBehaviour`
+Registered via `AddMediator` in `DependencyInjection.cs`. See [mediator-and-pipeline.md](../../docs/architecture/mediator-and-pipeline.md) for execution order and domain-event dispatch.
 
 Domain events: raise via `entity.AddDomainEvent(...)` in handlers; dispatch on `SaveChanges` (Infrastructure interceptors). React in `EventHandlers/` with `INotificationHandler<T>`.
 
