@@ -8,7 +8,7 @@ branches:
     label: null
 
   develop:
-    regex: ^dev(elop)?$
+    regex: ^dev(elop(ment)?)?$
     label: beta
     increment: Minor
 
