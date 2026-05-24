@@ -10,7 +10,7 @@ Implements Application interfaces: EF Core, ASP.NET Identity, file storage, emai
 | `Data/Configurations/` | `IEntityTypeConfiguration<T>` per entity | No data annotations on domain entities |
 | `Data/Interceptors/` | `AuditableEntityInterceptor`, `DispatchDomainEventsInterceptor` | Run on `SaveChanges` |
 | `Data/Migrations/` | EF migrations | **Zero-padded numeric prefix** — see skill below |
-| `Identity/` | Users, roles, bearer tokens, Google/Apple/Facebook login | `ApplicationUser`, `ExternalLoginService` |
+| `Identity/` | Users, roles, bearer tokens, Google/Apple/Facebook login | `ApplicationUser`, `ExternalLoginService` — see [application-user.md](../../docs/architecture/application-user.md) |
 | `FileStorage/` | `S3ImageUploader` | `ImageUploadOptions` in config |
 | `Email/` | `EmailSender` | External email API |
 | `Ocr/` | `TesseractOcrService` | Native tessdata under `src/Web/wwwroot/tessdata/` |
