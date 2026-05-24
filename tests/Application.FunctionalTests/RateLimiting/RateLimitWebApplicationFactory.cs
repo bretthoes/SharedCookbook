@@ -34,6 +34,7 @@ internal sealed class RateLimitWebApplicationFactory(DbConnection connection)
             config.AddInMemoryCollection(new Dictionary<string, string?>
             {
                 [$"{RecipeParsingRateLimitOptions.SectionName}:DailyLimit"] = TestDailyLimit.ToString(),
+                [$"{RecipeParsingRateLimitOptions.SectionName}:FreeDailyLimit"] = TestDailyLimit.ToString(),
                 [$"{ImageUploadRateLimitOptions.SectionName}:DailyLimit"] = TestDailyLimit.ToString(),
             });
         });
