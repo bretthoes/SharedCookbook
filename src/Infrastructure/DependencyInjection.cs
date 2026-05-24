@@ -58,6 +58,7 @@ public static class DependencyInjection
             .AddIdentityCore<ApplicationUser>()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddClaimsPrincipalFactory<SubscriptionClaimsPrincipalFactory>()
             .AddApiEndpoints();
 
         builder.Services.AddSingleton(TimeProvider.System);

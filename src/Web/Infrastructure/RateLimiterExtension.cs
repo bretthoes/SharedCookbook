@@ -12,6 +12,9 @@ public static class RateLimiterExtension
         builder.Services.Configure<ImageUploadRateLimitOptions>(
             builder.Configuration.GetSection(ImageUploadRateLimitOptions.SectionName));
 
+        builder.Services.Configure<RevenueCatWebhookOptions>(
+            builder.Configuration.GetSection(RevenueCatWebhookOptions.SectionName));
+
         builder.Services.AddSingleton<RecipeParsingDailyRateLimiterPolicy>();
         builder.Services.AddSingleton<ImageUploadDailyRateLimiterPolicy>();
 

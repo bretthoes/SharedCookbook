@@ -1027,6 +1027,37 @@
         ]
       }
     },
+    "/api/Subscriptions/status": {
+      "get": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "operationId": "SubscriptionsGetStatus",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/Subscriptions/webhook/revenuecat": {
+      "post": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "operationId": "SubscriptionsRevenueCatWebhook",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/Users/update": {
       "post": {
         "tags": [

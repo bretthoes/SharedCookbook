@@ -7,4 +7,6 @@ public sealed class ApplicationUser : IdentityUser
 {
     [MaxLength(256)]
     public string? DisplayName { get; set; }
+
+    public SubscriptionTier SubscriptionTier { get; set; } = SubscriptionTier.Free;
 }
