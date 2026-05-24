@@ -17,7 +17,7 @@ Both must pass (chained). Hard-coded, not configurable.
 
 ## Daily policies
 
-24-hour fixed window per partition. Default **100 requests/day** each. Separate counters — parse limits don't affect uploads and vice versa.
+24-hour fixed window per partition. Separate counters — parse limits don't affect uploads and vice versa.
 
 ### Recipe parsing (`RecipeParsingDaily`)
 
@@ -28,6 +28,17 @@ Shared quota across:
 | `POST /api/recipes/parse-recipe-url` | Spoonacular |
 | `POST /api/recipes/parse-recipe-img` | OCR + downstream |
 | `POST /api/recipes/parse-recipe-voice` | OpenAI |
+
+**Tier-aware limits** — the policy reads the `subscription_tier` JWT claim and applies a different ceiling per tier:
+
+| Tier | Daily limit | Config key |
+|------|-------------|------------|
+| Free | 15 | `RecipeParsingRateLimit:FreeDailyLimit` |
+| Pro | 100 | `RecipeParsingRateLimit:DailyLimit` |
+
+Partition key is `userId:tier` (e.g. `abc123:Free`), so an upgrade immediately lands in a fresh partition with the Pro ceiling — no stale in-memory limiter to wait out.
+
+See [subscriptions.md](../features/subscriptions.md) for the full subscription / upgrade flow.
 
 [Recipes.cs](../../src/Web/Endpoints/Recipes.cs) · [RecipeParsingDailyRateLimiterPolicy.cs](../../src/Web/Infrastructure/RateLimiting/RecipeParsingDailyRateLimiterPolicy.cs)
 
@@ -45,7 +56,7 @@ Defaults apply when absent. Override per environment as needed.
 
 ```json
 {
-  "RecipeParsingRateLimit": { "DailyLimit": 100 },
+  "RecipeParsingRateLimit": { "DailyLimit": 100, "FreeDailyLimit": 15 },
   "ImageUploadRateLimit": { "DailyLimit": 100 }
 }
 ```
