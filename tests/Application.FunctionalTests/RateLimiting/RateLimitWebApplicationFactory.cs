@@ -22,7 +22,8 @@ internal sealed class RateLimitWebApplicationFactory(DbConnection connection)
     : WebApplicationFactory<Program>
 {
     internal const int TestDailyLimit = 2;
-    internal const string ApplicationUserId = "rate-limit-functional-test-user";
+    private const string ApplicationUserId = "rate-limit-functional-test-user";
+    private static readonly string[] Result = ["https://example.com/test.jpg"];
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -33,6 +34,7 @@ internal sealed class RateLimitWebApplicationFactory(DbConnection connection)
             config.AddInMemoryCollection(new Dictionary<string, string?>
             {
                 [$"{RecipeParsingRateLimitOptions.SectionName}:DailyLimit"] = TestDailyLimit.ToString(),
+                [$"{ImageUploadRateLimitOptions.SectionName}:DailyLimit"] = TestDailyLimit.ToString(),
             });
         });
 
@@ -62,6 +64,12 @@ internal sealed class RateLimitWebApplicationFactory(DbConnection connection)
                     })));
 
             services
+                .RemoveAll<IImageUploader>()
+                .AddTransient(_ => Mock.Of<IImageUploader>(uploader =>
+                    uploader.UploadFiles(It.IsAny<IFormFileCollection>()) ==
+                    Task.FromResult(Result)));
+
+            services
                 .RemoveAll<DbContextOptions<ApplicationDbContext>>()
                 .AddDbContext<ApplicationDbContext>((sp, options) =>
                 {
@@ -69,8 +77,8 @@ internal sealed class RateLimitWebApplicationFactory(DbConnection connection)
                     options.UseNpgsql(connection);
                 });
 
-            // These tests only exercise the recipe-parsing daily policy. The production global
-            // user-agent limiter (4 req / 2s) causes false 429s when test classes run in parallel.
+            // These tests only exercise daily rate-limit policies. The production global
+            // request limiter causes false 429s when test classes run in parallel.
             services.PostConfigure<RateLimiterOptions>(options =>
             {
                 options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(_ =>

@@ -7,4 +7,9 @@ public static class RateLimitPolicyNames
     /// (URL, image OCR, voice/AI).
     /// </summary>
     public const string RecipeParsingDaily = nameof(RecipeParsingDaily);
+
+    /// <summary>
+    /// Daily quota for direct image uploads to S3.
+    /// </summary>
+    public const string ImageUploadDaily = nameof(ImageUploadDaily);
 }
