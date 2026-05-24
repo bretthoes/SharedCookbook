@@ -9,13 +9,18 @@ public static class RateLimiterExtension
         builder.Services.Configure<RecipeParsingRateLimitOptions>(
             builder.Configuration.GetSection(RecipeParsingRateLimitOptions.SectionName));
 
+        builder.Services.Configure<ImageUploadRateLimitOptions>(
+            builder.Configuration.GetSection(ImageUploadRateLimitOptions.SectionName));
+
         builder.Services.AddSingleton<RecipeParsingDailyRateLimiterPolicy>();
+        builder.Services.AddSingleton<ImageUploadDailyRateLimiterPolicy>();
 
         builder.Services.AddRateLimiter(options =>
         {
             options.OnRejected = RateLimiterRejectionHandler.RejectAsync;
             options.AddPolicy<string, RecipeParsingDailyRateLimiterPolicy>(RateLimitPolicyNames.RecipeParsingDaily);
-            options.GlobalLimiter = GlobalUserAgentRateLimiter.Create();
+            options.AddPolicy<string, ImageUploadDailyRateLimiterPolicy>(RateLimitPolicyNames.ImageUploadDaily);
+            options.GlobalLimiter = GlobalRequestRateLimiter.Create();
         });
     }
 }
