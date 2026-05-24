@@ -13,6 +13,7 @@ public sealed class UpdateRecipeCommandHandler(IApplicationDbContext context, IO
     public async Task<int> Handle(UpdateRecipeCommand command, CancellationToken cancellationToken)
     {
         var recipe = await context.Recipes
+                         .AsSplitQuery() // TODO verify this improves performance; a recipe can only have so many directions, images, ingredients, etc. Find max, avg, and suppress warning if the extra round trips slow down query
                          .Include(navigationPropertyPath: recipe => recipe.IngredientSections)
                          .ThenInclude(section => section.Ingredients)
                          .Include(navigationPropertyPath: recipe => recipe.Directions)
