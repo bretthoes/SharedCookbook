@@ -6,6 +6,7 @@ using SharedCookbook.Application.Recipes.Commands.ParseRecipeFromVoice;
 using SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
 using SharedCookbook.Application.Recipes.Queries.GetRecipe;
 using SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
+using SharedCookbook.Web.Infrastructure.RateLimiting;
 
 namespace SharedCookbook.Web.Endpoints;
 
@@ -19,9 +20,15 @@ public class Recipes : EndpointGroupBase
         builder.MapPost(Create).RequireAuthorization();
         builder.MapPut(Update, pattern: "{id}").RequireAuthorization();
         builder.MapDelete(Delete, pattern: "{id}").RequireAuthorization();
-        builder.MapPost(ParseFromUrl, pattern: "/parse-recipe-url").RequireAuthorization();
-        builder.MapPost(ParseFromImage, pattern: "/parse-recipe-img").RequireAuthorization();
-        builder.MapPost(ParseFromVoice, pattern: "/parse-recipe-voice").RequireAuthorization();
+        builder.MapPost(ParseFromUrl, pattern: "/parse-recipe-url")
+            .RequireAuthorization()
+            .RequireRateLimiting(RateLimitPolicyNames.RecipeParsingDaily);
+        builder.MapPost(ParseFromImage, pattern: "/parse-recipe-img")
+            .RequireAuthorization()
+            .RequireRateLimiting(RateLimitPolicyNames.RecipeParsingDaily);
+        builder.MapPost(ParseFromVoice, pattern: "/parse-recipe-voice")
+            .RequireAuthorization()
+            .RequireRateLimiting(RateLimitPolicyNames.RecipeParsingDaily);
     }
 
     private static Task<RecipeDetailedDto> GetById(ISender sender, [AsParameters] GetRecipeQuery query) =>
