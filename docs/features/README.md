@@ -9,3 +9,4 @@ Deep dives on features that have unusual moving parts (native dependencies, exte
 | [recipe-from-voice.md](./recipe-from-voice.md) | Transcript -> recipe draft; OpenAI parsing (STT is on the client) |
 | [social-sign-in.md](./social-sign-in.md) | Google / Apple / Facebook token login and bearer session |
 | [cookbook-share-link.md](./cookbook-share-link.md) | Shareable cookbook invite links (hashed tokens vs email invites) |
+| [subscriptions.md](./subscriptions.md) | Pro subscription via RevenueCat; tier-aware rate limiting; webhook lifecycle |
