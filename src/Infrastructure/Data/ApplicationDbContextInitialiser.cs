@@ -1,10 +1,12 @@
-﻿using SharedCookbook.Domain.Constants;
+﻿using System.Net.Sockets;
+using SharedCookbook.Domain.Constants;
 using SharedCookbook.Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace SharedCookbook.Infrastructure.Data;
 
@@ -43,16 +45,57 @@ public class ApplicationDbContextInitialiser
 
     public async Task InitialiseAsync()
     {
-        try
+        const int maxAttempts = 12;
+
+        for (var attempt = 1; attempt <= maxAttempts; attempt++)
         {
-            _logger.LogInformation("Initialising database...");
-            await _context.Database.MigrateAsync();
+            try
+            {
+                if (attempt == 1)
+                {
+                    _logger.LogInformation("Initialising database...");
+                }
+                else
+                {
+                    _logger.LogInformation(
+                        "Retrying database initialisation (attempt {Attempt}/{MaxAttempts})...",
+                        attempt,
+                        maxAttempts);
+                }
+
+                await _context.Database.MigrateAsync();
+                return;
+            }
+            catch (Exception ex) when (attempt < maxAttempts && IsTransientConnectionFailure(ex))
+            {
+                var delay = TimeSpan.FromSeconds(Math.Min(attempt * 3, 30));
+                _logger.LogWarning(
+                    ex,
+                    "Database not reachable yet; waiting {DelaySeconds}s before retry {NextAttempt}/{MaxAttempts}",
+                    delay.TotalSeconds,
+                    attempt + 1,
+                    maxAttempts);
+                await Task.Delay(delay);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while initialising the database.");
+                throw;
+            }
         }
-        catch (Exception ex)
+    }
+
+    private static bool IsTransientConnectionFailure(Exception ex)
+    {
+        for (var current = ex; current is not null; current = current.InnerException)
         {
-            _logger.LogError(ex, "An error occurred while initialising the database.");
-            throw;
+            if (current is IOException or SocketException or TimeoutException or NpgsqlException)
+            {
+                return true;
+            }
         }
+
+        return false;
     }
 
     public void SeedAsync()

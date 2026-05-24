@@ -95,6 +95,15 @@ await _context.Database.MigrateAsync();
 
 Deploys do **not** reset data. The Postgres app and its volume are untouched when the API redeploys.
 
+### Cold start (scale-to-zero)
+
+The DB app is configured to scale to zero after idle time. On deploy or first traffic, the API can start before Postgres is listening. Symptoms in `fly logs`:
+
+- `NpgsqlException: Exception while reading from stream` with inner `EndOfStreamException` during `MigrateAsync`
+- `ApplicationDbContext` health check unhealthy, then passing after the DB machine wakes
+
+Startup migrations retry transient connection errors (see `ApplicationDbContextInitialiser`).
+
 ## Secrets
 
 ASP.NET maps `Section__SubKey` env vars to nested config (`Section:SubKey`). All sensitive config is set this way:
