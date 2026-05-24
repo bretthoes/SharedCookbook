@@ -2,6 +2,7 @@
 
 namespace SharedCookbook.Application.Common.Behaviours;
 
+// TODO increase ms threshold for naturally longer-running requests (e.g. image uploads, recipe imports, etc.)
 public class PerformanceBehaviour<TRequest, TResponse>(
     ILogger<TRequest> logger,
     IUser user,
