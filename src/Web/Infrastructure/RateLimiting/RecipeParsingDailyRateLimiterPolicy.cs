@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
@@ -14,18 +13,8 @@ internal sealed class RecipeParsingDailyRateLimiterPolicy(
         DailyClientRateLimitPartitions.Create(httpContext, options.Value.DailyLimit);
 
     public Func<OnRejectedContext, CancellationToken, ValueTask>? OnRejected =>
-        async (context, cancellationToken) =>
-        {
-            var httpContext = context.HttpContext;
-            var userId = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "unknown";
-
-            logger.LogWarning(
-                "User {UserId} reached the daily recipe parsing rate limit ({DailyLimit}/day) on {Method} {Path}",
-                userId,
-                options.Value.DailyLimit,
-                httpContext.Request.Method,
-                httpContext.Request.Path);
-
-            await RateLimiterRejectionHandler.RejectAsync(context, cancellationToken);
-        };
+        RateLimiterRejectionHandler.CreateDailyLimitHandler(
+            logger,
+            "recipe parsing",
+            options.Value.DailyLimit);
 }

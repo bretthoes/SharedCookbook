@@ -51,3 +51,24 @@ internal static class RecipeParsingRateLimitTestClient
         return client.SendAsync(request);
     }
 }
+
+internal static class ImageUploadRateLimitTestClient
+{
+    internal const string UploadImagesPath = "/api/Images";
+    private static readonly byte[] MinimalJpegBytes = [0xFF, 0xD8, 0xFF, 0xD9];
+
+    internal static Task<HttpResponseMessage> UploadImageAsync(HttpClient client, string userId)
+    {
+        var content = new MultipartFormDataContent();
+        content.Add(new ByteArrayContent(MinimalJpegBytes), "files", "test.jpg");
+
+        var request = new HttpRequestMessage(HttpMethod.Post, UploadImagesPath)
+        {
+            Content = content,
+        };
+        request.Headers.Add(TestAuthHandler.UserIdHeaderName, userId);
+        request.Headers.Authorization = new AuthenticationHeaderValue(TestAuthHandler.SchemeName);
+
+        return client.SendAsync(request);
+    }
+}
