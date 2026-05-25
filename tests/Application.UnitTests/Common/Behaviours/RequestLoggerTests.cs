@@ -26,7 +26,7 @@ public class RequestLoggerTests
     {
         _user.Setup(user => user.Id).Returns(Guid.NewGuid().ToString());
 
-        await _sut.Process(new CreateCookbookCommand(Title: "title"), CancellationToken.None);
+        await _sut.Process(new CreateCookbookCommand(Title: "title"));
 
         _identityService.Verify(i => i.GetUserNameAsync(It.IsAny<string>()), Times.Once);
     }
@@ -34,7 +34,7 @@ public class RequestLoggerTests
     [Test]
     public async Task ShouldNotCallGetUserNameAsyncOnceIfUnauthenticated()
     {
-        await _sut.Process(new CreateCookbookCommand(Title: "title"), CancellationToken.None);
+        await _sut.Process(new CreateCookbookCommand(Title: "title"));
 
         _identityService.Verify(i => i.GetUserNameAsync(It.IsAny<string>()), Times.Never);
     }

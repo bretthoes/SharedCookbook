@@ -11,15 +11,15 @@ public sealed class UpdateInvitationTokenCommandHandler(
     IInvitationResponder responder)
     : IRequestHandler<UpdateInvitationTokenCommand, int>
 {
-    public async Task<int> Handle(UpdateInvitationTokenCommand command, CancellationToken cancellationToken)
+    public async Task<int> Handle(UpdateInvitationTokenCommand command, CancellationToken ct = default)
     {
         var link = TokenLink.Parse(command.Token);
-        var token = await context.InvitationTokens.GetByPublicId(link.TokenId, cancellationToken)
+        var token = await context.InvitationTokens.GetByPublicId(link.TokenId, ct)
                     ?? throw new NotFoundException(key: link.TokenId.ToString(), nameof(InvitationToken));
         
         if (!factory.Verify(link.Secret, token.Digest)) throw new TokenDigestMismatchException();
         if (!token.IsRedeemable) throw new TokenIsNotRedeemableException();
         
-        return await responder.Respond(token, command.NewStatus, cancellationToken);
+        return await responder.Respond(token, command.NewStatus, ct);
     }
 }

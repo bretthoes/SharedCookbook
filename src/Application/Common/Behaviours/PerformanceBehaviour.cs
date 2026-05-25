@@ -13,11 +13,11 @@ public class PerformanceBehaviour<TRequest, TResponse>(
     private static readonly long ThresholdMilliseconds = PerformanceThresholds.For(typeof(TRequest));
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
-        CancellationToken cancellationToken)
+        CancellationToken ct = default)
     {
         long startTimestamp = timeProvider.GetTimestamp();
 
-        var response = await next(cancellationToken);
+        var response = await next(ct);
 
         long elapsedMilliseconds = (long)timeProvider.GetElapsedTime(startTimestamp).TotalMilliseconds;
 
@@ -29,7 +29,7 @@ public class PerformanceBehaviour<TRequest, TResponse>(
         string? userName = string.Empty;
 
         if (!string.IsNullOrEmpty(userId))
-            userName = await identityService.GetUserNameAsync(userId);
+            userName = await identityService.GetUserNameAsync(userId, ct);
 
         logger.LogWarning(
             "SharedCookbook Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds, threshold {ThresholdMilliseconds} milliseconds) {@UserId} {@UserName} {@Request}",

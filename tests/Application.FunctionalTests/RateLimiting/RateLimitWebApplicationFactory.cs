@@ -57,7 +57,7 @@ internal sealed class RateLimitWebApplicationFactory(DbConnection connection)
             services
                 .RemoveAll<IAiRecipeParser>()
                 .AddTransient(_ => Mock.Of<IAiRecipeParser>(parser =>
-                    parser.ParseAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()) ==
+                    parser.ParseAsync(It.IsAny<string>()) ==
                     Task.FromResult(new CreateRecipeDto
                     {
                         CookbookId = 1,

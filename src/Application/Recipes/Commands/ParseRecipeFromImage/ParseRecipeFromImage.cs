@@ -15,8 +15,8 @@ public sealed class ParseRecipeFromImageCommandHandler(IOcrService ocrService)
     
     public async Task<CreateRecipeDto> Handle(
         ParseRecipeFromImageCommand request,
-        CancellationToken cancellationToken)
-        => ParseRecipeFromText(await ocrService.ExtractText(request.File));
+        CancellationToken ct = default)
+        => ParseRecipeFromText(await ocrService.ExtractText(request.File, ct));
 
     private static CreateRecipeDto ParseRecipeFromText(string text)
         => CreateRecipeDto(GetTitle(GetLines(text)), ParseIngredients(text), ParseDirections(text));

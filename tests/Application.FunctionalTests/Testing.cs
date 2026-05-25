@@ -69,7 +69,7 @@ public class Testing
 
     internal static async Task<bool> AnyAsync<TEntity>(
         Expression<Func<TEntity, bool>>? predicate = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken ct = default)
         where TEntity : class
     {
         using var scope = _scopeFactory.CreateScope();
@@ -77,13 +77,13 @@ public class Testing
         var set = context.Set<TEntity>().AsNoTracking();
 
         return predicate is null
-            ? await set.AnyAsync(cancellationToken)
-            : await set.AnyAsync(predicate, cancellationToken);
+            ? await set.AnyAsync(ct)
+            : await set.AnyAsync(predicate, ct);
     }
 
     internal static async Task<TEntity> SingleAsync<TEntity>(
         Expression<Func<TEntity, bool>> predicate,
-        CancellationToken cancellationToken = default)
+        CancellationToken ct = default)
         where TEntity : class
     {
         using var scope = _scopeFactory.CreateScope();
@@ -91,7 +91,7 @@ public class Testing
 
         return await context.Set<TEntity>()
             .AsNoTracking()
-            .SingleAsync(predicate, cancellationToken);
+            .SingleAsync(predicate, ct);
     }
 
     internal static async Task<string> RunAsUserAsync(string userName, string password, string[] roles)

@@ -7,5 +7,5 @@ public interface IInvitationResponder
 {
  Task<int> Respond(BaseInvitation invite,
      InvitationStatus decision,
-     CancellationToken cancellationToken);   
+     CancellationToken ct = default);   
 }

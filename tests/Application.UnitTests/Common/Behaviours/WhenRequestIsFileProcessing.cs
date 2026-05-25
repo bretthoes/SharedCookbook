@@ -27,8 +27,7 @@ public class WhenRequestIsFileProcessing
 
         await _sut.Handle(
             new CreateImagesCommand(Files: null!),
-            PerformanceBehaviourTestHelpers.ImmediateHandler(Array.Empty<string>()),
-            CancellationToken.None);
+            PerformanceBehaviourTestHelpers.ImmediateHandler(Array.Empty<string>()));
 
         PerformanceBehaviourTestHelpers.VerifyLogWarning(_logger, Times.Never());
     }
@@ -44,8 +43,7 @@ public class WhenRequestIsFileProcessing
 
         await _sut.Handle(
             new CreateImagesCommand(Files: null!),
-            PerformanceBehaviourTestHelpers.ImmediateHandler(Array.Empty<string>()),
-            CancellationToken.None);
+            PerformanceBehaviourTestHelpers.ImmediateHandler(Array.Empty<string>()));
 
         PerformanceBehaviourTestHelpers.VerifyLogWarning(_logger, Times.Once());
     }

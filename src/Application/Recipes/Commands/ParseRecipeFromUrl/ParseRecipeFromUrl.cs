@@ -9,6 +9,6 @@ public sealed class ParseRecipeCommandHandler(
     IRecipeUrlParser recipeUrlParser)
     : IRequestHandler<ParseRecipeFromUrlCommand, CreateRecipeDto>
 {
-    public Task<CreateRecipeDto> Handle(ParseRecipeFromUrlCommand request, CancellationToken cancellationToken)
-        => recipeUrlParser.Parse(request.Url, cancellationToken, request.ExtractFromVideo);
+    public Task<CreateRecipeDto> Handle(ParseRecipeFromUrlCommand request, CancellationToken ct = default)
+        => recipeUrlParser.Parse(request.Url, request.ExtractFromVideo, ct);
 }

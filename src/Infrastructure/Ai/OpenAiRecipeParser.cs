@@ -49,7 +49,7 @@ public sealed class OpenAiRecipeParser : IAiRecipeParser
             .GetChatClient(options.Value.Model);
     }
 
-    public async Task<CreateRecipeDto> ParseAsync(string transcript, CancellationToken cancellationToken)
+    public async Task<CreateRecipeDto> ParseAsync(string transcript, CancellationToken ct = default)
     {
         List<ChatMessage> messages =
         [
@@ -64,7 +64,7 @@ public sealed class OpenAiRecipeParser : IAiRecipeParser
 
         try
         {
-            var completion = await _chatClient.CompleteChatAsync(messages, completionOptions, cancellationToken);
+            var completion = await _chatClient.CompleteChatAsync(messages, completionOptions, ct);
             var json = completion.Value.Content[0].Text;
             return MapToDto(json);
         }

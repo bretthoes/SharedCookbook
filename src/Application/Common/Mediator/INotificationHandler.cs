@@ -13,6 +13,6 @@ public interface INotificationHandler<in TNotification>
     /// Handles a notification
     /// </summary>
     /// <param name="notification">The notification</param>
-    /// <param name="cancellationToken">Cancellation token</param>
-    Task Handle(TNotification notification, CancellationToken cancellationToken);
+    /// <param name="ct">Cancellation token</param>
+    Task Handle(TNotification notification, CancellationToken ct = default);
 }

@@ -20,35 +20,48 @@ public class Users : EndpointGroupBase
         builder.MapIdentityApi<ApplicationUser>();
     }
 
-    private static async Task<IResult> LoginGoogle(ISender sender, [FromBody] LoginWithGoogleCommand command)
+    private static async Task<IResult> LoginGoogle(
+        ISender sender,
+        [FromBody] LoginWithGoogleCommand command,
+        CancellationToken ct = default)
     {
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, ct);
         return result.Succeeded
             ? Results.SignIn(result.Value!, authenticationScheme: IdentityConstants.BearerScheme)
             : Results.Unauthorized();
     }
 
-    private static async Task<IResult> LoginApple(ISender sender, [FromBody] LoginWithAppleCommand command)
+    private static async Task<IResult> LoginApple(
+        ISender sender,
+        [FromBody] LoginWithAppleCommand command,
+        CancellationToken ct = default)
     {
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, ct);
         return result.Succeeded
             ? Results.SignIn(result.Value!, authenticationScheme: IdentityConstants.BearerScheme)
             : Results.Unauthorized();
     }
 
-    private static async Task<IResult> LoginFacebook(ISender sender, [FromBody] LoginWithFacebookCommand command)
+    private static async Task<IResult> LoginFacebook(
+        ISender sender,
+        [FromBody] LoginWithFacebookCommand command,
+        CancellationToken ct = default)
     {
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, ct);
         return result.Succeeded
             ? Results.SignIn(result.Value!, authenticationScheme: IdentityConstants.BearerScheme)
             : Results.Unauthorized();
     }
 
-    private static async Task<IResult> Update(ISender sender, [FromBody] UpdateUserCommand command)
+    private static async Task<IResult> Update(
+        ISender sender,
+        [FromBody] UpdateUserCommand command,
+        CancellationToken ct = default)
     {
-        await sender.Send(command);
+        await sender.Send(command, ct);
         return Results.NoContent();
     }
 
-    private static Task<DisplayNameDto> GetDisplayName(ISender sender) => sender.Send(new GetDisplayNameQuery());
+    private static Task<DisplayNameDto> GetDisplayName(ISender sender, CancellationToken ct = default) =>
+        sender.Send(new GetDisplayNameQuery(), ct);
 }

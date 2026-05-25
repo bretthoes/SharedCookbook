@@ -2,5 +2,5 @@ namespace SharedCookbook.Application.Common.Interfaces;
 
 public interface IRecipeUrlParser
 {
-    public Task<CreateRecipeDto> Parse(string url, CancellationToken ct, bool extractFromVideo = false);
+    Task<CreateRecipeDto> Parse(string url, bool extractFromVideo = false, CancellationToken ct = default);
 }

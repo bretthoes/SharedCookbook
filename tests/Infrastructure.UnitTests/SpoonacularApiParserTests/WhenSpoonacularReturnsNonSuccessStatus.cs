@@ -19,6 +19,6 @@ public class WhenSpoonacularReturnsNonSuccessStatus
                 ReasonPhrase = "Bad Gateway"
             });
 
-        Assert.ThrowsAsync<HttpRequestException>(() => sut.Parse(RecipeUrl, CancellationToken.None));
+        Assert.ThrowsAsync<HttpRequestException>(() => sut.Parse(RecipeUrl));
     }
 }

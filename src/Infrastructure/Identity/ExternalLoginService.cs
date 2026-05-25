@@ -45,7 +45,7 @@ public class ExternalLoginService(
         new OpenIdConnectConfigurationRetriever(),
         new HttpDocumentRetriever());
 
-    public async Task<Result<string>> LoginWithGoogleAsync(string idToken, CancellationToken cancellationToken)
+    public async Task<Result<string>> LoginWithGoogleAsync(string idToken, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(idToken))
         {
@@ -81,7 +81,7 @@ public class ExternalLoginService(
         return await FindOrCreateUserAsync(GoogleLoginProvider, subject, email);
     }
 
-    public async Task<Result<string>> LoginWithAppleAsync(string identityToken, CancellationToken cancellationToken)
+    public async Task<Result<string>> LoginWithAppleAsync(string identityToken, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(identityToken))
         {
@@ -92,7 +92,7 @@ public class ExternalLoginService(
         ClaimsPrincipal principal;
         try
         {
-            var config = await AppleConfigManager.GetConfigurationAsync(cancellationToken);
+            var config = await AppleConfigManager.GetConfigurationAsync(ct);
             var validationParameters = new TokenValidationParameters
             {
                 ValidIssuer = AppleIssuer,
@@ -127,7 +127,7 @@ public class ExternalLoginService(
         return await FindOrCreateUserAsync(AppleLoginProvider, subject, email);
     }
 
-    public async Task<Result<string>> LoginWithFacebookAsync(string accessToken, CancellationToken cancellationToken)
+    public async Task<Result<string>> LoginWithFacebookAsync(string accessToken, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(accessToken))
         {
@@ -143,9 +143,9 @@ public class ExternalLoginService(
         JsonDocument debugDoc;
         try
         {
-            var debugResponse = await httpClient.GetAsync(debugUrl, cancellationToken);
+            var debugResponse = await httpClient.GetAsync(debugUrl, ct);
             debugResponse.EnsureSuccessStatusCode();
-            var debugJson = await debugResponse.Content.ReadAsStringAsync(cancellationToken);
+            var debugJson = await debugResponse.Content.ReadAsStringAsync(ct);
             debugDoc = JsonDocument.Parse(debugJson);
         }
         catch (Exception ex)
@@ -169,9 +169,9 @@ public class ExternalLoginService(
         JsonDocument profileDoc;
         try
         {
-            var profileResponse = await httpClient.GetAsync(profileUrl, cancellationToken);
+            var profileResponse = await httpClient.GetAsync(profileUrl, ct);
             profileResponse.EnsureSuccessStatusCode();
-            var profileJson = await profileResponse.Content.ReadAsStringAsync(cancellationToken);
+            var profileJson = await profileResponse.Content.ReadAsStringAsync(ct);
             profileDoc = JsonDocument.Parse(profileJson);
         }
         catch (Exception ex)

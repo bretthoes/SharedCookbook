@@ -8,7 +8,7 @@ namespace SharedCookbook.Application.Common.Mediator;
 /// </summary>
 public sealed class Mediator(IServiceProvider serviceProvider) : IMediator
 {
-    public async Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default)
+    public async Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -38,7 +38,7 @@ public sealed class Mediator(IServiceProvider serviceProvider) : IMediator
         foreach (var preProcessor in preProcessors)
         {
             var processMethod = preProcessorType.GetMethod("Process")!;
-            var task = (Task)processMethod.Invoke(preProcessor, [request, cancellationToken])!;
+            var task = (Task)processMethod.Invoke(preProcessor, [request, ct])!;
             await task.ConfigureAwait(false);
         }
 
@@ -81,10 +81,10 @@ public sealed class Mediator(IServiceProvider serviceProvider) : IMediator
             };
         }
 
-        return await handlerDelegate(cancellationToken).ConfigureAwait(false);
+        return await handlerDelegate(ct).ConfigureAwait(false);
     }
 
-    public async Task<object?> Send(IBaseRequest request, CancellationToken cancellationToken = default)
+    public async Task<object?> Send(IBaseRequest request, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -105,7 +105,7 @@ public sealed class Mediator(IServiceProvider serviceProvider) : IMediator
             .First(m => m.Name == "Send" && m.IsGenericMethod)
             .MakeGenericMethod(responseType);
 
-        var task = (Task)sendMethod.Invoke(this, [request, cancellationToken])!;
+        var task = (Task)sendMethod.Invoke(this, [request, ct])!;
         await task.ConfigureAwait(false);
 
         // Get the result from the task
@@ -113,7 +113,7 @@ public sealed class Mediator(IServiceProvider serviceProvider) : IMediator
         return resultProperty?.GetValue(task);
     }
 
-    public async Task Publish(DomainNotification notification, CancellationToken cancellationToken = default)
+    public async Task Publish(DomainNotification notification, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(notification);
 
@@ -125,14 +125,14 @@ public sealed class Mediator(IServiceProvider serviceProvider) : IMediator
 
         foreach (var handler in handlers)
         {
-            var task = (Task)handleMethod.Invoke(handler, [notification, cancellationToken])!;
+            var task = (Task)handleMethod.Invoke(handler, [notification, ct])!;
             await task.ConfigureAwait(false);
         }
     }
 
-    public Task Publish<TNotification>(TNotification notification, CancellationToken cancellationToken = default)
+    public Task Publish<TNotification>(TNotification notification, CancellationToken ct = default)
         where TNotification : DomainNotification
     {
-        return Publish((DomainNotification)notification, cancellationToken);
+        return Publish((DomainNotification)notification, ct);
     }
 }

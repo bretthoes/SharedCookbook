@@ -13,18 +13,25 @@ public class InvitationTokens : EndpointGroupBase
         builder.MapPut(Update, pattern: "{token}").RequireAuthorization();
     }
     
-    private static Task<InvitationDto> Single(ISender sender, [FromRoute] string token)
-        => sender.Send(new GetInvitationTokenQuery(token));
+    private static Task<InvitationDto> Single(
+        ISender sender,
+        [FromRoute] string token,
+        CancellationToken ct = default) =>
+        sender.Send(new GetInvitationTokenQuery(token), ct);
 
-    private static Task<InvitationTokenDto> Create(ISender sender, [FromBody] CreateInvitationTokenCommand command)
-    {
-        return sender.Send(command);
-    }
+    private static Task<InvitationTokenDto> Create(
+        ISender sender,
+        [FromBody] CreateInvitationTokenCommand command,
+        CancellationToken ct = default) =>
+        sender.Send(command, ct);
     
-    private static async Task<IResult> Update(ISender sender, [FromRoute] string token,
-        [FromBody] UpdateInvitationTokenCommand command)
+    private static async Task<IResult> Update(
+        ISender sender,
+        [FromRoute] string token,
+        [FromBody] UpdateInvitationTokenCommand command,
+        CancellationToken ct = default)
     {
-        await sender.Send(command);
+        await sender.Send(command, ct);
         return Results.NoContent();
     }
 }

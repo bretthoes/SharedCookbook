@@ -11,17 +11,18 @@ public class Subscriptions : EndpointGroupBase
         builder.MapPost(RevenueCatWebhook, pattern: "webhook/revenuecat");
     }
 
-    private static Task<SubscriptionStatusDto> GetStatus(ISender sender) =>
-        sender.Send(new GetSubscriptionStatusQuery());
+    private static Task<SubscriptionStatusDto> GetStatus(ISender sender, CancellationToken ct = default) =>
+        sender.Send(new GetSubscriptionStatusQuery(), ct);
 
     private static async Task<IResult> RevenueCatWebhook(
         ISender sender,
         HttpContext httpContext,
-        [FromBody] RevenueCatWebhookPayload? payload)
+        [FromBody] RevenueCatWebhookPayload? payload,
+        CancellationToken ct = default)
     {
         var result = await sender.Send(new ProcessRevenueCatWebhookCommand(
             httpContext.Request.Headers.Authorization.ToString(),
-            payload));
+            payload), ct);
 
         return result.Status switch
         {

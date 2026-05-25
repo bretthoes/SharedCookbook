@@ -7,6 +7,6 @@ public sealed class GetCookbooksWithPaginationQueryHandler(IIdentityRepository r
     : IRequestHandler<GetCookbooksWithPaginationQuery, PaginatedList<CookbookBriefDto>>
 {
     public Task<PaginatedList<CookbookBriefDto>> Handle(GetCookbooksWithPaginationQuery query,
-        CancellationToken cancellationToken)
-        => repository.GetCookbooks(query, cancellationToken);
+        CancellationToken ct = default)
+        => repository.GetCookbooks(query, ct);
 }

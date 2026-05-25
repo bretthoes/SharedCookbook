@@ -1,8 +1,8 @@
-using System.Security.Claims;
-
 namespace SharedCookbook.Application.Common.Interfaces;
 
 public interface ISignInPrincipalFactory
 {
-    Task<ClaimsPrincipal?> CreatePrincipalForUserIdAsync(string userId, CancellationToken cancellationToken = default);
+    Task<System.Security.Claims.ClaimsPrincipal?> CreatePrincipalForUserIdAsync(
+        string userId,
+        CancellationToken ct = default);
 }

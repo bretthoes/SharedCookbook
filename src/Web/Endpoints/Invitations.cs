@@ -19,27 +19,35 @@ public class Invitations : EndpointGroupBase
 
     private static Task<PaginatedList<InvitationDto>> List(
         ISender sender,
-        [AsParameters] GetInvitationsWithPaginationQuery query)
-        => sender.Send(query);
+        [AsParameters] GetInvitationsWithPaginationQuery query,
+        CancellationToken ct = default) =>
+        sender.Send(query, ct);
 
-    private static Task<int> Count(ISender sender, [AsParameters] GetInvitationsCountQuery query) => sender.Send(query);
+    private static Task<int> Count(
+        ISender sender,
+        [AsParameters] GetInvitationsCountQuery query,
+        CancellationToken ct = default) => sender.Send(query, ct);
 
-    private static Task<int> Create(ISender sender, [FromBody] CreateInvitationCommand command)
-    {
-        return sender.Send(command);
-    }
+    private static Task<int> Create(
+        ISender sender,
+        [FromBody] CreateInvitationCommand command,
+        CancellationToken ct = default) =>
+        sender.Send(command, ct);
 
-    private static async Task<IResult> Update(ISender sender, [FromRoute] int id,
-        [FromBody] UpdateInvitationCommand command)
+    private static async Task<IResult> Update(
+        ISender sender,
+        [FromRoute] int id,
+        [FromBody] UpdateInvitationCommand command,
+        CancellationToken ct = default)
     {
         if (id != command.Id) return Results.BadRequest();
-        await sender.Send(command);
+        await sender.Send(command, ct);
         return Results.NoContent();
     }
 
-    private static async Task<IResult> Delete(ISender sender, [FromRoute] int id)
+    private static async Task<IResult> Delete(ISender sender, [FromRoute] int id, CancellationToken ct = default)
     {
-        await sender.Send(new DeleteInvitationCommand(id));
+        await sender.Send(new DeleteInvitationCommand(id), ct);
         return Results.NoContent();
     }
 }

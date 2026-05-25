@@ -17,7 +17,7 @@ public class CustomExceptionHandler : IExceptionHandler
     };
 
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception,
-        CancellationToken cancellationToken)
+        CancellationToken ct = default)
     {
         foreach (var (exceptionType, handler) in _exceptionHandlers)
         {

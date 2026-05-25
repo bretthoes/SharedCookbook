@@ -3,7 +3,7 @@ namespace SharedCookbook.Application.Invitations.EventHandlers;
 public sealed class InvitationRejectedEventHandler(ILogger<InvitationRejectedEventHandler> logger)
     : INotificationHandler<InvitationRejectedEvent>
 {
-    public Task Handle(InvitationRejectedEvent rejectedEvent, CancellationToken token)
+    public Task Handle(InvitationRejectedEvent rejectedEvent, CancellationToken ct = default)
     {
         var invitation = rejectedEvent.Invitation; 
         

@@ -31,38 +31,55 @@ public class Recipes : EndpointGroupBase
             .RequireRateLimiting(RateLimitPolicyNames.RecipeParsingDaily);
     }
 
-    private static Task<RecipeDetailedDto> GetById(ISender sender, [AsParameters] GetRecipeQuery query) =>
-        sender.Send(query);
+    private static Task<RecipeDetailedDto> GetById(
+        ISender sender,
+        [AsParameters] GetRecipeQuery query,
+        CancellationToken ct = default) =>
+        sender.Send(query, ct);
 
     private static Task<PaginatedList<RecipeBriefDto>> List(
         ISender sender,
-        [AsParameters] GetRecipesQuery query) => sender.Send(query);
+        [AsParameters] GetRecipesQuery query,
+        CancellationToken ct = default) => sender.Send(query, ct);
 
-    private static Task<int> Create(ISender sender, [FromBody] CreateRecipeCommand command)
-    {
-        return sender.Send(command);
-    }
+    private static Task<int> Create(
+        ISender sender,
+        [FromBody] CreateRecipeCommand command,
+        CancellationToken ct = default) =>
+        sender.Send(command, ct);
 
-    private static async Task<IResult> Update(ISender sender, [FromRoute] int id,
-        [FromBody] UpdateRecipeCommand command)
+    private static async Task<IResult> Update(
+        ISender sender,
+        [FromRoute] int id,
+        [FromBody] UpdateRecipeCommand command,
+        CancellationToken ct = default)
     {
         if (id != command.Recipe.Id) return Results.BadRequest();
-        await sender.Send(command);
+        await sender.Send(command, ct);
         return Results.NoContent();
     }
 
-    private static async Task<IResult> Delete(ISender sender, [FromRoute] int id)
+    private static async Task<IResult> Delete(ISender sender, [FromRoute] int id, CancellationToken ct = default)
     {
-        await sender.Send(new DeleteRecipeCommand(id));
+        await sender.Send(new DeleteRecipeCommand(id), ct);
         return Results.NoContent();
     }
 
-    private static Task<CreateRecipeDto> ParseFromImage(ISender sender, [FromForm] IFormFile file)
-        => sender.Send(new ParseRecipeFromImageCommand(file));
+    private static Task<CreateRecipeDto> ParseFromImage(
+        ISender sender,
+        [FromForm] IFormFile file,
+        CancellationToken ct = default) =>
+        sender.Send(new ParseRecipeFromImageCommand(file), ct);
 
-    private static Task<CreateRecipeDto> ParseFromUrl(ISender sender, [FromBody] ParseRecipeFromUrlCommand command) 
-        => sender.Send(command);
+    private static Task<CreateRecipeDto> ParseFromUrl(
+        ISender sender,
+        [FromBody] ParseRecipeFromUrlCommand command,
+        CancellationToken ct = default) =>
+        sender.Send(command, ct);
 
-    private static Task<CreateRecipeDto> ParseFromVoice(ISender sender, [FromBody] ParseRecipeFromVoiceCommand command)
-        => sender.Send(command);
+    private static Task<CreateRecipeDto> ParseFromVoice(
+        ISender sender,
+        [FromBody] ParseRecipeFromVoiceCommand command,
+        CancellationToken ct = default) =>
+        sender.Send(command, ct);
 }

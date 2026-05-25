@@ -10,14 +10,14 @@ public sealed class UpdateInvitationCommandHandler(
     IUser user)
     : IRequestHandler<UpdateInvitationCommand, int>
 {
-    public async Task<int> Handle(UpdateInvitationCommand command, CancellationToken cancellationToken)
+    public async Task<int> Handle(UpdateInvitationCommand command, CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
         
-        var invitation = await context.CookbookInvitations.FindOrThrowAsync(command.Id, cancellationToken);
+        var invitation = await context.CookbookInvitations.FindOrThrowAsync(command.Id, ct);
 
         if (invitation.IsNotFor(user.Id)) throw new ForbiddenAccessException();
 
-        return await responder.Respond(invitation, command.NewStatus, cancellationToken);
+        return await responder.Respond(invitation, command.NewStatus, ct);
     }
 }

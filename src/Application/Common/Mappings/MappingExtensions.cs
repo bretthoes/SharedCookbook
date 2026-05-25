@@ -6,12 +6,12 @@ public static class MappingExtensions
         this IQueryable<TDestination> queryable,
         int pageNumber,
         int pageSize,
-        CancellationToken cancellationToken) 
+        CancellationToken ct = default) 
         where TDestination : class 
             => PaginatedList<TDestination>
                 .CreateAsync(
                     source: queryable.AsNoTracking(), 
                     pageNumber, 
                     pageSize,
-                    cancellationToken);
+                    ct);
 }

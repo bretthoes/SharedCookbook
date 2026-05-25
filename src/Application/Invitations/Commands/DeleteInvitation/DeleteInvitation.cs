@@ -4,14 +4,14 @@ public sealed record DeleteInvitationCommand(int Id) : IRequest;
 
 public sealed class DeleteInvitationCommandHandler(IApplicationDbContext context) : IRequestHandler<DeleteInvitationCommand>
 {
-    public async Task Handle(DeleteInvitationCommand command, CancellationToken cancellationToken)
+    public async Task Handle(DeleteInvitationCommand command, CancellationToken ct = default)
     {
-        var invitation = await context.CookbookInvitations.FindOrThrowAsync(command.Id, cancellationToken);
+        var invitation = await context.CookbookInvitations.FindOrThrowAsync(command.Id, ct);
 
         context.CookbookInvitations.Remove(invitation);
 
         invitation.AddDomainEvent(new InvitationDeletedEvent(invitation));
 
-        await context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(ct);
     }
 }

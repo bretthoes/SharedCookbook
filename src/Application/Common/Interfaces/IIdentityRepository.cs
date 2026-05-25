@@ -8,13 +8,13 @@ public interface IIdentityRepository
 {
     Task<PaginatedList<MembershipDto>> GetMemberships(
         GetMembershipsWithPaginationQuery query,
-        CancellationToken cancellationToken);
+        CancellationToken ct = default);
 
     Task<PaginatedList<InvitationDto>> GetInvitations(
         GetInvitationsWithPaginationQuery query,
-        CancellationToken cancellationToken);
+        CancellationToken ct = default);
 
     Task<PaginatedList<CookbookBriefDto>> GetCookbooks(
         GetCookbooksWithPaginationQuery query,
-        CancellationToken cancellationToken);
+        CancellationToken ct = default);
 }

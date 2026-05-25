@@ -8,10 +8,10 @@ public sealed record GetInvitationsCountQuery(InvitationStatus Status = Invitati
 public sealed class GetInvitationsCountQueryHandler(IApplicationDbContext context, IUser user)
     : IRequestHandler<GetInvitationsCountQuery, int>
 {
-    public Task<int> Handle(GetInvitationsCountQuery query, CancellationToken token)
+    public Task<int> Handle(GetInvitationsCountQuery query, CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
         
-        return context.CookbookInvitations.GetCountByUserAndStatus(user.Id, query.Status, token);
+        return context.CookbookInvitations.GetCountByUserAndStatus(user.Id, query.Status, ct);
     }
 }

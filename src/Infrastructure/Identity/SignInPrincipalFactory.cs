@@ -10,7 +10,7 @@ public class SignInPrincipalFactory(
 {
     public async Task<System.Security.Claims.ClaimsPrincipal?> CreatePrincipalForUserIdAsync(
         string userId,
-        CancellationToken cancellationToken = default)
+        CancellationToken ct = default)
     {
         var user = await userManager.FindByIdAsync(userId);
         if (user == null)

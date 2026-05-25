@@ -9,6 +9,6 @@ public sealed record CreateImagesCommand(IFormFileCollection Files) : IRequest<s
 public sealed class CreateImagesCommandHandler(IImageUploader uploader)
     : IRequestHandler<CreateImagesCommand, string[]>
 {
-    public Task<string[]> Handle(CreateImagesCommand request, CancellationToken cancellationToken)
-        => uploader.UploadFiles(request.Files);
+    public Task<string[]> Handle(CreateImagesCommand request, CancellationToken ct = default)
+        => uploader.UploadFiles(request.Files, ct);
 }

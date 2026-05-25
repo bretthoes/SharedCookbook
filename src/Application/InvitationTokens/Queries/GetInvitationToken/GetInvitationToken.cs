@@ -7,11 +7,11 @@ public class GetInvitationPreviewQueryHandler(
     IIdentityService service)
     : IRequestHandler<GetInvitationTokenQuery, InvitationDto>
 {
-    public async Task<InvitationDto> Handle(GetInvitationTokenQuery query, CancellationToken cancellationToken)
+    public async Task<InvitationDto> Handle(GetInvitationTokenQuery query, CancellationToken ct = default)
     {
         var link = TokenLink.Parse(query.Token);
 
-        var token = await context.InvitationTokens.GetByPublicId(link.TokenId, cancellationToken)
+        var token = await context.InvitationTokens.GetByPublicId(link.TokenId, ct)
             ?? throw new NotFoundException(key: link.TokenId.ToString(), nameof(InvitationToken));
 
         ArgumentNullException.ThrowIfNull(token.Cookbook);
@@ -19,7 +19,7 @@ public class GetInvitationPreviewQueryHandler(
         string? senderId = token.CreatedBy;
         ArgumentException.ThrowIfNullOrWhiteSpace(senderId);
         
-        (string? email, string? name) = await service.FindByIdAsync(senderId)
+        (string? email, string? name) = await service.FindByIdAsync(senderId, ct)
             ?? throw new NotFoundException(key: senderId, nameof(IUser));
 
         return new InvitationDto

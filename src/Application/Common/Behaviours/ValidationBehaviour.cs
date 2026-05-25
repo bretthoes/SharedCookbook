@@ -7,14 +7,14 @@ public class ValidationBehaviour<TRequest, TResponse>(IEnumerable<IValidator<TRe
     where TRequest : notnull
 {
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
-        CancellationToken cancellationToken)
+        CancellationToken ct = default)
     {
         if (!validators.Any())
-            return await next(cancellationToken);
+            return await next(ct);
 
         var validationResults = await Task.WhenAll(
             tasks: validators.Select(validator =>
-                validator.ValidateAsync(new ValidationContext<TRequest>(request), cancellationToken)));
+                validator.ValidateAsync(new ValidationContext<TRequest>(request), ct)));
 
         var failures = validationResults
             .Where(result => result.Errors.IsNotEmpty())
@@ -24,6 +24,6 @@ public class ValidationBehaviour<TRequest, TResponse>(IEnumerable<IValidator<TRe
         if (failures.IsNotEmpty())
             throw new ValidationException(failures);
 
-        return await next(cancellationToken);
+        return await next(ct);
     }
 }

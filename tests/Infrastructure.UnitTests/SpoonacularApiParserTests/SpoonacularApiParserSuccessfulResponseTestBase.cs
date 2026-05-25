@@ -22,6 +22,6 @@ public abstract class SpoonacularApiParserSuccessfulResponseTestBase
     {
         ConfigureImageUploader();
         _sut = BuildSut(_imageUploader, BuildSuccessResponse(ApiImageUrl));
-        _actual = await _sut.Parse(RecipeUrl, CancellationToken.None);
+        _actual = await _sut.Parse(RecipeUrl);
     }
 }

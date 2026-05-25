@@ -11,17 +11,17 @@ public interface IPublisher
     /// Asynchronously send a notification to multiple handlers
     /// </summary>
     /// <param name="notification">Notification object</param>
-    /// <param name="cancellationToken">Optional cancellation token</param>
+    /// <param name="ct">Optional cancellation token</param>
     /// <returns>A task that represents the publish operation</returns>
-    Task Publish(DomainNotification notification, CancellationToken cancellationToken = default);
+    Task Publish(DomainNotification notification, CancellationToken ct = default);
 
     /// <summary>
     /// Asynchronously send a notification to multiple handlers
     /// </summary>
     /// <typeparam name="TNotification">Notification type</typeparam>
     /// <param name="notification">Notification object</param>
-    /// <param name="cancellationToken">Optional cancellation token</param>
+    /// <param name="ct">Optional cancellation token</param>
     /// <returns>A task that represents the publish operation</returns>
-    Task Publish<TNotification>(TNotification notification, CancellationToken cancellationToken = default)
+    Task Publish<TNotification>(TNotification notification, CancellationToken ct = default)
         where TNotification : DomainNotification;
 }

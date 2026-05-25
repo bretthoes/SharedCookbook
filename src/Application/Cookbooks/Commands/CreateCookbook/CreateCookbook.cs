@@ -9,7 +9,7 @@ public sealed class CreateCookbookCommandHandler(IApplicationDbContext context,
     IUser user,
     IOptions<ImageUploadOptions> options) : IRequestHandler<CreateCookbookCommand, int>
 {
-    public async Task<int> Handle(CreateCookbookCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(CreateCookbookCommand request, CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(user.Id);
         
@@ -17,9 +17,9 @@ public sealed class CreateCookbookCommandHandler(IApplicationDbContext context,
         
         var cookbook = Cookbook.Create(request.Title, user.Id, image);
         
-        await context.Cookbooks.AddAsync(cookbook, cancellationToken);
+        await context.Cookbooks.AddAsync(cookbook, ct);
         cookbook.AddDomainEvent(new CookbookCreatedEvent(cookbook));
-        await context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(ct);
 
         return cookbook.Id;
     }

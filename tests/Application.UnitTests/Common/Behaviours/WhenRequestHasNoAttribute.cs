@@ -26,8 +26,7 @@ public class WhenRequestHasNoAttribute
     {
         await _sut.Handle(
             new CreateCookbookCommand(Title: "title"),
-            PerformanceBehaviourTestHelpers.ImmediateHandler(1),
-            CancellationToken.None);
+            PerformanceBehaviourTestHelpers.ImmediateHandler(1));
 
         PerformanceBehaviourTestHelpers.VerifyLogWarning(_logger, Times.Once());
     }

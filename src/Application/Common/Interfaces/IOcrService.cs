@@ -4,5 +4,5 @@ namespace SharedCookbook.Application.Common.Interfaces;
 
 public interface IOcrService
 {
-    Task<string> ExtractText(IFormFile file);
+    Task<string> ExtractText(IFormFile file, CancellationToken ct = default);
 }

@@ -18,8 +18,8 @@ internal sealed class StubHttpMessageHandler(
 {
     protected override Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request,
-        CancellationToken cancellationToken) =>
-        handler(request, cancellationToken);
+        CancellationToken ct = default) =>
+        handler(request, ct);
 }
 
 internal static class SpoonacularApiParserTestHelpers

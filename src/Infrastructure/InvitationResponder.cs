@@ -9,9 +9,10 @@ public sealed class InvitationResponder(
     IUser user,
     TimeProvider clock) : IInvitationResponder
 {
-    public async Task<int> Respond(BaseInvitation invite,
+    public async Task<int> Respond(
+        BaseInvitation invite,
         InvitationStatus decision,
-        CancellationToken cancellationToken = default)
+        CancellationToken ct = default)
     {
         if (StatusUnchanged(current: invite.Status, updated: decision)) return invite.Id;
 
@@ -35,7 +36,7 @@ public sealed class InvitationResponder(
                 throw new NotSupportedException($"Status {decision} with Id {invite.Id} not supported.");
         }
 
-        await context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(ct);
         return invite.Id;
     }
     

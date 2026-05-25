@@ -4,7 +4,10 @@ internal static class GetByCookbookAndUserDbQuery
 {
     extension(IQueryable<CookbookMembership> query)
     {
-        internal Task<CookbookMembership> GetByCookbookAndUser(int cookbookId, string userId, CancellationToken ct) =>
+        internal Task<CookbookMembership> GetByCookbookAndUser(
+            int cookbookId,
+            string userId,
+            CancellationToken ct = default) =>
             query.ForCookbookAndUser(cookbookId, userId).SingleAsync(ct);
 
         private IQueryable<CookbookMembership> ForCookbookAndUser(int cookbookId, string userId) =>

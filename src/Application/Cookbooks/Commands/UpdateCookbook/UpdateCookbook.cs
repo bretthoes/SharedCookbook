@@ -8,15 +8,15 @@ public sealed record UpdateCookbookCommand(int Id, string? Title = null, string?
 public sealed class UpdateCookbookCommandHandler(IApplicationDbContext context, IOptions<ImageUploadOptions> options)
     : IRequestHandler<UpdateCookbookCommand, int>
 {
-    public async Task<int> Handle(UpdateCookbookCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(UpdateCookbookCommand request, CancellationToken ct = default)
     {
-        var cookbook = await context.Cookbooks.FindOrThrowAsync(request.Id, cancellationToken);
+        var cookbook = await context.Cookbooks.FindOrThrowAsync(request.Id, ct);
 
         cookbook.Title = request.Title ?? string.Empty;
         cookbook.Image = request.Image?.StripPrefixUrl(options.Value.ImageBaseUrl);
 
         cookbook.AddDomainEvent(new CookbookUpdatedEvent(cookbook));
         
-        return await context.SaveChangesAsync(cancellationToken);
+        return await context.SaveChangesAsync(ct);
     }
 }

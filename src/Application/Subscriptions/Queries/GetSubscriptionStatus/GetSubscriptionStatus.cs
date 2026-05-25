@@ -5,6 +5,6 @@ public sealed record GetSubscriptionStatusQuery : IRequest<SubscriptionStatusDto
 public sealed class GetSubscriptionStatusQueryHandler(IUser user)
     : IRequestHandler<GetSubscriptionStatusQuery, SubscriptionStatusDto>
 {
-    public Task<SubscriptionStatusDto> Handle(GetSubscriptionStatusQuery query, CancellationToken cancellationToken)
+    public Task<SubscriptionStatusDto> Handle(GetSubscriptionStatusQuery query, CancellationToken ct = default)
         => Task.FromResult(new SubscriptionStatusDto(user.IsPro));
 }

@@ -6,7 +6,8 @@ public record GetRecipesQuery(int CookbookId, string? Search = null, int PageNum
 public class GetRecipesWithPaginationQueryHandler(IApplicationDbContext context)
     : IRequestHandler<GetRecipesQuery, PaginatedList<RecipeBriefDto>>
 {
-    public Task<PaginatedList<RecipeBriefDto>> Handle(GetRecipesQuery query,
-        CancellationToken token)
-        => context.Recipes.QueryBriefDtos(query.CookbookId, query.PageNumber, query.PageSize, token);
+    public Task<PaginatedList<RecipeBriefDto>> Handle(
+        GetRecipesQuery query,
+        CancellationToken ct = default) =>
+        context.Recipes.QueryBriefDtos(query.CookbookId, query.PageNumber, query.PageSize, ct);
 }

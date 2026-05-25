@@ -6,13 +6,14 @@ public class LoggingBehaviour<TRequest>(ILogger<TRequest> logger, IUser user, II
 {
     private readonly ILogger _logger = logger;
 
-    public async Task Process(TRequest request, CancellationToken cancellationToken)
+    public async Task Process(TRequest request, CancellationToken ct = default)
     {
         var requestName = typeof(TRequest).Name;
         string userId = user.Id ?? string.Empty;
         string? userName = string.Empty;
 
-        if (!string.IsNullOrEmpty(userId)) userName = await identityService.GetUserNameAsync(userId);
+        if (!string.IsNullOrEmpty(userId))
+            userName = await identityService.GetUserNameAsync(userId, ct);
 
         _logger.LogInformation("Request: {Name} {@UserId} {@UserName} {@Request}",
             requestName, userId, userName, request);

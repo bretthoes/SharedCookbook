@@ -3,7 +3,7 @@
 public class MembershipDeletedEventHandler(IUser user, ILogger<MembershipDeletedEventHandler> logger)
     : INotificationHandler<MembershipDeletedEvent>
 {
-    public Task Handle(MembershipDeletedEvent notification, CancellationToken cancellationToken)
+    public Task Handle(MembershipDeletedEvent notification, CancellationToken ct = default)
     {
         var membership = notification.Membership;
         

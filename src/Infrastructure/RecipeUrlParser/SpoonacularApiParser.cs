@@ -18,7 +18,10 @@ public sealed class SpoonacularApiParser(
     private readonly string _true = true.ToString().ToLowerInvariant();
     private readonly string _false = false.ToString().ToLowerInvariant();
 
-    public async Task<CreateRecipeDto> Parse(string url, CancellationToken ct, bool extractFromVideo = false)
+    public async Task<CreateRecipeDto> Parse(
+        string url,
+        bool extractFromVideo = false,
+        CancellationToken ct = default)
     {
         var queryParams = new Dictionary<string, string?>
         {
@@ -56,7 +59,7 @@ public sealed class SpoonacularApiParser(
 
         string? uploadedKey = null;
         if (!apiResponse.HasImage()) return apiResponse.ToDto(uploadedKey);
-        try { uploadedKey = await imageUploader.UploadImageFromUrl(apiResponse.Image!); }
+        try { uploadedKey = await imageUploader.UploadImageFromUrl(apiResponse.Image!, ct); }
         catch (OperationCanceledException) when (ct.IsCancellationRequested) { throw; }
         // swallow exception if image upload fails; don't let a bad or
         // missing image stop a user from importing a recipe from a URL

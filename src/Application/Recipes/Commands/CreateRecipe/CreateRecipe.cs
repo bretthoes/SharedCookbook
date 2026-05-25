@@ -15,7 +15,7 @@ public sealed class CreateRecipeCommandHandler(
     IOptions<ImageUploadOptions> options)
     : IRequestHandler<CreateRecipeCommand, int>
 {
-    public async Task<int> Handle(CreateRecipeCommand command, CancellationToken cancellationToken)
+    public async Task<int> Handle(CreateRecipeCommand command, CancellationToken ct = default)
     {
         var entity = new Recipe
         {
@@ -51,7 +51,7 @@ public sealed class CreateRecipeCommandHandler(
 
         context.Recipes.Add(entity);
 
-        await context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(ct);
 
         return entity.Id;
     }

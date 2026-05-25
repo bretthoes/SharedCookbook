@@ -3,7 +3,7 @@
 public class MembershipUpdatedEventHandler(IUser user, ILogger<MembershipUpdatedEventHandler> logger)
     : INotificationHandler<MembershipUpdatedEvent>
 {
-    public Task Handle(MembershipUpdatedEvent notification, CancellationToken cancellationToken)
+    public Task Handle(MembershipUpdatedEvent notification, CancellationToken ct = default)
     {
         var membership = notification.Membership;
         

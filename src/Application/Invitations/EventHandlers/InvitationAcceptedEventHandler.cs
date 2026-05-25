@@ -5,12 +5,13 @@ public class InvitationAcceptedEventHandler(
     ILogger<InvitationAcceptedEventHandler> logger)
     : INotificationHandler<InvitationAcceptedEvent>
 {
-    public async Task Handle(InvitationAcceptedEvent acceptedEvent, CancellationToken token)
+    public async Task Handle(InvitationAcceptedEvent acceptedEvent, CancellationToken ct = default)
     {
-        if (await context.CookbookMemberships.ExistsFor(acceptedEvent.CookbookId, acceptedEvent.UserId, token)) return;
+        if (await context.CookbookMemberships.ExistsFor(acceptedEvent.CookbookId, acceptedEvent.UserId, ct))
+            return;
 
         var membership = CookbookMembership.NewDefault(acceptedEvent.CookbookId, acceptedEvent.UserId);
-        await context.CookbookMemberships.AddAsync(membership, token);
+        await context.CookbookMemberships.AddAsync(membership, ct);
         
         logger.LogInformation(
             "InvitationAcceptedEvent handled: Invitation (ID: {InvitationId}) was accepted for Cookbook (ID: {CookbookId}) by User ID {UserId}.",

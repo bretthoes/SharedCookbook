@@ -12,5 +12,5 @@ public interface IApplicationDbContext
 
     DbSet<Recipe> Recipes { get; }
     
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+    Task<int> SaveChangesAsync(CancellationToken ct = default);
 }

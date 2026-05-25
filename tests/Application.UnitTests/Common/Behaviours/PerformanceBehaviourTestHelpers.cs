@@ -9,7 +9,7 @@ internal static class PerformanceBehaviourTestHelpers
         new ControllableTimeProvider(elapsedMilliseconds);
 
     public static RequestHandlerDelegate<TResponse> ImmediateHandler<TResponse>(TResponse response) =>
-        cancellationToken => Task.FromResult(response);
+        ct => Task.FromResult(response);
 
     public static void VerifyLogWarning<T>(Mock<ILogger<T>> logger, Times times) =>
         logger.Verify(

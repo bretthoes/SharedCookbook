@@ -15,23 +15,30 @@ public class Cookbooks : EndpointGroupBase
         builder.MapDelete(Delete, pattern: "{id}").RequireAuthorization();
     }
 
-    private static Task<PaginatedList<CookbookBriefDto>> List(ISender sender,
-        [AsParameters] GetCookbooksWithPaginationQuery query) => sender.Send(query);
+    private static Task<PaginatedList<CookbookBriefDto>> List(
+        ISender sender,
+        [AsParameters] GetCookbooksWithPaginationQuery query,
+        CancellationToken ct = default) => sender.Send(query, ct);
 
-    private static Task<int> Create(ISender sender, [FromBody] CreateCookbookCommand command) => sender.Send(command);
+    private static Task<int> Create(
+        ISender sender,
+        [FromBody] CreateCookbookCommand command,
+        CancellationToken ct = default) => sender.Send(command, ct);
 
-    private static async Task<IResult> Update(ISender sender,
+    private static async Task<IResult> Update(
+        ISender sender,
         [FromRoute] int id,
-        [FromBody] UpdateCookbookCommand command)
+        [FromBody] UpdateCookbookCommand command,
+        CancellationToken ct = default)
     {
         if (id != command.Id) return Results.BadRequest();
-        await sender.Send(command);
+        await sender.Send(command, ct);
         return Results.NoContent();
     }
 
-    private static async Task<IResult> Delete(ISender sender, [FromRoute] int id)
+    private static async Task<IResult> Delete(ISender sender, [FromRoute] int id, CancellationToken ct = default)
     {
-        await sender.Send(new DeleteCookbookCommand(id));
+        await sender.Send(new DeleteCookbookCommand(id), ct);
         return Results.NoContent();
     }
 }

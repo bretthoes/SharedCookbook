@@ -12,9 +12,9 @@ public interface IRequestHandler<in TRequest, TResponse>
     /// Handles a request
     /// </summary>
     /// <param name="request">The request</param>
-    /// <param name="cancellationToken">Cancellation token</param>
+    /// <param name="ct">Cancellation token</param>
     /// <returns>Response from the request</returns>
-    Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken);
+    Task<TResponse> Handle(TRequest request, CancellationToken ct = default);
 }
 
 /// <summary>
@@ -28,6 +28,6 @@ public interface IRequestHandler<in TRequest>
     /// Handles a request
     /// </summary>
     /// <param name="request">The request</param>
-    /// <param name="cancellationToken">Cancellation token</param>
-    Task Handle(TRequest request, CancellationToken cancellationToken);
+    /// <param name="ct">Cancellation token</param>
+    Task Handle(TRequest request, CancellationToken ct = default);
 }

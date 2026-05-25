@@ -10,11 +10,11 @@ internal static class GetRecipesDbQuery
         internal Task<PaginatedList<RecipeBriefDto>> QueryBriefDtos(int cookbookId,
             int pageNumber,
             int pageSize,
-            CancellationToken cancellationToken)
+            CancellationToken ct = default)
             => query.HasCookbookId(cookbookId)
                 .OrderByTitle()
                 .ToBriefDtos()
-                .PaginatedListAsync(pageNumber, pageSize, cancellationToken);
+                .PaginatedListAsync(pageNumber, pageSize, ct);
 
         private IQueryable<Recipe> HasCookbookId(int cookbookId) =>
             query.Where(recipe => recipe.CookbookId == cookbookId);

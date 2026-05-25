@@ -19,7 +19,7 @@ namespace SharedCookbook.Infrastructure.FileStorage;
 // TODO refactoring and better DI, throwing, and logging needed here
 public class S3ImageUploader(IOptions<ImageUploadOptions> storage, IHttpClientFactory clientFactory) : IImageUploader
 {
-    public async Task<string[]> UploadFiles(IFormFileCollection files)
+    public async Task<string[]> UploadFiles(IFormFileCollection files, CancellationToken ct = default)
     {
         using var client = GetS3Client();
         using var transferUtility = new TransferUtility(client);
@@ -27,8 +27,10 @@ public class S3ImageUploader(IOptions<ImageUploadOptions> storage, IHttpClientFa
         var keys = new string[files.Count];
         for (int i = 0; i < files.Count; i++)
         {
+            ct.ThrowIfCancellationRequested();
+
             await using var src = files[i].OpenReadStream();
-            await using var img = await ProcessToSquareAsync(src);
+            await using var img = await ProcessToSquareAsync(src, ct);
 
             string key = ImageUtilities.GetUniqueFileName(img.Extension);
             await transferUtility.UploadAsync(new TransferUtilityUploadRequest
@@ -38,22 +40,23 @@ public class S3ImageUploader(IOptions<ImageUploadOptions> storage, IHttpClientFa
                 BucketName = storage.Value.BucketName,
                 CannedACL = S3CannedACL.PublicRead,
                 ContentType = img.ContentType
-            });
+            }, ct);
             keys[i] = key.EnsurePrefixUrl(storage.Value.ImageBaseUrl);
         }
 
         return keys;
     }
 
-    public async Task<string> UploadImageFromUrl(string url)
+    public async Task<string> UploadImageFromUrl(string url, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(url)) throw new InvalidImageUrlException();
             
         using var client = GetS3Client();
         using var transferUtility = new TransferUtility(client);
 
-        await using var stream = await DownloadImageFromUrl(url) ?? throw new ImageDownloadFailedException(url);
-        await using var img = await ProcessToSquareAsync(stream);
+        await using var stream = await DownloadImageFromUrl(url, ct)
+            ?? throw new ImageDownloadFailedException(url);
+        await using var img = await ProcessToSquareAsync(stream, ct);
 
         var key = ImageUtilities.GetUniqueFileName(img.Extension);
         await transferUtility.UploadAsync(new TransferUtilityUploadRequest
@@ -63,7 +66,7 @@ public class S3ImageUploader(IOptions<ImageUploadOptions> storage, IHttpClientFa
             BucketName = storage.Value.BucketName,
             CannedACL = S3CannedACL.PublicRead,
             ContentType = img.ContentType
-        });
+        }, ct);
 
         return key.EnsurePrefixUrl(storage.Value.ImageBaseUrl);
     }
@@ -73,7 +76,8 @@ public class S3ImageUploader(IOptions<ImageUploadOptions> storage, IHttpClientFa
     private BasicAWSCredentials GetCredentials() => new(storage.Value.AwsAccessKeyId, storage.Value.AwsSecretAccessKey);
 
     private static async Task<ProcessedImage> ProcessToSquareAsync(
-        Stream input, CancellationToken ct = default)
+        Stream input,
+        CancellationToken ct = default)
     {
         const int targetSizePixels = 1024; // square edge
         const string outputFormat = "webp"; // "webp" | "jpeg" | "png"
@@ -122,17 +126,15 @@ public class S3ImageUploader(IOptions<ImageUploadOptions> storage, IHttpClientFa
         return new ProcessedImage { Stream = output, Extension = ext, ContentType = contentType };
     }
     
-    private async Task<Stream?> DownloadImageFromUrl(string imageUrl)
+    private async Task<Stream?> DownloadImageFromUrl(string imageUrl, CancellationToken ct = default)
     {
         var httpClient = clientFactory.CreateClient();
 
-        var response = await httpClient.GetAsync(imageUrl);
+        using var response = await httpClient.GetAsync(imageUrl, ct);
         if (!DownloadFailed(response))
-            return await response.Content.ReadAsStreamAsync();
+            return await response.Content.ReadAsStreamAsync(ct);
 
-        response.Dispose();
         return null;
-
     }
 
     private static bool DownloadFailed(HttpResponseMessage? response) => response is { IsSuccessStatusCode: false };

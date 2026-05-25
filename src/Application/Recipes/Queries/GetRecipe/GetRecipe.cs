@@ -12,14 +12,14 @@ public sealed class GetRecipeQueryHandler(
     IOptions<ImageUploadOptions> options)
     : IRequestHandler<GetRecipeQuery, RecipeDetailedDto>
 {
-    public async Task<RecipeDetailedDto> Handle(GetRecipeQuery request, CancellationToken token)
+    public async Task<RecipeDetailedDto> Handle(GetRecipeQuery request, CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
 
-        var dto = await context.Recipes.GetDetailedDtoById(request.Id, options.Value.ImageBaseUrl, token)
+        var dto = await context.Recipes.GetDetailedDtoById(request.Id, options.Value.ImageBaseUrl, ct)
             ?? throw new NotFoundException(key: request.Id.ToString(), nameof(Recipe));
 
-        (string? email, string? name) = await identityService.FindByIdAsync(user.Id)
+        (string? email, string? name) = await identityService.FindByIdAsync(user.Id, ct)
             ?? throw new UnauthorizedAccessException();
 
         dto.AuthorEmail = email;

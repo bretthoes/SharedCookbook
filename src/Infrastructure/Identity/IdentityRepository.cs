@@ -31,31 +31,31 @@ public class IdentityRepository(ApplicationDbContext context, IUser user, IOptio
 {
     public Task<PaginatedList<MembershipDto>> GetMemberships(
         GetMembershipsWithPaginationQuery query,
-        CancellationToken cancellationToken)
+        CancellationToken ct = default)
         => context.CookbookMemberships
             .AsNoTracking()
             .HasCookbookId(query.CookbookId)
             .SelectMembershipDto(context.People.AsNoTracking())
             .OrderByName()
-            .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
+            .PaginatedListAsync(query.PageNumber, query.PageSize, ct);
 
     public Task<PaginatedList<InvitationDto>> GetInvitations(
         GetInvitationsWithPaginationQuery query,
-        CancellationToken cancellationToken)
+        CancellationToken ct = default)
         => context.CookbookInvitations
             .AsNoTracking()
             .GetInvitationsForUserByStatus(user.Id, query.Status)
             .SelectInvitationDto(context.People.AsNoTracking(), options.Value.ImageBaseUrl)
             .OrderByMostRecentlyCreated()
-            .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
+            .PaginatedListAsync(query.PageNumber, query.PageSize, ct);
 
     public Task<PaginatedList<CookbookBriefDto>> GetCookbooks(
         GetCookbooksWithPaginationQuery query,
-        CancellationToken cancellationToken)
+        CancellationToken ct = default)
         => context.Cookbooks
             .AsNoTracking()
             .ForMember(user.Id)
             .OrderByTitle()
             .SelectBriefDto(context.People.AsNoTracking(), options.Value.ImageBaseUrl)
-            .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
+            .PaginatedListAsync(query.PageNumber, query.PageSize, ct);
 }

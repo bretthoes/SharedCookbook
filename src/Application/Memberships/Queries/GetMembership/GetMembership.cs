@@ -5,9 +5,9 @@ public sealed record GetMembershipQuery(int Id) : IRequest<MembershipDto>;
 public sealed class GetMembershipQueryHandler(IApplicationDbContext context, IIdentityService identityService)
     : IRequestHandler<GetMembershipQuery, MembershipDto>
 {
-    public async Task<MembershipDto> Handle(GetMembershipQuery query, CancellationToken cancellationToken)
+    public async Task<MembershipDto> Handle(GetMembershipQuery query, CancellationToken ct = default)
     {
-        var membership = await context.CookbookMemberships.FindOrThrowAsync(query.Id, cancellationToken);
+        var membership = await context.CookbookMemberships.FindOrThrowAsync(query.Id, ct);
 
         return new MembershipDto
         {
@@ -18,8 +18,8 @@ public sealed class GetMembershipQueryHandler(IApplicationDbContext context, IId
             CanRemoveMember = membership.Permissions.CanRemoveMember,
             CanSendInvite = membership.Permissions.CanSendInvite,
             CanEditCookbookDetails = membership.Permissions.CanEditCookbookDetails,
-            Name = await identityService.GetDisplayNameAsync(membership.CreatedBy ?? string.Empty),
-            Email = await identityService.GetEmailAsync(membership.CreatedBy ?? string.Empty)
+            Name = await identityService.GetDisplayNameAsync(membership.CreatedBy ?? string.Empty, ct),
+            Email = await identityService.GetEmailAsync(membership.CreatedBy ?? string.Empty, ct)
         };
     }
 }

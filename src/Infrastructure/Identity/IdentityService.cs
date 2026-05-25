@@ -11,25 +11,29 @@ public class IdentityService(
     IAuthorizationService authorizationService)
     : IIdentityService
 {
-    public async Task<(string? Email, string? DisplayName)?> FindByEmailAsync(string email)
+    public async Task<(string? Email, string? DisplayName)?> FindByEmailAsync(
+        string email,
+        CancellationToken ct = default)
     {
         var user = await userManager.FindByEmailAsync(email);
         return user == null ? null : (user.Email, user.DisplayName);
     }
 
-    public async Task<(string? Email, string? DisplayName)?> FindByIdAsync(string id)
+    public async Task<(string? Email, string? DisplayName)?> FindByIdAsync(
+        string id,
+        CancellationToken ct = default)
     {
         var user = await userManager.FindByIdAsync(id);
         return user == null ? null : (user.Email, user.DisplayName);
     }
 
-    public async Task<string?> GetIdByEmailAsync(string email)
+    public async Task<string?> GetIdByEmailAsync(string email, CancellationToken ct = default)
         => (await userManager.FindByEmailAsync(email))?.Id;
     
-    public async Task<string?> GetUserNameAsync(string userId)
+    public async Task<string?> GetUserNameAsync(string userId, CancellationToken ct = default)
         => (await userManager.FindByIdAsync(userId))?.UserName;
     
-    public async Task<string?> GetDisplayNameAsync(string userId)
+    public async Task<string?> GetDisplayNameAsync(string userId, CancellationToken ct = default)
     {
         var user = await userManager.FindByIdAsync(userId);
 
@@ -38,14 +42,17 @@ public class IdentityService(
             : user?.UserName;
     }
     
-    public async Task<string?> GetEmailAsync(string userId)
+    public async Task<string?> GetEmailAsync(string userId, CancellationToken ct = default)
     {
         var user = await userManager.FindByIdAsync(userId);
 
         return user?.Email;
     }
 
-    public async Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password)
+    public async Task<(Result Result, string UserId)> CreateUserAsync(
+        string userName,
+        string password,
+        CancellationToken ct = default)
     {
         var user = new ApplicationUser
         {
@@ -58,14 +65,17 @@ public class IdentityService(
         return (result.ToApplicationResult(), user.Id);
     }
 
-    public async Task<bool> IsInRoleAsync(string userId, string role)
+    public async Task<bool> IsInRoleAsync(string userId, string role, CancellationToken ct = default)
     {
         var user = await userManager.FindByIdAsync(userId);
 
         return user != null && await userManager.IsInRoleAsync(user, role);
     }
 
-    public async Task<bool> AuthorizeAsync(string userId, string policyName)
+    public async Task<bool> AuthorizeAsync(
+        string userId,
+        string policyName,
+        CancellationToken ct = default)
     {
         var user = await userManager.FindByIdAsync(userId);
 
@@ -81,14 +91,19 @@ public class IdentityService(
         return result.Succeeded;
     }
 
-    public async Task<Result> DeleteUserAsync(string userId)
+    public async Task<Result> DeleteUserAsync(string userId, CancellationToken ct = default)
     {
         var user = await userManager.FindByIdAsync(userId);
 
-        return user != null ? await DeleteUserAsync(user) : Result.Success();
+        return user != null
+            ? await DeleteUserAsync(user, ct)
+            : Result.Success();
     }
 
-    public async Task<Result> UpdateUserAsync(string userId, string displayName)
+    public async Task<Result> UpdateUserAsync(
+        string userId,
+        string displayName,
+        CancellationToken ct = default)
     {
         var user = await userManager.FindByIdAsync(userId);
         
@@ -104,7 +119,7 @@ public class IdentityService(
     public async Task<SubscriptionTierUpdateResult> SetSubscriptionTierIfChangedAsync(
         string userId,
         string tierName,
-        CancellationToken cancellationToken = default)
+        CancellationToken ct = default)
     {
         var user = await userManager.FindByIdAsync(userId);
         if (user is null)
@@ -121,7 +136,7 @@ public class IdentityService(
         return new SubscriptionTierUpdateResult(result, IsUserNotFound: false, WasUpdated: result.Succeeded);
     }
 
-    public async Task<Result> DeleteUserAsync(ApplicationUser user)
+    private async Task<Result> DeleteUserAsync(ApplicationUser user, CancellationToken ct = default)
     {
         var result = await userManager.DeleteAsync(user);
 

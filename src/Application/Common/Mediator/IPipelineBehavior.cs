@@ -5,7 +5,7 @@ namespace SharedCookbook.Application.Common.Mediator;
 /// </summary>
 /// <typeparam name="TResponse">Response type</typeparam>
 /// <returns>Awaitable task returning a response</returns>
-public delegate Task<TResponse> RequestHandlerDelegate<TResponse>(CancellationToken cancellationToken = default);
+public delegate Task<TResponse> RequestHandlerDelegate<TResponse>(CancellationToken ct = default);
 
 /// <summary>
 /// Pipeline behavior to surround the inner handler.
@@ -21,7 +21,7 @@ public interface IPipelineBehavior<in TRequest, TResponse>
     /// </summary>
     /// <param name="request">Incoming request</param>
     /// <param name="next">Awaitable delegate for the next action in the pipeline</param>
-    /// <param name="cancellationToken">Cancellation token</param>
+    /// <param name="ct">Cancellation token</param>
     /// <returns>Awaitable task returning the response</returns>
-    Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken);
+    Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken ct = default);
 }

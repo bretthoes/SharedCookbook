@@ -3,7 +3,7 @@
 public class CookbookCreatedEventHandler(ILogger<CookbookCreatedEventHandler> logger)
     : INotificationHandler<CookbookCreatedEvent>
 {
-    public Task Handle(CookbookCreatedEvent acceptedEvent, CancellationToken cancellationToken)
+    public Task Handle(CookbookCreatedEvent acceptedEvent, CancellationToken ct = default)
     {
         var cookbook = acceptedEvent.Cookbook;
 

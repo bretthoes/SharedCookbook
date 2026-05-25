@@ -15,13 +15,13 @@ public class PaginatedList<T>
         IQueryable<T> source,
         int pageNumber,
         int pageSize,
-        CancellationToken cancellationToken)
+        CancellationToken ct = default)
     {
-        var count = await source.CountAsync(cancellationToken);
+        var count = await source.CountAsync(ct);
         var itemsList = await source
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
-            .ToListAsync(cancellationToken);
+            .ToListAsync(ct);
 
         return new PaginatedList<T>(itemsList, count, pageNumber, pageSize);
     }

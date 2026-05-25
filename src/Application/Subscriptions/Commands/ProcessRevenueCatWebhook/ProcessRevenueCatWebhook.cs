@@ -29,7 +29,7 @@ public sealed class ProcessRevenueCatWebhookCommandHandler(
 {
     public async Task<ProcessRevenueCatWebhookResult> Handle(
         ProcessRevenueCatWebhookCommand request,
-        CancellationToken cancellationToken)
+        CancellationToken ct = default)
     {
         if (!ValidateSharedSecret(request.AuthorizationHeader, webhookOptions.Value.SharedSecret))
         {
@@ -59,7 +59,7 @@ public sealed class ProcessRevenueCatWebhookCommandHandler(
             return new ProcessRevenueCatWebhookResult(ProcessRevenueCatWebhookStatus.Ok);
         }
 
-        var result = await identityService.SetSubscriptionTierIfChangedAsync(appUserId, newTier, cancellationToken);
+        var result = await identityService.SetSubscriptionTierIfChangedAsync(appUserId, newTier, ct);
         if (result.IsUserNotFound)
         {
             logger.LogWarning("RevenueCat webhook: no user found for app_user_id {AppUserId}", appUserId);

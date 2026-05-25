@@ -15,9 +15,9 @@ public sealed record UpdateMembershipCommand : IRequest
 public sealed class UpdateMembershipCommandHandler(IApplicationDbContext context)
     : IRequestHandler<UpdateMembershipCommand>
 {
-    public async Task Handle(UpdateMembershipCommand command, CancellationToken cancellationToken)
+    public async Task Handle(UpdateMembershipCommand command, CancellationToken ct = default)
     {
-        var membership = await context.CookbookMemberships.FindOrThrowAsync(command.Id, cancellationToken);
+        var membership = await context.CookbookMemberships.FindOrThrowAsync(command.Id, ct);
 
         if (command.IsOwner) membership.Promote();
         else
@@ -35,6 +35,6 @@ public sealed class UpdateMembershipCommandHandler(IApplicationDbContext context
 
         membership.AddDomainEvent(new MembershipUpdatedEvent(membership));
         
-        await context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(ct);
     }
 }

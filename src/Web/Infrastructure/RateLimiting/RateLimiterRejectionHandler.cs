@@ -7,7 +7,7 @@ namespace SharedCookbook.Web.Infrastructure.RateLimiting;
 
 internal static class RateLimiterRejectionHandler
 {
-    internal static async ValueTask RejectAsync(OnRejectedContext context, CancellationToken cancellationToken)
+    internal static async ValueTask RejectAsync(OnRejectedContext context, CancellationToken ct = default)
     {
         if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
         {
@@ -16,14 +16,14 @@ internal static class RateLimiterRejectionHandler
         }
 
         context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-        await context.HttpContext.Response.WriteAsync("Too many requests. Please try again later.", cancellationToken);
+        await context.HttpContext.Response.WriteAsync("Too many requests. Please try again later.", ct);
     }
 
     internal static Func<OnRejectedContext, CancellationToken, ValueTask> CreateDailyLimitHandler(
         ILogger logger,
         string limitName,
         int dailyLimit) =>
-        async (context, cancellationToken) =>
+        async (context, ct) =>
         {
             var httpContext = context.HttpContext;
             var userId = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "unknown";
@@ -36,6 +36,6 @@ internal static class RateLimiterRejectionHandler
                 httpContext.Request.Method,
                 httpContext.Request.Path);
 
-            await RejectAsync(context, cancellationToken);
+            await RejectAsync(context, ct);
         };
 }

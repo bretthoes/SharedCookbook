@@ -10,7 +10,7 @@ public sealed record UpdateRecipeCommand(UpdateRecipeDto Recipe) : IRequest<int>
 public sealed class UpdateRecipeCommandHandler(IApplicationDbContext context, IOptions<ImageUploadOptions> options)
     : IRequestHandler<UpdateRecipeCommand, int>
 {
-    public async Task<int> Handle(UpdateRecipeCommand command, CancellationToken cancellationToken)
+    public async Task<int> Handle(UpdateRecipeCommand command, CancellationToken ct = default)
     {
         var recipe = await context.Recipes
                          .AsSplitQuery() // TODO verify this improves performance; a recipe can only have so many directions, images, ingredients, etc. Find max, avg, and suppress warning if the extra round trips slow down query
@@ -19,7 +19,7 @@ public sealed class UpdateRecipeCommandHandler(IApplicationDbContext context, IO
                          .Include(navigationPropertyPath: recipe => recipe.Directions)
                          .Include(navigationPropertyPath: recipe => recipe.Images)
                          .Include(navigationPropertyPath: recipe => recipe.Nutrition)
-                         .FirstOrDefaultAsync(recipe => recipe.Id == command.Recipe.Id, cancellationToken)
+                         .FirstOrDefaultAsync(recipe => recipe.Id == command.Recipe.Id, ct)
                      ?? throw new NotFoundException(key: command.Recipe.Id.ToString(), nameof(Recipe));
 
         // Update primitive properties
@@ -54,7 +54,7 @@ public sealed class UpdateRecipeCommandHandler(IApplicationDbContext context, IO
 
         recipe.AddDomainEvent(new RecipeUpdatedEvent(recipe.Id));
 
-        await context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(ct);
 
         return recipe.Id;
     }

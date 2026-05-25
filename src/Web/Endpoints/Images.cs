@@ -13,8 +13,9 @@ public class Images : EndpointGroupBase
             .RequireRateLimiting(RateLimitPolicyNames.ImageUploadDaily);
     }
 
-    private static Task<string[]> Upload(ISender sender, [FromForm] IFormFileCollection files)
-    {
-        return sender.Send(new CreateImagesCommand(files));
-    }
+    private static Task<string[]> Upload(
+        ISender sender,
+        [FromForm] IFormFileCollection files,
+        CancellationToken ct = default) =>
+        sender.Send(new CreateImagesCommand(files), ct);
 }

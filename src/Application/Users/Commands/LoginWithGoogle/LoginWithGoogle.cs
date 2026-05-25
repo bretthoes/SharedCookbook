@@ -13,13 +13,13 @@ public class LoginWithGoogleCommandHandler(
 {
     public async Task<Result<System.Security.Claims.ClaimsPrincipal>> Handle(
         LoginWithGoogleCommand request,
-        CancellationToken cancellationToken)
+        CancellationToken ct = default)
     {
-        var loginResult = await externalLoginService.LoginWithGoogleAsync(request.IdToken, cancellationToken);
+        var loginResult = await externalLoginService.LoginWithGoogleAsync(request.IdToken, ct);
         if (!loginResult.Succeeded)
             return Result<System.Security.Claims.ClaimsPrincipal>.Failure(loginResult.Errors);
 
-        var principal = await signInPrincipalFactory.CreatePrincipalForUserIdAsync(loginResult.Value!, cancellationToken);
+        var principal = await signInPrincipalFactory.CreatePrincipalForUserIdAsync(loginResult.Value!, ct);
         if (principal == null)
             return Result<System.Security.Claims.ClaimsPrincipal>.Failure(["User not found."]);
 

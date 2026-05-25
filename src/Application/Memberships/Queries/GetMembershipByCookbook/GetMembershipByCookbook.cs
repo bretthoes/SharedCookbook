@@ -10,11 +10,11 @@ public sealed class GetMembershipByCookbookAndEmailQueryHandler(
 {
     public async Task<MembershipDto> Handle(
         GetMembershipByCookbookQuery query,
-        CancellationToken ct)
+        CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
 
-        (string? email, string? name) = await identityService.FindByIdAsync(user.Id) 
+        (string? email, string? name) = await identityService.FindByIdAsync(user.Id, ct)
             ?? throw new UnauthorizedAccessException();
 
         var membership = await context.CookbookMemberships.GetByCookbookAndUser(query.CookbookId, user.Id, ct);

@@ -11,6 +11,6 @@ public sealed class GetMembershipsWithPaginationQueryHandler(IIdentityRepository
     : IRequestHandler<GetMembershipsWithPaginationQuery, PaginatedList<MembershipDto>>
 {
     public Task<PaginatedList<MembershipDto>> Handle(GetMembershipsWithPaginationQuery request,
-        CancellationToken cancellationToken) => repository.GetMemberships(request, cancellationToken);
+        CancellationToken ct = default) => repository.GetMemberships(request, ct);
 }
 
