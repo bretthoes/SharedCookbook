@@ -1,28 +1,25 @@
-﻿using System.Diagnostics;
+﻿using SharedCookbook.Application.Common.Performance;
 
 namespace SharedCookbook.Application.Common.Behaviours;
 
-// TODO increase ms threshold for naturally longer-running requests (e.g. image uploads, recipe imports, etc.)
 public class PerformanceBehaviour<TRequest, TResponse>(
     ILogger<TRequest> logger,
     IUser user,
-    IIdentityService identityService)
+    IIdentityService identityService,
+    TimeProvider timeProvider)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull
 {
-    private const long ThresholdMilliseconds = 500;
-    private readonly Stopwatch _timer = new();
+    private static readonly long ThresholdMilliseconds = PerformanceThresholds.For(typeof(TRequest));
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        _timer.Start();
+        long startTimestamp = timeProvider.GetTimestamp();
 
         var response = await next(cancellationToken);
 
-        _timer.Stop();
-
-        long elapsedMilliseconds = _timer.ElapsedMilliseconds;
+        long elapsedMilliseconds = (long)timeProvider.GetElapsedTime(startTimestamp).TotalMilliseconds;
 
         if (elapsedMilliseconds <= ThresholdMilliseconds)
             return response;
@@ -35,8 +32,8 @@ public class PerformanceBehaviour<TRequest, TResponse>(
             userName = await identityService.GetUserNameAsync(userId);
 
         logger.LogWarning(
-            "SharedCookbook Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@UserName} {@Request}",
-            requestName, elapsedMilliseconds, userId, userName, request);
+            "SharedCookbook Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds, threshold {ThresholdMilliseconds} milliseconds) {@UserId} {@UserName} {@Request}",
+            requestName, elapsedMilliseconds, ThresholdMilliseconds, userId, userName, request);
 
         return response;
     }

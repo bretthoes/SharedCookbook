@@ -22,7 +22,7 @@ Behaviors are registered in [DependencyInjection.cs](../../src/Application/Depen
 | 2    | `UnhandledExceptionBehaviour` | Log and rethrow                                    |
 | 3    | `AuthorizationBehaviour`      | AuthN/AuthZ via attributes on the **request type** |
 | 4    | `ValidationBehaviour`         | FluentValidation for the request                   |
-| 5    | `PerformanceBehaviour`        | Warn if handler exceeds 500 ms                     |
+| 5    | `PerformanceBehaviour`        | Warn if handler exceeds its threshold (500 ms default; higher via `[LongRunningRequest]` on the request type) |
 | 6    | Handler                       | Business logic, usually `IApplicationDbContext`    |
 
 

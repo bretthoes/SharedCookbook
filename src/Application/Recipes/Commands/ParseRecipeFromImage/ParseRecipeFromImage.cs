@@ -1,8 +1,10 @@
 ﻿using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
+using SharedCookbook.Application.Common.Performance;
 
 namespace SharedCookbook.Application.Recipes.Commands.ParseRecipeFromImage;
 
+[LongRunningRequest(LongRunningRequestCategory.FileProcessing)]
 public sealed record ParseRecipeFromImageCommand(IFormFile File) : IRequest<CreateRecipeDto>;
 
 // TODO refactor parsing logic to a separate service

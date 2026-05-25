@@ -1,5 +1,8 @@
+using SharedCookbook.Application.Common.Performance;
+
 namespace SharedCookbook.Application.Recipes.Commands.ParseRecipeFromUrl;
 
+[LongRunningRequest(LongRunningRequestCategory.ExternalApi)]
 public sealed record ParseRecipeFromUrlCommand(string Url, bool ExtractFromVideo = false) : IRequest<CreateRecipeDto>;
 
 public sealed class ParseRecipeCommandHandler(
