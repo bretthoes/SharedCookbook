@@ -34,5 +34,6 @@ internal static class RecipeMapping
             IsDinner = recipe.MealTypes.IsDinner,
             IsDessert = recipe.MealTypes.IsDessert,
             IsSnack = recipe.MealTypes.IsSnack,
+            AuthorId = recipe.CreatedBy,
         };
 }

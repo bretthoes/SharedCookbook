@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Domain.ValueObjects;
-
-namespace SharedCookbook.Application.Memberships.Commands.UpdateMembership;
+﻿namespace SharedCookbook.Application.Memberships.Commands.UpdateMembership;
 
 public sealed record UpdateMembershipCommand : IRequest
 {
@@ -19,13 +17,22 @@ public sealed class UpdateMembershipCommandHandler(IApplicationDbContext context
 {
     public async Task Handle(UpdateMembershipCommand command, CancellationToken ct = default)
     {
+        if (string.IsNullOrWhiteSpace(user.Id))
+            throw new ForbiddenAccessException();
+
         var membership = await context.CookbookMemberships.FindOrThrowAsync(command.Id, ct);
 
-        if (!await CanUpdateMembership(membership, ct))
+        var actor = await context.CookbookMemberships.FindForUserAsync(membership.CookbookId, user.Id, ct);
+
+        if (actor is null || !CanUpdateMembership(membership, actor))
             throw new ForbiddenAccessException();
 
         if (command.IsOwner)
         {
+            // Only the current owner can promote another member to owner
+            if (!actor.IsOwner)
+                throw new ForbiddenAccessException();
+
             var departingOwners = await context.CookbookMemberships
                 .HasCookbookId(membership.CookbookId)
                 .Where(member => member.IsOwner && member.Id != membership.Id)
@@ -49,16 +56,11 @@ public sealed class UpdateMembershipCommandHandler(IApplicationDbContext context
         await context.SaveChangesAsync(ct);
     }
 
-    private async Task<bool> CanUpdateMembership(CookbookMembership membership, CancellationToken ct)
+    private static bool CanUpdateMembership(CookbookMembership membership, CookbookMembership actor)
     {
-        if (string.IsNullOrWhiteSpace(user.Id))
+        if (string.Equals(membership.CreatedBy, actor.CreatedBy, StringComparison.Ordinal))
             return false;
 
-        if (string.Equals(membership.CreatedBy, user.Id, StringComparison.Ordinal))
-            return false;
-
-        var actor = await context.CookbookMemberships.FindForUserAsync(membership.CookbookId, user.Id, ct);
-
-        return actor is not null && actor.IsOwner;
+        return actor.IsOwner || actor.Permissions.CanRemoveMember;
     }
 }

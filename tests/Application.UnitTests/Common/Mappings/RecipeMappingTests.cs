@@ -8,6 +8,7 @@ namespace SharedCookbook.Application.UnitTests.Common.Mappings;
 public class RecipeMappingTests
 {
     private const int ExpectedId = 1;
+    private const string ExpectedAuthorId = "creator-user-id";
     private const string ExpectedTitle = "TestTitle";
     private const string ExpectedSummary = "TestSummary";
     private const string ExpectedThumbnail = "TestThumbnail";
@@ -39,6 +40,7 @@ public class RecipeMappingTests
         var sut = new Recipe
         {
             Id = ExpectedId,
+            CreatedBy = ExpectedAuthorId,
             Title = ExpectedTitle,
             Summary = ExpectedSummary,
             Thumbnail = ExpectedThumbnail,
@@ -68,6 +70,9 @@ public class RecipeMappingTests
 
     [Test]
     public void MapsId() => Assert.That(_actual.Id, Is.EqualTo(ExpectedId));
+
+    [Test]
+    public void MapsAuthorId() => Assert.That(_actual.AuthorId, Is.EqualTo(ExpectedAuthorId));
 
     [Test]
     public void MapsTitle() => Assert.That(_actual.Title, Is.EqualTo(ExpectedTitle));

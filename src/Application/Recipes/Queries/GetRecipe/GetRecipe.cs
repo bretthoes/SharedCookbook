@@ -8,22 +8,19 @@ public sealed record GetRecipeQuery(int Id) : IRequest<RecipeDetailedDto>;
 public sealed class GetRecipeQueryHandler(
     IApplicationDbContext context,
     IIdentityService identityService,
-    IUser user,
     IOptions<ImageUploadOptions> options)
     : IRequestHandler<GetRecipeQuery, RecipeDetailedDto>
 {
     public async Task<RecipeDetailedDto> Handle(GetRecipeQuery request, CancellationToken ct = default)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
-
         var dto = await context.Recipes.GetDetailedDtoById(request.Id, options.Value.ImageBaseUrl, ct)
             ?? throw new NotFoundException(key: request.Id.ToString(), nameof(Recipe));
 
-        (string? email, string? name) = await identityService.FindByIdAsync(user.Id, ct)
-            ?? throw new UnauthorizedAccessException();
+        if (string.IsNullOrWhiteSpace(dto.AuthorId))
+            return dto;
 
-        dto.AuthorEmail = email;
-        dto.Author = name;
+        dto.AuthorEmail = await identityService.GetEmailAsync(dto.AuthorId, ct);
+        dto.Author = await identityService.GetDisplayNameAsync(dto.AuthorId, ct);
 
         return dto;
     }
