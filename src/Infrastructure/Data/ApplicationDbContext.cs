@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SharedCookbook.Application.Common.Interfaces;
@@ -8,7 +9,7 @@ using SharedCookbook.Infrastructure.Identity;
 namespace SharedCookbook.Infrastructure.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-    : IdentityDbContext<ApplicationUser>(options), IApplicationDbContext
+    : IdentityDbContext<ApplicationUser>(options), IApplicationDbContext, IDataProtectionKeyContext
 {
     public DbSet<Cookbook> Cookbooks => Set<Cookbook>();
 
@@ -31,6 +32,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<IngredientSection> IngredientSections => Set<IngredientSection>();
 
     public DbSet<RecipeNutrition> RecipeNutritions => Set<RecipeNutrition>();
+
+    public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
 
     public bool HasChanges() => ChangeTracker.HasChanges();
     

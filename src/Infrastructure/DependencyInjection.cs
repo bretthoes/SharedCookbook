@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.BearerToken;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -43,8 +45,24 @@ public static class DependencyInjection
 
         builder.Services.AddScoped<ApplicationDbContextInitialiser>();
 
+        // Persist Data Protection keys to Postgres so bearer tokens survive container
+        // restarts, redeploys, and horizontal scaling.
+        builder.Services
+            .AddDataProtection()
+            .PersistKeysToDbContext<ApplicationDbContext>()
+            .SetApplicationName("SharedCookbook");
+
         builder.Services.AddAuthentication()
             .AddBearerToken(IdentityConstants.BearerScheme);
+
+        // Default refresh window is 14 days; extend it so users do not have to log in
+        // every couple of weeks. Access tokens keep their 1-hour default and rotate via
+        // the existing /api/Users/refresh flow.
+        builder.Services.Configure<BearerTokenOptions>(IdentityConstants.BearerScheme, options =>
+        {
+            options.BearerTokenExpiration = TimeSpan.FromHours(1);
+            options.RefreshTokenExpiration = TimeSpan.FromDays(90);
+        });
 
         builder.Services.Configure<IdentityOptions>(options =>
         {
