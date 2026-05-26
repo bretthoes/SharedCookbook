@@ -29,6 +29,16 @@ public sealed class CookbookMembership : BaseAuditableEntity
 
     public void SetPermissions(Permissions permissions) => Permissions = permissions;
 
+    public static void TransferOwnershipTo(
+        CookbookMembership newOwner,
+        IEnumerable<CookbookMembership> departingOwners)
+    {
+        newOwner.Promote();
+
+        foreach (var owner in departingOwners)
+            owner.Demote();
+    }
+
     public static CookbookMembership NewOwner(string creatorId) =>
         new() { IsOwner = true, Permissions = Permissions.Owner, CreatedBy = creatorId };
 

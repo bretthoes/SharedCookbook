@@ -12,11 +12,15 @@ public sealed record CreateRecipeCommand : IRequest<int>
 
 public sealed class CreateRecipeCommandHandler(
     IApplicationDbContext context,
-    IOptions<ImageUploadOptions> options)
+    IOptions<ImageUploadOptions> options,
+    IUser user)
     : IRequestHandler<CreateRecipeCommand, int>
 {
     public async Task<int> Handle(CreateRecipeCommand command, CancellationToken ct = default)
     {
+        if (!await CanCreateRecipe(command.Recipe.CookbookId, ct))
+            throw new ForbiddenAccessException();
+
         var entity = new Recipe
         {
             Title = command.Recipe.Title,
@@ -48,11 +52,20 @@ public sealed class CreateRecipeCommandHandler(
         };
 
         entity.AddDomainEvent(new RecipeCreatedEvent(entity));
-
         context.Recipes.Add(entity);
 
         await context.SaveChangesAsync(ct);
 
         return entity.Id;
+    }
+
+    private async Task<bool> CanCreateRecipe(int cookbookId, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(user.Id))
+            return false;
+
+        var actor = await context.CookbookMemberships.FindForUserAsync(cookbookId, user.Id, ct);
+
+        return actor is not null && actor.Permissions.CanAddRecipe;
     }
 }

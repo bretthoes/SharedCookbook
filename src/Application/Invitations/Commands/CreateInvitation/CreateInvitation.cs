@@ -4,11 +4,15 @@ public sealed record CreateInvitationCommand(int CookbookId, string Email) : IRe
 
 public sealed class CreateInvitationCommandHandler(
     IApplicationDbContext context,
-    IIdentityService identityService
+    IIdentityService identityService,
+    IUser user
 ) : IRequestHandler<CreateInvitationCommand, int>
 {
     public async Task<int> Handle(CreateInvitationCommand command, CancellationToken ct = default)
     {
+        if (!await CanCreateInvitation(command.CookbookId, ct))
+            throw new ForbiddenAccessException();
+
         string email = command.Email.Trim();
 
         string recipientId = await identityService.GetIdByEmailAsync(email, ct)
@@ -27,5 +31,15 @@ public sealed class CreateInvitationCommandHandler(
         await context.SaveChangesAsync(ct);
 
         return invitation.Id;
+    }
+
+    private async Task<bool> CanCreateInvitation(int cookbookId, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(user.Id))
+            return false;
+
+        var actor = await context.CookbookMemberships.FindForUserAsync(cookbookId, user.Id, ct);
+
+        return actor is not null && actor.Permissions.CanSendInvite;
     }
 }

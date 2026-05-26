@@ -1,14 +1,15 @@
 namespace SharedCookbook.Application.Memberships.EventHandlers;
 
-public class PromotedToOwnerEventHandler(IApplicationDbContext context)
+public class PromotedToOwnerEventHandler(ILogger<PromotedToOwnerEventHandler> logger)
     : INotificationHandler<PromotedToOwnerEvent>
 {
-    public async Task Handle(PromotedToOwnerEvent notification, CancellationToken ct = default)
+    public Task Handle(PromotedToOwnerEvent notification, CancellationToken ct = default)
     {
-        var others = await context.CookbookMemberships
-            .OwnersForCookbookExcept(notification.CookbookId, notification.MembershipId)
-            .ToListAsync(ct);
-        
-        foreach (var otherMembership in others) otherMembership.Demote();
+        logger.LogInformation(
+            "PromotedToOwnerEvent handled: Membership {MembershipId} was promoted to owner in cookbook {CookbookId}.",
+            notification.MembershipId,
+            notification.CookbookId);
+
+        return Task.CompletedTask;
     }
 }

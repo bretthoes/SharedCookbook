@@ -7,7 +7,10 @@ namespace SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
 
 public sealed record UpdateRecipeCommand(UpdateRecipeDto Recipe) : IRequest<int>;
 
-public sealed class UpdateRecipeCommandHandler(IApplicationDbContext context, IOptions<ImageUploadOptions> options)
+public sealed class UpdateRecipeCommandHandler(
+    IApplicationDbContext context,
+    IOptions<ImageUploadOptions> options,
+    IUser user)
     : IRequestHandler<UpdateRecipeCommand, int>
 {
     public async Task<int> Handle(UpdateRecipeCommand command, CancellationToken ct = default)
@@ -21,6 +24,9 @@ public sealed class UpdateRecipeCommandHandler(IApplicationDbContext context, IO
                          .Include(navigationPropertyPath: recipe => recipe.Nutrition)
                          .FirstOrDefaultAsync(recipe => recipe.Id == command.Recipe.Id, ct)
                      ?? throw new NotFoundException(key: command.Recipe.Id.ToString(), nameof(Recipe));
+
+        if (!await CanUpdateRecipe(recipe, ct))
+            throw new ForbiddenAccessException();
 
         // Update primitive properties
         recipe.Title = command.Recipe.Title;
@@ -57,6 +63,19 @@ public sealed class UpdateRecipeCommandHandler(IApplicationDbContext context, IO
         await context.SaveChangesAsync(ct);
 
         return recipe.Id;
+    }
+
+    private async Task<bool> CanUpdateRecipe(Recipe recipe, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(user.Id))
+            return false;
+
+        if (string.Equals(recipe.CreatedBy, user.Id, StringComparison.Ordinal))
+            return true;
+
+        var actor = await context.CookbookMemberships.FindForUserAsync(recipe.CookbookId, user.Id, ct);
+
+        return actor is not null && actor.Permissions.CanUpdateRecipe;
     }
 
     // TODO find out if this is necessary. Can we replace a collection in EF Core without having to load it in memory?
