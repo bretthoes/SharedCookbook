@@ -70,6 +70,7 @@ public sealed class UpdateRecipeCommandHandler(
         if (string.IsNullOrWhiteSpace(user.Id))
             return false;
 
+        // A user can always update their own recipe
         if (string.Equals(recipe.CreatedBy, user.Id, StringComparison.Ordinal))
             return true;
 

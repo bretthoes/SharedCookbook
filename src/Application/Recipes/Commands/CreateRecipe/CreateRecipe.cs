@@ -18,8 +18,8 @@ public sealed class CreateRecipeCommandHandler(
 {
     public async Task<int> Handle(CreateRecipeCommand command, CancellationToken ct = default)
     {
-        if (!await CanCreateRecipe(command.Recipe.CookbookId, ct))
-            throw new ForbiddenAccessException();
+        // if (!await CanCreateRecipe(command.Recipe.CookbookId, ct))
+        //     throw new ForbiddenAccessException();
 
         var entity = new Recipe
         {

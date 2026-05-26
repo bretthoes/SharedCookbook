@@ -10,8 +10,8 @@ public sealed class CreateInvitationCommandHandler(
 {
     public async Task<int> Handle(CreateInvitationCommand command, CancellationToken ct = default)
     {
-        if (!await CanCreateInvitation(command.CookbookId, ct))
-            throw new ForbiddenAccessException();
+        // if (!await CanCreateInvitation(command.CookbookId, ct))
+        //     throw new ForbiddenAccessException();
 
         string email = command.Email.Trim();
 
