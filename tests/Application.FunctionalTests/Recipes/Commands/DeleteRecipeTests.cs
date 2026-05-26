@@ -1,11 +1,13 @@
-﻿using SharedCookbook.Application.Contracts;
+﻿using SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
 using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 using SharedCookbook.Application.Recipes.Commands.DeleteRecipe;
 using SharedCookbook.Domain.Entities;
+using SharedCookbook.Tests.Shared;
 
 namespace SharedCookbook.Application.FunctionalTests.Recipes.Commands;
 
 using static Testing;
+using static RecipeTestData;
 
 public class DeleteRecipeTests : BaseTestFixture
 {
@@ -26,35 +28,11 @@ public class DeleteRecipeTests : BaseTestFixture
     [Test]
     public async Task ShouldDeleteRecipe()
     {
-        var cookbook = new Cookbook { Title = "Test Cookbook Title" };
-        await AddAsync(cookbook);
-        
+        var cookbookId = await SendAsync(new CreateCookbookCommand(Title: "Test Cookbook Title"));
+
         var itemId = await SendAsync(new CreateRecipeCommand
         {
-            Recipe = new CreateRecipeDto
-            {
-                Title = "Another Recipe Title",
-                CookbookId = cookbook.Id,
-                Directions = new List<RecipeDirectionDto>
-                {
-                    new()
-                    {
-                        Text = "Test Direction",
-                        Ordinal = 0
-                    }
-                },
-                IngredientSections = [
-                    IngredientSectionDto.DefaultWrapper(new List<RecipeIngredientDto>
-                    { 
-                        new()
-                        {
-                            Name = "Test Ingredient",
-                            Optional = false,
-                            Ordinal = 0,
-                        }
-                    })
-                ],
-            }
+            Recipe = GetSimpleCreateRecipeDto(cookbookId)
         });
 
         await SendAsync(new DeleteRecipeCommand(itemId));
