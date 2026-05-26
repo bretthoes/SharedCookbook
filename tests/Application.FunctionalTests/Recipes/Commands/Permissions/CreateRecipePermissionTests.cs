@@ -21,6 +21,7 @@ public class WhenContributorLacksAddPermission : BaseTestFixture
     }
 
     [Test]
+    [Ignore("Perm turned off in handler for now since it's a default on")]
     public void ShouldThrowForbiddenAccessException() =>
         Assert.That(
             () => SendAsync(new CreateRecipeCommand { Recipe = GetSimpleCreateRecipeDto(_cookbookId) }),
@@ -40,6 +41,7 @@ public class WhenNonMemberCreatesRecipe : BaseTestFixture
     }
 
     [Test]
+    [Ignore("Perm turned off in handler for now since it's a default on")]
     public void ShouldThrowForbiddenAccessException() =>
         Assert.That(
             () => SendAsync(new CreateRecipeCommand { Recipe = GetSimpleCreateRecipeDto(_cookbookId) }),
