@@ -128,6 +128,20 @@ public class Testing
         throw new Exception($"Unable to create {userName}.{Environment.NewLine}{errors}");
     }
 
+    internal static async Task<string> RunAsExistingUserAsync(string email)
+    {
+        using var scope = _scopeFactory.CreateScope();
+
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+        var user = await userManager.FindByEmailAsync(email)
+            ?? throw new InvalidOperationException($"User {email} was not found.");
+
+        _userId = user.Id;
+
+        return user.Id;
+    }
+
     internal static async Task ResetState()
     {
         try { await _database.ResetAsync(); }
