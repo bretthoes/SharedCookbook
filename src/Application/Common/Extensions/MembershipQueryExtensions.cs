@@ -15,14 +15,14 @@ public static class MembershipQueryExtensions
         public IQueryable<CookbookMembership> ForUserId(string userId) =>
             query.Where(membership => membership.CreatedBy == userId);
 
-        public IQueryable<CookbookMembership> OwnersForCookbookExcept(int cookbookId, int exceptMembershipId) =>
-            query.AsTracking().HasCookbookId(cookbookId).IsOwner().ExcludingId(exceptMembershipId);
+        public Task<CookbookMembership> GetByCookbookAndUser(int cookbookId, string userId, CancellationToken ct = default) =>
+            query.ForCookbookAndUser(cookbookId, userId).SingleAsync(ct);
 
-        private IQueryable<CookbookMembership> IsOwner() =>
-            query.Where(membership => membership.IsOwner);
+        public Task<CookbookMembership?> FindForUserAsync(int cookbookId, string userId, CancellationToken ct = default) =>
+            query.ForCookbookAndUser(cookbookId, userId).SingleOrDefaultAsync(ct);
 
-        private IQueryable<CookbookMembership> ExcludingId(int id) =>
-            query.Where(membership => membership.Id != id);
+        private IQueryable<CookbookMembership> ForCookbookAndUser(int cookbookId, string userId) =>
+            query.HasCookbookId(cookbookId).ForUserId(userId);
     }
 
     public static IQueryable<MembershipDto> OrderByName(
