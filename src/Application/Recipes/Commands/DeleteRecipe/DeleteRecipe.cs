@@ -6,24 +6,16 @@ public class DeleteRecipeCommandHandler(IApplicationDbContext context, IUser use
 {
     public async Task Handle(DeleteRecipeCommand command, CancellationToken ct = default)
     {
-        var recipe = await context.Recipes.FindOrThrowAsync(command.Id, ct);
+        ArgumentNullException.ThrowIfNull(user.Id);
+        var recipeToDelete = await context.Recipes.FindOrThrowAsync(command.Id, ct);
+        var actorMembership = await context.CookbookMemberships.FindForUserOrThrowAsync(recipeToDelete.CookbookId, user.Id, ct);
 
-        if (!await CanDeleteRecipe(recipe.CookbookId, ct))
+        if (!actorMembership.CanDeleteRecipe(recipeToDelete))
             throw new ForbiddenAccessException();
 
-        context.Recipes.Remove(recipe);
-        recipe.AddDomainEvent(new RecipeDeletedEvent(recipe.Id));
+        context.Recipes.Remove(recipeToDelete);
+        recipeToDelete.AddDomainEvent(new RecipeDeletedEvent(recipeToDelete.Id));
 
         await context.SaveChangesAsync(ct);
-    }
-
-    private async Task<bool> CanDeleteRecipe(int cookbookId, CancellationToken ct)
-    {
-        if (string.IsNullOrWhiteSpace(user.Id))
-            return false;
-
-        var actor = await context.CookbookMemberships.FindForUserAsync(cookbookId, user.Id, ct);
-
-        return actor is not null && actor.Permissions.CanDeleteRecipe;
     }
 }
