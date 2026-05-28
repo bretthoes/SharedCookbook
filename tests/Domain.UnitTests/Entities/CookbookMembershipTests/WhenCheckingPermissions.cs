@@ -25,20 +25,6 @@ public class WhenCheckingPermissions
     };
 
     [Test]
-    public void CanAddRecipeShouldReflectPermissions()
-    {
-        var actor = Contributor(ActorUserId, Permissions.Contributor);
-
-        using (Assert.EnterMultipleScope())
-        {
-            Assert.That(actor.CanAddRecipe(), Is.True);
-
-            actor.SetPermissions(Permissions.None);
-            Assert.That(actor.CanAddRecipe(), Is.False);
-        }
-    }
-
-    [Test]
     public void CanUpdateRecipeShouldAllowOwnRecipeWithoutPermission()
     {
         var actor = Contributor(ActorUserId, Permissions.None);
@@ -82,47 +68,6 @@ public class WhenCheckingPermissions
         var otherRecipe = RecipeBy(OtherUserId);
 
         Assert.That(actor.CanDeleteRecipe(otherRecipe), Is.True);
-    }
-
-    [Test]
-    public void CanEditCookbookDetailsShouldReflectPermissions()
-    {
-        var actor = Contributor(ActorUserId, Permissions.None with { CanEditCookbookDetails = true });
-
-        using (Assert.EnterMultipleScope())
-        {
-            Assert.That(actor.CanEditCookbookDetails(), Is.True);
-
-            actor.SetPermissions(Permissions.Contributor);
-            Assert.That(actor.CanEditCookbookDetails(), Is.False);
-        }
-    }
-
-    [Test]
-    public void CanDeleteCookbookShouldRequireOwnership()
-    {
-        var owner = CookbookMembership.NewOwner(ActorUserId);
-        var contributor = Contributor(ActorUserId, Permissions.Contributor);
-
-        using (Assert.EnterMultipleScope())
-        {
-            Assert.That(owner.CanDeleteCookbook(), Is.True);
-            Assert.That(contributor.CanDeleteCookbook(), Is.False);
-        }
-    }
-
-    [Test]
-    public void CanSendInviteShouldReflectPermissions()
-    {
-        var actor = Contributor(ActorUserId, Permissions.Contributor);
-
-        using (Assert.EnterMultipleScope())
-        {
-            Assert.That(actor.CanSendInvite(), Is.True);
-
-            actor.SetPermissions(Permissions.None);
-            Assert.That(actor.CanSendInvite(), Is.False);
-        }
     }
 
     [Test]

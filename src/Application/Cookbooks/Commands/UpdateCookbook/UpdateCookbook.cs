@@ -18,7 +18,7 @@ public sealed class UpdateCookbookCommandHandler(
         var cookbook = await context.Cookbooks.FindOrThrowAsync(request.Id, ct);
         var actorMembership = await context.CookbookMemberships.FindForUserAsync(cookbook.Id, user.Id, ct);
 
-        if (actorMembership is null || !actorMembership.CanEditCookbookDetails())
+        if (actorMembership is null || !actorMembership.Permissions.CanEditCookbookDetails)
             throw new ForbiddenAccessException();
 
         cookbook.Title = request.Title ?? string.Empty;

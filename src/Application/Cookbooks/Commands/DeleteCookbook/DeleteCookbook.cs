@@ -11,7 +11,7 @@ public class DeleteCookbookCommandHandler(IApplicationDbContext context, IUser u
         var cookbook = await context.Cookbooks.FindOrThrowAsync(command.Id, ct);
         var actorMembership = await context.CookbookMemberships.FindForUserAsync(cookbook.Id, user.Id, ct);
 
-        if (actorMembership is null || !actorMembership.CanDeleteCookbook())
+        if (actorMembership is null || !actorMembership.IsOwner)
             throw new ForbiddenAccessException();
 
         context.Cookbooks.Remove(cookbook);
