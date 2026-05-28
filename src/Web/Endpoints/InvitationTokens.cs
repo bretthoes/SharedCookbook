@@ -8,11 +8,28 @@ public class InvitationTokens : EndpointGroupBase
 {
     public override void Map(RouteGroupBuilder builder)
     {
-        builder.MapGet(Single, pattern: "{token}").RequireAuthorization();
-        builder.MapPost(Create).RequireAuthorization();
-        builder.MapPut(Update, pattern: "{token}").RequireAuthorization();
+        builder.MapGet(Single, pattern: "{token}")
+            .RequireAuthorization()
+            .Produces<InvitationDto>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status404NotFound);
+
+        builder.MapPost(Create)
+            .RequireAuthorization()
+            .Produces<InvitationTokenDto>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem();
+
+        builder.MapPut(Update, pattern: "{token}")
+            .RequireAuthorization()
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict);
     }
-    
+
     private static Task<InvitationDto> Single(
         ISender sender,
         [FromRoute] string token,
@@ -24,7 +41,7 @@ public class InvitationTokens : EndpointGroupBase
         [FromBody] CreateInvitationTokenCommand command,
         CancellationToken ct = default) =>
         sender.Send(command, ct);
-    
+
     private static async Task<IResult> Update(
         ISender sender,
         [FromRoute] string token,

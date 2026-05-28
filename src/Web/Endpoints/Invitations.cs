@@ -1,4 +1,4 @@
-﻿using SharedCookbook.Application.Invitations.Commands.CreateInvitation;
+﻿ using SharedCookbook.Application.Invitations.Commands.CreateInvitation;
 using SharedCookbook.Application.Invitations.Commands.DeleteInvitation;
 using SharedCookbook.Application.Invitations.Commands.UpdateInvitation;
 using SharedCookbook.Application.Invitations.Queries.GetInvitationsCount;
@@ -10,11 +10,40 @@ public class Invitations : EndpointGroupBase
 {
     public override void Map(RouteGroupBuilder builder)
     {
-        builder.MapGet(List).RequireAuthorization();
-        builder.MapGet(Count, pattern: "/count").RequireAuthorization();
-        builder.MapPost(Create).RequireAuthorization();
-        builder.MapPut(Update, pattern: "{id}").RequireAuthorization();
-        builder.MapDelete(Delete, pattern: "{id}").RequireAuthorization();
+        builder.MapGet(List)
+            .RequireAuthorization()
+            .Produces<PaginatedList<InvitationDto>>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem();
+
+        builder.MapGet(Count, pattern: "/count")
+            .RequireAuthorization()
+            .Produces<int>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
+
+        builder.MapPost(Create)
+            .RequireAuthorization()
+            .Produces<int>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status403Forbidden)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict);
+
+        builder.MapPut(Update, pattern: "{id}")
+            .RequireAuthorization()
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status403Forbidden)
+            .ProducesProblem(StatusCodes.Status404NotFound);
+
+        builder.MapDelete(Delete, pattern: "{id}")
+            .RequireAuthorization()
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status404NotFound);
     }
 
     private static Task<PaginatedList<InvitationDto>> List(

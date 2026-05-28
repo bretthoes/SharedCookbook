@@ -10,11 +10,41 @@ public class Memberships : EndpointGroupBase
 {
     public override void Map(RouteGroupBuilder builder)
     {
-        builder.MapGet(GetById, pattern: "{id}").RequireAuthorization();
-        builder.MapGet(GetByCookbookIdAndCurrentUser, pattern: "by-cookbook/{cookbookId}").RequireAuthorization();
-        builder.MapGet(List).RequireAuthorization();
-        builder.MapPut(Update, pattern: "{id}").RequireAuthorization();
-        builder.MapDelete(Delete, pattern: "{id}").RequireAuthorization();
+        builder.MapGet(GetById, pattern: "{id}")
+            .RequireAuthorization()
+            .Produces<MembershipDto>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status404NotFound);
+
+        builder.MapGet(GetByCookbookIdAndCurrentUser, pattern: "by-cookbook/{cookbookId}")
+            .RequireAuthorization()
+            .Produces<MembershipDto>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status404NotFound);
+
+        builder.MapGet(List)
+            .RequireAuthorization()
+            .Produces<PaginatedList<MembershipDto>>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem();
+
+        builder.MapPut(Update, pattern: "{id}")
+            .RequireAuthorization()
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status403Forbidden)
+            .ProducesProblem(StatusCodes.Status404NotFound);
+
+        builder.MapDelete(Delete, pattern: "{id}")
+            .RequireAuthorization()
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status403Forbidden)
+            .ProducesProblem(StatusCodes.Status404NotFound);
     }
 
     private static Task<MembershipDto> GetById(

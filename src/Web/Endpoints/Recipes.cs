@@ -15,20 +15,66 @@ public class Recipes : EndpointGroupBase
     public override void Map(RouteGroupBuilder builder)
     {
         builder.DisableAntiforgery();
-        builder.MapGet(GetById, pattern: "{id}").RequireAuthorization();
-        builder.MapGet(List).RequireAuthorization();
-        builder.MapPost(Create).RequireAuthorization();
-        builder.MapPut(Update, pattern: "{id}").RequireAuthorization();
-        builder.MapDelete(Delete, pattern: "{id}").RequireAuthorization();
+
+        builder.MapGet(GetById, pattern: "{id}")
+            .RequireAuthorization()
+            .Produces<RecipeDetailedDto>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status404NotFound);
+
+        builder.MapGet(List)
+            .RequireAuthorization()
+            .Produces<PaginatedList<RecipeBriefDto>>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem();
+
+        builder.MapPost(Create)
+            .RequireAuthorization()
+            .Produces<int>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status403Forbidden);
+
+        builder.MapPut(Update, pattern: "{id}")
+            .RequireAuthorization()
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status403Forbidden)
+            .ProducesProblem(StatusCodes.Status404NotFound);
+
+        builder.MapDelete(Delete, pattern: "{id}")
+            .RequireAuthorization()
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status403Forbidden);
+
         builder.MapPost(ParseFromUrl, pattern: "/parse-recipe-url")
             .RequireAuthorization()
-            .RequireRateLimiting(RateLimitPolicyNames.RecipeParsingDaily);
+            .RequireRateLimiting(RateLimitPolicyNames.RecipeParsingDaily)
+            .Produces<CreateRecipeDto>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status429TooManyRequests);
+
         builder.MapPost(ParseFromImage, pattern: "/parse-recipe-img")
             .RequireAuthorization()
-            .RequireRateLimiting(RateLimitPolicyNames.RecipeParsingDaily);
+            .RequireRateLimiting(RateLimitPolicyNames.RecipeParsingDaily)
+            .Produces<CreateRecipeDto>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status429TooManyRequests);
+
         builder.MapPost(ParseFromVoice, pattern: "/parse-recipe-voice")
             .RequireAuthorization()
-            .RequireRateLimiting(RateLimitPolicyNames.RecipeParsingDaily);
+            .RequireRateLimiting(RateLimitPolicyNames.RecipeParsingDaily)
+            .Produces<CreateRecipeDto>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status429TooManyRequests);
     }
 
     private static Task<RecipeDetailedDto> GetById(

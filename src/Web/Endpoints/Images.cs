@@ -8,9 +8,14 @@ public class Images : EndpointGroupBase
     public override void Map(RouteGroupBuilder builder)
     {
         builder.DisableAntiforgery();
+
         builder.MapPost(Upload)
             .RequireAuthorization()
-            .RequireRateLimiting(RateLimitPolicyNames.ImageUploadDaily);
+            .RequireRateLimiting(RateLimitPolicyNames.ImageUploadDaily)
+            .Produces<string[]>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status429TooManyRequests);
     }
 
     private static Task<string[]> Upload(

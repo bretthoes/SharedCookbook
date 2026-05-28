@@ -7,8 +7,16 @@ public class Subscriptions : EndpointGroupBase
 {
     public override void Map(RouteGroupBuilder builder)
     {
-        builder.MapGet(GetStatus, pattern: "status").RequireAuthorization();
-        builder.MapPost(RevenueCatWebhook, pattern: "webhook/revenuecat");
+        builder.MapGet(GetStatus, pattern: "status")
+            .RequireAuthorization()
+            .Produces<SubscriptionStatusDto>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
+
+        builder.MapPost(RevenueCatWebhook, pattern: "webhook/revenuecat")
+            .Produces(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status500InternalServerError);
     }
 
     private static Task<SubscriptionStatusDto> GetStatus(ISender sender, CancellationToken ct = default) =>

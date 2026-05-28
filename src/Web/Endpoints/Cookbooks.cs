@@ -9,10 +9,33 @@ public class Cookbooks : EndpointGroupBase
 {
     public override void Map(RouteGroupBuilder builder)
     {
-        builder.MapGet(List).RequireAuthorization();
-        builder.MapPost(Create).RequireAuthorization();
-        builder.MapPut(Update, pattern: "{id}").RequireAuthorization();
-        builder.MapDelete(Delete, pattern: "{id}").RequireAuthorization();
+        builder.MapGet(List)
+            .RequireAuthorization()
+            .Produces<PaginatedList<CookbookBriefDto>>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem();
+
+        builder.MapPost(Create)
+            .RequireAuthorization()
+            .Produces<int>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem();
+
+        builder.MapPut(Update, pattern: "{id}")
+            .RequireAuthorization()
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status403Forbidden)
+            .ProducesProblem(StatusCodes.Status404NotFound);
+
+        builder.MapDelete(Delete, pattern: "{id}")
+            .RequireAuthorization()
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status403Forbidden)
+            .ProducesProblem(StatusCodes.Status404NotFound);
     }
 
     private static Task<PaginatedList<CookbookBriefDto>> List(

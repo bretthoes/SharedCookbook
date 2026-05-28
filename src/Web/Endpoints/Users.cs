@@ -12,11 +12,27 @@ public class Users : EndpointGroupBase
 {
     public override void Map(RouteGroupBuilder builder)
     {
-        builder.MapPost(Update, pattern: "/update");
-        builder.MapGet(GetDisplayName, pattern: "/display-name");
-        builder.MapPost(LoginGoogle, pattern: "/login-google");
-        builder.MapPost(LoginApple, pattern: "/login-apple");
-        builder.MapPost(LoginFacebook, pattern: "/login-facebook");
+        builder.MapPost(Update, pattern: "/update")
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem();
+
+        builder.MapGet(GetDisplayName, pattern: "/display-name")
+            .Produces<DisplayNameDto>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
+
+        builder.MapPost(LoginGoogle, pattern: "/login-google")
+            .Produces(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
+
+        builder.MapPost(LoginApple, pattern: "/login-apple")
+            .Produces(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
+
+        builder.MapPost(LoginFacebook, pattern: "/login-facebook")
+            .Produces(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
+
         builder.MapIdentityApi<ApplicationUser>();
     }
 
