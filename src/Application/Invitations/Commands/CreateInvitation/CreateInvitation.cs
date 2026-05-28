@@ -10,8 +10,12 @@ public sealed class CreateInvitationCommandHandler(
 {
     public async Task<int> Handle(CreateInvitationCommand command, CancellationToken ct = default)
     {
-        // if (!await CanCreateInvitation(command.CookbookId, ct))
-        //     throw new ForbiddenAccessException();
+        ArgumentNullException.ThrowIfNull(user.Id);
+
+        var actorMembership = await context.CookbookMemberships.FindForUserAsync(command.CookbookId, user.Id, ct);
+
+        if (actorMembership is null || !actorMembership.CanSendInvite())
+            throw new ForbiddenAccessException();
 
         string email = command.Email.Trim();
 
@@ -31,15 +35,5 @@ public sealed class CreateInvitationCommandHandler(
         await context.SaveChangesAsync(ct);
 
         return invitation.Id;
-    }
-
-    private async Task<bool> CanCreateInvitation(int cookbookId, CancellationToken ct)
-    {
-        if (string.IsNullOrWhiteSpace(user.Id))
-            return false;
-
-        var actor = await context.CookbookMemberships.FindForUserAsync(cookbookId, user.Id, ct);
-
-        return actor is not null && actor.Permissions.CanSendInvite;
     }
 }

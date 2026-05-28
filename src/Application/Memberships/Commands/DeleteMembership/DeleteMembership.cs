@@ -6,27 +6,17 @@ public class DeleteMembershipCommandHandler(IApplicationDbContext context, IUser
 {
     public async Task Handle(DeleteMembershipCommand request, CancellationToken ct = default)
     {
-        var membership = await context.CookbookMemberships.FindOrThrowAsync(request.Id, ct);
+        ArgumentNullException.ThrowIfNull(user.Id);
 
-        if (!await CanDeleteMembership(membership, ct))
+        var membership = await context.CookbookMemberships.FindOrThrowAsync(request.Id, ct);
+        var actorMembership = await context.CookbookMemberships.FindForUserAsync(membership.CookbookId, user.Id, ct);
+
+        if (actorMembership is null || !actorMembership.CanRemoveMember(membership))
             throw new ForbiddenAccessException();
 
         context.CookbookMemberships.Remove(membership);
         membership.AddDomainEvent(new MembershipDeletedEvent(membership));
 
         await context.SaveChangesAsync(ct);
-    }
-
-    private async Task<bool> CanDeleteMembership(CookbookMembership membership, CancellationToken ct)
-    {
-        if (string.IsNullOrWhiteSpace(user.Id))
-            return false;
-
-        if (string.Equals(membership.CreatedBy, user.Id, StringComparison.Ordinal))
-            return true;
-
-        var actor = await context.CookbookMemberships.FindForUserAsync(membership.CookbookId, user.Id, ct);
-
-        return actor is not null && actor.Permissions.CanRemoveMember;
     }
 }

@@ -13,9 +13,12 @@ public sealed class UpdateCookbookCommandHandler(
 {
     public async Task<int> Handle(UpdateCookbookCommand request, CancellationToken ct = default)
     {
-        var cookbook = await context.Cookbooks.FindOrThrowAsync(request.Id, ct);
+        ArgumentNullException.ThrowIfNull(user.Id);
 
-        if (!await CanUpdateCookbook(cookbook.Id, ct))
+        var cookbook = await context.Cookbooks.FindOrThrowAsync(request.Id, ct);
+        var actorMembership = await context.CookbookMemberships.FindForUserAsync(cookbook.Id, user.Id, ct);
+
+        if (actorMembership is null || !actorMembership.CanEditCookbookDetails())
             throw new ForbiddenAccessException();
 
         cookbook.Title = request.Title ?? string.Empty;
@@ -24,15 +27,5 @@ public sealed class UpdateCookbookCommandHandler(
         cookbook.AddDomainEvent(new CookbookUpdatedEvent(cookbook));
         
         return await context.SaveChangesAsync(ct);
-    }
-
-    private async Task<bool> CanUpdateCookbook(int cookbookId, CancellationToken ct)
-    {
-        if (string.IsNullOrWhiteSpace(user.Id))
-            return false;
-
-        var actor = await context.CookbookMemberships.FindForUserAsync(cookbookId, user.Id, ct);
-
-        return actor is not null && actor.Permissions.CanEditCookbookDetails;
     }
 }

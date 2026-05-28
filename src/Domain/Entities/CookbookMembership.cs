@@ -12,8 +12,29 @@ public sealed class CookbookMembership : BaseAuditableEntity
 
     public Cookbook? Cookbook { get; init; }
 
+    public bool CanAddRecipe() => Permissions.CanAddRecipe;
+
+    public bool CanUpdateRecipe(Recipe recipe) =>
+        string.Equals(CreatedBy, recipe.CreatedBy, StringComparison.Ordinal) || Permissions.CanUpdateRecipe;
+
     public bool CanDeleteRecipe(Recipe recipe) =>
         string.Equals(CreatedBy, recipe.CreatedBy, StringComparison.Ordinal) || Permissions.CanDeleteRecipe;
+
+    public bool CanEditCookbookDetails() => Permissions.CanEditCookbookDetails;
+
+    public bool CanDeleteCookbook() => IsOwner;
+
+    public bool CanSendInvite() => Permissions.CanSendInvite;
+
+    public bool CanRemoveMember(CookbookMembership target) =>
+        string.Equals(CreatedBy, target.CreatedBy, StringComparison.Ordinal) || Permissions.CanRemoveMember;
+
+    public bool CanUpdateMembership(CookbookMembership target) =>
+        !string.Equals(CreatedBy, target.CreatedBy, StringComparison.Ordinal)
+        && (IsOwner || Permissions.CanRemoveMember);
+
+    public bool CanPromoteToOwner(CookbookMembership target) =>
+        !string.Equals(CreatedBy, target.CreatedBy, StringComparison.Ordinal) && IsOwner;
 
     public void Promote()
     {

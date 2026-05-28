@@ -15,6 +15,8 @@ public sealed class UpdateRecipeCommandHandler(
 {
     public async Task<int> Handle(UpdateRecipeCommand command, CancellationToken ct = default)
     {
+        ArgumentNullException.ThrowIfNull(user.Id);
+
         var recipe = await context.Recipes
                          .AsSplitQuery() // TODO verify this improves performance; a recipe can only have so many directions, images, ingredients, etc. Find max, avg, and suppress warning if the extra round trips slow down query
                          .Include(navigationPropertyPath: recipe => recipe.IngredientSections)
@@ -25,7 +27,9 @@ public sealed class UpdateRecipeCommandHandler(
                          .FirstOrDefaultAsync(recipe => recipe.Id == command.Recipe.Id, ct)
                      ?? throw new NotFoundException(key: command.Recipe.Id.ToString(), nameof(Recipe));
 
-        if (!await CanUpdateRecipe(recipe, ct))
+        var actorMembership = await context.CookbookMemberships.FindForUserAsync(recipe.CookbookId, user.Id, ct);
+
+        if (actorMembership is null || !actorMembership.CanUpdateRecipe(recipe))
             throw new ForbiddenAccessException();
 
         // Update primitive properties
@@ -63,20 +67,6 @@ public sealed class UpdateRecipeCommandHandler(
         await context.SaveChangesAsync(ct);
 
         return recipe.Id;
-    }
-
-    private async Task<bool> CanUpdateRecipe(Recipe recipe, CancellationToken ct)
-    {
-        if (string.IsNullOrWhiteSpace(user.Id))
-            return false;
-
-        // A user can always update their own recipe
-        if (string.Equals(recipe.CreatedBy, user.Id, StringComparison.Ordinal))
-            return true;
-
-        var actor = await context.CookbookMemberships.FindForUserAsync(recipe.CookbookId, user.Id, ct);
-
-        return actor is not null && actor.Permissions.CanUpdateRecipe;
     }
 
     // TODO find out if this is necessary. Can we replace a collection in EF Core without having to load it in memory?

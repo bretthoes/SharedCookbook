@@ -18,8 +18,15 @@ public sealed class CreateRecipeCommandHandler(
 {
     public async Task<int> Handle(CreateRecipeCommand command, CancellationToken ct = default)
     {
-        // if (!await CanCreateRecipe(command.Recipe.CookbookId, ct))
-        //     throw new ForbiddenAccessException();
+        ArgumentNullException.ThrowIfNull(user.Id);
+
+        var actorMembership = await context.CookbookMemberships.FindForUserAsync(
+            command.Recipe.CookbookId,
+            user.Id,
+            ct);
+
+        if (actorMembership is null || !actorMembership.CanAddRecipe())
+            throw new ForbiddenAccessException();
 
         var entity = new Recipe
         {
@@ -57,15 +64,5 @@ public sealed class CreateRecipeCommandHandler(
         await context.SaveChangesAsync(ct);
 
         return entity.Id;
-    }
-
-    private async Task<bool> CanCreateRecipe(int cookbookId, CancellationToken ct)
-    {
-        if (string.IsNullOrWhiteSpace(user.Id))
-            return false;
-
-        var actor = await context.CookbookMemberships.FindForUserAsync(cookbookId, user.Id, ct);
-
-        return actor is not null && actor.Permissions.CanAddRecipe;
     }
 }

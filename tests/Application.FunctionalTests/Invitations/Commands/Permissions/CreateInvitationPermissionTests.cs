@@ -21,7 +21,6 @@ public class WhenContributorLacksSendInvitePermission : BaseTestFixture
     }
 
     [Test]
-    [Ignore("Perm turned off in handler for now since it's a default on")]
     public void ShouldThrowForbiddenAccessException() =>
         Assert.That(
             () => SendAsync(new CreateInvitationCommand(_cookbookId, InviteeEmail)),
@@ -42,7 +41,6 @@ public class WhenNonMemberCreatesInvitation : BaseTestFixture
     }
 
     [Test]
-    [Ignore("Perm turned off in handler for now since it's a default on")]
     public void ShouldThrowForbiddenAccessException() =>
         Assert.That(
             () => SendAsync(new CreateInvitationCommand(_cookbookId, InviteeEmail)),

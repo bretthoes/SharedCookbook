@@ -8,9 +8,9 @@ public class DeleteRecipeCommandHandler(IApplicationDbContext context, IUser use
     {
         ArgumentNullException.ThrowIfNull(user.Id);
         var recipeToDelete = await context.Recipes.FindOrThrowAsync(command.Id, ct);
-        var actorMembership = await context.CookbookMemberships.FindForUserOrThrowAsync(recipeToDelete.CookbookId, user.Id, ct);
+        var actorMembership = await context.CookbookMemberships.FindForUserAsync(recipeToDelete.CookbookId, user.Id, ct);
 
-        if (!actorMembership.CanDeleteRecipe(recipeToDelete))
+        if (actorMembership is null || !actorMembership.CanDeleteRecipe(recipeToDelete))
             throw new ForbiddenAccessException();
 
         context.Recipes.Remove(recipeToDelete);

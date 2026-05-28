@@ -17,20 +17,14 @@ public sealed class UpdateMembershipCommandHandler(IApplicationDbContext context
 {
     public async Task Handle(UpdateMembershipCommand command, CancellationToken ct = default)
     {
-        if (string.IsNullOrWhiteSpace(user.Id))
-            throw new ForbiddenAccessException();
+        ArgumentNullException.ThrowIfNull(user.Id);
 
         var membership = await context.CookbookMemberships.FindOrThrowAsync(command.Id, ct);
-
-        var actor = await context.CookbookMemberships.FindForUserAsync(membership.CookbookId, user.Id, ct);
-
-        if (actor is null || !CanUpdateMembership(membership, actor))
-            throw new ForbiddenAccessException();
+        var actorMembership = await context.CookbookMemberships.FindForUserAsync(membership.CookbookId, user.Id, ct);
 
         if (command.IsOwner)
         {
-            // Only the current owner can promote another member to owner
-            if (!actor.IsOwner)
+            if (actorMembership is null || !actorMembership.CanPromoteToOwner(membership))
                 throw new ForbiddenAccessException();
 
             var departingOwners = await context.CookbookMemberships
@@ -42,6 +36,9 @@ public sealed class UpdateMembershipCommandHandler(IApplicationDbContext context
         }
         else
         {
+            if (actorMembership is null || !actorMembership.CanUpdateMembership(membership))
+                throw new ForbiddenAccessException();
+
             membership.SetPermissions(membership.Permissions
                 .WithAddRecipe(command.CanAddRecipe)
                 .WithUpdateRecipe(command.CanUpdateRecipe)
@@ -54,13 +51,5 @@ public sealed class UpdateMembershipCommandHandler(IApplicationDbContext context
         membership.AddDomainEvent(new MembershipUpdatedEvent(membership));
         
         await context.SaveChangesAsync(ct);
-    }
-
-    private static bool CanUpdateMembership(CookbookMembership membership, CookbookMembership actor)
-    {
-        if (string.Equals(membership.CreatedBy, actor.CreatedBy, StringComparison.Ordinal))
-            return false;
-
-        return actor.IsOwner || actor.Permissions.CanRemoveMember;
     }
 }
