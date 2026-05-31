@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SharedCookbook.Domain.Entities;
+using SharedCookbook.Domain.Enums;
 using SharedCookbook.Infrastructure.Identity;
 
 namespace SharedCookbook.Infrastructure.Data.Configurations;
@@ -16,6 +17,9 @@ public class CookbookMemberConfiguration : IEntityTypeConfiguration<CookbookMemb
         builder.HasIndex(membership => membership.CookbookId, "IX_cookbook_member__cookbook_id");
         builder.HasIndex(membership => membership.CreatedBy, "IX_cookbook_member__created_by");
         builder.HasIndex(membership => new { membership.CookbookId, membership.CreatedBy }, "UX_cookbook_member__cookbook_user").IsUnique();
+        builder.HasIndex(membership => membership.CookbookId, "UX_cookbook_member__cookbook_owner")
+            .IsUnique()
+            .HasFilter($"tier = {(int)MembershipTier.Owner}");
 
         builder.Property(membership => membership.Id)
             .HasColumnName("cookbook_member_id")
