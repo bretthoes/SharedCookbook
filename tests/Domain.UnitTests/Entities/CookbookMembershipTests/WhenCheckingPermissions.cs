@@ -106,12 +106,16 @@ public class WhenCheckingPermissions
     [Test]
     public void OwnerShouldPromoteContributorToOwner() =>
         Assert.That(
-            CookbookMembership.NewOwner(ActorUserId).CanPromoteToOwner(Member(OtherUserId, MembershipTier.Contributor)),
+            CookbookMembership.NewOwner(ActorUserId).CanApplyTierUpdate(
+                Member(OtherUserId, MembershipTier.Contributor),
+                MembershipTier.Owner),
             Is.True);
 
     [Test]
     public void ContributorShouldNotPromoteToOwner() =>
         Assert.That(
-            Member(ActorUserId, MembershipTier.Contributor).CanPromoteToOwner(Member(OtherUserId, MembershipTier.Contributor)),
+            Member(ActorUserId, MembershipTier.Contributor).CanApplyTierUpdate(
+                Member(OtherUserId, MembershipTier.Contributor),
+                MembershipTier.Owner),
             Is.False);
 }

@@ -19,8 +19,8 @@ public class WhenMembershipCapabilities
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(member.CanAddRecipe(), Is.True);
-            Assert.That(member.CanSendInvite(), Is.True);
+            Assert.That(member.CanAddRecipe, Is.True);
+            Assert.That(member.CanSendInvite, Is.True);
         }
     }
 
@@ -31,18 +31,18 @@ public class WhenMembershipCapabilities
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(member.CanAddRecipe(), Is.False);
-            Assert.That(member.CanSendInvite(), Is.False);
+            Assert.That(member.CanAddRecipe, Is.False);
+            Assert.That(member.CanSendInvite, Is.False);
         }
     }
 
     [Test]
     public void AdminShouldEditCookbookDetails() =>
-        Assert.That(WithTier(MembershipTier.Admin).CanEditCookbookDetails(), Is.True);
+        Assert.That(WithTier(MembershipTier.Admin).CanEditCookbookDetails, Is.True);
 
     [Test]
     public void ContributorShouldNotEditCookbookDetails() =>
-        Assert.That(WithTier(MembershipTier.Contributor).CanEditCookbookDetails(), Is.False);
+        Assert.That(WithTier(MembershipTier.Contributor).CanEditCookbookDetails, Is.False);
 
     [Test]
     public void AdminShouldRemoveContributor() =>
@@ -71,6 +71,22 @@ public class WhenMembershipCapabilities
                 WithTier(MembershipTier.Contributor, "target"),
                 MembershipTier.Admin),
             Is.True);
+
+    [Test]
+    public void AdminShouldDemoteContributorToViewer() =>
+        Assert.That(
+            WithTier(MembershipTier.Admin, "admin").CanApplyTierUpdate(
+                WithTier(MembershipTier.Contributor, "target"),
+                MembershipTier.Viewer),
+            Is.True);
+
+    [Test]
+    public void AdminShouldNotUpdateOtherAdmin() =>
+        Assert.That(
+            WithTier(MembershipTier.Admin, "admin").CanApplyTierUpdate(
+                WithTier(MembershipTier.Admin, "target"),
+                MembershipTier.Contributor),
+            Is.False);
 
     [Test]
     public void AdminShouldNotChangeOwnerTier() =>
