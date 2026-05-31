@@ -8,5 +8,9 @@ public enum CookbookNotificationActionType
     Share,
     Invite,
     Update,
-    NewRecipe
+    NewRecipe,
+    RecipeMade,
+    MemberJoined,
+    MemberLeft,
+    MemberRemoved
 }

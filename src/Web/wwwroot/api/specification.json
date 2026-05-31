@@ -1267,6 +1267,71 @@
         ]
       }
     },
+    "/api/Notifications": {
+      "get": {
+        "tags": [
+          "Notifications"
+        ],
+        "operationId": "NotificationsList",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOfNotificationDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/Recipes/{id}": {
       "get": {
         "tags": [
@@ -1615,6 +1680,76 @@
             }
           },
           "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/Recipes/{id}/made": {
+      "post": {
+        "tags": [
+          "Recipes"
+        ],
+        "operationId": "RecipesRecordMade",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
             "description": "",
             "content": {
               "application/json": {
@@ -2881,6 +3016,117 @@
           }
         }
       },
+      "PaginatedListOfNotificationDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NotificationDto"
+            }
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
+      "NotificationDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "actionType",
+          "created",
+          "cookbookId",
+          "cookbookTitle"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "actionType": {
+            "$ref": "#/components/schemas/CookbookNotificationActionType"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "cookbookId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cookbookTitle": {
+            "type": "string"
+          },
+          "recipeId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "recipeTitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "actorDisplayName": {
+            "type": "string",
+            "nullable": true
+          },
+          "subjectDisplayName": {
+            "type": "string",
+            "nullable": true
+          },
+          "isImportant": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CookbookNotificationActionType": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Unknown",
+          "Like",
+          "Comment",
+          "Share",
+          "Invite",
+          "Update",
+          "NewRecipe",
+          "RecipeMade",
+          "MemberJoined",
+          "MemberLeft",
+          "MemberRemoved"
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
       "RecipeDetailedDto": {
         "type": "object",
         "additionalProperties": false,
@@ -2935,6 +3181,10 @@
             "type": "integer",
             "format": "int32",
             "nullable": true
+          },
+          "madeCount": {
+            "type": "integer",
+            "format": "int32"
           },
           "isVegetarian": {
             "type": "boolean",

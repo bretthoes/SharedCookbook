@@ -37,6 +37,10 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
         builder.Property(recipe => recipe.VideoPath)
             .HasMaxLength(Recipe.Constraints.VideoPathMaxLength)
             .HasColumnName("video_path");
+        builder.Property(recipe => recipe.MadeCount)
+            .HasColumnName("made_count")
+            .HasDefaultValue(0)
+            .IsRequired();
 
         builder.OwnsOne(recipe => recipe.Timing, timing =>
         {

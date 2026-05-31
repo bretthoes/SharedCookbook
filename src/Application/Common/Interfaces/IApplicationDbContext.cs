@@ -11,6 +11,8 @@ public interface IApplicationDbContext
     DbSet<CookbookMembership> CookbookMemberships { get; }
 
     DbSet<Recipe> Recipes { get; }
+
+    DbSet<CookbookNotification> CookbookNotifications { get; }
     
     Task<int> SaveChangesAsync(CancellationToken ct = default);
 }

@@ -33,6 +33,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public DbSet<RecipeNutrition> RecipeNutritions => Set<RecipeNutrition>();
 
+    public DbSet<CookbookNotification> CookbookNotifications => Set<CookbookNotification>();
+
     public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
 
     public bool HasChanges() => ChangeTracker.HasChanges();

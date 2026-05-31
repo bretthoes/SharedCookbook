@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SharedCookbook.Infrastructure.Data;
@@ -11,9 +12,11 @@ using SharedCookbook.Infrastructure.Data;
 namespace SharedCookbook.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("00000000000023_DropRecipeMade")]
+    partial class DropRecipeMade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -343,6 +346,10 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("text");
 
+                    b.Property<DateTimeOffset?>("ReadAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("read_at");
+
                     b.Property<int?>("RecipeId")
                         .HasColumnType("integer")
                         .HasColumnName("recipe_id");
@@ -367,7 +374,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
 
                     b.HasIndex(new[] { "RecipeId" }, "IX_cookbook_notification__recipe_id");
 
-                    b.HasIndex(new[] { "RecipientUserId", "Created" }, "IX_cookbook_notification__recipient_created");
+                    b.HasIndex(new[] { "RecipientUserId", "ReadAt", "Created" }, "IX_cookbook_notification__recipient_read_created");
 
                     b.HasIndex(new[] { "RecipientUserId" }, "IX_cookbook_notification__recipient_user_id");
 

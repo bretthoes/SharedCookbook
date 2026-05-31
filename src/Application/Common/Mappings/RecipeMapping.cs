@@ -14,6 +14,7 @@ internal static class RecipeMapping
             CookingTimeInMinutes = recipe.Timing.CookingMinutes,
             BakingTimeInMinutes = recipe.Timing.BakingMinutes,
             Servings = recipe.Servings,
+            MadeCount = recipe.MadeCount,
             Directions = recipe.Directions.ToDtos(imageBaseUrl).ToList(),
             Images = recipe.Images.ToDtos(imageBaseUrl).ToList(),
             IngredientSections = recipe.IngredientSections // TODO we can't abstract these LINQ methods due to nested collection; EF Core can't resolve the query otherwise 

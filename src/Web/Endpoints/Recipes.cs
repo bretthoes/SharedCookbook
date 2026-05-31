@@ -1,3 +1,4 @@
+using SharedCookbook.Application.RecipeMakes.Commands.RecordRecipeMade;
 using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 using SharedCookbook.Application.Recipes.Commands.DeleteRecipe;
 using SharedCookbook.Application.Recipes.Commands.ParseRecipeFromImage;
@@ -51,6 +52,14 @@ public class Recipes : EndpointGroupBase
             .ProducesValidationProblem()
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesProblem(StatusCodes.Status403Forbidden);
+
+        builder.MapPost(RecordMade, pattern: "{id}/made")
+            .RequireAuthorization()
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status403Forbidden)
+            .ProducesProblem(StatusCodes.Status404NotFound);
 
         builder.MapPost(ParseFromUrl, pattern: "/parse-recipe-url")
             .RequireAuthorization()
@@ -108,6 +117,12 @@ public class Recipes : EndpointGroupBase
     private static async Task<IResult> Delete(ISender sender, [FromRoute] int id, CancellationToken ct = default)
     {
         await sender.Send(new DeleteRecipeCommand(id), ct);
+        return Results.NoContent();
+    }
+
+    private static async Task<IResult> RecordMade(ISender sender, [FromRoute] int id, CancellationToken ct = default)
+    {
+        await sender.Send(new RecordRecipeMadeCommand(id), ct);
         return Results.NoContent();
     }
 

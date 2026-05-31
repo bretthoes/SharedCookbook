@@ -11,6 +11,7 @@ public class InvitationAcceptedEventHandler(
             return;
 
         var membership = CookbookMembership.NewDefault(acceptedEvent.CookbookId, acceptedEvent.UserId);
+        membership.AddDomainEvent(new MembershipCreatedEvent(membership));
         await context.CookbookMemberships.AddAsync(membership, ct);
         
         logger.LogInformation(

@@ -16,6 +16,8 @@ public sealed class Recipe : BaseAuditableEntity
 
     public int? Servings { get; set; }
 
+    public int MadeCount { get; set; }
+
     public required Timing Timing { get; set; }
 
     public required DietaryTags DietaryTags { get; set; }

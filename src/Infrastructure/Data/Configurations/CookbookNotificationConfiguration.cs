@@ -15,8 +15,11 @@ public class CookbookNotificationConfiguration : IEntityTypeConfiguration<Cookbo
             .HasName("PK_cookbook_notification_id");
 
         builder.HasIndex(
-            notification => notification.CreatedBy,
-            name: "IX_cookbook_notification__created_by");
+            notification => notification.RecipientUserId,
+            name: "IX_cookbook_notification__recipient_user_id");
+        builder.HasIndex(
+            notification => new { notification.RecipientUserId, notification.Created },
+            name: "IX_cookbook_notification__recipient_created");
         builder.HasIndex(
             notification => notification.CookbookId,
             name: "IX_cookbook_notification__cookbook_id");
@@ -27,8 +30,12 @@ public class CookbookNotificationConfiguration : IEntityTypeConfiguration<Cookbo
         builder.Property(notification => notification.Id)
             .HasColumnName("cookbook_notification_id")
             .IsRequired();
+        builder.Property(notification => notification.RecipientUserId)
+            .HasColumnName("recipient_user_id")
+            .IsRequired();
         builder.Property(notification => notification.CookbookId)
-            .HasColumnName("cookbook_id");
+            .HasColumnName("cookbook_id")
+            .IsRequired();
         builder.Property(notification => notification.RecipeId)
             .HasColumnName("recipe_id");
         builder.Property(notification => notification.ActionType)
@@ -36,6 +43,10 @@ public class CookbookNotificationConfiguration : IEntityTypeConfiguration<Cookbo
             .HasConversion<string>()
             .HasMaxLength(CookbookNotification.Constraints.ActionTypeMaxLength)
             .IsRequired();
+        builder.Property(notification => notification.ActorUserId)
+            .HasColumnName("actor_user_id");
+        builder.Property(notification => notification.SubjectUserId)
+            .HasColumnName("subject_user_id");
         builder.Property(notification => notification.Created)
             .HasColumnName("created")
             .IsRequired();
@@ -43,14 +54,29 @@ public class CookbookNotificationConfiguration : IEntityTypeConfiguration<Cookbo
         builder.HasOne(notification => notification.Cookbook)
             .WithMany(cookbook => cookbook.Notifications)
             .HasForeignKey(notification => notification.CookbookId)
-            .HasConstraintName("FK_cookbook_notification__cookbook_id");
+            .HasConstraintName("FK_cookbook_notification__cookbook_id")
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired();
         builder.HasOne(notification => notification.Recipe)
             .WithMany()
             .HasForeignKey(notification => notification.RecipeId)
-            .HasConstraintName("FK_cookbook_notification__recipe_id");
+            .HasConstraintName("FK_cookbook_notification__recipe_id")
+            .OnDelete(DeleteBehavior.SetNull);
         builder.HasOne<ApplicationUser>()
             .WithMany()
-            .HasForeignKey(notification => notification.CreatedBy)
-            .HasConstraintName("FK_cookbook_notification__created_by");
+            .HasForeignKey(notification => notification.RecipientUserId)
+            .HasConstraintName("FK_cookbook_notification__recipient_user_id")
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired();
+        builder.HasOne<ApplicationUser>()
+            .WithMany()
+            .HasForeignKey(notification => notification.ActorUserId)
+            .HasConstraintName("FK_cookbook_notification__actor_user_id")
+            .OnDelete(DeleteBehavior.SetNull);
+        builder.HasOne<ApplicationUser>()
+            .WithMany()
+            .HasForeignKey(notification => notification.SubjectUserId)
+            .HasConstraintName("FK_cookbook_notification__subject_user_id")
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

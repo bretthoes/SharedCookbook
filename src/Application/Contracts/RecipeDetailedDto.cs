@@ -28,6 +28,8 @@ public sealed class RecipeDetailedDto
     public int? BakingTimeInMinutes { get; init; }
 
     public int? Servings { get; init; }
+
+    public int MadeCount { get; init; }
     
     public bool? IsVegetarian { get; set; }
     public bool? IsVegan { get; set; }

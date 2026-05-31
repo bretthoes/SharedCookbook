@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SharedCookbook.Infrastructure.Data;
@@ -11,9 +12,11 @@ using SharedCookbook.Infrastructure.Data;
 namespace SharedCookbook.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("00000000000022_AddNotificationsAndRecipeMade")]
+    partial class AddNotificationsAndRecipeMade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -343,6 +346,10 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("text");
 
+                    b.Property<DateTimeOffset?>("ReadAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("read_at");
+
                     b.Property<int?>("RecipeId")
                         .HasColumnType("integer")
                         .HasColumnName("recipe_id");
@@ -367,7 +374,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
 
                     b.HasIndex(new[] { "RecipeId" }, "IX_cookbook_notification__recipe_id");
 
-                    b.HasIndex(new[] { "RecipientUserId", "Created" }, "IX_cookbook_notification__recipient_created");
+                    b.HasIndex(new[] { "RecipientUserId", "ReadAt", "Created" }, "IX_cookbook_notification__recipient_read_created");
 
                     b.HasIndex(new[] { "RecipientUserId" }, "IX_cookbook_notification__recipient_user_id");
 
@@ -713,6 +720,43 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.HasIndex(new[] { "IngredientSectionId" }, "IX_recipe_ingredient__ingredient_section_id");
 
                     b.ToTable("recipe_ingredient", (string)null);
+                });
+
+            modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeMade", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_made_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset>("MadeAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("made_at");
+
+                    b.Property<DateOnly>("MadeOnUtcDate")
+                        .HasColumnType("date")
+                        .HasColumnName("made_on_utc_date");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_id");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("PK_recipe_made_id");
+
+                    b.HasIndex(new[] { "RecipeId" }, "IX_recipe_made__recipe_id");
+
+                    b.HasIndex(new[] { "UserId", "RecipeId", "MadeOnUtcDate" }, "UX_recipe_made__user_recipe_day")
+                        .IsUnique();
+
+                    b.ToTable("recipe_made", (string)null);
                 });
 
             modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeNutrition", b =>
@@ -1209,6 +1253,25 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_recipe_ingredient__ingredient_section_id");
+                });
+
+            modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeMade", b =>
+                {
+                    b.HasOne("SharedCookbook.Domain.Entities.Recipe", "Recipe")
+                        .WithMany()
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_recipe_made__recipe_id");
+
+                    b.HasOne("SharedCookbook.Infrastructure.Identity.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_recipe_made__user_id");
+
+                    b.Navigation("Recipe");
                 });
 
             modelBuilder.Entity("SharedCookbook.Domain.Entities.RecipeNutrition", b =>
