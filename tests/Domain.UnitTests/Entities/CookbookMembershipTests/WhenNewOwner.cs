@@ -31,12 +31,4 @@ public class WhenNewOwner
         owner.Demote();
         Assert.That(owner.IsOwner, Is.False);
     }
-
-    [Test]
-    public void AndPromotedWhenAlreadyOwnerThenShouldNotHaveAnyDomainEvents()
-    {
-        var owner = CookbookMembership.NewOwner(It.IsAny<string>());
-        owner.Promote();
-        Assert.That(owner.DomainEvents, Is.Empty);
-    }
 }

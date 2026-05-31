@@ -29,13 +29,6 @@ public sealed class CookbookMembership : BaseAuditableEntity
     public bool CanApplyTierUpdate(CookbookMembership target, MembershipTier proposedTier) =>
         !IsSameMember(target) && CanAssignTierTo(target, proposedTier);
 
-    public void Promote()
-    {
-        if (IsOwner) return;
-        SetTier(MembershipTier.Owner);
-        AddDomainEvent(new PromotedToOwnerEvent(Id, CookbookId));
-    }
-
     public void Demote() => SetTier(MembershipTier.Contributor);
 
     public void SetTier(MembershipTier tier) => Tier = tier;

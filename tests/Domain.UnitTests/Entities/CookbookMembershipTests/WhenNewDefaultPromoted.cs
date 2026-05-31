@@ -11,11 +11,8 @@ public class WhenNewDefaultPromoted
     public void OneTimeSetup()
     {
         _actual = CookbookMembership.NewDefault(cookbookId: 1);
-        _actual.Promote();
+        _actual.SetTier(MembershipTier.Owner);
     }
-
-    [Test]
-    public void IsPromotedThenDomainEventsShouldNotBeEmpty() { Assert.That(_actual.DomainEvents, Is.Not.Empty); }
 
     [Test]
     public void IsPromotedThenShouldHaveOwnerTier() => Assert.That(_actual.Tier, Is.EqualTo(MembershipTier.Owner));
