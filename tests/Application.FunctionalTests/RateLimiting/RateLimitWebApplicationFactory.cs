@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Application.Contracts;
+using SharedCookbook.Application.FunctionalTests.Infrastructure;
 using SharedCookbook.Infrastructure.Data;
 using SharedCookbook.Web.Infrastructure.RateLimiting;
 
