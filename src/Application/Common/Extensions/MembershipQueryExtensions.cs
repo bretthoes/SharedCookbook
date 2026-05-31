@@ -12,7 +12,7 @@ public static class MembershipQueryExtensions
             CancellationToken ct = default) 
             => query.HasCookbookId(cookbookId).ForUserId(userId).AsNoTracking().AnyAsync(ct);
 
-        public IQueryable<CookbookMembership> ForUserId(string userId) =>
+        private IQueryable<CookbookMembership> ForUserId(string userId) =>
             query.Where(membership => membership.CreatedBy == userId);
 
         public Task<CookbookMembership> GetByCookbookAndUser(int cookbookId, string userId, CancellationToken ct = default) =>

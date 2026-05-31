@@ -20,14 +20,12 @@ public sealed class CookbookMembership : BaseAuditableEntity
 
     public bool CanDeleteRecipe(Recipe recipe) => CanDeleteAnyRecipe() || IsAuthor(recipe);
 
-    public bool CanRemoveMember(CookbookMembership target) =>
-        IsSameMember(target) || CanRemoveOtherMember(target);
+    public bool CanRemoveMember(CookbookMembership target) => IsSameMember(target) || CanRemoveOtherMember(target);
 
     public bool CanApplyTierUpdate(CookbookMembership target, MembershipTier proposedTier) =>
         !IsSameMember(target) && CanAssignTierTo(target, proposedTier);
 
-    public bool CanPromoteToOwner(CookbookMembership target) =>
-        IsOwner && !IsSameMember(target) && !target.IsOwner;
+    public bool CanPromoteToOwner(CookbookMembership target) => IsOwner && !IsSameMember(target) && !target.IsOwner;
 
     public void Promote()
     {
@@ -71,8 +69,7 @@ public sealed class CookbookMembership : BaseAuditableEntity
             _ => false
         };
 
-    private bool IsAuthor(Recipe recipe) =>
-        string.Equals(CreatedBy, recipe.CreatedBy, StringComparison.Ordinal);
+    private bool IsAuthor(Recipe recipe) => string.Equals(CreatedBy, recipe.CreatedBy, StringComparison.Ordinal);
 
     private bool IsSameMember(CookbookMembership target) =>
         string.Equals(CreatedBy, target.CreatedBy, StringComparison.Ordinal);
