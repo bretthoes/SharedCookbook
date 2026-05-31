@@ -1,6 +1,6 @@
 using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
+using SharedCookbook.Domain.Enums;
 using SharedCookbook.Tests.Shared;
-using DomainPermissions = SharedCookbook.Domain.ValueObjects.Permissions;
 
 namespace SharedCookbook.Application.FunctionalTests.Recipes.Commands.Permissions;
 
@@ -8,14 +8,14 @@ using static Testing;
 using static RecipeTestData;
 using static Common.CookbookPermissionScenario;
 
-public class WhenContributorLacksAddPermission : BaseTestFixture
+public class WhenViewerCreatesRecipe : BaseTestFixture
 {
     private int _cookbookId;
 
     [SetUp]
     public async Task SetUp()
     {
-        var context = await CreateWithContributor(DomainPermissions.None);
+        var context = await CreateWithContributor(MembershipTier.Viewer);
         _cookbookId = context.CookbookId;
         await ActAsContributor();
     }

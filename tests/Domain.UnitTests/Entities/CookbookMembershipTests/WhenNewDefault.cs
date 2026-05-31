@@ -1,26 +1,19 @@
 using SharedCookbook.Domain.Entities;
-using SharedCookbook.Domain.ValueObjects;
+using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Domain.UnitTests.Entities.CookbookMembershipTests;
 
 public class WhenNewDefault
 {
     private CookbookMembership _actual = null!;
-    
+
     [OneTimeSetUp]
-    public void OneTimeSetUp()
-    {
-        _actual = CookbookMembership.NewDefault(cookbookId: It.IsAny<int>(), userId: It.IsAny<string>());
-    }
-    
-    [Test]
-    public void ShouldHaveContributorPermissions()
-    {
-        var expected = Permissions.Contributor;
-        
-        Assert.That(_actual.Permissions, Is.EqualTo(expected));
-    }
+    public void OneTimeSetup() => _actual = CookbookMembership.NewDefault(cookbookId: 1);
 
     [Test]
-    public void ShouldNotBeOwner() { Assert.That(_actual.IsOwner, Is.False); }
+    public void ShouldHaveContributorTier() =>
+        Assert.That(_actual.Tier, Is.EqualTo(MembershipTier.Contributor));
+
+    [Test]
+    public void ShouldNotBeOwner() => Assert.That(_actual.IsOwner, Is.False);
 }

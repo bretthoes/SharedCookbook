@@ -25,7 +25,7 @@ public sealed class CreateRecipeCommandHandler(
             user.Id,
             ct);
 
-        if (actorMembership is null || !actorMembership.Permissions.CanAddRecipe)
+        if (actorMembership is null || !actorMembership.CanAddRecipe())
             throw new ForbiddenAccessException();
 
         var entity = new Recipe

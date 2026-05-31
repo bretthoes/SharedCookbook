@@ -1,4 +1,5 @@
 using SharedCookbook.Domain.Entities;
+using SharedCookbook.Domain.Enums;
 using SharedCookbook.Domain.ValueObjects;
 
 namespace SharedCookbook.Domain.UnitTests.Entities.CookbookMembershipTests;
@@ -8,10 +9,10 @@ public class WhenCheckingPermissions
     private const string ActorUserId = "actor-user";
     private const string OtherUserId = "other-user";
 
-    private static CookbookMembership Contributor(string userId, Permissions permissions)
+    private static CookbookMembership Member(string userId, MembershipTier tier)
     {
         var membership = CookbookMembership.NewDefault(cookbookId: 1, userId: userId);
-        membership.SetPermissions(permissions);
+        membership.SetTier(tier);
         return membership;
     }
 
@@ -25,115 +26,92 @@ public class WhenCheckingPermissions
     };
 
     [Test]
-    public void CanUpdateRecipeShouldAllowOwnRecipeWithoutPermission()
-    {
-        var actor = Contributor(ActorUserId, Permissions.None);
-        var ownRecipe = RecipeBy(ActorUserId);
-        var otherRecipe = RecipeBy(OtherUserId);
-
-        using (Assert.EnterMultipleScope())
-        {
-            Assert.That(actor.CanUpdateRecipe(ownRecipe), Is.True);
-            Assert.That(actor.CanUpdateRecipe(otherRecipe), Is.False);
-        }
-    }
+    public void ContributorShouldUpdateOwnRecipe() =>
+        Assert.That(Member(ActorUserId, MembershipTier.Contributor).CanUpdateRecipe(RecipeBy(ActorUserId)), Is.True);
 
     [Test]
-    public void CanUpdateRecipeShouldAllowPermissionOnOtherRecipe()
-    {
-        var actor = Contributor(ActorUserId, Permissions.None with { CanUpdateRecipe = true });
-        var otherRecipe = RecipeBy(OtherUserId);
-
-        Assert.That(actor.CanUpdateRecipe(otherRecipe), Is.True);
-    }
+    public void ContributorShouldNotUpdateOtherRecipe() =>
+        Assert.That(
+            Member(ActorUserId, MembershipTier.Contributor).CanUpdateRecipe(RecipeBy(OtherUserId)),
+            Is.False);
 
     [Test]
-    public void CanDeleteRecipeShouldAllowOwnRecipeWithoutPermission()
-    {
-        var actor = Contributor(ActorUserId, Permissions.None);
-        var ownRecipe = RecipeBy(ActorUserId);
-        var otherRecipe = RecipeBy(OtherUserId);
-
-        using (Assert.EnterMultipleScope())
-        {
-            Assert.That(actor.CanDeleteRecipe(ownRecipe), Is.True);
-            Assert.That(actor.CanDeleteRecipe(otherRecipe), Is.False);
-        }
-    }
+    public void AdminShouldUpdateOtherRecipe() =>
+        Assert.That(
+            Member(ActorUserId, MembershipTier.Admin).CanUpdateRecipe(RecipeBy(OtherUserId)),
+            Is.True);
 
     [Test]
-    public void CanDeleteRecipeShouldAllowPermissionOnOtherRecipe()
-    {
-        var actor = Contributor(ActorUserId, Permissions.None with { CanDeleteRecipe = true });
-        var otherRecipe = RecipeBy(OtherUserId);
-
-        Assert.That(actor.CanDeleteRecipe(otherRecipe), Is.True);
-    }
+    public void ContributorShouldDeleteOwnRecipe() =>
+        Assert.That(Member(ActorUserId, MembershipTier.Contributor).CanDeleteRecipe(RecipeBy(ActorUserId)), Is.True);
 
     [Test]
-    public void CanRemoveMemberShouldAllowLeavingOwnMembership()
-    {
-        var actor = Contributor(ActorUserId, Permissions.None);
-
-        Assert.That(actor.CanRemoveMember(actor), Is.True);
-    }
+    public void ContributorShouldNotDeleteOtherRecipe() =>
+        Assert.That(
+            Member(ActorUserId, MembershipTier.Contributor).CanDeleteRecipe(RecipeBy(OtherUserId)),
+            Is.False);
 
     [Test]
-    public void CanRemoveMemberShouldAllowPermissionOnOtherMembership()
-    {
-        var actor = Contributor(ActorUserId, Permissions.None with { CanRemoveMember = true });
-        var target = Contributor(OtherUserId, Permissions.Contributor);
-
-        Assert.That(actor.CanRemoveMember(target), Is.True);
-    }
+    public void AdminShouldDeleteOtherRecipe() =>
+        Assert.That(
+            Member(ActorUserId, MembershipTier.Admin).CanDeleteRecipe(RecipeBy(OtherUserId)),
+            Is.True);
 
     [Test]
-    public void CanRemoveMemberShouldDenyWithoutPermissionOnOtherMembership()
-    {
-        var actor = Contributor(ActorUserId, Permissions.Contributor);
-        var target = Contributor(OtherUserId, Permissions.Contributor);
-
-        Assert.That(actor.CanRemoveMember(target), Is.False);
-    }
+    public void CanRemoveMemberShouldAllowLeavingOwnMembership() =>
+        Assert.That(Member(ActorUserId, MembershipTier.Viewer).CanRemoveMember(Member(ActorUserId, MembershipTier.Viewer)), Is.True);
 
     [Test]
-    public void CanUpdateMembershipShouldDenyUpdatingSelf()
-    {
-        var actor = CookbookMembership.NewOwner(ActorUserId);
-
-        Assert.That(actor.CanUpdateMembership(actor), Is.False);
-    }
+    public void AdminShouldRemoveContributor() =>
+        Assert.That(
+            Member(ActorUserId, MembershipTier.Admin).CanRemoveMember(Member(OtherUserId, MembershipTier.Contributor)),
+            Is.True);
 
     [Test]
-    public void CanUpdateMembershipShouldAllowOwnerToUpdateOtherMember()
-    {
-        var actor = CookbookMembership.NewOwner(ActorUserId);
-        var target = Contributor(OtherUserId, Permissions.Contributor);
-
-        Assert.That(actor.CanUpdateMembership(target), Is.True);
-    }
+    public void ContributorShouldNotRemoveOtherMember() =>
+        Assert.That(
+            Member(ActorUserId, MembershipTier.Contributor).CanRemoveMember(Member(OtherUserId, MembershipTier.Contributor)),
+            Is.False);
 
     [Test]
-    public void CanUpdateMembershipShouldAllowPermissionOnOtherMember()
-    {
-        var actor = Contributor(ActorUserId, Permissions.None with { CanRemoveMember = true });
-        var target = Contributor(OtherUserId, Permissions.Contributor);
-
-        Assert.That(actor.CanUpdateMembership(target), Is.True);
-    }
+    public void OwnerShouldNotUpdateSelfTier() =>
+        Assert.That(
+            CookbookMembership.NewOwner(ActorUserId).CanApplyTierUpdate(CookbookMembership.NewOwner(ActorUserId), MembershipTier.Admin),
+            Is.False);
 
     [Test]
-    public void CanPromoteToOwnerShouldRequireOwnershipAndDifferentMember()
-    {
-        var owner = CookbookMembership.NewOwner(ActorUserId);
-        var target = Contributor(OtherUserId, Permissions.Contributor);
-        var contributor = Contributor(ActorUserId, Permissions.Contributor);
+    public void OwnerShouldUpdateContributorTier() =>
+        Assert.That(
+            CookbookMembership.NewOwner(ActorUserId).CanApplyTierUpdate(
+                Member(OtherUserId, MembershipTier.Contributor),
+                MembershipTier.Admin),
+            Is.True);
 
-        using (Assert.EnterMultipleScope())
-        {
-            Assert.That(owner.CanPromoteToOwner(target), Is.True);
-            Assert.That(owner.CanPromoteToOwner(owner), Is.False);
-            Assert.That(contributor.CanPromoteToOwner(target), Is.False);
-        }
-    }
+    [Test]
+    public void AdminShouldUpdateContributorTier() =>
+        Assert.That(
+            Member(ActorUserId, MembershipTier.Admin).CanApplyTierUpdate(
+                Member(OtherUserId, MembershipTier.Contributor),
+                MembershipTier.Admin),
+            Is.True);
+
+    [Test]
+    public void AdminShouldNotUpdateOwnerTier() =>
+        Assert.That(
+            Member(ActorUserId, MembershipTier.Admin).CanApplyTierUpdate(
+                CookbookMembership.NewOwner(OtherUserId),
+                MembershipTier.Contributor),
+            Is.False);
+
+    [Test]
+    public void OwnerShouldPromoteContributorToOwner() =>
+        Assert.That(
+            CookbookMembership.NewOwner(ActorUserId).CanPromoteToOwner(Member(OtherUserId, MembershipTier.Contributor)),
+            Is.True);
+
+    [Test]
+    public void ContributorShouldNotPromoteToOwner() =>
+        Assert.That(
+            Member(ActorUserId, MembershipTier.Contributor).CanPromoteToOwner(Member(OtherUserId, MembershipTier.Contributor)),
+            Is.False);
 }

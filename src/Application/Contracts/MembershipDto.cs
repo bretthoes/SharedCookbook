@@ -1,3 +1,5 @@
+using SharedCookbook.Domain.Enums;
+
 namespace SharedCookbook.Application.Contracts;
 
 public sealed record MembershipDto
@@ -8,17 +10,5 @@ public sealed record MembershipDto
 
     public string? Email { get; set; }
 
-    public required bool IsOwner { get; set; }
-
-    public required bool CanAddRecipe { get; set; }
-
-    public required bool CanUpdateRecipe { get; set; }
-
-    public required bool CanDeleteRecipe { get; set; }
-
-    public required bool CanSendInvite { get; set; }
-
-    public required bool CanRemoveMember { get; set; }
-
-    public required bool CanEditCookbookDetails { get; set; }
+    public required MembershipTier Tier { get; set; }
 }

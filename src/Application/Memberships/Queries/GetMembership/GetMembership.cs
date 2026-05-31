@@ -11,13 +11,8 @@ public sealed class GetMembershipQueryHandler(IApplicationDbContext context, IId
 
         return new MembershipDto
         {
-            CanAddRecipe = membership.Permissions.CanAddRecipe,
-            IsOwner = membership.IsOwner,
-            CanUpdateRecipe = membership.Permissions.CanUpdateRecipe,
-            CanDeleteRecipe = membership.Permissions.CanDeleteRecipe,
-            CanRemoveMember = membership.Permissions.CanRemoveMember,
-            CanSendInvite = membership.Permissions.CanSendInvite,
-            CanEditCookbookDetails = membership.Permissions.CanEditCookbookDetails,
+            Id = membership.Id,
+            Tier = membership.Tier,
             Name = await identityService.GetDisplayNameAsync(membership.CreatedBy ?? string.Empty, ct),
             Email = await identityService.GetEmailAsync(membership.CreatedBy ?? string.Empty, ct)
         };

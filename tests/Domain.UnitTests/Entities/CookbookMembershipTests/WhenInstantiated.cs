@@ -1,17 +1,11 @@
 using SharedCookbook.Domain.Entities;
-using SharedCookbook.Domain.ValueObjects;
+using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Domain.UnitTests.Entities.CookbookMembershipTests;
 
 public class WhenInstantiated
 {
     [Test]
-    public void ShouldHaveNoPermissions()
-    {
-        var actual = Permissions.None;
-
-        var expected = (new CookbookMembership()).Permissions;
-        
-        Assert.That(actual, Is.EqualTo(expected));
-    }
+    public void ShouldDefaultToContributorTier() =>
+        Assert.That(new CookbookMembership().Tier, Is.EqualTo(MembershipTier.Contributor));
 }

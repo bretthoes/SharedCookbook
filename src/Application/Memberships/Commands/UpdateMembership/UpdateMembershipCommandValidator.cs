@@ -4,13 +4,7 @@ public class UpdateMembershipCommandValidator : AbstractValidator<UpdateMembersh
 {
     public UpdateMembershipCommandValidator()
     {
-        RuleFor(command => command.Id).NotNull().GreaterThan(1);
-        RuleFor(command => command.IsOwner).NotNull();
-        RuleFor(command => command.CanAddRecipe).NotNull();
-        RuleFor(command => command.CanUpdateRecipe).NotNull();
-        RuleFor(command => command.CanDeleteRecipe).NotNull();
-        RuleFor(command => command.CanSendInvite).NotNull();
-        RuleFor(command => command.CanRemoveMember).NotNull();
-        RuleFor(command => command.CanEditCookbookDetails).NotNull();
+        RuleFor(command => command.Id).GreaterThan(0);
+        RuleFor(command => command.Tier).IsInEnum();
     }
 }

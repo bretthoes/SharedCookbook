@@ -1,7 +1,7 @@
 using SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
 using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 using SharedCookbook.Domain.Entities;
-using SharedCookbook.Domain.ValueObjects;
+using SharedCookbook.Domain.Enums;
 using SharedCookbook.Tests.Shared;
 
 namespace SharedCookbook.Application.FunctionalTests.Common;
@@ -26,7 +26,7 @@ internal static class CookbookPermissionScenario
     internal const string OwnerEmail = "test@local";
 
     internal static async Task<CookbookWithContributorContext> CreateWithContributor(
-        Permissions? contributorPermissions = null)
+        MembershipTier contributorTier = MembershipTier.Contributor)
     {
         var contributorUserId = await RunAsUserAsync(ContributorEmail, ContributorPassword, []);
         var ownerUserId = await RunAsDefaultUserAsync();
@@ -34,8 +34,7 @@ internal static class CookbookPermissionScenario
         var recipeId = await SendAsync(new CreateRecipeCommand { Recipe = GetSimpleCreateRecipeDto(cookbookId) });
 
         var membership = CookbookMembership.NewDefault(cookbookId, contributorUserId);
-        if (contributorPermissions is not null)
-            membership.SetPermissions(contributorPermissions);
+        membership.SetTier(contributorTier);
 
         await AddAsync(membership);
 

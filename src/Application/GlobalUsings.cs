@@ -6,6 +6,7 @@ global using SharedCookbook.Application.Common.Interfaces;
 global using SharedCookbook.Application.Contracts;
 global using SharedCookbook.Domain.Entities;
 global using SharedCookbook.Domain.Events;
+global using SharedCookbook.Domain.Enums;
 global using System.Reflection;
 global using SharedCookbook.Application.Common.Extensions;
 global using SharedCookbook.Application.Common.Exceptions;

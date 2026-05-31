@@ -1,4 +1,5 @@
 using SharedCookbook.Domain.Entities;
+using SharedCookbook.Domain.Enums;
 using SharedCookbook.Tests.Shared;
 
 namespace SharedCookbook.Domain.UnitTests.Entities;
@@ -8,12 +9,12 @@ public class CookbookTests
     [Test]
     public void CreatedCookbookShouldHaveOwner()
     {
-        var expected = CookbookMembership.NewOwner(It.IsAny<string>()).Permissions;
+        var expected = CookbookMembership.NewOwner(It.IsAny<string>()).Tier;
         var sut = Cookbook.Create(title: TestData.AnyNonEmptyString, creatorId: It.IsAny<string>());
         
         var actual = sut.Memberships.Single();
         
-        Assert.That(actual.Permissions, Is.EqualTo(expected));
+        Assert.That(actual.Tier, Is.EqualTo(expected));
     }
 
     [Test]

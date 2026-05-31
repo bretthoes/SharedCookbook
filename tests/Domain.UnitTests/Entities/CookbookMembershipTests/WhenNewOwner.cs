@@ -1,52 +1,42 @@
 using SharedCookbook.Domain.Entities;
-using SharedCookbook.Domain.ValueObjects;
+using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Domain.UnitTests.Entities.CookbookMembershipTests;
 
 public class WhenNewOwner
 {
     private CookbookMembership _actual = null!;
-    
-    [SetUp]
-    public void SetUp()
-    {
-        _actual = CookbookMembership.NewOwner(It.IsAny<string>());
-    }
-    
+
+    [OneTimeSetUp]
+    public void OneTimeSetup() => _actual = CookbookMembership.NewOwner(It.IsAny<string>());
+
     [Test]
-    public void ShouldHaveOwnerPermissions()
-    {
-        var expected = Permissions.Owner;
-        
-        Assert.That(_actual.Permissions, Is.EqualTo(expected));
-    }
+    public void ShouldHaveOwnerTier() => Assert.That(_actual.Tier, Is.EqualTo(MembershipTier.Owner));
 
     [Test]
     public void ShouldBeOwner() { Assert.That(_actual.IsOwner, Is.True); }
-    
+
     [Test]
-    public void AndDemotedThenShouldHaveContributorPermissions()
+    public void AndDemotedThenShouldHaveContributorTier()
     {
-        var expected = Permissions.Contributor;
-        
-        _actual.Demote();
-        
-        Assert.That(_actual.Permissions, Is.EqualTo(expected));
+        var owner = CookbookMembership.NewOwner(It.IsAny<string>());
+        owner.Demote();
+        Assert.That(owner.Tier, Is.EqualTo(MembershipTier.Contributor));
     }
-    
+
     [Test]
     public void AndDemotedThenShouldNotBeOwner()
     {
-        _actual.Demote();
-        
-        Assert.That(_actual.IsOwner, Is.False);
+        var owner = CookbookMembership.NewOwner(It.IsAny<string>());
+        owner.Demote();
+        Assert.That(owner.IsOwner, Is.False);
     }
-    
+
     [Test]
-    public void AndPromotedThenShouldNotHaveAnyDomainEvents()
+    public void AndPromotedWhenAlreadyOwnerThenShouldNotHaveAnyDomainEvents()
     {
-        _actual.Promote();
-        
-        Assert.That(_actual.DomainEvents, Is.Empty);
+        var owner = CookbookMembership.NewOwner(It.IsAny<string>());
+        owner.Promote();
+        Assert.That(owner.DomainEvents, Is.Empty);
     }
 }

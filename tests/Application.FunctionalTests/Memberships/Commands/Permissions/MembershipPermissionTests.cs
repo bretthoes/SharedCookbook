@@ -1,6 +1,7 @@
 using SharedCookbook.Application.Memberships.Commands.DeleteMembership;
 using SharedCookbook.Application.Memberships.Commands.UpdateMembership;
 using SharedCookbook.Domain.Entities;
+using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.FunctionalTests.Memberships.Commands.Permissions;
 
@@ -22,17 +23,7 @@ public class WhenOwnerUpdatesOwnMembership : BaseTestFixture
     [Test]
     public void ShouldThrowForbiddenAccessException() =>
         Assert.That(
-            () => SendAsync(new UpdateMembershipCommand
-            {
-                Id = _ownerMembershipId,
-                IsOwner = false,
-                CanAddRecipe = true,
-                CanUpdateRecipe = true,
-                CanDeleteRecipe = true,
-                CanSendInvite = true,
-                CanRemoveMember = true,
-                CanEditCookbookDetails = true
-            }),
+            () => SendAsync(new UpdateMembershipCommand(_ownerMembershipId, MembershipTier.Admin)),
             Throws.TypeOf<ForbiddenAccessException>());
 }
 
@@ -131,17 +122,7 @@ public class WhenContributorUpdatesMembership : BaseTestFixture
     [Test]
     public void ShouldThrowForbiddenAccessException() =>
         Assert.That(
-            () => SendAsync(new UpdateMembershipCommand
-            {
-                Id = _contributorMembershipId,
-                IsOwner = false,
-                CanAddRecipe = true,
-                CanUpdateRecipe = true,
-                CanDeleteRecipe = true,
-                CanSendInvite = true,
-                CanRemoveMember = true,
-                CanEditCookbookDetails = true
-            }),
+            () => SendAsync(new UpdateMembershipCommand(_contributorMembershipId, MembershipTier.Admin)),
             Throws.TypeOf<ForbiddenAccessException>());
 }
 
@@ -160,16 +141,35 @@ public class WhenNonMemberUpdatesMembership : BaseTestFixture
     [Test]
     public void ShouldThrowForbiddenAccessException() =>
         Assert.That(
-            () => SendAsync(new UpdateMembershipCommand
-            {
-                Id = _contributorMembershipId,
-                IsOwner = false,
-                CanAddRecipe = true,
-                CanUpdateRecipe = true,
-                CanDeleteRecipe = true,
-                CanSendInvite = true,
-                CanRemoveMember = true,
-                CanEditCookbookDetails = true
-            }),
+            () => SendAsync(new UpdateMembershipCommand(_contributorMembershipId, MembershipTier.Admin)),
             Throws.TypeOf<ForbiddenAccessException>());
+}
+
+public class WhenAdminPromotesContributorToAdmin : BaseTestFixture
+{
+    private const string AdminEmail = "admin@test.local";
+    private int _contributorMembershipId;
+
+    [SetUp]
+    public async Task SetUp()
+    {
+        var context = await CreateWithContributor();
+        _contributorMembershipId = context.ContributorMembershipId;
+
+        var adminUserId = await RunAsUserAsync(AdminEmail, ContributorPassword, []);
+        var adminMembership = CookbookMembership.NewDefault(context.CookbookId, adminUserId);
+        adminMembership.SetTier(MembershipTier.Admin);
+        await AddAsync(adminMembership);
+
+        await RunAsExistingUserAsync(AdminEmail);
+    }
+
+    [Test]
+    public async Task ShouldSetContributorTierToAdmin()
+    {
+        await SendAsync(new UpdateMembershipCommand(_contributorMembershipId, MembershipTier.Admin));
+
+        var updated = await FindAsync<CookbookMembership>(_contributorMembershipId);
+        Assert.That(updated!.Tier, Is.EqualTo(MembershipTier.Admin));
+    }
 }

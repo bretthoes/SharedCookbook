@@ -1,16 +1,8 @@
-﻿namespace SharedCookbook.Application.Memberships.Commands.UpdateMembership;
+﻿using SharedCookbook.Domain.Enums;
 
-public sealed record UpdateMembershipCommand : IRequest
-{
-    public required int Id { get; init; }
-    public required bool IsOwner { get; init; }
-    public required bool CanAddRecipe { get; init; }
-    public required bool CanUpdateRecipe { get; init; }
-    public required bool CanDeleteRecipe { get; init; }
-    public required bool CanSendInvite { get; init; }
-    public required bool CanRemoveMember { get; init; }
-    public required bool CanEditCookbookDetails { get; init; }
-}
+namespace SharedCookbook.Application.Memberships.Commands.UpdateMembership;
+
+public sealed record UpdateMembershipCommand(int Id, MembershipTier Tier) : IRequest;
 
 public sealed class UpdateMembershipCommandHandler(IApplicationDbContext context, IUser user)
     : IRequestHandler<UpdateMembershipCommand>
@@ -19,37 +11,26 @@ public sealed class UpdateMembershipCommandHandler(IApplicationDbContext context
     {
         ArgumentNullException.ThrowIfNull(user.Id);
 
-        var membership = await context.CookbookMemberships.FindOrThrowAsync(command.Id, ct);
-        var actorMembership = await context.CookbookMemberships.FindForUserAsync(membership.CookbookId, user.Id, ct);
+        var membershipToUpdate = await context.CookbookMemberships.FindOrThrowAsync(command.Id, ct);
+        var actorMembership = await context.CookbookMemberships.FindForUserAsync(membershipToUpdate.CookbookId, user.Id, ct)
+            ?? throw new ForbiddenAccessException();
 
-        if (command.IsOwner)
+        if (command.Tier == MembershipTier.Owner)
         {
-            if (actorMembership is null || !actorMembership.CanPromoteToOwner(membership))
+            if (!actorMembership.CanPromoteToOwner(membershipToUpdate))
                 throw new ForbiddenAccessException();
 
-            var departingOwners = await context.CookbookMemberships
-                .HasCookbookId(membership.CookbookId)
-                .Where(member => member.IsOwner && member.Id != membership.Id)
-                .ToListAsync(ct);
-
-            CookbookMembership.TransferOwnershipTo(membership, departingOwners);
+            membershipToUpdate.Promote();
         }
         else
         {
-            if (actorMembership is null || !actorMembership.CanUpdateMembership(membership))
+            if (!actorMembership.CanApplyTierUpdate(membershipToUpdate, command.Tier))
                 throw new ForbiddenAccessException();
 
-            membership.SetPermissions(membership.Permissions
-                .WithAddRecipe(command.CanAddRecipe)
-                .WithUpdateRecipe(command.CanUpdateRecipe)
-                .WithDeleteRecipe(command.CanDeleteRecipe)
-                .WithSendInvite(command.CanSendInvite)
-                .WithRemoveMember(command.CanRemoveMember)
-                .WithEditCookbookDetails(command.CanEditCookbookDetails));
+            membershipToUpdate.SetTier(command.Tier);
+            membershipToUpdate.AddDomainEvent(new MembershipUpdatedEvent(membershipToUpdate));
         }
 
-        membership.AddDomainEvent(new MembershipUpdatedEvent(membership));
-        
         await context.SaveChangesAsync(ct);
     }
 }

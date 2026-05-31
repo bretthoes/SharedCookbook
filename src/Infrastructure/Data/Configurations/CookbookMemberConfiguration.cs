@@ -25,20 +25,10 @@ public class CookbookMemberConfiguration : IEntityTypeConfiguration<CookbookMemb
             .HasColumnName("cookbook_id")
             .IsRequired();
 
-        builder.Property(membership => membership.IsOwner)
-            .HasColumnName("is_owner")
+        builder.Property(membership => membership.Tier)
+            .HasColumnName("tier")
+            .HasConversion<int>()
             .IsRequired();
-
-        builder.OwnsOne(membership => membership.Permissions, b =>
-        {
-            b.Property(permissions => permissions.CanAddRecipe).HasColumnName("can_add_recipe").IsRequired();
-            b.Property(permissions => permissions.CanUpdateRecipe).HasColumnName("can_update_recipe").IsRequired();
-            b.Property(permissions => permissions.CanDeleteRecipe).HasColumnName("can_delete_recipe").IsRequired();
-            b.Property(permissions => permissions.CanSendInvite).HasColumnName("can_send_invite").IsRequired();
-            b.Property(permissions => permissions.CanRemoveMember).HasColumnName("can_remove_member").IsRequired();
-            b.Property(permissions => permissions.CanEditCookbookDetails).HasColumnName("can_edit_cookbook_details").IsRequired();
-        });
-        builder.Navigation(membership => membership.Permissions).IsRequired();
 
         builder.HasOne<ApplicationUser>()
             .WithMany()

@@ -2802,13 +2802,7 @@
         "type": "object",
         "additionalProperties": false,
         "required": [
-          "isOwner",
-          "canAddRecipe",
-          "canUpdateRecipe",
-          "canDeleteRecipe",
-          "canSendInvite",
-          "canRemoveMember",
-          "canEditCookbookDetails"
+          "tier"
         ],
         "properties": {
           "id": {
@@ -2823,28 +2817,26 @@
             "type": "string",
             "nullable": true
           },
-          "isOwner": {
-            "type": "boolean"
-          },
-          "canAddRecipe": {
-            "type": "boolean"
-          },
-          "canUpdateRecipe": {
-            "type": "boolean"
-          },
-          "canDeleteRecipe": {
-            "type": "boolean"
-          },
-          "canSendInvite": {
-            "type": "boolean"
-          },
-          "canRemoveMember": {
-            "type": "boolean"
-          },
-          "canEditCookbookDetails": {
-            "type": "boolean"
+          "tier": {
+            "$ref": "#/components/schemas/MembershipTier"
           }
         }
+      },
+      "MembershipTier": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Viewer",
+          "Contributor",
+          "Admin",
+          "Owner"
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ]
       },
       "PaginatedListOfMembershipDto": {
         "type": "object",
@@ -2879,41 +2871,13 @@
       "UpdateMembershipCommand": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "id",
-          "isOwner",
-          "canAddRecipe",
-          "canUpdateRecipe",
-          "canDeleteRecipe",
-          "canSendInvite",
-          "canRemoveMember",
-          "canEditCookbookDetails"
-        ],
         "properties": {
           "id": {
             "type": "integer",
             "format": "int32"
           },
-          "isOwner": {
-            "type": "boolean"
-          },
-          "canAddRecipe": {
-            "type": "boolean"
-          },
-          "canUpdateRecipe": {
-            "type": "boolean"
-          },
-          "canDeleteRecipe": {
-            "type": "boolean"
-          },
-          "canSendInvite": {
-            "type": "boolean"
-          },
-          "canRemoveMember": {
-            "type": "boolean"
-          },
-          "canEditCookbookDetails": {
-            "type": "boolean"
+          "tier": {
+            "$ref": "#/components/schemas/MembershipTier"
           }
         }
       },

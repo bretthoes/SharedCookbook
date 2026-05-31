@@ -12,13 +12,7 @@ internal static class MembershipProjections
         select new MembershipDto
         {
             Id = membership.Id,
-            IsOwner = membership.IsOwner,
-            CanAddRecipe = membership.Permissions.CanAddRecipe,
-            CanUpdateRecipe = membership.Permissions.CanUpdateRecipe,
-            CanDeleteRecipe = membership.Permissions.CanDeleteRecipe,
-            CanSendInvite = membership.Permissions.CanSendInvite,
-            CanRemoveMember = membership.Permissions.CanRemoveMember,
-            CanEditCookbookDetails = membership.Permissions.CanEditCookbookDetails,
+            Tier = membership.Tier,
             Name = applicationUser.DisplayName,
             Email = applicationUser.Email ?? ""
         };

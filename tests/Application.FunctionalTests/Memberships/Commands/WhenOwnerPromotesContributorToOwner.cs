@@ -1,5 +1,6 @@
 using SharedCookbook.Application.Memberships.Commands.UpdateMembership;
 using SharedCookbook.Domain.Entities;
+using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.FunctionalTests.Memberships.Commands;
 
@@ -34,17 +35,7 @@ public class WhenOwnerPromotesContributorToOwner : BaseTestFixture
             Memberships = [ownerMembership, contributorMembership],
         });
 
-        await SendAsync(new UpdateMembershipCommand
-        {
-            Id = contributorMembership.Id,
-            IsOwner = true,
-            CanAddRecipe = false,
-            CanUpdateRecipe = false,
-            CanDeleteRecipe = false,
-            CanSendInvite = false,
-            CanRemoveMember = false,
-            CanEditCookbookDetails = false,
-        });
+        await SendAsync(new UpdateMembershipCommand(contributorMembership.Id, MembershipTier.Owner));
 
         var memberships = await ListAsync<CookbookMembership>();
         _demotedOwner = memberships.Single(m => m.CreatedBy == _originalOwnerUserId);
@@ -53,11 +44,11 @@ public class WhenOwnerPromotesContributorToOwner : BaseTestFixture
 
     [Test]
     public void ShouldDemoteOriginalOwner() =>
-        Assert.That(_demotedOwner.IsOwner, Is.False);
+        Assert.That(_demotedOwner.Tier, Is.EqualTo(MembershipTier.Contributor));
 
     [Test]
     public void ShouldPromoteContributor() =>
-        Assert.That(_promotedOwner.IsOwner, Is.True);
+        Assert.That(_promotedOwner.Tier, Is.EqualTo(MembershipTier.Owner));
 
     [Test]
     public void ShouldRecordDemotionModifiedBy() =>

@@ -1,13 +1,13 @@
 using SharedCookbook.Application.Invitations.Commands.CreateInvitation;
 using SharedCookbook.Domain.Entities;
-using DomainPermissions = SharedCookbook.Domain.ValueObjects.Permissions;
+using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.FunctionalTests.Invitations.Commands.Permissions;
 
 using static Testing;
 using static Common.CookbookPermissionScenario;
 
-public class WhenContributorLacksSendInvitePermission : BaseTestFixture
+public class WhenViewerCreatesInvitation : BaseTestFixture
 {
     private int _cookbookId;
 
@@ -15,7 +15,7 @@ public class WhenContributorLacksSendInvitePermission : BaseTestFixture
     public async Task SetUp()
     {
         await EnsureInviteeExists();
-        var context = await CreateWithContributor(new DomainPermissions { CanAddRecipe = true });
+        var context = await CreateWithContributor(MembershipTier.Viewer);
         _cookbookId = context.CookbookId;
         await ActAsContributor();
     }
