@@ -1,5 +1,9 @@
 ﻿namespace SharedCookbook.Domain.Entities;
 
+/// <summary>
+/// A user's membership in a cookbook. Permissions are derived from <see cref="MembershipTier"/>.
+/// Tier changes are governed by <see cref="CanApplyTierUpdate"/>.
+/// </summary>
 public sealed class CookbookMembership : BaseAuditableEntity
 {
     public int CookbookId { get; init; }
@@ -16,16 +20,14 @@ public sealed class CookbookMembership : BaseAuditableEntity
 
     public bool CanEditCookbookDetails() => Tier >= MembershipTier.Admin;
 
-    public bool CanUpdateRecipe(Recipe recipe) => CanUpdateAnyRecipe() || IsAuthor(recipe);
+    public bool CanUpdateRecipe(Recipe recipe) => Tier >= MembershipTier.Admin || IsAuthor(recipe);
 
-    public bool CanDeleteRecipe(Recipe recipe) => CanDeleteAnyRecipe() || IsAuthor(recipe);
+    public bool CanDeleteRecipe(Recipe recipe) => Tier >= MembershipTier.Admin || IsAuthor(recipe);
 
     public bool CanRemoveMember(CookbookMembership target) => IsSameMember(target) || CanRemoveOtherMember(target);
 
     public bool CanApplyTierUpdate(CookbookMembership target, MembershipTier proposedTier) =>
         !IsSameMember(target) && CanAssignTierTo(target, proposedTier);
-
-    public bool CanPromoteToOwner(CookbookMembership target) => IsOwner && !IsSameMember(target) && !target.IsOwner;
 
     public void Promote()
     {
@@ -48,10 +50,6 @@ public sealed class CookbookMembership : BaseAuditableEntity
         CreatedBy = userId
     };
 
-    private bool CanUpdateAnyRecipe() => Tier >= MembershipTier.Admin;
-
-    private bool CanDeleteAnyRecipe() => Tier >= MembershipTier.Admin;
-
     private bool CanRemoveOtherMember(CookbookMembership target) =>
         Tier switch
         {
@@ -63,9 +61,13 @@ public sealed class CookbookMembership : BaseAuditableEntity
     private bool CanAssignTierTo(CookbookMembership target, MembershipTier proposedTier) =>
         Tier switch
         {
+            // Owner may set any other member to any tier (including ownership transfer)
             MembershipTier.Owner when proposedTier != target.Tier => true,
+            // Admin may change viewers/contributors to any tier below owner (not other admins).
             MembershipTier.Admin when target.Tier is MembershipTier.Contributor or MembershipTier.Viewer
-                && proposedTier is MembershipTier.Contributor or MembershipTier.Admin => true,
+                && proposedTier is MembershipTier.Viewer or MembershipTier.Contributor or MembershipTier.Admin
+                && proposedTier != target.Tier => true,
+            // Any other role cannot change tier assignment
             _ => false
         };
 
