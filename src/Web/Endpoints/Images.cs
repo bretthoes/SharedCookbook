@@ -15,6 +15,7 @@ public class Images : EndpointGroupBase
             .Produces<string[]>()
             .ProducesProblem(StatusCodes.Status401Unauthorized)
             .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status413PayloadTooLarge)
             .ProducesProblem(StatusCodes.Status429TooManyRequests);
     }
 

@@ -5,6 +5,7 @@ using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using SharedCookbook.Application.Common;
 
 namespace SharedCookbook.Application.FunctionalTests.RateLimiting;
 
@@ -61,6 +62,24 @@ internal static class ImageUploadRateLimitTestClient
     {
         var content = new MultipartFormDataContent();
         content.Add(new ByteArrayContent(MinimalJpegBytes), "files", "test.jpg");
+
+        var request = new HttpRequestMessage(HttpMethod.Post, UploadImagesPath)
+        {
+            Content = content,
+        };
+        request.Headers.Add(TestAuthHandler.UserIdHeaderName, userId);
+        request.Headers.Authorization = new AuthenticationHeaderValue(TestAuthHandler.SchemeName);
+
+        return client.SendAsync(request);
+    }
+
+    internal static Task<HttpResponseMessage> UploadOversizedImageAsync(HttpClient client, string userId)
+    {
+        var oversizedBytes = new byte[ImageUtilities.MaxFileSizeBytes + 1];
+        Array.Copy(MinimalJpegBytes, oversizedBytes, MinimalJpegBytes.Length);
+
+        var content = new MultipartFormDataContent();
+        content.Add(new ByteArrayContent(oversizedBytes), "files", "test.jpg");
 
         var request = new HttpRequestMessage(HttpMethod.Post, UploadImagesPath)
         {

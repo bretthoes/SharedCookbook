@@ -35,11 +35,26 @@ public class CustomExceptionHandler : IExceptionHandler
     {
         var exception = (ValidationException)ex;
 
-        httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+        httpContext.Response.StatusCode = exception.StatusCode;
 
-        await httpContext.Response.WriteAsJsonAsync(new ValidationProblemDetails(exception.Errors)
+        if (exception.StatusCode == StatusCodes.Status400BadRequest)
         {
-            Status = StatusCodes.Status400BadRequest,
+            await httpContext.Response.WriteAsJsonAsync(new ValidationProblemDetails(exception.Errors)
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
+            });
+            return;
+        }
+
+        var detail = exception.Errors.Values.SelectMany(messages => messages).FirstOrDefault()
+                     ?? exception.Message;
+
+        await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
+        {
+            Status = exception.StatusCode,
+            Title = "Validation failed.",
+            Detail = detail,
             Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
         });
     }

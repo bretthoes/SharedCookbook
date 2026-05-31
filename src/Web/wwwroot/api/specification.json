@@ -333,6 +333,16 @@
               }
             }
           },
+          "413": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
           "429": {
             "description": "",
             "content": {
