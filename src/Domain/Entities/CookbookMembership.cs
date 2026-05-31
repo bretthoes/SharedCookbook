@@ -14,11 +14,11 @@ public sealed class CookbookMembership : BaseAuditableEntity
 
     public bool IsOwner => Tier == MembershipTier.Owner;
 
-    public bool CanAddRecipe() => Tier >= MembershipTier.Contributor;
+    public bool CanAddRecipe => Tier >= MembershipTier.Contributor;
 
-    public bool CanSendInvite() => Tier >= MembershipTier.Contributor;
+    public bool CanSendInvite => Tier >= MembershipTier.Contributor;
 
-    public bool CanEditCookbookDetails() => Tier >= MembershipTier.Admin;
+    public bool CanEditCookbookDetails => Tier >= MembershipTier.Admin;
 
     public bool CanUpdateRecipe(Recipe recipe) => Tier >= MembershipTier.Admin || IsAuthor(recipe);
 

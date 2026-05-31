@@ -16,10 +16,10 @@ public sealed class UpdateCookbookCommandHandler(
         ArgumentNullException.ThrowIfNull(user.Id);
 
         var cookbook = await context.Cookbooks.FindOrThrowAsync(request.Id, ct);
-        var actorMembership = await context.CookbookMemberships.FindForUserAsync(cookbook.Id, user.Id, ct);
+        var actorMembership = await context.CookbookMemberships.FindForUserAsync(cookbook.Id, user.Id, ct)
+            ?? throw new ForbiddenAccessException();
 
-        if (actorMembership is null || !actorMembership.CanEditCookbookDetails())
-            throw new ForbiddenAccessException();
+        if (!actorMembership.CanEditCookbookDetails) throw new ForbiddenAccessException();
 
         cookbook.Title = request.Title ?? string.Empty;
         cookbook.Image = request.Image?.StripPrefixUrl(options.Value.ImageBaseUrl);

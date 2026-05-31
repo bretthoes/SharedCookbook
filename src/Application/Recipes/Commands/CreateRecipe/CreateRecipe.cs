@@ -21,12 +21,9 @@ public sealed class CreateRecipeCommandHandler(
         ArgumentNullException.ThrowIfNull(user.Id);
 
         var actorMembership = await context.CookbookMemberships.FindForUserAsync(
-            command.Recipe.CookbookId,
-            user.Id,
-            ct);
+            command.Recipe.CookbookId, user.Id, ct) ?? throw new ForbiddenAccessException();
 
-        if (actorMembership is null || !actorMembership.CanAddRecipe())
-            throw new ForbiddenAccessException();
+        if (!actorMembership.CanAddRecipe) throw new ForbiddenAccessException();
 
         var entity = new Recipe
         {

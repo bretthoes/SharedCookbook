@@ -15,7 +15,7 @@ public sealed class CreateInvitationCommandHandler(
         var actorMembership = await context.CookbookMemberships.FindForUserAsync(command.CookbookId, user.Id, ct)
             ?? throw new ForbiddenAccessException();
 
-        if (!actorMembership.CanSendInvite())
+        if (!actorMembership.CanSendInvite)
             throw new ForbiddenAccessException();
 
         string email = command.Email.Trim();
