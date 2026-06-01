@@ -7,6 +7,7 @@ using SharedCookbook.Application.Cookbooks.Queries.GetCookbooksWithPagination;
 using SharedCookbook.Application.Images.Commands.CreateImages;
 using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
 using SharedCookbook.Application.Memberships.Queries.GetMembershipsWithPagination;
+using SharedCookbook.Application.Notifications.Queries.GetNotificationsWithPagination;
 using SharedCookbook.Infrastructure.Data;
 using SharedCookbook.Infrastructure.Identity.Projections;
 
@@ -58,4 +59,26 @@ public class IdentityRepository(ApplicationDbContext context, IUser user, IOptio
             .OrderByTitle()
             .SelectBriefDto(context.People.AsNoTracking(), options.Value.ImageBaseUrl)
             .PaginatedListAsync(query.PageNumber, query.PageSize, ct);
+
+    public Task<PaginatedList<NotificationDto>> GetNotifications(
+        GetNotificationsWithPaginationQuery query,
+        CancellationToken ct = default)
+        => context.CookbookNotifications
+            .AsNoTracking()
+            .Where(notification => notification.RecipientUserId == user.Id)
+            .OrderByDescending(notification => notification.Created)
+            .SelectNotificationDto(context.People.AsNoTracking(), user.Id!)
+            .PaginatedListAsync(query.PageNumber, query.PageSize, ct);
+
+    public Task<NotificationDto?> GetLatestNotificationAsync(CancellationToken ct = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
+
+        return context.CookbookNotifications
+            .AsNoTracking()
+            .Where(notification => notification.RecipientUserId == user.Id)
+            .OrderByDescending(notification => notification.Created)
+            .SelectNotificationDto(context.People.AsNoTracking(), user.Id)
+            .FirstOrDefaultAsync(ct);
+    }
 }

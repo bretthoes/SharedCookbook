@@ -13,7 +13,8 @@ public sealed record CreateRecipeCommand : IRequest<int>
 public sealed class CreateRecipeCommandHandler(
     IApplicationDbContext context,
     IOptions<ImageUploadOptions> options,
-    IUser user)
+    IUser user,
+    IMediator mediator)
     : IRequestHandler<CreateRecipeCommand, int>
 {
     public async Task<int> Handle(CreateRecipeCommand command, CancellationToken ct = default)
@@ -55,9 +56,14 @@ public sealed class CreateRecipeCommandHandler(
             IngredientSections = command.Recipe.IngredientSections.ToEntities().ToList()
         };
 
-        entity.AddDomainEvent(new RecipeCreatedEvent(entity));
         context.Recipes.Add(entity);
 
+        // TODO domain events dispatch on SavingChanges (before INSERT), so new recipes still
+        // have Id = 0 when handlers run. Fan-out needs a real recipe_id, so we save first, publish
+        // manually, then save notifications. Revisit this later.
+        await context.SaveChangesAsync(ct);
+
+        await mediator.Publish(new RecipeCreatedEvent(entity), ct);
         await context.SaveChangesAsync(ct);
 
         return entity.Id;
