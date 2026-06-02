@@ -14,6 +14,10 @@ public sealed class CookbookNotification : BaseAuditableEntity
 
     public string? SubjectUserId { get; init; }
 
+    public string? ActorDisplayName { get; init; }
+
+    public string? SubjectDisplayName { get; init; }
+
     public Cookbook? Cookbook { get; init; }
 
     public Recipe? Recipe { get; init; }

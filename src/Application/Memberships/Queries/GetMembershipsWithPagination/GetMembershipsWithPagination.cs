@@ -7,10 +7,13 @@ public sealed record GetMembershipsWithPaginationQuery : IRequest<PaginatedList<
     public int PageSize { get; init; } = 50;
 }
 
-public sealed class GetMembershipsWithPaginationQueryHandler(IIdentityRepository repository)
+public sealed class GetMembershipsWithPaginationQueryHandler(IApplicationDbContext context)
     : IRequestHandler<GetMembershipsWithPaginationQuery, PaginatedList<MembershipDto>>
 {
     public Task<PaginatedList<MembershipDto>> Handle(GetMembershipsWithPaginationQuery request,
-        CancellationToken ct = default) => repository.GetMemberships(request, ct);
+        CancellationToken ct = default)
+        => context.CookbookMemberships
+            .AsNoTracking()
+            .QueryDtos(request.CookbookId, request.PageNumber, request.PageSize, ct);
 }
 

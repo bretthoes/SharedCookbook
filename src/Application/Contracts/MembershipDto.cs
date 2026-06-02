@@ -8,7 +8,5 @@ public sealed record MembershipDto
 
     public string? Name { get; init; }
 
-    public string? Email { get; set; }
-
     public required MembershipTier Tier { get; set; }
 }

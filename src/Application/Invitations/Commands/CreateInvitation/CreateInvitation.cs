@@ -29,7 +29,7 @@ public sealed class CreateInvitationCommandHandler(
         if (await context.CookbookInvitations.HasActiveInvite(command.CookbookId, recipientId, ct))
             throw new InvitationAlreadyPendingException(command.CookbookId, recipientId);
 
-        var invitation = CookbookInvitation.Create(command.CookbookId, recipientId);
+        var invitation = CookbookInvitation.Create(command.CookbookId, recipientId, actorMembership.DisplayName);
 
         context.CookbookInvitations.Add(invitation);
         invitation.AddDomainEvent(new InvitationCreatedEvent(invitation));

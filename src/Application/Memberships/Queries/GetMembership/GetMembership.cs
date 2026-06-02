@@ -2,7 +2,7 @@
 
 public sealed record GetMembershipQuery(int Id) : IRequest<MembershipDto>;
 
-public sealed class GetMembershipQueryHandler(IApplicationDbContext context, IIdentityService identityService)
+public sealed class GetMembershipQueryHandler(IApplicationDbContext context)
     : IRequestHandler<GetMembershipQuery, MembershipDto>
 {
     public async Task<MembershipDto> Handle(GetMembershipQuery query, CancellationToken ct = default)
@@ -11,10 +11,9 @@ public sealed class GetMembershipQueryHandler(IApplicationDbContext context, IId
 
         return new MembershipDto
         {
-            Id = membership.Id,
+            Id   = membership.Id,
             Tier = membership.Tier,
-            Name = await identityService.GetDisplayNameAsync(membership.CreatedBy ?? string.Empty, ct),
-            Email = await identityService.GetEmailAsync(membership.CreatedBy ?? string.Empty, ct)
+            Name = membership.DisplayName,
         };
     }
 }

@@ -8,8 +8,6 @@ public sealed record InvitationDto
 
     public string? SenderName { get; init; } = string.Empty;
 
-    public string? SenderEmail { get; init; } = string.Empty;
-
     public required string CookbookTitle { get; init; }
 
     public string? CookbookImage { get; init; }

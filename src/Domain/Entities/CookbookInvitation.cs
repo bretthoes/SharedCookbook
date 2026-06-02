@@ -2,7 +2,9 @@
 
 public sealed class CookbookInvitation : BaseInvitation
 {
-    public string? RecipientPersonId { get; init; }
+    public string? RecipientPersonId { get; private init; }
+
+    public string? SenderDisplayName { get; set; }
 
     public bool IsNotFor(string? personId) => !IsFor(personId);
     
@@ -12,8 +14,14 @@ public sealed class CookbookInvitation : BaseInvitation
         AddDomainEvent(new InvitationRejectedEvent(this));
     }
 
-    public static CookbookInvitation Create(int cookbookId, string recipientId)
-        => new() { Status = InvitationStatus.Active, CookbookId = cookbookId, RecipientPersonId = recipientId };
+    public static CookbookInvitation Create(int cookbookId, string recipientId, string? displayName)
+        => new()
+        {
+            Status = InvitationStatus.Active,
+            CookbookId = cookbookId,
+            RecipientPersonId = recipientId,
+            SenderDisplayName = displayName
+        };
     
     private bool IsFor(string? personId) => 
         RecipientPersonId is not null &&

@@ -2725,14 +2725,6 @@
             "type": "string",
             "nullable": true
           },
-          "author": {
-            "type": "string",
-            "nullable": true
-          },
-          "authorEmail": {
-            "type": "string",
-            "nullable": true
-          },
           "membersCount": {
             "type": "integer",
             "format": "int32"
@@ -2877,10 +2869,6 @@
             "type": "string",
             "nullable": true
           },
-          "senderEmail": {
-            "type": "string",
-            "nullable": true
-          },
           "cookbookTitle": {
             "type": "string"
           },
@@ -2983,10 +2971,6 @@
             "format": "int32"
           },
           "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "email": {
             "type": "string",
             "nullable": true
           },
@@ -3184,9 +3168,8 @@
             "type": "string",
             "nullable": true
           },
-          "authorEmail": {
-            "type": "string",
-            "nullable": true
+          "isAuthor": {
+            "type": "boolean"
           },
           "summary": {
             "type": "string",

@@ -41,6 +41,6 @@ public class WhenRecipeWasCreatedByAnotherMember : BaseTestFixture
         Assert.That(_actual!.Author, Is.EqualTo(OwnerDisplayName));
 
     [Test]
-    public void ShouldHaveAuthorEmail() =>
-        Assert.That(_actual!.AuthorEmail, Is.EqualTo(OwnerEmail));
+    public void ShouldNotBeAuthor() =>
+        Assert.That(_actual!.IsAuthor, Is.False);
 }

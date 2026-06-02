@@ -1,6 +1,6 @@
 namespace SharedCookbook.Application.Notifications;
 
-public sealed class NotificationFanOut(IApplicationDbContext context) : INotificationFanOut
+public sealed class NotificationFanOut(IApplicationDbContext context, IIdentityService identityService) : INotificationFanOut
 {
     public async Task FanOutAsync(
         int cookbookId,
@@ -13,6 +13,11 @@ public sealed class NotificationFanOut(IApplicationDbContext context) : INotific
         var exclude = new HashSet<string>(StringComparer.Ordinal) { actorUserId };
         if (subjectUserId is not null)
             exclude.Add(subjectUserId);
+
+        var actorDisplayName = await identityService.GetDisplayNameAsync(actorUserId, ct);
+        string? subjectDisplayName = subjectUserId is not null
+            ? await identityService.GetDisplayNameAsync(subjectUserId, ct)
+            : null;
 
         var recipientIds = await context.CookbookMemberships
             .Where(m => m.CookbookId == cookbookId && m.CreatedBy != null && !exclude.Contains(m.CreatedBy))
@@ -30,6 +35,8 @@ public sealed class NotificationFanOut(IApplicationDbContext context) : INotific
                     ActionType = actionType,
                     ActorUserId = actorUserId,
                     SubjectUserId = subjectUserId,
+                    ActorDisplayName = actorDisplayName,
+                    SubjectDisplayName = subjectDisplayName,
                     RecipeId = recipeId,
                 },
                 ct);

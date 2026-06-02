@@ -34,13 +34,13 @@ public sealed class Cookbook : BaseAuditableEntity
 
     public IReadOnlyCollection<Recipe> Recipes { get; init; } = [];
     
-    public static Cookbook Create(string title, string creatorId, string? image = null)
+    public static Cookbook Create(string title, string creatorId, string? image = null, string? ownerDisplayName = null)
     {
         var cookbook = new Cookbook
         {
             Title = title,
             Image = image,
-            Memberships = [CookbookMembership.NewOwner(creatorId)]
+            Memberships = [CookbookMembership.NewOwner(creatorId, ownerDisplayName)],
         };
 
         cookbook.AddDomainEvent(new CookbookCreatedEvent(cookbook));

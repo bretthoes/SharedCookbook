@@ -11,10 +11,10 @@ public sealed class RecipeDetailedDto
 
     public required string Title { get; init; }
 
-    public string? Author { get; set; }
+    public string? Author { get; init; }
 
-    public string? AuthorEmail { get; set; }
-    
+    public bool IsAuthor { get; set; }
+
     public string? Summary { get; init; }
 
     public string? Thumbnail { get; }
@@ -31,19 +31,19 @@ public sealed class RecipeDetailedDto
 
     public int MadeCount { get; init; }
     
-    public bool? IsVegetarian { get; set; }
-    public bool? IsVegan { get; set; }
-    public bool? IsGlutenFree { get; set; }
-    public bool? IsDairyFree { get; set; }
-    public bool? IsHealthy { get; set; }
-    public bool? IsCheap { get; set; }
-    public bool? IsLowFodmap { get; set; }
-    public bool? IsHighProtein { get; set; }
-    public bool? IsBreakfast { get; set; }
-    public bool? IsLunch { get; set; }
-    public bool? IsDinner { get; set; }
-    public bool? IsDessert { get; set; }
-    public bool? IsSnack { get; set; }
+    public bool? IsVegetarian { get; init; }
+    public bool? IsVegan { get; init; }
+    public bool? IsGlutenFree { get; init; }
+    public bool? IsDairyFree { get; init; }
+    public bool? IsHealthy { get; init; }
+    public bool? IsCheap { get; init; }
+    public bool? IsLowFodmap { get; init; }
+    public bool? IsHighProtein { get; init; }
+    public bool? IsBreakfast { get; init; }
+    public bool? IsLunch { get; init; }
+    public bool? IsDinner { get; init; }
+    public bool? IsDessert { get; init; }
+    public bool? IsSnack { get; init; }
 
     public IReadOnlyCollection<RecipeDirectionDto> Directions { get; init; } = [];
 

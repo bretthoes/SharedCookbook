@@ -30,6 +30,7 @@ public sealed class CreateRecipeCommandHandler(
         {
             Title = command.Recipe.Title,
             CookbookId = command.Recipe.CookbookId,
+            AuthorDisplayName = actorMembership.DisplayName,
             Summary = command.Recipe.Summary,
             Timing = new Timing(
                 command.Recipe.PreparationTimeInMinutes,

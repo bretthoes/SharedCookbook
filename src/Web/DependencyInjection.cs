@@ -2,7 +2,6 @@
 using NSwag.Generation.Processors.Security;
 using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Infrastructure.Data;
-using SharedCookbook.Infrastructure.Identity;
 using SharedCookbook.Web.Services;
 
 namespace SharedCookbook.Web;
@@ -14,7 +13,6 @@ public static class DependencyInjection
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
         builder.Services.AddScoped<IUser, CurrentUser>();
-        builder.Services.AddScoped<IIdentityRepository, IdentityRepository>();
 
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddHttpClient();

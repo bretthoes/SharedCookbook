@@ -8,6 +8,8 @@ public sealed class Recipe : BaseAuditableEntity
 
     public required string Title { get; set; }
 
+    public string? AuthorDisplayName { get; init; }
+
     public string? Summary { get; set; }
 
     public string? Thumbnail { get; set; }
