@@ -26,7 +26,7 @@ public class WhenOwnerPromotesContributorToOwner : BaseTestFixture
         var contributorMembership = new CookbookMembership { CreatedBy = _contributorUserId };
 
         _originalOwnerUserId = await RunAsDefaultUserAsync();
-        var ownerMembership = CookbookMembership.NewOwner(_originalOwnerUserId);
+        var ownerMembership = CookbookMembership.NewOwner(_originalOwnerUserId, It.IsAny<string>());
 
         await AddAsync(new Cookbook
         {

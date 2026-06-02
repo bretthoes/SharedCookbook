@@ -20,7 +20,7 @@ public class InvitationResponderTests
         _user = new Mock<IUser>();
         _clock = new Mock<TimeProvider>();
         _sut = new InvitationResponder(_context.Object, _user.Object, _clock.Object);
-        _activeInvitation = CookbookInvitation.Create(It.IsAny<int>(), MockUserId);
+        _activeInvitation = CookbookInvitation.Create(It.IsAny<int>(), MockUserId, It.IsAny<string>());
         _user.SetupGet(user => user.Id).Returns(MockUserId);
     }
 

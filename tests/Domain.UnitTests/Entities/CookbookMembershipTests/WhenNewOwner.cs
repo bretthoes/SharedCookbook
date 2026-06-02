@@ -8,7 +8,7 @@ public class WhenNewOwner
     private CookbookMembership _actual = null!;
 
     [OneTimeSetUp]
-    public void OneTimeSetup() => _actual = CookbookMembership.NewOwner(It.IsAny<string>());
+    public void OneTimeSetup() => _actual = CookbookMembership.NewOwner(It.IsAny<string>(), displayName: null);
 
     [Test]
     public void ShouldHaveOwnerTier() => Assert.That(_actual.Tier, Is.EqualTo(MembershipTier.Owner));
@@ -19,7 +19,7 @@ public class WhenNewOwner
     [Test]
     public void AndDemotedThenShouldHaveContributorTier()
     {
-        var owner = CookbookMembership.NewOwner(It.IsAny<string>());
+        var owner = CookbookMembership.NewOwner(It.IsAny<string>(), displayName: null);
         owner.Demote();
         Assert.That(owner.Tier, Is.EqualTo(MembershipTier.Contributor));
     }
@@ -27,7 +27,7 @@ public class WhenNewOwner
     [Test]
     public void AndDemotedThenShouldNotBeOwner()
     {
-        var owner = CookbookMembership.NewOwner(It.IsAny<string>());
+        var owner = CookbookMembership.NewOwner(It.IsAny<string>(), displayName: null);
         owner.Demote();
         Assert.That(owner.IsOwner, Is.False);
     }

@@ -11,7 +11,7 @@ public class CookbookInvitationTests
         const InvitationStatus expected = InvitationStatus.Active;
 
         var actual = CookbookInvitation
-            .Create(cookbookId: It.IsAny<int>(), recipientId: It.IsAny<string>())
+            .Create(cookbookId: It.IsAny<int>(), recipientId: It.IsAny<string>(), displayName: null)
             .Status;
 
         Assert.That(actual, Is.EqualTo(expected));
@@ -31,7 +31,7 @@ public class CookbookInvitationTests
     public void InvitationStatusIsAcceptedAfterAccept()
     {
         const InvitationStatus expected = InvitationStatus.Accepted;
-        var sut = CookbookInvitation.Create(cookbookId: It.IsAny<int>(), recipientId: It.IsAny<string>());
+        var sut = CookbookInvitation.Create(cookbookId: It.IsAny<int>(), recipientId: It.IsAny<string>(), displayName: null);
 
         sut.Accept(timestamp: It.IsAny<DateTimeOffset>(), acceptedBy: It.IsAny<string>());
 
@@ -41,7 +41,7 @@ public class CookbookInvitationTests
     [Test]
     public void DomainEventsNotEmptyAfterAccept()
     {
-        var sut = CookbookInvitation.Create(cookbookId: It.IsAny<int>(), recipientId: It.IsAny<string>());
+        var sut = CookbookInvitation.Create(cookbookId: It.IsAny<int>(), recipientId: It.IsAny<string>(), displayName: null);
 
         sut.Accept(timestamp: It.IsAny<DateTimeOffset>(), acceptedBy: It.IsAny<string>());
 
@@ -52,7 +52,7 @@ public class CookbookInvitationTests
     public void ResponseDateIsUpdatedAfterAccept()
     {
         var expected = DateTimeOffset.Now;
-        var sut = CookbookInvitation.Create(cookbookId: It.IsAny<int>(), recipientId: It.IsAny<string>());
+        var sut = CookbookInvitation.Create(cookbookId: It.IsAny<int>(), recipientId: It.IsAny<string>(), displayName: null);
 
         sut.Accept(timestamp: expected, acceptedBy: It.IsAny<string>());
 
@@ -63,7 +63,7 @@ public class CookbookInvitationTests
     public void InvitationStatusIsRejectedAfterReject()
     {
         const InvitationStatus expected = InvitationStatus.Rejected;
-        var sut = CookbookInvitation.Create(cookbookId: It.IsAny<int>(), recipientId: It.IsAny<string>());
+        var sut = CookbookInvitation.Create(cookbookId: It.IsAny<int>(), recipientId: It.IsAny<string>(), displayName: null);
 
         sut.Reject(timestamp: It.IsAny<DateTimeOffset>());
 
@@ -73,7 +73,7 @@ public class CookbookInvitationTests
     [Test]
     public void DomainEventsNotEmptyAfterReject()
     {
-        var sut = CookbookInvitation.Create(cookbookId: It.IsAny<int>(), recipientId: It.IsAny<string>());
+        var sut = CookbookInvitation.Create(cookbookId: It.IsAny<int>(), recipientId: It.IsAny<string>(), displayName: null);
 
         sut.Reject(timestamp: It.IsAny<DateTimeOffset>());
 
@@ -86,7 +86,7 @@ public class CookbookInvitationTests
         string expected = Guid.NewGuid().ToString();
         
         var actual = CookbookInvitation
-            .Create(cookbookId: It.IsAny<int>(), recipientId: expected)
+            .Create(cookbookId: It.IsAny<int>(), recipientId: expected, displayName: null)
             .IsNotFor(expected);
         
         Assert.That(actual, Is.False);

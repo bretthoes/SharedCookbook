@@ -76,13 +76,13 @@ public class WhenCheckingPermissions
     [Test]
     public void OwnerShouldNotUpdateSelfTier() =>
         Assert.That(
-            CookbookMembership.NewOwner(ActorUserId).CanApplyTierUpdate(CookbookMembership.NewOwner(ActorUserId), MembershipTier.Admin),
+            CookbookMembership.NewOwner(ActorUserId, displayName: null).CanApplyTierUpdate(CookbookMembership.NewOwner(ActorUserId, displayName: null), MembershipTier.Admin),
             Is.False);
 
     [Test]
     public void OwnerShouldUpdateContributorTier() =>
         Assert.That(
-            CookbookMembership.NewOwner(ActorUserId).CanApplyTierUpdate(
+            CookbookMembership.NewOwner(ActorUserId, displayName: null).CanApplyTierUpdate(
                 Member(OtherUserId, MembershipTier.Contributor),
                 MembershipTier.Admin),
             Is.True);
@@ -99,14 +99,14 @@ public class WhenCheckingPermissions
     public void AdminShouldNotUpdateOwnerTier() =>
         Assert.That(
             Member(ActorUserId, MembershipTier.Admin).CanApplyTierUpdate(
-                CookbookMembership.NewOwner(OtherUserId),
+                CookbookMembership.NewOwner(OtherUserId, displayName: null),
                 MembershipTier.Contributor),
             Is.False);
 
     [Test]
     public void OwnerShouldPromoteContributorToOwner() =>
         Assert.That(
-            CookbookMembership.NewOwner(ActorUserId).CanApplyTierUpdate(
+            CookbookMembership.NewOwner(ActorUserId, displayName: null).CanApplyTierUpdate(
                 Member(OtherUserId, MembershipTier.Contributor),
                 MembershipTier.Owner),
             Is.True);

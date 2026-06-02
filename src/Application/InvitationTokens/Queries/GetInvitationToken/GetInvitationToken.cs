@@ -19,7 +19,8 @@ public class GetInvitationPreviewQueryHandler(
         string? senderId = token.CreatedBy;
         ArgumentException.ThrowIfNullOrWhiteSpace(senderId);
         
-        (string? email, string? name) = await service.FindByIdAsync(senderId, ct)
+        // TODD what's going on here now? simplify or use a different method
+        (_, string? name) = await service.FindByIdAsync(senderId, ct)
             ?? throw new NotFoundException(key: senderId, nameof(IUser));
 
         return new InvitationDto
@@ -27,7 +28,6 @@ public class GetInvitationPreviewQueryHandler(
             Id = token.Id,
             CookbookId = token.Cookbook?.Id,
             SenderName = name,
-            SenderEmail = email,
             CookbookImage = token.Cookbook?.Image,
             CookbookTitle = token.Cookbook?.Title ?? string.Empty,
         };

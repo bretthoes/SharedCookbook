@@ -74,6 +74,6 @@ public class InvitationAcceptanceTests : BaseTestFixture
 
     private static Cookbook WithActiveInvitation(string title, string recipientUserId) => new()
     {
-        Title = title, Invitations = [CookbookInvitation.Create(cookbookId: 0, recipientUserId)]
+        Title = title, Invitations = [CookbookInvitation.Create(cookbookId: 0, recipientUserId, It.IsAny<string>())]
     };
 }

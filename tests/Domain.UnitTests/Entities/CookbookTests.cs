@@ -9,7 +9,7 @@ public class CookbookTests
     [Test]
     public void CreatedCookbookShouldHaveOwner()
     {
-        var expected = CookbookMembership.NewOwner(It.IsAny<string>()).Tier;
+        var expected = CookbookMembership.NewOwner(It.IsAny<string>(), displayName: null).Tier;
         var sut = Cookbook.Create(title: TestData.AnyNonEmptyString, creatorId: It.IsAny<string>());
         
         var actual = sut.Memberships.Single();

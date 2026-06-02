@@ -53,13 +53,13 @@ public class WhenMembershipCapabilities
     [Test]
     public void AdminShouldNotRemoveOwner() =>
         Assert.That(
-            WithTier(MembershipTier.Admin, "admin").CanRemoveMember(CookbookMembership.NewOwner("owner")),
+            WithTier(MembershipTier.Admin, "admin").CanRemoveMember(CookbookMembership.NewOwner("owner", displayName: null)),
             Is.False);
 
     [Test]
     public void OwnerShouldAssignAnyTierToContributor() =>
         Assert.That(
-            CookbookMembership.NewOwner("owner").CanApplyTierUpdate(
+            CookbookMembership.NewOwner("owner", displayName: null).CanApplyTierUpdate(
                 WithTier(MembershipTier.Contributor, "target"),
                 MembershipTier.Admin),
             Is.True);
@@ -92,7 +92,7 @@ public class WhenMembershipCapabilities
     public void AdminShouldNotChangeOwnerTier() =>
         Assert.That(
             WithTier(MembershipTier.Admin, "admin").CanApplyTierUpdate(
-                CookbookMembership.NewOwner("owner"),
+                CookbookMembership.NewOwner("owner", displayName: null),
                 MembershipTier.Contributor),
             Is.False);
 }

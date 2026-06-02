@@ -2,6 +2,7 @@ namespace SharedCookbook.Application.Invitations.EventHandlers;
 
 public class InvitationAcceptedEventHandler(
     IApplicationDbContext context,
+    IIdentityService identityService,
     ILogger<InvitationAcceptedEventHandler> logger)
     : INotificationHandler<InvitationAcceptedEvent>
 {
@@ -10,10 +11,15 @@ public class InvitationAcceptedEventHandler(
         if (await context.CookbookMemberships.ExistsFor(acceptedEvent.CookbookId, acceptedEvent.UserId, ct))
             return;
 
+        var displayName = await identityService.GetDisplayNameAsync(acceptedEvent.UserId, ct) ?? acceptedEvent.UserId;
+
         var membership = CookbookMembership.NewDefault(acceptedEvent.CookbookId, acceptedEvent.UserId);
+        // TODO pass below into method above
+        membership.DisplayName = displayName;
         membership.AddDomainEvent(new MembershipCreatedEvent(membership));
         await context.CookbookMemberships.AddAsync(membership, ct);
         
+        // TODO why is this log not in event handler?
         logger.LogInformation(
             "InvitationAcceptedEvent handled: Invitation (ID: {InvitationId}) was accepted for Cookbook (ID: {CookbookId}) by User ID {UserId}.",
             acceptedEvent.InvitationId,
