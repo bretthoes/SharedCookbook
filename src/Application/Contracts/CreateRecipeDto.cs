@@ -2,5 +2,5 @@
 
 public sealed record CreateRecipeDto : RecipeDto
 {
-    public required int CookbookId { get; init; }
+    public required Guid CookbookId { get; init; }
 }

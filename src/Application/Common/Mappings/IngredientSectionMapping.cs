@@ -17,7 +17,6 @@ internal static class IngredientSectionMapping
     private static readonly Func<IngredientSectionDto, IngredientSection> ToEntity =
         dto => new IngredientSection
         {
-            Id = dto.Id,
             Title = dto.Title,
             Ordinal = dto.Ordinal,
             Ingredients = dto.Ingredients.Select(RecipeIngredientMapping.ToEntity).ToList(),
@@ -26,7 +25,6 @@ internal static class IngredientSectionMapping
     internal static readonly Expression<Func<IngredientSection, IngredientSectionDto>> ToDtoExpression =
         section => new IngredientSectionDto
         {
-            Id = section.Id,
             Title = section.Title,
             Ordinal = section.Ordinal,
             Ingredients = section.Ingredients

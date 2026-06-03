@@ -5,7 +5,6 @@ public class DeleteRecipeCommandValidator : AbstractValidator<DeleteRecipeComman
     public DeleteRecipeCommandValidator()
     {
         RuleFor(command => command.Id)
-            .GreaterThan(0)
-            .WithMessage("Id must be greater than zero.");
+            .NotEmpty();
     }
 }

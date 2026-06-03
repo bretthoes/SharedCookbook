@@ -6,7 +6,6 @@ namespace SharedCookbook.Application.UnitTests.Common.Mappings.RecipeIngredientM
 
 public class ToDtosTests
 {
-    private const int ExpectedId = 1;
     private const int ExpectedOrdinal = 2;
     private const string ExpectedName = "TestIngredientName";
     private const bool ExpectedOptional = true;
@@ -18,14 +17,11 @@ public class ToDtosTests
     {
         var sut = new List<RecipeIngredient>
         {
-            new() { Id = ExpectedId, Name = ExpectedName, Ordinal = ExpectedOrdinal, Optional = ExpectedOptional }
+            new() { Name = ExpectedName, Ordinal = ExpectedOrdinal, Optional = ExpectedOptional }
         };
 
         _actual = sut.ToDtos().Single();
     }
-
-    [Test]
-    public void MapsId() => Assert.That(_actual.Id, Is.EqualTo(ExpectedId));
 
     [Test]
     public void MapsName() => Assert.That(_actual.Name, Is.EqualTo(ExpectedName));

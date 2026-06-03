@@ -27,7 +27,7 @@ public class RecipeApiResponse
         Images = string.IsNullOrWhiteSpace(imageKey)
             ? []
             : [new RecipeImageDto { Name = imageKey, Ordinal = 1 }],
-        CookbookId = 0,
+        CookbookId = Guid.Empty,
         Summary = ExtractSummary(Summary),
         Servings = Servings ?? 0,
         PreparationTimeInMinutes = PreparationMinutes ?? 0,
@@ -48,3 +48,4 @@ public class RecipeApiResponse
         return summaryDecoded.Truncate(Recipe.Constraints.SummaryMaxLength);
     }
 }
+

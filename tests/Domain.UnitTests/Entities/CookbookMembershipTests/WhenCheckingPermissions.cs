@@ -11,7 +11,7 @@ public class WhenCheckingPermissions
 
     private static CookbookMembership Member(string userId, MembershipTier tier)
     {
-        var membership = CookbookMembership.NewDefault(cookbookId: 1, userId: userId);
+        var membership = CookbookMembership.NewDefault(cookbookId: Guid.NewGuid(), userId: userId);
         membership.SetTier(tier);
         return membership;
     }
@@ -119,3 +119,4 @@ public class WhenCheckingPermissions
                 MembershipTier.Owner),
             Is.False);
 }
+

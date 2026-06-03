@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Domain.Events;
 
-public sealed class RecipeUpdatedEvent(int recipeId) : BaseEvent
+public sealed class RecipeUpdatedEvent(Guid recipeId) : BaseEvent
 {
-    public int RecipeId { get; } = recipeId;
+    public Guid RecipeId { get; } = recipeId;
 }

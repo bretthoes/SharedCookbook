@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Application.Memberships.Commands.UpdateMembership;
 
-public sealed record UpdateMembershipCommand(int Id, MembershipTier Tier) : IRequest;
+public sealed record UpdateMembershipCommand(Guid Id, MembershipTier Tier) : IRequest;
 
 public sealed class UpdateMembershipCommandHandler(IApplicationDbContext context, IUser user)
     : IRequestHandler<UpdateMembershipCommand>

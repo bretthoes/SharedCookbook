@@ -12,7 +12,7 @@ public sealed class IngredientCategory : BaseAuditableEntity
         }
     }
 
-    public required int RecipeId { get; init; }
+    public required Guid RecipeId { get; init; }
 
     public struct Constraints
     {

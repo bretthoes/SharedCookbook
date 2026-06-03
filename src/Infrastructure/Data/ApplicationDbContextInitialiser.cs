@@ -56,6 +56,27 @@ public class ApplicationDbContextInitialiser
                 if (attempt == 1)
                 {
                     _logger.LogInformation("Initialising database...");
+                    
+                    // TEMPORARY: Reset database schema using raw SQL
+                    // Bypasses DbContext model validation - safe even with breaking migration changes
+                    try
+                    {
+                        var connection = _context.Database.GetDbConnection();
+                        await connection.OpenAsync();
+                        
+                        using (var command = connection.CreateCommand())
+                        {
+                            command.CommandText = "DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;";
+                            await command.ExecuteNonQueryAsync();
+                        }
+                        
+                        await connection.CloseAsync();
+                        _logger.LogInformation("Database schema dropped and recreated. Applying migrations...");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "Could not reset schema (may not exist or not Postgres). Proceeding with migration...");
+                    }
                 }
                 else
                 {

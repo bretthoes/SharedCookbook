@@ -5,25 +5,19 @@ using SharedCookbook.Domain.ValueObjects;
 
 namespace SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
 
-public sealed record UpdateRecipeCommand(UpdateRecipeDto Recipe) : IRequest<int>;
+public sealed record UpdateRecipeCommand(UpdateRecipeDto Recipe) : IRequest<Guid>;
 
 public sealed class UpdateRecipeCommandHandler(
     IApplicationDbContext context,
     IOptions<ImageUploadOptions> options,
     IUser user)
-    : IRequestHandler<UpdateRecipeCommand, int>
+    : IRequestHandler<UpdateRecipeCommand, Guid>
 {
-    public async Task<int> Handle(UpdateRecipeCommand command, CancellationToken ct = default)
+    public async Task<Guid> Handle(UpdateRecipeCommand command, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(user.Id);
 
         var recipe = await context.Recipes
-                         .AsSplitQuery() // TODO verify this improves performance; a recipe can only have so many directions, images, ingredients, etc. Find max, avg, and suppress warning if the extra round trips slow down query
-                         .Include(navigationPropertyPath: recipe => recipe.IngredientSections)
-                         .ThenInclude(section => section.Ingredients)
-                         .Include(navigationPropertyPath: recipe => recipe.Directions)
-                         .Include(navigationPropertyPath: recipe => recipe.Images)
-                         .Include(navigationPropertyPath: recipe => recipe.Nutrition)
                          .FirstOrDefaultAsync(recipe => recipe.Id == command.Recipe.Id, ct)
                      ?? throw new NotFoundException(key: command.Recipe.Id.ToString(), nameof(Recipe));
 
@@ -32,7 +26,6 @@ public sealed class UpdateRecipeCommandHandler(
         if (actorMembership is null || !actorMembership.CanUpdateRecipe(recipe))
             throw new ForbiddenAccessException();
 
-        // Update primitive properties
         recipe.Title = command.Recipe.Title;
         recipe.Summary = command.Recipe.Summary;
         recipe.Thumbnail = command.Recipe.Thumbnail;
@@ -58,25 +51,22 @@ public sealed class UpdateRecipeCommandHandler(
             command.Recipe.IsDessert,
             command.Recipe.IsSnack);
 
-        ReplaceCollection(recipe.IngredientSections, newCollection: command.Recipe.IngredientSections.ToEntities());
-        ReplaceCollection(recipe.Directions, newCollection: command.Recipe.Directions.ToEntities(options.Value.ImageBaseUrl));
-        ReplaceCollection(recipe.Images, newCollection: command.Recipe.Images.ToEntities(options.Value.ImageBaseUrl));
+        recipe.IngredientSections.Clear();
+        foreach (var section in command.Recipe.IngredientSections.ToEntities())
+            recipe.IngredientSections.Add(section);
+
+        recipe.Directions.Clear();
+        foreach (var direction in command.Recipe.Directions.ToEntities(options.Value.ImageBaseUrl))
+            recipe.Directions.Add(direction);
+
+        recipe.Images.Clear();
+        foreach (var image in command.Recipe.Images.ToEntities(options.Value.ImageBaseUrl))
+            recipe.Images.Add(image);
 
         recipe.AddDomainEvent(new RecipeUpdatedEvent(recipe.Id));
 
         await context.SaveChangesAsync(ct);
 
         return recipe.Id;
-    }
-
-    // TODO find out if this is necessary. Can we replace a collection in EF Core without having to load it in memory?
-    private static void ReplaceCollection<T>(ICollection<T> existingCollection, IEnumerable<T> newCollection)
-        where T : class
-    {
-        existingCollection.Clear();
-        foreach (var item in newCollection)
-        {
-            existingCollection.Add(item);
-        }
     }
 }

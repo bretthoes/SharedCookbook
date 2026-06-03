@@ -4,9 +4,9 @@ public sealed class CookbookNotification : BaseAuditableEntity
 {
     public required string RecipientUserId { get; init; }
 
-    public int CookbookId { get; init; }
+    public Guid CookbookId { get; init; }
 
-    public int? RecipeId { get; init; }
+    public Guid? RecipeId { get; init; }
 
     public required CookbookNotificationActionType ActionType { get; init; }
 

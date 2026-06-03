@@ -17,7 +17,7 @@ public class Cookbooks : EndpointGroupBase
 
         builder.MapPost(Create)
             .RequireAuthorization()
-            .Produces<int>()
+            .Produces<Guid>()
             .ProducesProblem(StatusCodes.Status401Unauthorized)
             .ProducesValidationProblem();
 
@@ -43,14 +43,14 @@ public class Cookbooks : EndpointGroupBase
         [AsParameters] GetCookbooksWithPaginationQuery query,
         CancellationToken ct = default) => sender.Send(query, ct);
 
-    private static Task<int> Create(
+    private static Task<Guid> Create(
         ISender sender,
         [FromBody] CreateCookbookCommand command,
         CancellationToken ct = default) => sender.Send(command, ct);
 
     private static async Task<IResult> Update(
         ISender sender,
-        [FromRoute] int id,
+        [FromRoute] Guid id,
         [FromBody] UpdateCookbookCommand command,
         CancellationToken ct = default)
     {
@@ -59,7 +59,7 @@ public class Cookbooks : EndpointGroupBase
         return Results.NoContent();
     }
 
-    private static async Task<IResult> Delete(ISender sender, [FromRoute] int id, CancellationToken ct = default)
+    private static async Task<IResult> Delete(ISender sender, [FromRoute] Guid id, CancellationToken ct = default)
     {
         await sender.Send(new DeleteCookbookCommand(id), ct);
         return Results.NoContent();

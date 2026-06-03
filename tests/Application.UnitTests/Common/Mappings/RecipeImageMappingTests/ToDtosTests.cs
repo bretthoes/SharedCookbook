@@ -6,7 +6,6 @@ namespace SharedCookbook.Application.UnitTests.Common.Mappings.RecipeImageMappin
 
 public class ToDtosTests
 {
-    private const int ExpectedId = 1;
     private const int ExpectedOrdinal = 2;
     private const string ExpectedName = "TestImageName";
     private const string ImageBaseUrl = "https://example.com/images/";
@@ -18,14 +17,11 @@ public class ToDtosTests
     {
         var sut = new List<RecipeImage>
         {
-            new() { Id = ExpectedId, Name = ExpectedName, Ordinal = ExpectedOrdinal }
+            new() { Name = ExpectedName, Ordinal = ExpectedOrdinal }
         };
 
         _actual = sut.ToDtos(ImageBaseUrl).Single();
     }
-
-    [Test]
-    public void MapsId() => Assert.That(_actual.Id, Is.EqualTo(ExpectedId));
 
     [Test]
     public void MapsNameWithBaseUrlPrefix() => Assert.That(_actual.Name, Is.EqualTo(ImageBaseUrl + ExpectedName));

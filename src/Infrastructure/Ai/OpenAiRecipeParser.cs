@@ -109,7 +109,7 @@ public sealed class OpenAiRecipeParser : IAiRecipeParser
                 })
                 .ToList(),
             Images = [],
-            CookbookId = 0,
+            CookbookId = Guid.Empty,
         };
     }
 
@@ -129,3 +129,4 @@ public sealed class OpenAiRecipeParser : IAiRecipeParser
 
     private sealed record ParsedDirection(string Text);
 }
+

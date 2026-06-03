@@ -23,7 +23,7 @@ public class Invitations : EndpointGroupBase
 
         builder.MapPost(Create)
             .RequireAuthorization()
-            .Produces<int>()
+            .Produces<Guid>()
             .ProducesProblem(StatusCodes.Status401Unauthorized)
             .ProducesValidationProblem()
             .ProducesProblem(StatusCodes.Status403Forbidden)
@@ -57,7 +57,7 @@ public class Invitations : EndpointGroupBase
         [AsParameters] GetInvitationsCountQuery query,
         CancellationToken ct = default) => sender.Send(query, ct);
 
-    private static Task<int> Create(
+    private static Task<Guid> Create(
         ISender sender,
         [FromBody] CreateInvitationCommand command,
         CancellationToken ct = default) =>
@@ -65,7 +65,7 @@ public class Invitations : EndpointGroupBase
 
     private static async Task<IResult> Update(
         ISender sender,
-        [FromRoute] int id,
+        [FromRoute] Guid id,
         [FromBody] UpdateInvitationCommand command,
         CancellationToken ct = default)
     {
@@ -74,7 +74,7 @@ public class Invitations : EndpointGroupBase
         return Results.NoContent();
     }
 
-    private static async Task<IResult> Delete(ISender sender, [FromRoute] int id, CancellationToken ct = default)
+    private static async Task<IResult> Delete(ISender sender, [FromRoute] Guid id, CancellationToken ct = default)
     {
         await sender.Send(new DeleteInvitationCommand(id), ct);
         return Results.NoContent();

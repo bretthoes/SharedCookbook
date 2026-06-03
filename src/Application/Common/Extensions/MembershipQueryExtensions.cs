@@ -4,10 +4,10 @@ public static class MembershipQueryExtensions
 {
     extension(IQueryable<CookbookMembership> query)
     {
-        public IQueryable<CookbookMembership> HasCookbookId(int cookbookId) =>
+        public IQueryable<CookbookMembership> HasCookbookId(Guid cookbookId) =>
             query.Where(membership => membership.CookbookId == cookbookId);
 
-        public Task<bool> ExistsFor(int cookbookId,
+        public Task<bool> ExistsFor(Guid cookbookId,
             string userId,
             CancellationToken ct = default) 
             => query.HasCookbookId(cookbookId).ForUserId(userId).AsNoTracking().AnyAsync(ct);
@@ -15,20 +15,20 @@ public static class MembershipQueryExtensions
         private IQueryable<CookbookMembership> ForUserId(string userId) =>
             query.Where(membership => membership.CreatedBy == userId);
 
-        public Task<CookbookMembership> GetByCookbookAndUser(int cookbookId, string userId, CancellationToken ct = default) =>
+        public Task<CookbookMembership> GetByCookbookAndUser(Guid cookbookId, string userId, CancellationToken ct = default) =>
             query.FindForUserOrThrowAsync(cookbookId, userId, ct);
 
-        public Task<CookbookMembership?> FindForUserAsync(int cookbookId, string userId, CancellationToken ct = default) =>
+        public Task<CookbookMembership?> FindForUserAsync(Guid cookbookId, string userId, CancellationToken ct = default) =>
             query.ForCookbookAndUser(cookbookId, userId).SingleOrDefaultAsync(ct);
 
         public async Task<CookbookMembership> FindForUserOrThrowAsync(
-            int cookbookId,
+            Guid cookbookId,
             string userId,
             CancellationToken ct = default) =>
             await query.FindForUserAsync(cookbookId, userId, ct) ??
             throw new NotFoundException(key: $"{cookbookId}:{userId}", nameof(CookbookMembership));
 
-        private IQueryable<CookbookMembership> ForCookbookAndUser(int cookbookId, string userId) =>
+        private IQueryable<CookbookMembership> ForCookbookAndUser(Guid cookbookId, string userId) =>
             query.HasCookbookId(cookbookId).ForUserId(userId);
     }
 

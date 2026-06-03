@@ -3,10 +3,10 @@ namespace SharedCookbook.Application.Common.Interfaces;
 public interface INotificationFanOut
 {
     Task FanOutAsync(
-        int cookbookId,
+        Guid cookbookId,
         string actorUserId,
         CookbookNotificationActionType actionType,
-        int? recipeId = null,
+        Guid? recipeId = null,
         string? subjectUserId = null,
         CancellationToken ct = default);
 }

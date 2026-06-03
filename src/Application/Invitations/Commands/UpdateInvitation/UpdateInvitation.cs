@@ -2,15 +2,15 @@
 
 namespace SharedCookbook.Application.Invitations.Commands.UpdateInvitation;
 
-public sealed record UpdateInvitationCommand(int Id, InvitationStatus NewStatus) : IRequest<int>;
+public sealed record UpdateInvitationCommand(Guid Id, InvitationStatus NewStatus) : IRequest<Guid>;
 
 public sealed class UpdateInvitationCommandHandler(
     IApplicationDbContext context,
     IInvitationResponder responder,
     IUser user)
-    : IRequestHandler<UpdateInvitationCommand, int>
+    : IRequestHandler<UpdateInvitationCommand, Guid>
 {
-    public async Task<int> Handle(UpdateInvitationCommand command, CancellationToken ct = default)
+    public async Task<Guid> Handle(UpdateInvitationCommand command, CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
         

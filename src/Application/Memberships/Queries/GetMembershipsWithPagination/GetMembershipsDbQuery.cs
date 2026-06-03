@@ -7,7 +7,7 @@ internal static class GetMembershipsDbQuery
     extension(IQueryable<CookbookMembership> query)
     {
         internal Task<PaginatedList<MembershipDto>> QueryDtos(
-            int cookbookId,
+            Guid cookbookId,
             int pageNumber,
             int pageSize,
             CancellationToken ct = default)

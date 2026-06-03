@@ -16,7 +16,7 @@ public sealed class InvitationToken : BaseInvitation
 
     private bool IsExpired => Created <= DateTimeOffset.UtcNow.AddDays(TwoWeeksAgo) || Created >= DateTimeOffset.UtcNow; 
     
-    public static InvitationToken IssueNewToken(TokenDigest digest, int cookbookId)
+    public static InvitationToken IssueNewToken(TokenDigest digest, Guid cookbookId)
     {
         return new InvitationToken
         {

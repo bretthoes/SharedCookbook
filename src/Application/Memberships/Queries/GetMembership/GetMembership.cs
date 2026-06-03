@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Application.Memberships.Queries.GetMembership;
 
-public sealed record GetMembershipQuery(int Id) : IRequest<MembershipDto>;
+public sealed record GetMembershipQuery(Guid Id) : IRequest<MembershipDto>;
 
 public sealed class GetMembershipQueryHandler(IApplicationDbContext context)
     : IRequestHandler<GetMembershipQuery, MembershipDto>

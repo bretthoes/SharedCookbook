@@ -5,7 +5,7 @@ public class CreateRecipeCommandValidator : AbstractValidator<CreateRecipeComman
     public CreateRecipeCommandValidator()
     {
         RuleFor(command => command.Recipe.CookbookId)
-            .GreaterThanOrEqualTo(1)
+            .NotEmpty()
             .WithMessage("New recipe must be in a valid cookbook.");
                 RuleFor(command => command.Recipe.BakingTimeInMinutes)
             .InclusiveBetween(0, Recipe.Constraints.MaxTimeInMinutes)

@@ -93,6 +93,6 @@ public sealed class ParseRecipeFromImageCommandHandler(IOcrService ocrService)
         IngredientSections = [IngredientSectionDto.DefaultWrapper(ingredients)],
         Directions = directions,
         Images = [],
-        CookbookId = 0
+        CookbookId = Guid.Empty
     };
 }

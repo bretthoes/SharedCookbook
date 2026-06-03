@@ -12,7 +12,7 @@ public static class InvitationQueryExtensions
     
     public static Task<CookbookInvitation?> FirstLinkInviteWithTokens(
         this IQueryable<CookbookInvitation> query,
-        int cookbookId,
+        Guid cookbookId,
         CancellationToken ct = default) =>
         query
             .ForCookbook(cookbookId)
@@ -23,7 +23,7 @@ public static class InvitationQueryExtensions
     public static IQueryable<InvitationDto> OrderByMostRecentlyCreated(this IQueryable<InvitationDto> invitations) =>
         invitations.OrderByDescending(invitation => invitation.Created);
     
-    private static IQueryable<CookbookInvitation> ForCookbook(this IQueryable<CookbookInvitation> q, int cookbookId) =>
+    private static IQueryable<CookbookInvitation> ForCookbook(this IQueryable<CookbookInvitation> q, Guid cookbookId) =>
         q.Where(invitation => invitation.CookbookId == cookbookId);
 
     private static IQueryable<CookbookInvitation> LinkStyle(this IQueryable<CookbookInvitation> q) =>
@@ -34,14 +34,14 @@ public static class InvitationQueryExtensions
     
     public static Task<bool> HasActiveInvite(
         this IQueryable<CookbookInvitation> invitations,
-        int cookbookId,
+        Guid cookbookId,
         string recipientPersonId,
         CancellationToken ct = default)
         => invitations.HasInviteWithStatus(cookbookId, recipientPersonId, InvitationStatus.Active, ct);
 
     private static Task<bool> HasInviteWithStatus(
         this IQueryable<CookbookInvitation> invitations,
-        int cookbookId,
+        Guid cookbookId,
         string recipientPersonId,
         InvitationStatus status,
         CancellationToken ct = default)

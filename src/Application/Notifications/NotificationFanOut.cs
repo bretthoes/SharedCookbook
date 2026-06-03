@@ -3,10 +3,10 @@ namespace SharedCookbook.Application.Notifications;
 public sealed class NotificationFanOut(IApplicationDbContext context, IIdentityService identityService) : INotificationFanOut
 {
     public async Task FanOutAsync(
-        int cookbookId,
+        Guid cookbookId,
         string actorUserId,
         CookbookNotificationActionType actionType,
-        int? recipeId = null,
+        Guid? recipeId = null,
         string? subjectUserId = null,
         CancellationToken ct = default)
     {

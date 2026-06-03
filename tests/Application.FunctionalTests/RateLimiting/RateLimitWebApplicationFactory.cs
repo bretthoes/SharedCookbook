@@ -61,7 +61,7 @@ internal sealed class RateLimitWebApplicationFactory(DbConnection connection)
                     parser.ParseAsync(It.IsAny<string>()) ==
                     Task.FromResult(new CreateRecipeDto
                     {
-                        CookbookId = 1,
+                        CookbookId = Guid.NewGuid(),
                         Title = "Parsed recipe",
                     })));
 

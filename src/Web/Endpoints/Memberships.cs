@@ -55,7 +55,7 @@ public class Memberships : EndpointGroupBase
 
     private static Task<MembershipDto> GetByCookbookIdAndCurrentUser(
         ISender sender,
-        [FromRoute] int cookbookId,
+        [FromRoute] Guid cookbookId,
         CancellationToken ct = default) =>
         sender.Send(new GetMembershipByCookbookQuery(cookbookId), ct);
 
@@ -66,7 +66,7 @@ public class Memberships : EndpointGroupBase
 
     private static async Task<IResult> Update(
         ISender sender,
-        [FromRoute] int id,
+        [FromRoute] Guid id,
         [FromBody] UpdateMembershipCommand command,
         CancellationToken ct = default)
     {
@@ -75,7 +75,7 @@ public class Memberships : EndpointGroupBase
         return Results.NoContent();
     }
 
-    private static async Task<IResult> Delete(ISender sender, [FromRoute] int id, CancellationToken ct = default)
+    private static async Task<IResult> Delete(ISender sender, [FromRoute] Guid id, CancellationToken ct = default)
     {
         await sender.Send(new DeleteMembershipCommand(id), ct);
         return Results.NoContent();

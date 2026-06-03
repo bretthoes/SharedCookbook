@@ -32,7 +32,7 @@ public class Recipes : EndpointGroupBase
 
         builder.MapPost(Create)
             .RequireAuthorization()
-            .Produces<int>()
+            .Produces<Guid>()
             .ProducesProblem(StatusCodes.Status401Unauthorized)
             .ProducesValidationProblem()
             .ProducesProblem(StatusCodes.Status403Forbidden);
@@ -97,7 +97,7 @@ public class Recipes : EndpointGroupBase
         [AsParameters] GetRecipesQuery query,
         CancellationToken ct = default) => sender.Send(query, ct);
 
-    private static Task<int> Create(
+    private static Task<Guid> Create(
         ISender sender,
         [FromBody] CreateRecipeCommand command,
         CancellationToken ct = default) =>
@@ -105,7 +105,7 @@ public class Recipes : EndpointGroupBase
 
     private static async Task<IResult> Update(
         ISender sender,
-        [FromRoute] int id,
+        [FromRoute] Guid id,
         [FromBody] UpdateRecipeCommand command,
         CancellationToken ct = default)
     {
@@ -114,13 +114,13 @@ public class Recipes : EndpointGroupBase
         return Results.NoContent();
     }
 
-    private static async Task<IResult> Delete(ISender sender, [FromRoute] int id, CancellationToken ct = default)
+    private static async Task<IResult> Delete(ISender sender, [FromRoute] Guid id, CancellationToken ct = default)
     {
         await sender.Send(new DeleteRecipeCommand(id), ct);
         return Results.NoContent();
     }
 
-    private static async Task<IResult> RecordMade(ISender sender, [FromRoute] int id, CancellationToken ct = default)
+    private static async Task<IResult> RecordMade(ISender sender, [FromRoute] Guid id, CancellationToken ct = default)
     {
         await sender.Send(new RecordRecipeMadeCommand(id), ct);
         return Results.NoContent();

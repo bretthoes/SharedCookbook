@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Application.Memberships.Commands.DeleteMembership;
 
-public record DeleteMembershipCommand(int Id) : IRequest;
+public record DeleteMembershipCommand(Guid Id) : IRequest;
 
 public class DeleteMembershipCommandHandler(IApplicationDbContext context, IUser user) : IRequestHandler<DeleteMembershipCommand>
 {

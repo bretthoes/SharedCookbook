@@ -17,7 +17,7 @@ public class WhenRecipeIsValid : BaseTestFixture
         await ResetState();
         _userId = await RunAsDefaultUserAsync();
         
-        int recipeId = await CreateSimpleRecipe();
+        Guid recipeId = await CreateSimpleRecipe();
 
         _actual = await FindAsync<Recipe>([recipeId]);
     }
@@ -26,10 +26,10 @@ public class WhenRecipeIsValid : BaseTestFixture
     public void ShouldNotBeNull() => Assert.That(_actual, Is.Not.Null);
     
     [Test]
-    public void ShouldHaveId() => Assert.That(_actual!.Id, Is.GreaterThan(expected: 0));
+    public void ShouldHaveId() => Assert.That(_actual!.Id, Is.GreaterThan(expected: Guid.Empty));
     
     [Test]
-    public void ShouldHaveCookbookId() => Assert.That(_actual!.CookbookId, Is.GreaterThan(expected: 0));
+    public void ShouldHaveCookbookId() => Assert.That(_actual!.CookbookId, Is.GreaterThan(expected: Guid.Empty));
 
     [Test]
     public void ShouldHaveCreated() =>

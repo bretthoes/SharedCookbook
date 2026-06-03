@@ -1,8 +1,8 @@
 namespace SharedCookbook.Domain.Events;
 
-public class InvitationAcceptedEvent(int invitationId, int cookbookId, string userId) : BaseEvent
+public class InvitationAcceptedEvent(Guid invitationId, Guid cookbookId, string userId) : BaseEvent
 {
-    public int InvitationId { get; } = invitationId;
-    public int CookbookId { get; } = cookbookId;
+    public Guid InvitationId { get; } = invitationId;
+    public Guid CookbookId { get; } = cookbookId;
     public string UserId { get; } = userId;
 }

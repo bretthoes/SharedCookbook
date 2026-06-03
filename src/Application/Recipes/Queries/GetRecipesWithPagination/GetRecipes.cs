@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;
 
-public record GetRecipesQuery(int CookbookId, string? Search = null, int PageNumber = 1, int PageSize = 10)
+public record GetRecipesQuery(Guid CookbookId, string? Search = null, int PageNumber = 1, int PageSize = 10)
     : IRequest<PaginatedList<RecipeBriefDto>>;
 
 public class GetRecipesWithPaginationQueryHandler(IApplicationDbContext context)

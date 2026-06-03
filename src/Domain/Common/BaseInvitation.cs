@@ -4,7 +4,7 @@ public abstract class BaseInvitation : BaseAuditableEntity
 {
     public InvitationStatus Status { get; protected set; }
     
-    public int CookbookId { get; protected init; }
+    public Guid CookbookId { get; protected init; }
     
     public DateTimeOffset? ResponseDate { get; private set; }
 

@@ -10,7 +10,7 @@ public class WhenNewDefaultPromoted
     [OneTimeSetUp]
     public void OneTimeSetup()
     {
-        _actual = CookbookMembership.NewDefault(cookbookId: 1);
+        _actual = CookbookMembership.NewDefault(cookbookId: Guid.NewGuid());
         _actual.SetTier(MembershipTier.Owner);
     }
 
@@ -20,3 +20,4 @@ public class WhenNewDefaultPromoted
     [Test]
     public void IsPromotedThenShouldBeOwner() { Assert.That(_actual.IsOwner, Is.True); }
 }
+

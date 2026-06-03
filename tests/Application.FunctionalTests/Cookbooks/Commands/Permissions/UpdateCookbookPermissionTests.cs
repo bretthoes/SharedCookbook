@@ -7,7 +7,7 @@ using static Common.CookbookPermissionScenario;
 
 public class WhenContributorUpdatesCookbook : BaseTestFixture
 {
-    private int _cookbookId;
+    private Guid _cookbookId;
 
     [SetUp]
     public async Task SetUp()
@@ -26,7 +26,7 @@ public class WhenContributorUpdatesCookbook : BaseTestFixture
 
 public class WhenNonMemberUpdatesCookbook : BaseTestFixture
 {
-    private int _cookbookId;
+    private Guid _cookbookId;
 
     [SetUp]
     public async Task SetUp()

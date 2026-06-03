@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Application.InvitationTokens.Commands.CreateInvitationToken;
 
-public sealed record CreateInvitationTokenCommand(int CookbookId) : IRequest<InvitationTokenDto>;
+public sealed record CreateInvitationTokenCommand(Guid CookbookId) : IRequest<InvitationTokenDto>;
 
 public sealed class CreateInvitationTokenCommandHandler(IApplicationDbContext context, IInvitationTokenFactory factory)
     : IRequestHandler<CreateInvitationTokenCommand, InvitationTokenDto>

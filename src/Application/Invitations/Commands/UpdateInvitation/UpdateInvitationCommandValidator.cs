@@ -7,8 +7,7 @@ public class UpdateInvitationCommandValidator : AbstractValidator<UpdateInvitati
     public UpdateInvitationCommandValidator()
     {
         RuleFor(command => command.Id)
-            .GreaterThan(0)
-            .WithMessage("Id must be greater than zero.");
+            .NotEmpty();
         RuleFor(command => command.NewStatus)
             .IsInEnum()
             .WithMessage($"NewStatus must be a valid status: 1=Active, 2=Accepted, 3=Rejected, 4=Revoked.")

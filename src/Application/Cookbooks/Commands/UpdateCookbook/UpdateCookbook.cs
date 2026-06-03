@@ -3,7 +3,7 @@ using SharedCookbook.Application.Images.Commands.CreateImages;
 
 namespace SharedCookbook.Application.Cookbooks.Commands.UpdateCookbook;
 
-public sealed record UpdateCookbookCommand(int Id, string? Title = null, string? Image = null) : IRequest<int>;
+public sealed record UpdateCookbookCommand(Guid Id, string? Title = null, string? Image = null) : IRequest<int>;
 
 public sealed class UpdateCookbookCommandHandler(
     IApplicationDbContext context,

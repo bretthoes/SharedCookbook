@@ -10,12 +10,12 @@ using static Testing;
 using static RecipeTestData;
 
 internal sealed record CookbookWithContributorContext(
-    int CookbookId,
+    Guid CookbookId,
     string OwnerUserId,
     string ContributorUserId,
-    int RecipeId,
-    int OwnerMembershipId,
-    int ContributorMembershipId);
+    Guid RecipeId,
+    Guid OwnerMembershipId,
+    Guid ContributorMembershipId);
 
 internal static class CookbookPermissionScenario
 {

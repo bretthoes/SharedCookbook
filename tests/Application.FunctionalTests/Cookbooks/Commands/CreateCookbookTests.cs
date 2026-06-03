@@ -30,7 +30,7 @@ public class CreateCookbookTests : BaseTestFixture
 
         var command = new CreateCookbookCommand(Title: "New Cookbook", Image: image);
 
-        int itemId = await SendAsync(command);
+        var itemId = await SendAsync(command);
 
         var item = await FindAsync<Cookbook>(itemId);
 
@@ -52,9 +52,9 @@ public class CreateCookbookTests : BaseTestFixture
         string? userId = GetUserId();
         var command = new CreateCookbookCommand(Title: "New Cookbook");
 
-        int cookbookId = await SendAsync(command);
+        var cookbookId = await SendAsync(command);
 
-        var membership = await FindAsync<CookbookMembership>(cookbookId);
+        var membership = await FirstOrDefaultAsync<CookbookMembership>(m => m.CookbookId == cookbookId);
 
         using (Assert.EnterMultipleScope())
         {

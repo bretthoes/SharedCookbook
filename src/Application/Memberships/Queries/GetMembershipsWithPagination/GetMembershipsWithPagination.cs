@@ -2,7 +2,7 @@
 
 public sealed record GetMembershipsWithPaginationQuery : IRequest<PaginatedList<MembershipDto>>
 {
-    public required int CookbookId { get; set; }
+    public required Guid CookbookId { get; set; }
     public int PageNumber { get; init; } = 1;
     public int PageSize { get; init; } = 50;
 }

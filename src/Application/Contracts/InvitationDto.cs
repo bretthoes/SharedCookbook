@@ -2,9 +2,9 @@
 
 public sealed record InvitationDto
 {
-    public int Id { get; init; }
+    public Guid Id { get; init; }
     
-    public int? CookbookId { get; init; }
+    public Guid? CookbookId { get; init; }
 
     public string? SenderName { get; init; } = string.Empty;
 

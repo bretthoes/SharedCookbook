@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Application.Recipes.Commands.DeleteRecipe;
 
-public record DeleteRecipeCommand(int Id) : IRequest;
+public record DeleteRecipeCommand(Guid Id) : IRequest;
 
 public class DeleteRecipeCommandHandler(IApplicationDbContext context, IUser user) : IRequestHandler<DeleteRecipeCommand>
 {

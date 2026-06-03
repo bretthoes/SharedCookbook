@@ -23,16 +23,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public DbSet<Recipe> Recipes => Set<Recipe>();
 
-    public DbSet<RecipeDirection> RecipeDirections => Set<RecipeDirection>();
-
-    public DbSet<RecipeImage> RecipeImages => Set<RecipeImage>();
-
-    public DbSet<RecipeIngredient> RecipeIngredients => Set<RecipeIngredient>();
-
-    public DbSet<IngredientSection> IngredientSections => Set<IngredientSection>();
-
-    public DbSet<RecipeNutrition> RecipeNutritions => Set<RecipeNutrition>();
-
     public DbSet<CookbookNotification> CookbookNotifications => Set<CookbookNotification>();
 
     public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();

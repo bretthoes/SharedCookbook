@@ -6,7 +6,7 @@
 /// </summary>
 public sealed class CookbookMembership : BaseAuditableEntity
 {
-    public int CookbookId { get; private init; }
+    public Guid CookbookId { get; private init; }
 
     public string? DisplayName { get; set; }
 
@@ -38,7 +38,7 @@ public sealed class CookbookMembership : BaseAuditableEntity
     public static CookbookMembership NewOwner(string creatorId, string? displayName) =>
         new() { Tier = MembershipTier.Owner, CreatedBy = creatorId, DisplayName = displayName };
 
-    public static CookbookMembership NewDefault(int cookbookId, string? userId = null) => new()
+    public static CookbookMembership NewDefault(Guid cookbookId, string? userId = null) => new()
     {
         CookbookId = cookbookId,
         Tier = MembershipTier.Contributor,

@@ -7,7 +7,7 @@ public class WhenMembershipCapabilities
 {
     private static CookbookMembership WithTier(MembershipTier tier, string userId = "user")
     {
-        var membership = CookbookMembership.NewDefault(cookbookId: 1, userId: userId);
+        var membership = CookbookMembership.NewDefault(cookbookId: Guid.NewGuid(), userId: userId);
         membership.SetTier(tier);
         return membership;
     }
@@ -96,3 +96,4 @@ public class WhenMembershipCapabilities
                 MembershipTier.Contributor),
             Is.False);
 }
+

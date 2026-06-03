@@ -24,7 +24,7 @@ public class WhenTitleIsEmpty : BaseTestFixture
             Recipe = new CreateRecipeDto
             {
                 Title = title,
-                CookbookId = TestData.AnyPositiveInt
+                CookbookId = TestData.AnyGuid
             }
         };
 

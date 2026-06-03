@@ -19,7 +19,7 @@ public class UpdateRecipeTests : BaseTestFixture
     [Test]
     public void ShouldRequireValidRecipeId()
     {
-        var command = new UpdateRecipeCommand(new UpdateRecipeDto{ Title = "Test Title", Id = 99 });
+        var command = new UpdateRecipeCommand(new UpdateRecipeDto{ Title = "Test Title", Id = Guid.NewGuid() });
         Assert.ThrowsAsync<NotFoundException>(() => SendAsync(command));
     }
     

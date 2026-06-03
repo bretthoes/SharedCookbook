@@ -1,6 +1,6 @@
 namespace SharedCookbook.Application.RecipeMakes.Commands.RecordRecipeMade;
 
-public sealed record RecordRecipeMadeCommand(int RecipeId) : IRequest;
+public sealed record RecordRecipeMadeCommand(Guid RecipeId) : IRequest;
 
 public sealed class RecordRecipeMadeCommandHandler(
     IApplicationDbContext context,

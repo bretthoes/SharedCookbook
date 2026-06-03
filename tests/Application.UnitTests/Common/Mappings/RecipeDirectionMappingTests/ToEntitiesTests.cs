@@ -6,7 +6,6 @@ namespace SharedCookbook.Application.UnitTests.Common.Mappings.RecipeDirectionMa
 
 public class ToEntitiesTests
 {
-    private const int ExpectedId = 1;
     private const int ExpectedOrdinal = 2;
     private const string ExpectedText = "TestDirectionText";
     private const string ExpectedImage = "TestDirectionImage";
@@ -19,14 +18,11 @@ public class ToEntitiesTests
     {
         var sut = new List<RecipeDirectionDto>
         {
-            new() { Id = ExpectedId, Text = ExpectedText, Ordinal = ExpectedOrdinal, Image = ImageBaseUrl + ExpectedImage }
+            new() { Text = ExpectedText, Ordinal = ExpectedOrdinal, Image = ImageBaseUrl + ExpectedImage }
         };
 
         _actual = sut.ToEntities(ImageBaseUrl).Single();
     }
-
-    [Test]
-    public void MapsId() => Assert.That(_actual.Id, Is.EqualTo(ExpectedId));
 
     [Test]
     public void MapsText() => Assert.That(_actual.Text, Is.EqualTo(ExpectedText));

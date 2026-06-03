@@ -17,7 +17,7 @@ public class UpdateCookbookTests : BaseTestFixture
     [Test]
     public void ShouldRequireValidCookbookId()
     {
-        var command = new UpdateCookbookCommand(Id: 99, Title: "New Title");
+        var command = new UpdateCookbookCommand(Id: Guid.NewGuid(), Title: "New Title");
 
         Assert.That(() => SendAsync(command), Throws.TypeOf<NotFoundException>());
     }

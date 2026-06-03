@@ -3,15 +3,15 @@ using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.InvitationTokens.Commands.UpdateInvitationToken;
 
-public sealed record UpdateInvitationTokenCommand(string Token, InvitationStatus NewStatus) : IRequest<int>;
+public sealed record UpdateInvitationTokenCommand(string Token, InvitationStatus NewStatus) : IRequest<Guid>;
 
 public sealed class UpdateInvitationTokenCommandHandler(
     IApplicationDbContext context, 
     IInvitationTokenFactory factory,
     IInvitationResponder responder)
-    : IRequestHandler<UpdateInvitationTokenCommand, int>
+    : IRequestHandler<UpdateInvitationTokenCommand, Guid>
 {
-    public async Task<int> Handle(UpdateInvitationTokenCommand command, CancellationToken ct = default)
+    public async Task<Guid> Handle(UpdateInvitationTokenCommand command, CancellationToken ct = default)
     {
         var link = TokenLink.Parse(command.Token);
         var token = await context.InvitationTokens.GetByPublicId(link.TokenId, ct)

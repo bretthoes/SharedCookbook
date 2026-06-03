@@ -28,7 +28,7 @@ public class WhenRequestIsExternalApi
 
         await _sut.Handle(
             new ParseRecipeFromVoiceCommand(Transcript: "test"),
-            PerformanceBehaviourTestHelpers.ImmediateHandler(new CreateRecipeDto { Title = "test", CookbookId = 0 }));
+            PerformanceBehaviourTestHelpers.ImmediateHandler(new CreateRecipeDto { Title = "test", CookbookId = Guid.Empty }));
 
         PerformanceBehaviourTestHelpers.VerifyLogWarning(_logger, Times.Never());
     }
@@ -44,8 +44,9 @@ public class WhenRequestIsExternalApi
 
         await _sut.Handle(
             new ParseRecipeFromVoiceCommand(Transcript: "test"),
-            PerformanceBehaviourTestHelpers.ImmediateHandler(new CreateRecipeDto { Title = "test", CookbookId = 0 }));
+            PerformanceBehaviourTestHelpers.ImmediateHandler(new CreateRecipeDto { Title = "test", CookbookId = Guid.Empty }));
 
         PerformanceBehaviourTestHelpers.VerifyLogWarning(_logger, Times.Once());
     }
 }
+

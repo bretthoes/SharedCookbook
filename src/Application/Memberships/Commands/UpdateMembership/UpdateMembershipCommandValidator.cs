@@ -4,7 +4,7 @@ public class UpdateMembershipCommandValidator : AbstractValidator<UpdateMembersh
 {
     public UpdateMembershipCommandValidator()
     {
-        RuleFor(command => command.Id).GreaterThan(0);
+        RuleFor(command => command.Id).NotEmpty();
         RuleFor(command => command.Tier).IsInEnum();
     }
 }

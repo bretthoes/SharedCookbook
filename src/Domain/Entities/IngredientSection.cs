@@ -1,9 +1,7 @@
 namespace SharedCookbook.Domain.Entities;
 
-public sealed class IngredientSection : BaseAuditableEntity
+public sealed class IngredientSection
 {
-    public int RecipeId { get; init; }
-
     public required string Title
     {
         get;

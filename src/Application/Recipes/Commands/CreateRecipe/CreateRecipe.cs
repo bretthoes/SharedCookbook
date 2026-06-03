@@ -5,7 +5,7 @@ using SharedCookbook.Domain.ValueObjects;
 
 namespace SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 
-public sealed record CreateRecipeCommand : IRequest<int>
+public sealed record CreateRecipeCommand : IRequest<Guid>
 {
     public required CreateRecipeDto Recipe { get; init; }
 }
@@ -15,9 +15,9 @@ public sealed class CreateRecipeCommandHandler(
     IOptions<ImageUploadOptions> options,
     IUser user,
     IMediator mediator)
-    : IRequestHandler<CreateRecipeCommand, int>
+    : IRequestHandler<CreateRecipeCommand, Guid>
 {
-    public async Task<int> Handle(CreateRecipeCommand command, CancellationToken ct = default)
+    public async Task<Guid> Handle(CreateRecipeCommand command, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(user.Id);
 

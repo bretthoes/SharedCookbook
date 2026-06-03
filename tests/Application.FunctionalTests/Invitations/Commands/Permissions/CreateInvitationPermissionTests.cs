@@ -9,7 +9,7 @@ using static Common.CookbookPermissionScenario;
 
 public class WhenViewerCreatesInvitation : BaseTestFixture
 {
-    private int _cookbookId;
+    private Guid _cookbookId;
 
     [SetUp]
     public async Task SetUp()
@@ -29,7 +29,7 @@ public class WhenViewerCreatesInvitation : BaseTestFixture
 
 public class WhenNonMemberCreatesInvitation : BaseTestFixture
 {
-    private int _cookbookId;
+    private Guid _cookbookId;
 
     [SetUp]
     public async Task SetUp()
@@ -49,7 +49,7 @@ public class WhenNonMemberCreatesInvitation : BaseTestFixture
 
 public class WhenOwnerCreatesInvitation : BaseTestFixture
 {
-    private int _cookbookId;
+    private Guid _cookbookId;
     private string _inviteeUserId = null!;
 
     [SetUp]
@@ -65,7 +65,7 @@ public class WhenOwnerCreatesInvitation : BaseTestFixture
     public async Task ShouldReturnInvitationId() =>
         Assert.That(
             await SendAsync(new CreateInvitationCommand(_cookbookId, InviteeEmail)),
-            Is.GreaterThan(0));
+            Is.Not.Empty);
 
     [Test]
     public async Task ShouldCreateInvitationForRecipient()
@@ -81,7 +81,7 @@ public class WhenOwnerCreatesInvitation : BaseTestFixture
 
 public class WhenContributorCreatesInvitation : BaseTestFixture
 {
-    private int _cookbookId;
+    private Guid _cookbookId;
 
     [SetUp]
     public async Task SetUp()
@@ -96,5 +96,5 @@ public class WhenContributorCreatesInvitation : BaseTestFixture
     public async Task ShouldReturnInvitationId() =>
         Assert.That(
             await SendAsync(new CreateInvitationCommand(_cookbookId, InviteeEmail)),
-            Is.GreaterThan(0));
+            Is.Not.EqualTo(Guid.Empty));
 }

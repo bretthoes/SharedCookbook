@@ -1,14 +1,14 @@
 ﻿namespace SharedCookbook.Application.Invitations.Commands.CreateInvitation;
 
-public sealed record CreateInvitationCommand(int CookbookId, string Email) : IRequest<int>;
+public sealed record CreateInvitationCommand(Guid CookbookId, string Email) : IRequest<Guid>;
 
 public sealed class CreateInvitationCommandHandler(
     IApplicationDbContext context,
     IIdentityService identityService,
     IUser user
-) : IRequestHandler<CreateInvitationCommand, int>
+) : IRequestHandler<CreateInvitationCommand, Guid>
 {
-    public async Task<int> Handle(CreateInvitationCommand command, CancellationToken ct = default)
+    public async Task<Guid> Handle(CreateInvitationCommand command, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(user.Id);
 

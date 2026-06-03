@@ -14,16 +14,15 @@ public class WhenCookbookIsInvalid : BaseTestFixture
         await RunAsDefaultUserAsync();
     }
 
-    [TestCase(0)]
-    [TestCase(-1)]
-    public void ShouldThrowValidationException(int cookbookId)
+    [Test]
+    public void ShouldThrowValidationException()
     {
         var command = new CreateRecipeCommand
         {
             Recipe = new CreateRecipeDto
             {
                 Title = TestData.AnyNonEmptyString,
-                CookbookId = cookbookId
+                CookbookId = Guid.Empty
             }
         };
 

@@ -5,7 +5,6 @@ public class GetMembershipByCookbookQueryValidator : AbstractValidator<GetMember
     public GetMembershipByCookbookQueryValidator()
     {
         RuleFor(query => query.CookbookId)
-            .GreaterThan(0)
-            .WithMessage("CookbookId must be greater than zero.");
+            .NotEmpty();
     }
 }

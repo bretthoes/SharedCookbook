@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Application.Memberships.Queries.GetMembershipByCookbook;
 
-public sealed record GetMembershipByCookbookQuery(int CookbookId) : IRequest<MembershipDto>;
+public sealed record GetMembershipByCookbookQuery(Guid CookbookId) : IRequest<MembershipDto>;
 
 public sealed class GetMembershipByCookbookAndEmailQueryHandler(IApplicationDbContext context, IUser user)
     : IRequestHandler<GetMembershipByCookbookQuery, MembershipDto>

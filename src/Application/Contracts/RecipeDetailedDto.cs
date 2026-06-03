@@ -7,7 +7,7 @@ public sealed class RecipeDetailedDto
     [JsonIgnore]
     internal string? AuthorId { get; init; }
     
-    public required int Id { get; init; }
+    public required Guid Id { get; init; }
 
     public required string Title { get; init; }
 

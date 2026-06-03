@@ -9,7 +9,7 @@ public sealed class InvitationResponder(
     IUser user,
     TimeProvider clock) : IInvitationResponder
 {
-    public async Task<int> Respond(
+    public async Task<Guid> Respond(
         BaseInvitation invite,
         InvitationStatus decision,
         CancellationToken ct = default)

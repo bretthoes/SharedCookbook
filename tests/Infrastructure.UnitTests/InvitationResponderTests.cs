@@ -20,14 +20,14 @@ public class InvitationResponderTests
         _user = new Mock<IUser>();
         _clock = new Mock<TimeProvider>();
         _sut = new InvitationResponder(_context.Object, _user.Object, _clock.Object);
-        _activeInvitation = CookbookInvitation.Create(It.IsAny<int>(), MockUserId, It.IsAny<string>());
+        _activeInvitation = CookbookInvitation.Create(It.IsAny<Guid>(), MockUserId, It.IsAny<string>());
         _user.SetupGet(user => user.Id).Returns(MockUserId);
     }
 
     [Test]
     public async Task WhenCurrentStatusIsSameAsUpdatedReturnsId()
     {
-        int actual = await _sut.Respond(_activeInvitation, _activeInvitation.Status);
+        Guid actual = await _sut.Respond(_activeInvitation, _activeInvitation.Status);
 
         Assert.That(actual, Is.EqualTo(_activeInvitation.Id));
     }

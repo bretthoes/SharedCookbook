@@ -10,7 +10,7 @@ using static Common.CookbookPermissionScenario;
 
 public class WhenOwnerUpdatesOwnMembership : BaseTestFixture
 {
-    private int _ownerMembershipId;
+    private Guid _ownerMembershipId;
 
     [SetUp]
     public async Task SetUp()
@@ -29,7 +29,7 @@ public class WhenOwnerUpdatesOwnMembership : BaseTestFixture
 
 public class WhenContributorRemovesMember : BaseTestFixture
 {
-    private int _ownerMembershipId;
+    private Guid _ownerMembershipId;
 
     [SetUp]
     public async Task SetUp()
@@ -48,7 +48,7 @@ public class WhenContributorRemovesMember : BaseTestFixture
 
 public class WhenContributorLeavesCookbook : BaseTestFixture
 {
-    private int _contributorMembershipId;
+    private Guid _contributorMembershipId;
 
     [SetUp]
     public async Task SetUp()
@@ -69,7 +69,7 @@ public class WhenContributorLeavesCookbook : BaseTestFixture
 
 public class WhenOwnerRemovesMember : BaseTestFixture
 {
-    private int _contributorMembershipId;
+    private Guid _contributorMembershipId;
 
     [SetUp]
     public async Task SetUp()
@@ -90,7 +90,7 @@ public class WhenOwnerRemovesMember : BaseTestFixture
 
 public class WhenNonMemberRemovesMembership : BaseTestFixture
 {
-    private int _contributorMembershipId;
+    private Guid _contributorMembershipId;
 
     [SetUp]
     public async Task SetUp()
@@ -109,7 +109,7 @@ public class WhenNonMemberRemovesMembership : BaseTestFixture
 
 public class WhenContributorUpdatesMembership : BaseTestFixture
 {
-    private int _contributorMembershipId;
+    private Guid _contributorMembershipId;
 
     [SetUp]
     public async Task SetUp()
@@ -128,7 +128,7 @@ public class WhenContributorUpdatesMembership : BaseTestFixture
 
 public class WhenNonMemberUpdatesMembership : BaseTestFixture
 {
-    private int _contributorMembershipId;
+    private Guid _contributorMembershipId;
 
     [SetUp]
     public async Task SetUp()
@@ -148,7 +148,7 @@ public class WhenNonMemberUpdatesMembership : BaseTestFixture
 public class WhenAdminPromotesContributorToAdmin : BaseTestFixture
 {
     private const string AdminEmail = "admin@test.local";
-    private int _contributorMembershipId;
+    private Guid _contributorMembershipId;
 
     [SetUp]
     public async Task SetUp()

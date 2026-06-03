@@ -2,7 +2,7 @@
 
 public sealed record CookbookBriefDto
 {
-    public required int Id { get; init; }
+    public required Guid Id { get; init; }
 
     public required string Title { get; init; }
 

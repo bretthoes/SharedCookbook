@@ -93,8 +93,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "integer",
-                  "format": "int32"
+                  "type": "string",
+                  "format": "guid"
                 }
               }
             }
@@ -139,8 +139,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "format": "guid"
             },
             "x-position": 1
           }
@@ -219,8 +219,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "format": "guid"
             },
             "x-position": 1
           }
@@ -456,8 +456,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "integer",
-                  "format": "int32"
+                  "type": "string",
+                  "format": "guid"
                 }
               }
             }
@@ -578,8 +578,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "format": "guid"
             },
             "x-position": 1
           }
@@ -658,8 +658,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "format": "guid"
             },
             "x-position": 1
           }
@@ -920,8 +920,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "format": "guid"
             },
             "x-position": 1
           }
@@ -985,8 +985,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "format": "guid"
             },
             "x-position": 1
           }
@@ -1065,8 +1065,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "format": "guid"
             },
             "x-position": 1
           }
@@ -1135,8 +1135,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "format": "guid"
             },
             "x-position": 1
           }
@@ -1202,8 +1202,8 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "format": "guid"
             },
             "x-position": 1
           },
@@ -1382,8 +1382,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "format": "guid"
             },
             "x-position": 1
           }
@@ -1447,8 +1447,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "format": "guid"
             },
             "x-position": 1
           }
@@ -1527,8 +1527,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "format": "guid"
             },
             "x-position": 1
           }
@@ -1597,8 +1597,8 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "format": "guid"
             },
             "x-position": 1
           },
@@ -1691,8 +1691,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "integer",
-                  "format": "int32"
+                  "type": "string",
+                  "format": "guid"
                 }
               }
             }
@@ -1747,8 +1747,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "format": "guid"
             },
             "x-position": 1
           }
@@ -2715,8 +2715,8 @@
         ],
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "guid"
           },
           "title": {
             "type": "string"
@@ -2806,8 +2806,8 @@
         "additionalProperties": false,
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "guid"
           },
           "title": {
             "type": "string",
@@ -2857,12 +2857,12 @@
         ],
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "guid"
           },
           "cookbookId": {
-            "type": "integer",
-            "format": "int32",
+            "type": "string",
+            "format": "guid",
             "nullable": true
           },
           "senderName": {
@@ -2907,8 +2907,8 @@
         "additionalProperties": false,
         "properties": {
           "cookbookId": {
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "guid"
           },
           "email": {
             "type": "string"
@@ -2920,8 +2920,8 @@
         "additionalProperties": false,
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "guid"
           },
           "newStatus": {
             "$ref": "#/components/schemas/InvitationStatus"
@@ -2942,8 +2942,8 @@
         "additionalProperties": false,
         "properties": {
           "cookbookId": {
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "guid"
           }
         }
       },
@@ -2967,8 +2967,8 @@
         ],
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "guid"
           },
           "name": {
             "type": "string",
@@ -3030,8 +3030,8 @@
         "additionalProperties": false,
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "guid"
           },
           "tier": {
             "$ref": "#/components/schemas/MembershipTier"
@@ -3050,8 +3050,8 @@
         ],
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "guid"
           },
           "actionType": {
             "$ref": "#/components/schemas/CookbookNotificationActionType"
@@ -3061,15 +3061,15 @@
             "format": "date-time"
           },
           "cookbookId": {
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "guid"
           },
           "cookbookTitle": {
             "type": "string"
           },
           "recipeId": {
-            "type": "integer",
-            "format": "int32",
+            "type": "string",
+            "format": "guid",
             "nullable": true
           },
           "recipeTitle": {
@@ -3158,8 +3158,8 @@
         ],
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "guid"
           },
           "title": {
             "type": "string"
@@ -3287,10 +3287,6 @@
           "ordinal"
         ],
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
           "text": {
             "type": "string"
           },
@@ -3312,10 +3308,6 @@
           "ordinal"
         ],
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
           "name": {
             "type": "string"
           },
@@ -3334,10 +3326,6 @@
           "ingredients"
         ],
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
           "title": {
             "type": "string"
           },
@@ -3362,10 +3350,6 @@
           "ordinal"
         ],
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
           "name": {
             "type": "string"
           },
@@ -3417,8 +3401,8 @@
         ],
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "guid"
           },
           "title": {
             "type": "string"
@@ -3502,8 +3486,8 @@
             ],
             "properties": {
               "cookbookId": {
-                "type": "integer",
-                "format": "int32"
+                "type": "string",
+                "format": "guid"
               }
             }
           }
@@ -3646,8 +3630,8 @@
             ],
             "properties": {
               "id": {
-                "type": "integer",
-                "format": "int32"
+                "type": "string",
+                "format": "guid"
               }
             }
           }

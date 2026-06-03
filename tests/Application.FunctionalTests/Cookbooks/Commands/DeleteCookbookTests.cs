@@ -17,7 +17,7 @@ public class DeleteCookbookTests : BaseTestFixture
     [Test]
     public void ShouldRequireValidCookbookId()
     {
-        var command = new DeleteCookbookCommand(Id: 99);
+        var command = new DeleteCookbookCommand(Id: Guid.NewGuid());
 
         Assert.That(() => SendAsync(command), Throws.TypeOf<NotFoundException>());
     }

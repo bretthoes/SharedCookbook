@@ -12,7 +12,6 @@ public class CreateInvitationCommandValidator : AbstractValidator<CreateInvitati
             .WithMessage("Email must be a valid email address.");
 
         RuleFor(command => command.CookbookId)
-            .GreaterThan(0)
-            .WithMessage("CookbookId must be greater than zero.");
+            .NotEmpty();
     }
 }

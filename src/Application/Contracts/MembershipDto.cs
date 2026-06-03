@@ -4,7 +4,7 @@ namespace SharedCookbook.Application.Contracts;
 
 public sealed record MembershipDto
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     public string? Name { get; init; }
 

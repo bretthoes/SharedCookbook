@@ -8,7 +8,7 @@ public class WhenNewDefault
     private CookbookMembership _actual = null!;
 
     [OneTimeSetUp]
-    public void OneTimeSetup() => _actual = CookbookMembership.NewDefault(cookbookId: 1);
+    public void OneTimeSetup() => _actual = CookbookMembership.NewDefault(cookbookId: Guid.NewGuid());
 
     [Test]
     public void ShouldHaveContributorTier() =>
@@ -17,3 +17,4 @@ public class WhenNewDefault
     [Test]
     public void ShouldNotBeOwner() => Assert.That(_actual.IsOwner, Is.False);
 }
+

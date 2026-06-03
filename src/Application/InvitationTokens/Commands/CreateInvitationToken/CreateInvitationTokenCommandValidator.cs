@@ -5,7 +5,6 @@ public class CreateInvitationTokenCommandValidator : AbstractValidator<CreateInv
     public CreateInvitationTokenCommandValidator()
     {
         RuleFor(command => command.CookbookId)
-            .GreaterThan(0)
-            .WithMessage("CookbookId must be greater than zero.");
+            .NotEmpty();
     }
 }

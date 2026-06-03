@@ -11,7 +11,7 @@ using static Common.CookbookPermissionScenario;
 
 public class WhenContributorDeletesOwnRecipe : BaseTestFixture
 {
-    private int _recipeId;
+    private Guid _recipeId;
 
     [SetUp]
     public async Task SetUp()
@@ -34,7 +34,7 @@ public class WhenContributorDeletesOwnRecipe : BaseTestFixture
 
 public class WhenContributorDeletesRecipe : BaseTestFixture
 {
-    private int _recipeId;
+    private Guid _recipeId;
 
     [SetUp]
     public async Task SetUp()
@@ -53,7 +53,7 @@ public class WhenContributorDeletesRecipe : BaseTestFixture
 
 public class WhenNonMemberDeletesRecipe : BaseTestFixture
 {
-    private int _recipeId;
+    private Guid _recipeId;
 
     [SetUp]
     public async Task SetUp()

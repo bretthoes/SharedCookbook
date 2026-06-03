@@ -5,7 +5,7 @@ public class GetMembershipsWithPaginationQueryValidator : AbstractValidator<GetM
     public GetMembershipsWithPaginationQueryValidator()
     {
         RuleFor(x => x.CookbookId)
-            .GreaterThan(0).WithMessage("CookbookId at least greater than or equal to 1.");
+            .NotEmpty();
 
         RuleFor(x => x.PageNumber)
             .GreaterThan(0).WithMessage("PageNumber at least greater than or equal to 1.");

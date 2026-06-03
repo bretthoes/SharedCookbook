@@ -10,7 +10,7 @@ using static Common.CookbookPermissionScenario;
 
 public class WhenViewerCreatesRecipe : BaseTestFixture
 {
-    private int _cookbookId;
+    private Guid _cookbookId;
 
     [SetUp]
     public async Task SetUp()
@@ -29,7 +29,7 @@ public class WhenViewerCreatesRecipe : BaseTestFixture
 
 public class WhenNonMemberCreatesRecipe : BaseTestFixture
 {
-    private int _cookbookId;
+    private Guid _cookbookId;
 
     [SetUp]
     public async Task SetUp()
@@ -48,7 +48,7 @@ public class WhenNonMemberCreatesRecipe : BaseTestFixture
 
 public class WhenContributorCreatesRecipe : BaseTestFixture
 {
-    private int _cookbookId;
+    private Guid _cookbookId;
 
     [SetUp]
     public async Task SetUp()
@@ -62,5 +62,5 @@ public class WhenContributorCreatesRecipe : BaseTestFixture
     public async Task ShouldCreateRecipe() =>
         Assert.That(
             await SendAsync(new CreateRecipeCommand { Recipe = GetSimpleCreateRecipeDto(_cookbookId) }),
-            Is.GreaterThan(0));
+            Is.Not.EqualTo(Guid.Empty));
 }

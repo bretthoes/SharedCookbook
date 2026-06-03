@@ -5,7 +5,7 @@ namespace SharedCookbook.Application.Common.Interfaces;
 
 public interface IInvitationResponder
 {
- Task<int> Respond(BaseInvitation invite,
+ Task<Guid> Respond(BaseInvitation invite,
      InvitationStatus decision,
      CancellationToken ct = default);   
 }

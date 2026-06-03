@@ -23,7 +23,7 @@ public class InvitationAcceptanceTests : BaseTestFixture
 
         var invitation = await SingleAsync<CookbookInvitation>(i =>
             i.CookbookId == cookbook.Id && i.RecipientPersonId == userId);
-        int invitationId = await SendAsync(new UpdateInvitationCommand(invitation.Id, InvitationStatus.Accepted));
+        Guid invitationId = await SendAsync(new UpdateInvitationCommand(invitation.Id, InvitationStatus.Accepted));
 
         var updatedInvitation = await FindAsync<CookbookInvitation>(invitationId);
         using (Assert.EnterMultipleScope())
@@ -74,6 +74,6 @@ public class InvitationAcceptanceTests : BaseTestFixture
 
     private static Cookbook WithActiveInvitation(string title, string recipientUserId) => new()
     {
-        Title = title, Invitations = [CookbookInvitation.Create(cookbookId: 0, recipientUserId, It.IsAny<string>())]
+        Title = title, Invitations = [CookbookInvitation.Create(cookbookId: Guid.Empty, recipientUserId, It.IsAny<string>())]
     };
 }

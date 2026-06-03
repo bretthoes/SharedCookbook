@@ -20,7 +20,7 @@ public class WhenTitleIsUpdated : BaseTestFixture
         await ResetState();
         await RunAsDefaultUserAsync();
         
-        int recipeId = await CreateSimpleRecipe();
+        Guid recipeId = await CreateSimpleRecipe();
 
         var updateDto = GetSimpleUpdateRecipeDto(recipeId, UpdatedTitle);
         
@@ -33,7 +33,7 @@ public class WhenTitleIsUpdated : BaseTestFixture
     public void ShouldNotBeNull() => Assert.That(_actual, Is.Not.Null);
 
     [Test]
-    public void ShouldHaveId() => Assert.That(_actual!.Id, Is.GreaterThan(expected: 0));
+    public void ShouldHaveId() => Assert.That(_actual!.Id, Is.Not.EqualTo(Guid.Empty));
     
     [Test]
     public void ShouldHaveNewTitle() => Assert.That(_actual!.Title, Is.EqualTo(expected: UpdatedTitle ));

@@ -1,6 +1,6 @@
 ﻿namespace SharedCookbook.Application.Invitations.Commands.DeleteInvitation;
 
-public sealed record DeleteInvitationCommand(int Id) : IRequest;
+public sealed record DeleteInvitationCommand(Guid Id) : IRequest;
 
 public sealed class DeleteInvitationCommandHandler(IApplicationDbContext context) : IRequestHandler<DeleteInvitationCommand>
 {

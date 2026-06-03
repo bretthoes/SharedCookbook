@@ -24,7 +24,7 @@ public class GetRecipeTests : BaseTestFixture
     public void ShouldNotBeNull() => Assert.That(_actual, Is.Not.Null);
 
     [Test]
-    public void ShouldHaveId() => Assert.That(_actual!.Id, Is.GreaterThan(expected: 0));
+    public void ShouldHaveId() => Assert.That(_actual!.Id, Is.Not.EqualTo(expected: Guid.Empty));
     
     [Test]
     public void ShouldHaveTitle() => Assert.That(_actual!.Title, Is.EqualTo(expected: Title));

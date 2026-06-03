@@ -7,7 +7,7 @@ namespace SharedCookbook.Application.UnitTests.Common.Mappings;
 
 public class RecipeMappingTests
 {
-    private const int ExpectedId = 1;
+    private static readonly Guid ExpectedId = Guid.NewGuid();
     private const string ExpectedAuthorId = "creator-user-id";
     private const string ExpectedTitle = "TestTitle";
     private const string ExpectedSummary = "TestSummary";

@@ -5,8 +5,7 @@ public class GetRecipesQueryValidator : AbstractValidator<GetRecipesQuery>
     public GetRecipesQueryValidator()
     {
         RuleFor(query => query.CookbookId)
-            .GreaterThanOrEqualTo(1)
-            .WithMessage("CookbookId at least greater than or equal to 1.");
+            .NotEmpty();
 
         RuleFor(query => query.PageNumber)
             .GreaterThanOrEqualTo(1)

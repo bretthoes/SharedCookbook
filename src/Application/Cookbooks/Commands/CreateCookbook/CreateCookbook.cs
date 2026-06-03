@@ -3,15 +3,15 @@ using SharedCookbook.Application.Images.Commands.CreateImages;
 
 namespace SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
 
-public sealed record CreateCookbookCommand(string Title, string? Image = null) : IRequest<int>;
+public sealed record CreateCookbookCommand(string Title, string? Image = null) : IRequest<Guid>;
 
 public sealed class CreateCookbookCommandHandler(
     IApplicationDbContext context,
     IUser user,
     IIdentityService identityService,
-    IOptions<ImageUploadOptions> options) : IRequestHandler<CreateCookbookCommand, int>
+    IOptions<ImageUploadOptions> options) : IRequestHandler<CreateCookbookCommand, Guid>
 {
-    public async Task<int> Handle(CreateCookbookCommand request, CancellationToken ct = default)
+    public async Task<Guid> Handle(CreateCookbookCommand request, CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(user.Id);
         

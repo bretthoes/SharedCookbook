@@ -162,6 +162,15 @@ public class Testing
         return await context.FindAsync<TEntity>(keyValues);
     }
 
+    internal static async Task<TEntity?> FirstOrDefaultAsync<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity : class
+    {
+        using var scope = _scopeFactory.CreateScope();
+
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        return await context.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(predicate);
+    }
+
     internal static async Task<List<TEntity>> ListAsync<TEntity>() where TEntity : class
     {
         using var scope = _scopeFactory.CreateScope();
@@ -182,9 +191,9 @@ public class Testing
         await context.SaveChangesAsync();
     }
     
-    internal static async Task<int> CreateSimpleRecipe()
+    internal static async Task<Guid> CreateSimpleRecipe()
     {
-        int cookbookId = await SendAsync(new CreateCookbookCommand(Title: TestData.AnyNonEmptyString));
+        Guid cookbookId = await SendAsync(new CreateCookbookCommand(Title: TestData.AnyNonEmptyString));
 
         var command = new CreateRecipeCommand
         {

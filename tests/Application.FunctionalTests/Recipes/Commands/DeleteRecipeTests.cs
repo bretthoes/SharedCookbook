@@ -20,7 +20,7 @@ public class DeleteRecipeTests : BaseTestFixture
     [Test]
     public void ShouldRequireValidRecipeId()
     {
-        var command = new DeleteRecipeCommand(Id: 99);
+        var command = new DeleteRecipeCommand(Id: Guid.NewGuid());
 
         Assert.ThrowsAsync<NotFoundException>(() => SendAsync(command));
     }

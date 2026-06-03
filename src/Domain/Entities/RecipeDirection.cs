@@ -1,9 +1,7 @@
 ﻿namespace SharedCookbook.Domain.Entities;
 
-public sealed class RecipeDirection : BaseAuditableEntity
+public sealed class RecipeDirection
 {
-    public int RecipeId { get; init; }
-
     public required string Text
     {
         get;
@@ -30,7 +28,7 @@ public sealed class RecipeDirection : BaseAuditableEntity
         init
         {
             if (value is not null)
-                ArgumentOutOfRangeException.ThrowIfGreaterThan(value.Length,Constraints.TextMaxLength, value);
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(value.Length, Constraints.ImageMaxLength, value);
 
             field = value;
         }

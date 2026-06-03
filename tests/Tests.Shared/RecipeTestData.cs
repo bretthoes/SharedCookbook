@@ -21,7 +21,7 @@ public static class RecipeTestData
     public const string ImageName = "pasta-image.jpg";
     public const int ImageOrdinal = 1;
     
-    public static CreateRecipeDto GetSimpleCreateRecipeDto(int cookbookId) => new()
+    public static CreateRecipeDto GetSimpleCreateRecipeDto(Guid cookbookId) => new()
     {
         Title = Title,
         CookbookId = cookbookId,
@@ -49,7 +49,7 @@ public static class RecipeTestData
         ]
     };
     
-    public static UpdateRecipeDto GetSimpleUpdateRecipeDto(int id, string title = Title) => new()
+    public static UpdateRecipeDto GetSimpleUpdateRecipeDto(Guid id, string title = Title) => new()
     {
         Id = id,
         Title = title,
@@ -62,7 +62,6 @@ public static class RecipeTestData
         [
             new IngredientSectionDto
             {
-                Id = 0,
                 Title = "",
                 Ordinal = 0,
                 Ingredients =

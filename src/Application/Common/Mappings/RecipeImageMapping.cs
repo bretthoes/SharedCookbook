@@ -15,11 +15,11 @@ internal static class RecipeImageMapping
     }
 
     private static readonly Func<RecipeImageDto, string, RecipeImage> ToEntity = (dto, imageBaseUrl) =>
-            new RecipeImage { Id = dto.Id, Name =  dto.Name.StripPrefixUrl(imageBaseUrl), Ordinal =  dto.Ordinal };
+            new RecipeImage { Name = dto.Name.StripPrefixUrl(imageBaseUrl), Ordinal = dto.Ordinal };
 
     private static readonly Func<RecipeImage, string, RecipeImageDto> ToDto =
         (image, imageBaseUrl) => new RecipeImageDto
         {
-            Id = image.Id, Name = image.Name.EnsurePrefixUrl(imageBaseUrl), Ordinal = image.Ordinal
+            Name = image.Name.EnsurePrefixUrl(imageBaseUrl), Ordinal = image.Ordinal
         };
 }

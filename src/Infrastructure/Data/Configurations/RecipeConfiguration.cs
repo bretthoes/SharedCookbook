@@ -78,6 +78,48 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
         builder.Navigation(recipe => recipe.DietaryTags).IsRequired();
         builder.Navigation(recipe => recipe.MealTypes).IsRequired();
 
+        // Directions, Images, IngredientSections, and Nutrition are stored as jsonb columns
+        // on the recipe row, eliminating the need for joins on every recipe read.
+        builder.OwnsMany(recipe => recipe.Directions, directions =>
+        {
+            directions.ToJson("directions");
+            directions.Property(d => d.Text).HasMaxLength(RecipeDirection.Constraints.TextMaxLength);
+            directions.Property(d => d.Ordinal);
+            directions.Property(d => d.Image).HasMaxLength(RecipeDirection.Constraints.ImageMaxLength);
+        });
+
+        builder.OwnsMany(recipe => recipe.Images, images =>
+        {
+            images.ToJson("images");
+            images.Property(i => i.Name).HasMaxLength(RecipeImage.Constraints.NameMaxLength);
+            images.Property(i => i.Ordinal);
+        });
+
+        builder.OwnsMany(recipe => recipe.IngredientSections, sections =>
+        {
+            sections.ToJson("ingredient_sections");
+            sections.Property(s => s.Title).HasMaxLength(IngredientSection.Constraints.TitleMaxLength);
+            sections.Property(s => s.Ordinal);
+            sections.OwnsMany(s => s.Ingredients, ingredients =>
+            {
+                ingredients.Property(i => i.Name).HasMaxLength(RecipeIngredient.Constraints.NameMaxLength);
+                ingredients.Property(i => i.Ordinal);
+                ingredients.Property(i => i.Optional);
+            });
+        });
+
+        builder.OwnsOne(recipe => recipe.Nutrition, nutrition =>
+        {
+            nutrition.ToJson("nutrition");
+            nutrition.Property(n => n.Calories);
+            nutrition.Property(n => n.Protein);
+            nutrition.Property(n => n.Fat);
+            nutrition.Property(n => n.Carbohydrates);
+            nutrition.Property(n => n.Sugar);
+            nutrition.Property(n => n.Fiber);
+            nutrition.Property(n => n.Sodium);
+        });
+
         builder.HasOne(recipe => recipe.Cookbook)
             .WithMany(cookbook => cookbook.Recipes)
             .HasForeignKey(recipe => recipe.CookbookId)
@@ -95,13 +137,5 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
             .WithOne()
             .HasForeignKey(category => category.RecipeId)
             .HasConstraintName("FK_ingredient_category__recipe_id");
-        builder.HasMany(recipe => recipe.Directions)
-            .WithOne()
-            .HasForeignKey(rd => rd.RecipeId)
-            .HasConstraintName("FK_recipe_direction__recipe_id");
-        builder.HasOne(recipe => recipe.Nutrition)
-            .WithOne()
-            .HasForeignKey<RecipeNutrition>(nutrition => nutrition.RecipeId)
-            .HasConstraintName("FK_recipe_nutrition__recipe_id");
     }
 }
