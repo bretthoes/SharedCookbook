@@ -21,7 +21,6 @@ public class UpdateUserCommandHandler(
 
         if (!result.Succeeded) throw new ValidationException("Could not update user.");
 
-        // TODO move to domain event handler??
         await propagation.PropagateAsync(user.Id, displayName, ct);
     }
 }
