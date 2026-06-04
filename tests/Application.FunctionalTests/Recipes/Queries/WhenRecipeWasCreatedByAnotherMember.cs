@@ -31,7 +31,7 @@ public class WhenRecipeWasCreatedByAnotherMember : BaseTestFixture
         var contributorUserId = await RunAsUserAsync(ContributorEmail, ContributorPassword, []);
         await SendAsync(new UpdateUserCommand(ContributorDisplayName));
 
-        await AddAsync(CookbookMembership.NewDefault(cookbookId, contributorUserId));
+        await AddAsync(CookbookMembership.NewDefault(cookbookId, contributorUserId, It.IsAny<string>()));
 
         _actual = await SendAsync(new GetRecipeQuery(recipeId));
     }

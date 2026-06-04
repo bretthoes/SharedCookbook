@@ -13,13 +13,10 @@ public class InvitationAcceptedEventHandler(
 
         var displayName = await identityService.GetDisplayNameAsync(acceptedEvent.UserId, ct) ?? acceptedEvent.UserId;
 
-        var membership = CookbookMembership.NewDefault(acceptedEvent.CookbookId, acceptedEvent.UserId);
-        // TODO pass below into method above
-        membership.DisplayName = displayName;
+        var membership = CookbookMembership.NewDefault(acceptedEvent.CookbookId, acceptedEvent.UserId,  displayName);
         membership.AddDomainEvent(new MembershipCreatedEvent(membership));
         await context.CookbookMemberships.AddAsync(membership, ct);
         
-        // TODO why is this log not in event handler?
         logger.LogInformation(
             "InvitationAcceptedEvent handled: Invitation (ID: {InvitationId}) was accepted for Cookbook (ID: {CookbookId}) by User ID {UserId}.",
             acceptedEvent.InvitationId,

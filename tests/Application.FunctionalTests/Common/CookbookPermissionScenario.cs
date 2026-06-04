@@ -33,7 +33,7 @@ internal static class CookbookPermissionScenario
         var cookbookId = await SendAsync(new CreateCookbookCommand(Title: TestData.AnyNonEmptyString));
         var recipeId = await SendAsync(new CreateRecipeCommand { Recipe = GetSimpleCreateRecipeDto(cookbookId) });
 
-        var membership = CookbookMembership.NewDefault(cookbookId, contributorUserId);
+        var membership = CookbookMembership.NewDefault(cookbookId, contributorUserId, It.IsAny<string>());
         membership.SetTier(contributorTier);
 
         await AddAsync(membership);

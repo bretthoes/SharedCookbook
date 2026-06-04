@@ -157,7 +157,7 @@ public class WhenAdminPromotesContributorToAdmin : BaseTestFixture
         _contributorMembershipId = context.ContributorMembershipId;
 
         var adminUserId = await RunAsUserAsync(AdminEmail, ContributorPassword, []);
-        var adminMembership = CookbookMembership.NewDefault(context.CookbookId, adminUserId);
+        var adminMembership = CookbookMembership.NewDefault(context.CookbookId, adminUserId, It.IsAny<string>());
         adminMembership.SetTier(MembershipTier.Admin);
         await AddAsync(adminMembership);
 

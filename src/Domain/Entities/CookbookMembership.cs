@@ -38,11 +38,12 @@ public sealed class CookbookMembership : BaseAuditableEntity
     public static CookbookMembership NewOwner(string creatorId, string? displayName) =>
         new() { Tier = MembershipTier.Owner, CreatedBy = creatorId, DisplayName = displayName };
 
-    public static CookbookMembership NewDefault(Guid cookbookId, string? userId = null) => new()
+    public static CookbookMembership NewDefault(Guid cookbookId, string? userId, string? displayName) => new()
     {
         CookbookId = cookbookId,
         Tier = MembershipTier.Contributor,
-        CreatedBy = userId
+        CreatedBy = userId,
+        DisplayName = displayName
     };
 
     private bool CanRemoveOtherMember(CookbookMembership target) =>

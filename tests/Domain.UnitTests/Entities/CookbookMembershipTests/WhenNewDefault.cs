@@ -8,7 +8,8 @@ public class WhenNewDefault
     private CookbookMembership _actual = null!;
 
     [OneTimeSetUp]
-    public void OneTimeSetup() => _actual = CookbookMembership.NewDefault(cookbookId: Guid.NewGuid());
+    public void OneTimeSetup()
+        => _actual = CookbookMembership.NewDefault(cookbookId: Guid.NewGuid(), It.IsAny<string>(), It.IsAny<string>());
 
     [Test]
     public void ShouldHaveContributorTier() =>
