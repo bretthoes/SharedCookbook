@@ -29,17 +29,17 @@ public class S3ImageUploader(IOptions<ImageUploadOptions> storage, IHttpClientFa
         {
             ct.ThrowIfCancellationRequested();
 
-            await using var src = files[i].OpenReadStream();
-            await using var img = await ProcessToSquareAsync(src, ct);
+            await using var stream = files[i].OpenReadStream();
+            await using var image = await ProcessToSquareAsync(stream, ct);
 
-            string key = ImageUtilities.GetUniqueFileName(img.Extension);
+            string key = ImageUtilities.GetUniqueFileName(image.Extension);
             await transferUtility.UploadAsync(new TransferUtilityUploadRequest
             {
-                InputStream = img.Stream,
+                InputStream = image.Stream,
                 Key = key,
                 BucketName = storage.Value.BucketName,
                 CannedACL = S3CannedACL.PublicRead,
-                ContentType = img.ContentType
+                ContentType = image.ContentType
             }, ct);
             keys[i] = key.EnsurePrefixUrl(storage.Value.ImageBaseUrl);
         }
