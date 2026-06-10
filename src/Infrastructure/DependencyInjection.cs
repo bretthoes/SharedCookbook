@@ -102,8 +102,8 @@ public static class DependencyInjection
             builder.Configuration.GetSection(key: nameof(RecipeUrlParserOptions)));
 
         builder.Services.AddTransient<IEmailSender, EmailSender>();
-        builder.Services.Configure<EmailApiOptions>(
-            builder.Configuration.GetSection(key: nameof(EmailApiOptions)));
+        builder.Services.Configure<MailgunApiOptions>(
+            builder.Configuration.GetSection(key: nameof(MailgunApiOptions)));
         
         builder.Services.AddTransient<IOcrService, TesseractOcrService>();
         

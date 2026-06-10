@@ -8,7 +8,7 @@ namespace SharedCookbook.Infrastructure.Email;
 
 public class EmailSender(
     IHttpClientFactory clientFactory,
-    IOptions<EmailApiOptions> options,
+    IOptions<MailgunApiOptions> options,
     ILogger<EmailSender> logger) : IEmailSender
 {
     public async Task SendEmailAsync(string email, string subject, string htmlMessage)

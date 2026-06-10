@@ -1,7 +1,6 @@
 ﻿namespace SharedCookbook.Infrastructure.Email;
 
-// TODO name after service
-public class EmailApiOptions
+public class MailgunApiOptions
 {
     public required string ApiKey { get; init; }
     public required string BaseUrl { get; init; }
