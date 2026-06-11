@@ -12,21 +12,21 @@ public static class MembershipQueryExtensions
             CancellationToken ct = default) 
             => query.HasCookbookId(cookbookId).ForUserId(userId).AsNoTracking().AnyAsync(ct);
 
-        private IQueryable<CookbookMembership> ForUserId(string userId) =>
-            query.Where(membership => membership.CreatedBy == userId);
-
         public Task<CookbookMembership> GetByCookbookAndUser(Guid cookbookId, string userId, CancellationToken ct = default) =>
             query.FindForUserOrThrowAsync(cookbookId, userId, ct);
 
         public Task<CookbookMembership?> FindForUserAsync(Guid cookbookId, string userId, CancellationToken ct = default) =>
             query.ForCookbookAndUser(cookbookId, userId).SingleOrDefaultAsync(ct);
 
-        public async Task<CookbookMembership> FindForUserOrThrowAsync(
+        private async Task<CookbookMembership> FindForUserOrThrowAsync(
             Guid cookbookId,
             string userId,
             CancellationToken ct = default) =>
             await query.FindForUserAsync(cookbookId, userId, ct) ??
             throw new NotFoundException(key: $"{cookbookId}:{userId}", nameof(CookbookMembership));
+        
+        private IQueryable<CookbookMembership> ForUserId(string userId) =>
+            query.Where(membership => membership.CreatedBy == userId);
 
         private IQueryable<CookbookMembership> ForCookbookAndUser(Guid cookbookId, string userId) =>
             query.HasCookbookId(cookbookId).ForUserId(userId);

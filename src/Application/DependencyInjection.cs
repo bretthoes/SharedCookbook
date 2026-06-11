@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SharedCookbook.Application.Common.Behaviours;
-using SharedCookbook.Application.Notifications;
+using SharedCookbook.Application.Notifications.FanOut;
 using SharedCookbook.Application.Users;
 
 namespace SharedCookbook.Application;
