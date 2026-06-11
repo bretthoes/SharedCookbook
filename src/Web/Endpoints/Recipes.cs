@@ -61,6 +61,7 @@ public class Recipes : EndpointGroupBase
             .ProducesProblem(StatusCodes.Status403Forbidden)
             .ProducesProblem(StatusCodes.Status404NotFound);
 
+        // TODO rename these endpoints - recipe is redundant. Just 'parse-url' or 'parse-from-url'
         builder.MapPost(ParseFromUrl, pattern: "/parse-recipe-url")
             .RequireAuthorization()
             .RequireRateLimiting(RateLimitPolicyNames.RecipeParsingDaily)
