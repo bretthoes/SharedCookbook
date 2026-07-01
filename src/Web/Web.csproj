@@ -20,6 +20,10 @@
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+        <!-- Transitive dependency override (not used directly). Microsoft.AspNetCore.OpenApi still
+             pulls Microsoft.OpenApi 2.0.0, which triggers NU1903 (GHSA-v5pm-xwqc-g5wc). This direct
+             reference pins a patched 2.x release via Directory.Packages.props. Do not jump to 3.x —
+             it is a breaking major for AspNetCore.OpenApi. Revisit when AspNetCore.OpenApi updates. -->
         <PackageReference Include="Microsoft.OpenApi" />
         <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design">

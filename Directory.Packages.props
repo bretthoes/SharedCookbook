@@ -22,6 +22,7 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="$(EfcoreVersion)" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="$(EfcoreVersion)" />
     <PackageVersion Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.18.0" />
+    <!-- Patched override for transitive Microsoft.OpenApi from Microsoft.AspNetCore.OpenApi (see Web.csproj). -->
     <PackageVersion Include="Microsoft.OpenApi" Version="2.9.0" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.2" />
     <PackageVersion Include="OpenAI" Version="2.11.0" />
