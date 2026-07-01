@@ -28,6 +28,8 @@ Behaviors are registered in [DependencyInjection.cs](../../src/Application/Depen
 
 **Authorization** uses custom `[AllowAnonymous]` / `[Authorize]` on the request class ([AuthorizationBehaviour](../../src/Application/Common/Behaviours/AuthorizationBehaviour.cs)), not ASP.NET attributes on handlers. Default: caller must be authenticated (`IUser.Id` set). Endpoint `[RequireAuthorization()]` in Web is a separate gate.
 
+**Errors** thrown from handlers are mapped to HTTP by [CustomExceptionHandler](../../src/Web/Infrastructure/CustomExceptionHandler.cs) — see [exception-handling.md](../infrastructure/exception-handling.md).
+
 **Void commands** use `IRequest` / `IRequestHandler<T>`; the mediator maps them to `Unit` internally.
 
 ## Publish (domain events)
