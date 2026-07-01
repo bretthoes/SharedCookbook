@@ -108,6 +108,7 @@ public static class DependencyInjection
         builder.Services.AddTransient<IOcrService, TesseractOcrService>();
         
         builder.Services.AddTransient<IAiRecipeParser, OpenAiRecipeParser>();
+        builder.Services.AddTransient<IAiRecipeEditor, OpenAiRecipeEditor>();
         builder.Services.Configure<AiRecipeParserOptions>(
             builder.Configuration.GetSection(AiRecipeParserOptions.SectionName));
 

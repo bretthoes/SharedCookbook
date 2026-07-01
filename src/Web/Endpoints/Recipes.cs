@@ -3,6 +3,7 @@ using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 using SharedCookbook.Application.Recipes.Commands.DeleteRecipe;
 using SharedCookbook.Application.Recipes.Commands.ParseRecipeFromImage;
 using SharedCookbook.Application.Recipes.Commands.ParseRecipeFromUrl;
+using SharedCookbook.Application.Recipes.Commands.ApplyRecipeEditFromPrompt;
 using SharedCookbook.Application.Recipes.Commands.ParseRecipeFromVoice;
 using SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
 using SharedCookbook.Application.Recipes.Queries.GetRecipe;
@@ -85,6 +86,17 @@ public class Recipes : EndpointGroupBase
             .ProducesProblem(StatusCodes.Status401Unauthorized)
             .ProducesValidationProblem()
             .ProducesProblem(StatusCodes.Status429TooManyRequests);
+
+        builder.MapPost(ApplyEditFromPrompt, pattern: "{id}/apply-prompt")
+            .RequireAuthorization()
+            .RequireRateLimiting(RateLimitPolicyNames.RecipeParsingDaily)
+            .Produces<UpdateRecipeDto>()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status403Forbidden)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status429TooManyRequests);
     }
 
     private static Task<RecipeDetailedDto> GetById(
@@ -144,4 +156,13 @@ public class Recipes : EndpointGroupBase
         [FromBody] ParseRecipeFromVoiceCommand command,
         CancellationToken ct = default) =>
         sender.Send(command, ct);
+
+    private static Task<UpdateRecipeDto> ApplyEditFromPrompt(
+        ISender sender,
+        [FromRoute] Guid id,
+        [FromBody] ApplyRecipeEditFromPromptRequest body,
+        CancellationToken ct = default) =>
+        sender.Send(new ApplyRecipeEditFromPromptCommand(id, body.Prompt, body.Recipe), ct);
 }
+
+public sealed record ApplyRecipeEditFromPromptRequest(string Prompt, UpdateRecipeDto Recipe);
