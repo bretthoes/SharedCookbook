@@ -13,8 +13,7 @@ Implements Application interfaces: EF Core, ASP.NET Identity, file storage, emai
 | `Identity/` | Users, roles, bearer tokens, Google/Apple/Facebook login | `ApplicationUser`, `ExternalLoginService` — see [application-user.md](../../docs/architecture/application-user.md) |
 | `FileStorage/` | `S3ImageUploader` | `ImageUploadOptions` in config |
 | `Email/` | `EmailSender` | External email API |
-| `Ocr/` | `TesseractOcrService` | Native tessdata under `src/Web/wwwroot/tessdata/` |
-| `Ai/` | `OpenAiRecipeParser` | Voice transcript → recipe draft |
+| `Ai/` | `OpenAiRecipeParser`, `OpenAiRecipeImageParser` | Voice transcript and photo → recipe draft |
 | `RecipeUrlParser/` | `SpoonacularApiParser` | URL → recipe draft |
 | `Security/` | `Sha256TokenFactory` | Invitation/share-link tokens |
 
@@ -38,7 +37,7 @@ Non-obvious flows (external APIs, native deps, deploy caveats) are documented fo
 
 | Doc | Topic |
 |-----|-------|
-| [recipe-from-photo.md](../../docs/features/recipe-from-photo.md) | Tesseract OCR |
+| [recipe-from-photo.md](../../docs/features/recipe-from-photo.md) | OpenAI vision for photo → recipe draft |
 | [recipe-from-url.md](../../docs/features/recipe-from-url.md) | Spoonacular + optional S3 re-host |
 | [recipe-from-voice.md](../../docs/features/recipe-from-voice.md) | OpenAI parsing |
 | [social-sign-in.md](../../docs/features/social-sign-in.md) | Google / Apple / Facebook |

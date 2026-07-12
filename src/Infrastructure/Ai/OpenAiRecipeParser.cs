@@ -1,10 +1,6 @@
-using System.ClientModel;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.Extensions.Options;
 using OpenAI;
 using OpenAI.Chat;
-using SharedCookbook.Application.Common.Exceptions;
 using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Application.Contracts;
 
@@ -12,64 +8,7 @@ namespace SharedCookbook.Infrastructure.Ai;
 
 public sealed class OpenAiRecipeParser : IAiRecipeParser
 {
-    private const int MaxRetries = 3;
-
     private readonly ChatClient _chatClient;
-
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true,
-    };
-
-    private const string RecipeJsonSchema = """
-        {
-            "type": "object",
-            "properties": {
-                "valid": { "type": "boolean" },
-                "title": { "type": ["string", "null"] },
-                "summary": { "type": ["string", "null"] },
-                "preparationTimeInMinutes": { "type": ["integer", "null"] },
-                "cookingTimeInMinutes": { "type": ["integer", "null"] },
-                "bakingTimeInMinutes": { "type": ["integer", "null"] },
-                "servings": { "type": ["integer", "null"] },
-                "ingredients": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "name": { "type": "string" },
-                            "optional": { "type": "boolean" }
-                        },
-                        "required": ["name", "optional"],
-                        "additionalProperties": false
-                    }
-                },
-                "directions": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "text": { "type": "string" }
-                        },
-                        "required": ["text"],
-                        "additionalProperties": false
-                    }
-                }
-            },
-            "required": [
-                "valid",
-                "title",
-                "summary",
-                "preparationTimeInMinutes",
-                "cookingTimeInMinutes",
-                "bakingTimeInMinutes",
-                "servings",
-                "ingredients",
-                "directions"
-            ],
-            "additionalProperties": false
-        }
-        """;
 
     private const string SystemPrompt = """
         You are a recipe parser that converts spoken recipe descriptions into structured JSON.
@@ -112,13 +51,16 @@ public sealed class OpenAiRecipeParser : IAiRecipeParser
         {"valid":false,"title":null,"summary":null,"preparationTimeInMinutes":null,"cookingTimeInMinutes":null,"bakingTimeInMinutes":null,"servings":null,"ingredients":[],"directions":[]}
         """;
 
+    private const string InvalidContentMessage =
+        "The transcript did not contain enough information to build a recipe.";
+
     public OpenAiRecipeParser(IOptions<AiRecipeParserOptions> options)
     {
         _chatClient = new OpenAIClient(options.Value.ApiKey)
             .GetChatClient(options.Value.Model);
     }
 
-    public async Task<CreateRecipeDto> ParseAsync(string transcript, CancellationToken ct = default)
+    public Task<CreateRecipeDto> ParseAsync(string transcript, CancellationToken ct = default)
     {
         List<ChatMessage> messages =
         [
@@ -130,102 +72,6 @@ public sealed class OpenAiRecipeParser : IAiRecipeParser
             new UserChatMessage(transcript),
         ];
 
-        var completionOptions = new ChatCompletionOptions
-        {
-            ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
-                "parsed_recipe",
-                BinaryData.FromString(RecipeJsonSchema),
-                null,
-                true),
-            Temperature = 0,
-        };
-
-        for (var attempt = 0; attempt < MaxRetries; attempt++)
-        {
-            try
-            {
-                var completion = await _chatClient.CompleteChatAsync(messages, completionOptions, ct);
-                var json = completion.Value.Content[0].Text;
-                return MapToDto(json);
-            }
-            catch (ClientResultException ex) when (ex.Status == 429)
-            {
-                throw new RateLimitExceededException();
-            }
-            catch (ClientResultException ex) when (IsTransient(ex.Status))
-            {
-                if (attempt == MaxRetries - 1)
-                    throw;
-
-                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, attempt)), ct);
-            }
-            catch (HttpRequestException) when (attempt < MaxRetries - 1)
-            {
-                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, attempt)), ct);
-            }
-        }
-
-        throw new InvalidOperationException("Failed to parse recipe after multiple attempts.");
+        return OpenAiRecipeParsing.CompleteChatAsync(_chatClient, messages, InvalidContentMessage, ct);
     }
-
-    private static bool IsTransient(int status) => status is 500 or 502 or 503;
-
-    private static CreateRecipeDto MapToDto(string json)
-    {
-        var parsed = JsonSerializer.Deserialize<ParsedRecipe>(json, JsonOptions)
-            ?? throw new InvalidOperationException("AI returned an empty or unparseable recipe response.");
-
-        if (!parsed.Valid)
-            throw new UnprocessableContentException("The transcript did not contain enough information to build a recipe.");
-
-        var ingredients = parsed.Ingredients ?? [];
-        var directions = parsed.Directions ?? [];
-        var title = string.IsNullOrWhiteSpace(parsed.Title) ? "Untitled Recipe" : parsed.Title.Trim();
-
-        return new CreateRecipeDto
-        {
-            Title = title,
-            Summary = parsed.Summary,
-            PreparationTimeInMinutes = parsed.PreparationTimeInMinutes,
-            CookingTimeInMinutes = parsed.CookingTimeInMinutes,
-            BakingTimeInMinutes = parsed.BakingTimeInMinutes,
-            Servings = parsed.Servings,
-            IngredientSections = [
-                IngredientSectionDto.DefaultWrapper(ingredients
-                .Select((ingredient, i) => new RecipeIngredientDto
-                {
-                    Name = ingredient.Name,
-                    Optional = ingredient.Optional,
-                    Ordinal = i + 1,
-                })
-                .ToList())
-            ],
-            Directions = directions
-                .Select((dir, i) => new RecipeDirectionDto
-                {
-                    Text = dir.Text,
-                    Image = null,
-                    Ordinal = i + 1,
-                })
-                .ToList(),
-            Images = [],
-            CookbookId = Guid.Empty,
-        };
-    }
-
-    private sealed record ParsedRecipe(
-        [property: JsonPropertyName("valid")] bool Valid,
-        string? Title,
-        string? Summary,
-        int? PreparationTimeInMinutes,
-        int? CookingTimeInMinutes,
-        int? BakingTimeInMinutes,
-        int? Servings,
-        [property: JsonPropertyName("ingredients")] List<ParsedIngredient>? Ingredients,
-        [property: JsonPropertyName("directions")] List<ParsedDirection>? Directions
-    );
-
-    private sealed record ParsedIngredient(string Name, bool Optional);
-
-    private sealed record ParsedDirection(string Text);
 }

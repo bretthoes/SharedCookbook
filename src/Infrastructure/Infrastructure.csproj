@@ -29,8 +29,6 @@
         <PackageReference Include="OpenAI" />
         <PackageReference Include="SixLabors.ImageSharp" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
-        <PackageReference Include="Tesseract" />
-        <PackageReference Include="Tesseract.Drawing" />
     </ItemGroup>
 
     <ItemGroup>

@@ -50,7 +50,7 @@ dotnet test
 - [Microsoft Azure](https://azure.microsoft.com/) – API & PostgreSQL hosting
 - [Amazon S3 (AWS)](https://aws.amazon.com/s3/) – Image storage
 - [Google Identity (OAuth)](https://developers.google.com/identity) – Single Sign-On
-- [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) – Recipe text extraction
+- [OpenAI](https://openai.com/) – Recipe parsing from voice and photos
 - [Spoonacular API](https://spoonacular.com/food-api) – Recipe parsing
 - [Mailgun](https://www.mailgun.com/) – Email delivery
 - [Namecheap](https://www.namecheap.com/) – Email domain (SPF/DKIM setup)

@@ -66,6 +66,16 @@ internal sealed class RateLimitWebApplicationFactory(DbConnection connection)
                     })));
 
             services
+                .RemoveAll<IAiRecipeImageParser>()
+                .AddTransient(_ => Mock.Of<IAiRecipeImageParser>(parser =>
+                    parser.ParseAsync(It.IsAny<IFormFile>()) ==
+                    Task.FromResult(new CreateRecipeDto
+                    {
+                        CookbookId = Guid.NewGuid(),
+                        Title = "Parsed recipe",
+                    })));
+
+            services
                 .RemoveAll<IImageUploader>()
                 .AddTransient(_ => Mock.Of<IImageUploader>(uploader =>
                     uploader.UploadFiles(It.IsAny<IFormFileCollection>()) ==

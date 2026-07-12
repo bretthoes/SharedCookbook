@@ -26,7 +26,7 @@ Endpoint: `POST /api/recipes/parse-recipe-voice` in [Recipes.cs](../../src/Web/E
 | Config (`ApiKey`, `Model`) | `AiRecipeParserOptions` - default model `gpt-4o-mini`; [DependencyInjection.cs](../../src/Infrastructure/DependencyInjection.cs), secrets in [fly.md](../deploy/fly.md#secrets) |
 | Rate limit -> 429 | `RateLimitExceededException` in parser; handled in [CustomExceptionHandler.cs](../../src/Web/Infrastructure/CustomExceptionHandler.cs) |
 
-The system prompt and mapping logic live entirely in `OpenAiRecipeParser` - that is the place to change behavior (e.g. stricter “is this a recipe?” checks).
+The system prompt and mapping logic live in `OpenAiRecipeParser` and shared `OpenAiRecipeParsing` — that is the place to change behavior (e.g. stricter “is this a recipe?” checks). Photo parsing uses the same JSON schema via [OpenAiRecipeImageParser](../../src/Infrastructure/Ai/OpenAiRecipeImageParser.cs); see [recipe-from-photo.md](./recipe-from-photo.md).
 
 ## Operational notes
 
