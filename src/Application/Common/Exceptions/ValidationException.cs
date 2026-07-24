@@ -26,10 +26,9 @@ public class ValidationException() : Exception("One or more validation failures 
         if (failures.Any(f => HasErrorCode(f, HttpStatusCode.RequestEntityTooLarge)))
             return StatusCodes.Status413PayloadTooLarge;
 
-        if (failures.Any(f => HasErrorCode(f, HttpStatusCode.UnsupportedMediaType)))
-            return StatusCodes.Status415UnsupportedMediaType;
-
-        return StatusCodes.Status400BadRequest;
+        return failures.Any(f => HasErrorCode(f, HttpStatusCode.UnsupportedMediaType))
+            ? StatusCodes.Status415UnsupportedMediaType
+            : StatusCodes.Status400BadRequest;
     }
 
     private static bool HasErrorCode(ValidationFailure failure, HttpStatusCode statusCode) =>

@@ -12,8 +12,6 @@ namespace SharedCookbook.Application.Common.Interfaces
 
         Task<string?> GetUserNameAsync(string userId, CancellationToken ct = default);
 
-        Task<string?> GetEmailAsync(string userId, CancellationToken ct = default);
-
         Task<string?> GetDisplayNameAsync(string userId, CancellationToken ct = default);
 
         Task<bool> IsInRoleAsync(string userId, string role, CancellationToken ct = default);

@@ -41,13 +41,6 @@ public class IdentityService(
             ? user.DisplayName
             : user?.UserName;
     }
-    
-    public async Task<string?> GetEmailAsync(string userId, CancellationToken ct = default)
-    {
-        var user = await userManager.FindByIdAsync(userId);
-
-        return user?.Email;
-    }
 
     public async Task<(Result Result, string UserId)> CreateUserAsync(
         string userName,
@@ -126,7 +119,9 @@ public class IdentityService(
             return new SubscriptionTierUpdateResult(Result.Success(), IsUserNotFound: true, WasUpdated: false);
 
         if (!Enum.TryParse<SubscriptionTier>(tierName, ignoreCase: false, out var tier))
-            return new SubscriptionTierUpdateResult(Result.Failure(["Invalid subscription tier."]), IsUserNotFound: false, WasUpdated: false);
+            return new SubscriptionTierUpdateResult(Result.Failure(["Invalid subscription tier."]),
+                IsUserNotFound: false,
+                WasUpdated: false);
 
         if (user.SubscriptionTier == tier)
             return new SubscriptionTierUpdateResult(Result.Success(), IsUserNotFound: false, WasUpdated: false);

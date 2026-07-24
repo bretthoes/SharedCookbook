@@ -57,7 +57,7 @@ public class AuthorizationBehaviour<TRequest, TResponse>(
         {
             foreach (string policy in authorizeAttributesWithPolicies.Select(attribute => attribute.Policy))
             {
-                bool authorized = await identityService.AuthorizeAsync(user.Id, policy);
+                bool authorized = await identityService.AuthorizeAsync(user.Id, policy, cancellationToken);
 
                 if (!authorized)
                     throw new ForbiddenAccessException();

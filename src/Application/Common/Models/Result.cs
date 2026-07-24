@@ -14,7 +14,7 @@ public class Result
 
     public static Result Success()
     {
-        return new Result(succeeded: true, errors: Array.Empty<string>());
+        return new Result(succeeded: true, errors: []);
     }
 
     public static Result Failure(IEnumerable<string> errors)
@@ -34,7 +34,7 @@ public class Result<T> : Result
 
     public static Result<T> Success(T value)
     {
-        return new Result<T>(value, succeeded: true, Array.Empty<string>());
+        return new Result<T>(value, succeeded: true, errors: []);
     }
 
     public new static Result<T> Failure(IEnumerable<string> errors)

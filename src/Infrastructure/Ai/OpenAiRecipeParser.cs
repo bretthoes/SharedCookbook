@@ -6,9 +6,10 @@ using SharedCookbook.Application.Contracts;
 
 namespace SharedCookbook.Infrastructure.Ai;
 
-public sealed class OpenAiRecipeParser : IAiRecipeParser
+public sealed class OpenAiRecipeParser(IOptions<AiRecipeParserOptions> options) : IAiRecipeParser
 {
-    private readonly ChatClient _chatClient;
+    private readonly ChatClient _chatClient = new OpenAIClient(options.Value.ApiKey)
+        .GetChatClient(options.Value.Model);
 
     private const string SystemPrompt = """
         You are a recipe parser that converts spoken recipe descriptions into structured JSON.
@@ -53,12 +54,6 @@ public sealed class OpenAiRecipeParser : IAiRecipeParser
 
     private const string InvalidContentMessage =
         "The transcript did not contain enough information to build a recipe.";
-
-    public OpenAiRecipeParser(IOptions<AiRecipeParserOptions> options)
-    {
-        _chatClient = new OpenAIClient(options.Value.ApiKey)
-            .GetChatClient(options.Value.Model);
-    }
 
     public Task<CreateRecipeDto> ParseAsync(string transcript, CancellationToken ct = default)
     {
