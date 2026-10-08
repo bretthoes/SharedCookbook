@@ -100,7 +100,9 @@ public class ExternalLoginService(
                 IssuerSigningKeys = config.SigningKeys,
             };
 
-            var handler = new JwtSecurityTokenHandler();
+            // Keep Apple's short claim names ("sub", "email"). Inbound mapping renames them and
+            // has changed defaults across IdentityModel versions.
+            var handler = new JwtSecurityTokenHandler { MapInboundClaims = false };
             principal = handler.ValidateToken(identityToken, validationParameters, out _);
         }
         catch (SecurityTokenException ex)
@@ -109,19 +111,26 @@ public class ExternalLoginService(
             return Result<string>.Failure(["Invalid or expired Apple token."]);
         }
 
-        string? subject = principal.FindFirstValue(ClaimTypes.NameIdentifier);
-        string? email = principal.FindFirstValue(ClaimTypes.Email);
-
-        if (string.IsNullOrEmpty(email))
-        {
-            logger.LogWarning("LoginWithApple: Token validated but did not contain email");
-            return Result<string>.Failure(["Apple token did not contain email."]);
-        }
+        string? subject = FindClaim(principal, "sub", ClaimTypes.NameIdentifier);
+        string? email = FindClaim(principal, "email", ClaimTypes.Email);
 
         if (string.IsNullOrEmpty(subject))
         {
             logger.LogWarning("LoginWithApple: Token validated but did not contain subject");
             return Result<string>.Failure(["Apple token did not contain subject."]);
+        }
+
+        // Apple includes email only on the first authorization. Later sign-ins still include
+        // the stable subject, which is how we find the account created the first time.
+        var existing = await userManager.FindByLoginAsync(AppleLoginProvider, subject);
+        if (existing != null)
+            return Result<string>.Success(existing.Id);
+
+        if (string.IsNullOrEmpty(email))
+        {
+            logger.LogWarning(
+                "LoginWithApple: No account for subject and token did not contain email");
+            return Result<string>.Failure(["Apple token did not contain email."]);
         }
 
         return await FindOrCreateUserAsync(AppleLoginProvider, subject, email);
@@ -239,6 +248,10 @@ public class ExternalLoginService(
 
         return Result<string>.Success(user.Id);
     }
+
+    private static string? FindClaim(ClaimsPrincipal principal, string shortName, string mappedName) =>
+        principal.FindFirst(shortName)?.Value
+        ?? principal.FindFirst(mappedName)?.Value;
 
     private static string GenerateSecureRandomPassword()
     {

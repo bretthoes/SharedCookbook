@@ -2253,6 +2253,44 @@
         }
       }
     },
+    "/api/Users/account": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "UsersDeleteAccount",
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/Users/display-name": {
       "get": {
         "tags": [

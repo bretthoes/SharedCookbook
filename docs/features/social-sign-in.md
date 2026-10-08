@@ -30,7 +30,7 @@ All logic is centralized in [ExternalLoginService.cs](../../src/Infrastructure/I
 | Apple | JWT validated against Apple’s OIDC metadata (`appleid.apple.com`); audience is app bundle id |
 | Facebook | `debug_token` to verify app + token, then Graph API `/me` for id and email |
 
-Email is required from every provider; missing email fails login.
+Google and Facebook require an email. Apple includes email only on the first authorization; later sign-ins are matched by the Apple subject (`sub`) on the existing external login. A brand-new Apple user with no email in the token cannot be created.
 
 ## Configuration
 

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using SharedCookbook.Application.Users.Commands.DeleteAccount;
 using SharedCookbook.Application.Users.Commands.LoginWithApple;
 using SharedCookbook.Application.Users.Commands.LoginWithFacebook;
 using SharedCookbook.Application.Users.Commands.LoginWithGoogle;
@@ -13,6 +14,12 @@ public class Users : EndpointGroupBase
     public override void Map(RouteGroupBuilder builder)
     {
         builder.MapPost(Update, pattern: "/update")
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem();
+
+        builder.MapDelete(DeleteAccount, pattern: "/account")
+            .RequireAuthorization()
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status401Unauthorized)
             .ProducesValidationProblem();
@@ -80,4 +87,10 @@ public class Users : EndpointGroupBase
 
     private static Task<DisplayNameDto> GetDisplayName(ISender sender, CancellationToken ct = default) =>
         sender.Send(new GetDisplayNameQuery(), ct);
+
+    private static async Task<IResult> DeleteAccount(ISender sender, CancellationToken ct = default)
+    {
+        await sender.Send(new DeleteAccountCommand(), ct);
+        return Results.NoContent();
+    }
 }
