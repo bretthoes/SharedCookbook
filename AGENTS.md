@@ -15,6 +15,7 @@ Backend API for the [cookbook-mobile](https://github.com/bretthoes/cookbook-mobi
 | Solution | `SharedCookbook.slnx` | XML solution (not `.sln`); root also has `Directory.Build.props`, `Directory.Packages.props` |
 | Production image | `Dockerfile` | Fly.io deploy only; see `docs/deploy/` |
 | SDK pin | `global.json` | .NET 10.0.100, `rollForward: latestFeature` |
+| Git | `docs/git.md` | Commit on `dev`; merge to `master` after tests pass. No pull requests |
 
 ## Prerequisites
 

@@ -4,6 +4,8 @@ Day-to-day work happens on `dev`. **Every push to `master` deploys to production
 
 ## Branch model
 
+Day-to-day commits go on `dev`. `master` is production. Full steps, including syncing before a push and running tests before a release, are in [git.md](../git.md).
+
 | Branch | Purpose |
 | ------ | ------- |
 | `dev` | Daily commits; CI runs, no deploy |
@@ -37,8 +39,11 @@ CI runs and tests the change; nothing deploys.
 
 ### Release to production
 
+Run `dotnet test` first. Push only if it passes. Details are in [git.md](../git.md).
+
 ```bash
 git checkout master
+git pull --ff-only origin master
 git merge dev
 git push origin master
 ```
