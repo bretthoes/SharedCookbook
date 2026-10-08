@@ -1,6 +1,5 @@
 # ─── Stage 1: Build ───────────────────────────────────────────────────────────
-# Match global.json (10.0.300, latestPatch). The floating sdk:10.0 tag can move to a newer feature band.
-FROM mcr.microsoft.com/dotnet/sdk:10.0.300 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 
 WORKDIR /src

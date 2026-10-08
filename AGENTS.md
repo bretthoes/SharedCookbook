@@ -14,12 +14,12 @@ Backend API for the [cookbook-mobile](https://github.com/bretthoes/cookbook-mobi
 | Tests | `tests/*` | Unit, integration, functional (NUnit) — see `tests/AGENTS.md` |
 | Solution | `SharedCookbook.slnx` | XML solution (not `.sln`); root also has `Directory.Build.props`, `Directory.Packages.props` |
 | Production image | `Dockerfile` | Fly.io deploy only; see `docs/deploy/` |
-| SDK pin | `global.json` | .NET 10.0.100, `rollForward: latestFeature` |
+| SDK pin | `global.json` | .NET 10.0.300 minimum, `rollForward: latestFeature` |
 | Git | `docs/git.md` | Commit on `dev`; merge to `master` after tests pass. No pull requests |
 
 ## Prerequisites
 
-- .NET SDK matching `global.json` (10.0.100+ as configured).
+- .NET SDK matching `global.json` (10.0.300, or any newer .NET 10.0 SDK).
 - PostgreSQL for local dev: `src/Web/appsettings.Development.json` expects Postgres at `127.0.0.1:5432`, database `SharedCookbookDb`, user `postgres`, password `admin`. Ensure a matching instance is running before starting the API.
 
 ## Run locally
