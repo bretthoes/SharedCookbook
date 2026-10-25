@@ -3,6 +3,9 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+# Unrestricted Six Labors community key. Do not commit.
+sixlabors.lic
+
 # User-specific files
 *.rsuser
 *.suo

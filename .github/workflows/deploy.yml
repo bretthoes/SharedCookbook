@@ -28,6 +28,11 @@ jobs:
       - name: Install flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
 
+      - name: Write Six Labors license
+        env:
+          SIXLABORS_LICENSE_KEY: ${{ secrets.SIXLABORS_LICENSE_KEY }}
+        run: printf '%s' "$SIXLABORS_LICENSE_KEY" > sixlabors.lic
+
       - name: Deploy to Fly.io
         run: flyctl deploy --remote-only --app sharedcookbook-api
         env:

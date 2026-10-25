@@ -57,6 +57,11 @@ jobs:
           echo "semVer          = ${{ steps.gitversion.outputs.semVer }}"
           echo "assemblySemVer  = ${{ steps.gitversion.outputs.assemblySemVer }}"
 
+      - name: Write Six Labors license
+        env:
+          SIXLABORS_LICENSE_KEY: ${{ secrets.SIXLABORS_LICENSE_KEY }}
+        run: printf '%s' "$SIXLABORS_LICENSE_KEY" > sixlabors.lic
+
       - name: Test
         run: |
           dotnet test SharedCookbook.slnx -c Release \
