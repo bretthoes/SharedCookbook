@@ -130,11 +130,22 @@ public class S3ImageUploader(IOptions<ImageUploadOptions> storage, IHttpClientFa
     {
         var httpClient = clientFactory.CreateClient();
 
-        using var response = await httpClient.GetAsync(imageUrl, ct);
-        if (!DownloadFailed(response))
-            return await response.Content.ReadAsStreamAsync(ct);
+        using var response = await httpClient.GetAsync(imageUrl, HttpCompletionOption.ResponseHeadersRead, ct);
+        if (DownloadFailed(response))
+            return null;
 
-        return null;
+        // The response stream dies with the response, and it is not seekable.
+        // Copy the bytes out so ImageSharp can rewind and read them after this method returns.
+        var copy = new MemoryStream();
+        try { await response.Content.CopyToAsync(copy, ct); }
+        catch
+        {
+            await copy.DisposeAsync();
+            throw;
+        }
+
+        copy.Position = 0;
+        return copy;
     }
 
     private static bool DownloadFailed(HttpResponseMessage? response) => response is { IsSuccessStatusCode: false };
