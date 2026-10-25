@@ -5,6 +5,13 @@ using SharedCookbook.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// macOS AirPlay Receiver binds port 5000. Development HTTP uses 5055 there so
+// the mobile client can reach the API. Windows keeps launchSettings (port 5000).
+if (builder.Environment.IsDevelopment() && OperatingSystem.IsMacOS())
+{
+    builder.WebHost.UseUrls("https://localhost:5001", "http://localhost:5055");
+}
+
 // Add services to the container.
 builder.AddApplicationServices();
 builder.AddInfrastructureServices();
