@@ -12,6 +12,10 @@ public abstract class BaseInvitation : BaseAuditableEntity
     
     public Cookbook? Cookbook { get; init; }
     
+    /// <summary>
+    /// Accepts an active invitation and raises <see cref="InvitationAcceptedEvent"/>.
+    /// Does nothing when the invitation is not active.
+    /// </summary>
     public void Accept(DateTimeOffset timestamp, string acceptedBy)
     {
         if (!IsActive) return;
@@ -20,6 +24,10 @@ public abstract class BaseInvitation : BaseAuditableEntity
         ResponseDate = timestamp;
     }
 
+    /// <summary>
+    /// Rejects an active invitation. Does nothing when the invitation is not active.
+    /// Does not raise a domain event.
+    /// </summary>
     public virtual void Reject(DateTimeOffset timestamp)
     {
         if (!IsActive) return;
