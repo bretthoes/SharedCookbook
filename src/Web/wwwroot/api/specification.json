@@ -3554,6 +3554,9 @@
           "title": {
             "type": "string"
           },
+          "hasImages": {
+            "type": "boolean"
+          },
           "isVegetarian": {
             "type": "boolean",
             "nullable": true

@@ -6,6 +6,8 @@ public sealed record RecipeBriefDto
 
     public required string Title { get; init; }
 
+    public bool HasImages { get; init; }
+
     public bool? IsVegetarian { get; init; }
     public bool? IsVegan { get; init; }
     public bool? IsGlutenFree { get; init; }

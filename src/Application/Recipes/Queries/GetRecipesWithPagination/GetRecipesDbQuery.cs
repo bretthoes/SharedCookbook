@@ -31,6 +31,7 @@ internal static class GetRecipesDbQuery
         {
             Id = recipe.Id,
             Title = recipe.Title,
+            HasImages = recipe.Images.Any(),
             IsVegetarian = recipe.DietaryTags.IsVegetarian,
             IsVegan = recipe.DietaryTags.IsVegan,
             IsGlutenFree = recipe.DietaryTags.IsGlutenFree,
