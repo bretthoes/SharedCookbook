@@ -13,7 +13,6 @@ public class CookbookMemberConfiguration : IEntityTypeConfiguration<CookbookMemb
 
         builder.HasKey(membership => membership.Id).HasName("PK_cookbook_member_id");
 
-        builder.HasIndex(membership => membership.CookbookId, "IX_cookbook_member__cookbook_id");
         builder.HasIndex(membership => membership.CreatedBy, "IX_cookbook_member__created_by");
         builder.HasIndex(membership => new { membership.CookbookId, membership.CreatedBy }, "UX_cookbook_member__cookbook_user").IsUnique();
 

@@ -14,7 +14,8 @@ public class InvitationTokenConfiguration : IEntityTypeConfiguration<InvitationT
         builder.HasKey(token => token.Id)
             .HasName("invitation_token_id");
         
-        builder.HasIndex(token => new { token.PublicId })
+        builder.HasIndex(token => token.PublicId)
+            .IsUnique()
             .HasDatabaseName("IX_invitation_token__public_id");
 
         builder.Property(token => token.Id)
