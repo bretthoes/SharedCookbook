@@ -14,6 +14,7 @@ internal static class GetNotificationsDbQuery
             CancellationToken ct = default)
             => query
                 .Where(n => n.RecipientUserId == userId)
+                .WhereRecipeStillExists()
                 .OrderByDescending(n => n.Created)
                 .Select(n => new NotificationDto
                 {
@@ -39,6 +40,7 @@ internal static class GetNotificationsDbQuery
         internal Task<NotificationDto?> QueryLatest(string userId, CancellationToken ct = default)
             => query
                 .Where(n => n.RecipientUserId == userId)
+                .WhereRecipeStillExists()
                 .OrderByDescending(n => n.Created)
                 .Select(n => new NotificationDto
                 {
@@ -60,5 +62,13 @@ internal static class GetNotificationsDbQuery
                                       && n.Recipe.CreatedBy == userId),
                 })
                 .FirstOrDefaultAsync(ct);
+
+        // Recipe lines read their title from the recipe. After a delete the link is cleared,
+        // so those lines are omitted. Membership lines have no recipe and stay.
+        private IQueryable<CookbookNotification> WhereRecipeStillExists() =>
+            query.Where(n =>
+                n.RecipeId != null
+                || (n.ActionType != CookbookNotificationActionType.NewRecipe
+                    && n.ActionType != CookbookNotificationActionType.RecipeMade));
     }
 }
