@@ -1,5 +1,4 @@
 ﻿using SharedCookbook.Domain.Common;
-using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.Common.Interfaces;
 

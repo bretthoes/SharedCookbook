@@ -1,5 +1,3 @@
-using SharedCookbook.Application.Contracts;
-
 namespace SharedCookbook.Application.Common.Interfaces;
 
 public interface IAiRecipeEditor

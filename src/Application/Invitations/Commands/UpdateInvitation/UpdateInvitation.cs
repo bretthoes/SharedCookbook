@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Domain.Enums;
-
-namespace SharedCookbook.Application.Invitations.Commands.UpdateInvitation;
+﻿namespace SharedCookbook.Application.Invitations.Commands.UpdateInvitation;
 
 public sealed record UpdateInvitationCommand(Guid Id, InvitationStatus NewStatus) : IRequest<Guid>;
 

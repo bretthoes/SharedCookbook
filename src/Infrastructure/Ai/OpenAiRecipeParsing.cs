@@ -3,7 +3,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using OpenAI.Chat;
 using SharedCookbook.Application.Common.Exceptions;
-using SharedCookbook.Application.Contracts;
 
 namespace SharedCookbook.Infrastructure.Ai;
 

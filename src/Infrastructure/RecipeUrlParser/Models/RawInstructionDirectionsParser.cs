@@ -1,7 +1,6 @@
 using System.Net;
 using System.Text.RegularExpressions;
 using SharedCookbook.Application.Common.Extensions;
-using SharedCookbook.Infrastructure.RecipeUrlParser;
 
 namespace SharedCookbook.Infrastructure.RecipeUrlParser.Models;
 

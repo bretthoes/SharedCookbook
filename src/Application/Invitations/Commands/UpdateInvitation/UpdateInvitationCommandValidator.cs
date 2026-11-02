@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Domain.Enums;
-
-namespace SharedCookbook.Application.Invitations.Commands.UpdateInvitation;
+﻿namespace SharedCookbook.Application.Invitations.Commands.UpdateInvitation;
 
 public class UpdateInvitationCommandValidator : AbstractValidator<UpdateInvitationCommand>
 {

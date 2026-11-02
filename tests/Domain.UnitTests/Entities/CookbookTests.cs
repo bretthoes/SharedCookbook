@@ -1,5 +1,4 @@
 using SharedCookbook.Domain.Entities;
-using SharedCookbook.Domain.Enums;
 using SharedCookbook.Tests.Shared;
 
 namespace SharedCookbook.Domain.UnitTests.Entities;

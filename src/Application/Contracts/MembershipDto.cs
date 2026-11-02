@@ -1,5 +1,3 @@
-using SharedCookbook.Domain.Enums;
-
 namespace SharedCookbook.Application.Contracts;
 
 public sealed record MembershipDto

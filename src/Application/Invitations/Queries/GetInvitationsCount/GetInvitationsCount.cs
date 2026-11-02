@@ -1,6 +1,4 @@
-﻿using SharedCookbook.Domain.Enums;
-
-namespace SharedCookbook.Application.Invitations.Queries.GetInvitationsCount;
+﻿namespace SharedCookbook.Application.Invitations.Queries.GetInvitationsCount;
 
 public sealed record GetInvitationsCountQuery(InvitationStatus Status = InvitationStatus.Active)
     : IRequest<int>;

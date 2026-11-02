@@ -1,5 +1,4 @@
 ﻿using SharedCookbook.Application.InvitationTokens.Queries.GetInvitationToken;
-using SharedCookbook.Domain.Enums;
 
 namespace SharedCookbook.Application.InvitationTokens.Commands.UpdateInvitationToken;
 

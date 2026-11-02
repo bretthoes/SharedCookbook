@@ -3,7 +3,6 @@ using Microsoft.Extensions.Options;
 using OpenAI;
 using OpenAI.Chat;
 using SharedCookbook.Application.Common.Interfaces;
-using SharedCookbook.Application.Contracts;
 
 namespace SharedCookbook.Infrastructure.Ai;
 

@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Application.Common.Performance;
-using SharedCookbook.Application.Contracts;
 
 namespace SharedCookbook.Application.Recipes.Commands.ParseRecipeFromImage;
 

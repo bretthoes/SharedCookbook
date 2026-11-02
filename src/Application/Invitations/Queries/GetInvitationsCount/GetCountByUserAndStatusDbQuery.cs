@@ -1,5 +1,3 @@
-using SharedCookbook.Domain.Enums;
-
 namespace SharedCookbook.Application.Invitations.Queries.GetInvitationsCount;
 
 internal static class GetCountByUserAndStatusDbQuery

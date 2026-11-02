@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Http;
-using SharedCookbook.Application.Contracts;
 
 namespace SharedCookbook.Application.Common.Interfaces;
 

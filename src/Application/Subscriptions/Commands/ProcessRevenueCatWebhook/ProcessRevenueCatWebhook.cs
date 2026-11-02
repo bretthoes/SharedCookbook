@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Options;
 using SharedCookbook.Application.Common.Security;
-using SharedCookbook.Application.Subscriptions;
 
 namespace SharedCookbook.Application.Subscriptions.Commands.ProcessRevenueCatWebhook;
 
