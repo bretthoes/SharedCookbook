@@ -15,9 +15,6 @@ public class CookbookNotificationConfiguration : IEntityTypeConfiguration<Cookbo
             .HasName("PK_cookbook_notification_id");
 
         builder.HasIndex(
-            notification => notification.RecipientUserId,
-            name: "IX_cookbook_notification__recipient_user_id");
-        builder.HasIndex(
             notification => new { notification.RecipientUserId, notification.Created },
             name: "IX_cookbook_notification__recipient_created");
         builder.HasIndex(

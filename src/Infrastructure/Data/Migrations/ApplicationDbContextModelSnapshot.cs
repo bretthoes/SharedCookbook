@@ -17,7 +17,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.8")
+                .HasAnnotation("ProductVersion", "10.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -297,8 +297,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.HasKey("Id")
                         .HasName("PK_cookbook_member_id");
 
-                    b.HasIndex(new[] { "CookbookId" }, "IX_cookbook_member__cookbook_id");
-
                     b.HasIndex(new[] { "CreatedBy" }, "IX_cookbook_member__created_by");
 
                     b.HasIndex(new[] { "CookbookId", "CreatedBy" }, "UX_cookbook_member__cookbook_user")
@@ -372,8 +370,6 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.HasIndex(new[] { "RecipeId" }, "IX_cookbook_notification__recipe_id");
 
                     b.HasIndex(new[] { "RecipientUserId", "Created" }, "IX_cookbook_notification__recipient_created");
-
-                    b.HasIndex(new[] { "RecipientUserId" }, "IX_cookbook_notification__recipient_user_id");
 
                     b.ToTable("cookbook_notification", (string)null);
                 });
@@ -464,6 +460,7 @@ namespace SharedCookbook.Infrastructure.Data.Migrations
                     b.HasIndex("CreatedBy");
 
                     b.HasIndex("PublicId")
+                        .IsUnique()
                         .HasDatabaseName("IX_invitation_token__public_id");
 
                     b.ToTable("invitation_token", (string)null);
