@@ -7,7 +7,7 @@ namespace SharedCookbook.Application.FunctionalTests.RateLimiting;
 
 internal static class RecipeParsingRateLimitTestClient
 {
-    internal const string ParseRecipeVoicePath = "/api/Recipes/parse-recipe-voice";
+    internal const string ParseRecipeVoicePath = "/api/Recipes/parse-from-voice";
 
     internal static Task<HttpResponseMessage> ParseRecipeFromVoiceAsync(
         HttpClient client,

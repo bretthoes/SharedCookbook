@@ -12,7 +12,7 @@ Implemented with the **Spoonacular** recipe-extract API via [IRecipeUrlParser](.
 4. If Spoonacular returns an image URL, the parser tries to **re-host** it in our S3 bucket through [IImageUploader](../../src/Application/Common/Interfaces/IImageUploader.cs) (`S3ImageUploader`). Upload failure is logged and ignored so a bad image does not block the import.
 5. Client reviews the draft and saves via normal recipe create.
 
-Endpoint: `POST /api/recipes/parse-recipe-url` in [Recipes.cs](../../src/Web/Endpoints/Recipes.cs).
+Endpoint: `POST /api/recipes/parse-from-url` in [Recipes.cs](../../src/Web/Endpoints/Recipes.cs). `POST /api/recipes/parse-recipe-url` remains as a deprecated alias.
 
 ## Where to look in code
 

@@ -1,6 +1,6 @@
 namespace SharedCookbook.Application.Contracts;
 
-public abstract record RecipeDto
+public record RecipeDto
 {
     public required string Title { get; init; }
     public string? Summary { get; init; }

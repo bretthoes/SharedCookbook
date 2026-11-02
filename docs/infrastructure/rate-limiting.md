@@ -25,9 +25,12 @@ Shared quota across:
 
 | Endpoint | Cost driver |
 |----------|-------------|
-| `POST /api/recipes/parse-recipe-url` | Spoonacular |
-| `POST /api/recipes/parse-recipe-img` | OpenAI vision |
-| `POST /api/recipes/parse-recipe-voice` | OpenAI |
+| `POST /api/recipes/parse-from-url` | Spoonacular |
+| `POST /api/recipes/parse-from-image` | OpenAI vision |
+| `POST /api/recipes/parse-from-voice` | OpenAI |
+| `POST /api/recipes/apply-prompt` | OpenAI |
+
+The previous paths (`parse-recipe-url`, `parse-recipe-img`, `parse-recipe-voice`, and `{id}/apply-prompt`) stay registered on the same policy until old clients are gone.
 
 **Tier-aware limits** — the policy reads the `subscription_tier` JWT claim and applies a different ceiling per tier:
 

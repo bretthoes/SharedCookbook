@@ -6,12 +6,12 @@ Implemented with **OpenAI Chat Completions (vision)** via [IAiRecipeImageParser]
 
 ## API and application flow
 
-### Endpoint `POST /api/recipes/parse-recipe-img`
+### Endpoint `POST /api/recipes/parse-from-image`
 
-[src/Web/Endpoints/Recipes.cs](../../src/Web/Endpoints/Recipes.cs)
+`POST /api/recipes/parse-recipe-img` remains as a deprecated alias. [src/Web/Endpoints/Recipes.cs](../../src/Web/Endpoints/Recipes.cs)
 
 ```csharp
-builder.MapPost(ParseFromImage, pattern: "/parse-recipe-img").RequireAuthorization();
+builder.MapPost(ParseFromImage, pattern: "/parse-from-image").RequireAuthorization();
 // ...
 private static Task<CreateRecipeDto> ParseFromImage(ISender sender, [FromForm] IFormFile file)
     => sender.Send(new ParseRecipeFromImageCommand(file));
@@ -47,4 +47,4 @@ The image parser uses a vision-specific system prompt. Shared retry logic, JSON 
 
 ## Related imports
 
-Voice and URL import are documented in [recipe-from-voice.md](./recipe-from-voice.md) and [recipe-from-url.md](./recipe-from-url.md). All three are draft-only endpoints under `/api/recipes/parse-recipe-*`.
+Voice and URL import are documented in [recipe-from-voice.md](./recipe-from-voice.md) and [recipe-from-url.md](./recipe-from-url.md). All three are draft-only endpoints under `/api/recipes/parse-from-*`. The previous `/api/recipes/parse-recipe-*` paths remain as deprecated aliases.

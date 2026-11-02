@@ -4,6 +4,7 @@ using SharedCookbook.Application.Recipes.Commands.DeleteRecipe;
 using SharedCookbook.Application.Recipes.Commands.ParseRecipeFromImage;
 using SharedCookbook.Application.Recipes.Commands.ParseRecipeFromUrl;
 using SharedCookbook.Application.Recipes.Commands.ApplyRecipeEditFromPrompt;
+using SharedCookbook.Application.Recipes.Commands.ApplySavedRecipeEditFromPrompt;
 using SharedCookbook.Application.Recipes.Commands.ParseRecipeFromVoice;
 using SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
 using SharedCookbook.Application.Recipes.Queries.GetRecipe;
@@ -62,41 +63,46 @@ public class Recipes : EndpointGroupBase
             .ProducesProblem(StatusCodes.Status403Forbidden)
             .ProducesProblem(StatusCodes.Status404NotFound);
 
-        // TODO rename these endpoints - recipe is redundant. Just 'parse-url' or 'parse-from-url'
-        builder.MapPost(ParseFromUrl, pattern: "/parse-recipe-url")
-            .RequireAuthorization()
-            .RequireRateLimiting(RateLimitPolicyNames.RecipeParsingDaily)
-            .Produces<CreateRecipeDto>()
-            .ProducesProblem(StatusCodes.Status401Unauthorized)
-            .ProducesValidationProblem()
-            .ProducesProblem(StatusCodes.Status429TooManyRequests);
+        MapParse(ParseFromUrl, "/parse-from-url");
+        MapParse(ParseFromImage, "/parse-from-image");
+        MapParse(ParseFromVoice, "/parse-from-voice");
 
-        builder.MapPost(ParseFromImage, pattern: "/parse-recipe-img")
-            .RequireAuthorization()
-            .RequireRateLimiting(RateLimitPolicyNames.RecipeParsingDaily)
-            .Produces<CreateRecipeDto>()
-            .ProducesProblem(StatusCodes.Status401Unauthorized)
-            .ProducesValidationProblem()
-            .ProducesProblem(StatusCodes.Status429TooManyRequests);
+#pragma warning disable CS0618 // Old paths stay until shipped clients move over.
+        MapParse(ParseRecipeFromUrl, "/parse-recipe-url");
+        MapParse(ParseRecipeFromImage, "/parse-recipe-img");
+        MapParse(ParseRecipeFromVoice, "/parse-recipe-voice");
+        MapSavedApply(ApplySavedRecipeEditFromPrompt, "{id}/apply-prompt");
+#pragma warning restore CS0618
 
-        builder.MapPost(ParseFromVoice, pattern: "/parse-recipe-voice")
+        builder.MapPost(ApplyEditFromPrompt, pattern: "/apply-prompt")
             .RequireAuthorization()
             .RequireRateLimiting(RateLimitPolicyNames.RecipeParsingDaily)
-            .Produces<CreateRecipeDto>()
+            .Produces<RecipeDto>()
             .ProducesProblem(StatusCodes.Status401Unauthorized)
-            .ProducesValidationProblem()
-            .ProducesProblem(StatusCodes.Status429TooManyRequests);
-
-        builder.MapPost(ApplyEditFromPrompt, pattern: "{id}/apply-prompt")
-            .RequireAuthorization()
-            .RequireRateLimiting(RateLimitPolicyNames.RecipeParsingDaily)
-            .Produces<UpdateRecipeDto>()
-            .ProducesProblem(StatusCodes.Status401Unauthorized)
-            .ProducesProblem(StatusCodes.Status403Forbidden)
-            .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesValidationProblem()
             .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
             .ProducesProblem(StatusCodes.Status429TooManyRequests);
+
+        RouteHandlerBuilder MapParse(Delegate handler, string pattern) =>
+            builder.MapPost(handler, pattern)
+                .RequireAuthorization()
+                .RequireRateLimiting(RateLimitPolicyNames.RecipeParsingDaily)
+                .Produces<CreateRecipeDto>()
+                .ProducesProblem(StatusCodes.Status401Unauthorized)
+                .ProducesValidationProblem()
+                .ProducesProblem(StatusCodes.Status429TooManyRequests);
+
+        RouteHandlerBuilder MapSavedApply(Delegate handler, string pattern) =>
+            builder.MapPost(handler, pattern)
+                .RequireAuthorization()
+                .RequireRateLimiting(RateLimitPolicyNames.RecipeParsingDaily)
+                .Produces<UpdateRecipeDto>()
+                .ProducesProblem(StatusCodes.Status401Unauthorized)
+                .ProducesProblem(StatusCodes.Status403Forbidden)
+                .ProducesProblem(StatusCodes.Status404NotFound)
+                .ProducesValidationProblem()
+                .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+                .ProducesProblem(StatusCodes.Status429TooManyRequests);
     }
 
     private static Task<RecipeDetailedDto> GetById(
@@ -145,11 +151,25 @@ public class Recipes : EndpointGroupBase
         CancellationToken ct = default) =>
         sender.Send(new ParseRecipeFromImageCommand(file), ct);
 
+    [Obsolete("Use POST /api/Recipes/parse-from-image.")]
+    private static Task<CreateRecipeDto> ParseRecipeFromImage(
+        ISender sender,
+        [FromForm] IFormFile file,
+        CancellationToken ct = default) =>
+        ParseFromImage(sender, file, ct);
+
     private static Task<CreateRecipeDto> ParseFromUrl(
         ISender sender,
         [FromBody] ParseRecipeFromUrlCommand command,
         CancellationToken ct = default) =>
         sender.Send(command, ct);
+
+    [Obsolete("Use POST /api/Recipes/parse-from-url.")]
+    private static Task<CreateRecipeDto> ParseRecipeFromUrl(
+        ISender sender,
+        [FromBody] ParseRecipeFromUrlCommand command,
+        CancellationToken ct = default) =>
+        ParseFromUrl(sender, command, ct);
 
     private static Task<CreateRecipeDto> ParseFromVoice(
         ISender sender,
@@ -157,12 +177,24 @@ public class Recipes : EndpointGroupBase
         CancellationToken ct = default) =>
         sender.Send(command, ct);
 
-    private static Task<UpdateRecipeDto> ApplyEditFromPrompt(
+    [Obsolete("Use POST /api/Recipes/parse-from-voice.")]
+    private static Task<CreateRecipeDto> ParseRecipeFromVoice(
+        ISender sender,
+        [FromBody] ParseRecipeFromVoiceCommand command,
+        CancellationToken ct = default) =>
+        ParseFromVoice(sender, command, ct);
+
+    private static Task<RecipeDto> ApplyEditFromPrompt(
+        ISender sender,
+        [FromBody] ApplyRecipeEditFromPromptCommand command,
+        CancellationToken ct = default) =>
+        sender.Send(command, ct);
+
+    [Obsolete("Use POST /api/Recipes/apply-prompt.")]
+    private static Task<UpdateRecipeDto> ApplySavedRecipeEditFromPrompt(
         ISender sender,
         [FromRoute] Guid id,
-        [FromBody] ApplyRecipeEditFromPromptRequest body,
+        [FromBody] ApplySavedRecipeEditFromPromptBody body,
         CancellationToken ct = default) =>
-        sender.Send(new ApplyRecipeEditFromPromptCommand(id, body.Prompt, body.Recipe), ct);
+        sender.Send(new ApplySavedRecipeEditFromPromptCommand(id, body.Prompt, body.Recipe), ct);
 }
-
-public sealed record ApplyRecipeEditFromPromptRequest(string Prompt, UpdateRecipeDto Recipe);

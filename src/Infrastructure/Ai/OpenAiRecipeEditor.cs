@@ -109,21 +109,26 @@ public sealed class OpenAiRecipeEditor : IAiRecipeEditor
         """;
 
     private const string SystemPrompt = """
-        You are a recipe editor. You receive the current recipe as JSON and a user instruction.
-        Apply ONLY the changes requested by the user instruction. Preserve everything else unchanged.
+        You are a recipe assistant. You receive the current recipe as JSON and a user instruction.
+        The current recipe may be complete, partial, or empty.
 
-        Return valid: true with the full updated recipe when the instruction relates to editing the recipe
-        (ingredients, steps, title, summary, times, servings, dietary/meal tags, etc.).
+        When the current recipe already has content, change only what the instruction asks for and preserve everything else.
+        When the current recipe is empty or missing parts the instruction describes, fill those parts in from the instruction.
+        Infer a concise title when the user describes a dish but does not name it.
 
-        Return valid: false with all other fields null or empty when the instruction is unrelated to recipe editing
+        Return valid: true with the full recipe when the instruction is about creating or editing a recipe
+        (ingredients, steps, title, summary, times, servings, dietary or meal tags, or a description of a dish).
+
+        Return valid: false with all other fields null or empty when the instruction is unrelated to a recipe
         (e.g. weather, jokes, unrelated questions).
 
         Rules:
         - Keep the user's language for recipe text unless they ask to translate.
-        - ingredientSections: preserve section structure when possible; each section has "title" (string, may be empty) and "ingredients".
+        - Return the full recipe, including fields you did not change.
+        - ingredientSections: preserve existing section structure when the recipe already has sections; each section has "title" (string, may be empty) and "ingredients".
         - directions: each item has "text" only.
-        - For tag fields (isVegetarian, isVegan, etc.): use true/false when set, null when not applicable or unchanged from context—when the user asks to add/remove a tag, set accordingly.
-        - Do not remove ingredients or steps unless the user asks.
+        - For tag fields (isVegetarian, isVegan, etc.): use true/false when the instruction sets or clears them, and null when unchanged.
+        - Do not remove ingredients, steps, or other content unless the user asks.
         - When adding ingredients or steps, integrate them naturally.
         """;
 
@@ -133,8 +138,8 @@ public sealed class OpenAiRecipeEditor : IAiRecipeEditor
             .GetChatClient(options.Value.Model);
     }
 
-    public async Task<UpdateRecipeDto> ApplyEditAsync(
-        UpdateRecipeDto current,
+    public async Task<RecipeDto> ApplyEditAsync(
+        RecipeDto current,
         string prompt,
         CancellationToken ct = default)
     {
@@ -193,7 +198,7 @@ public sealed class OpenAiRecipeEditor : IAiRecipeEditor
 
     private static bool IsTransient(int status) => status is 500 or 502 or 503;
 
-    private static UpdateRecipeDto MapToDto(string json, UpdateRecipeDto current)
+    private static RecipeDto MapToDto(string json, RecipeDto current)
     {
         var parsed = JsonSerializer.Deserialize<EditedRecipe>(json, JsonOptions)
             ?? throw new InvalidOperationException("AI returned an empty or unparseable recipe response.");
@@ -206,9 +211,8 @@ public sealed class OpenAiRecipeEditor : IAiRecipeEditor
         var sections = parsed.IngredientSections ?? [];
         var directions = parsed.Directions ?? [];
 
-        return new UpdateRecipeDto
+        return new RecipeDto
         {
-            Id = current.Id,
             Title = title,
             Summary = parsed.Summary ?? current.Summary,
             PreparationTimeInMinutes = parsed.PreparationTimeInMinutes ?? current.PreparationTimeInMinutes,
@@ -255,7 +259,7 @@ public sealed class OpenAiRecipeEditor : IAiRecipeEditor
         };
     }
 
-    private static object ToAiInput(UpdateRecipeDto recipe) => new
+    private static object ToAiInput(RecipeDto recipe) => new
     {
         recipe.Title,
         recipe.Summary,

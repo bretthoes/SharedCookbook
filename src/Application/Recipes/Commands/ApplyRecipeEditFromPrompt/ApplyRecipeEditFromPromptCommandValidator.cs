@@ -4,9 +4,6 @@ public class ApplyRecipeEditFromPromptCommandValidator : AbstractValidator<Apply
 {
     public ApplyRecipeEditFromPromptCommandValidator()
     {
-        RuleFor(command => command.RecipeId)
-            .NotEmpty();
-
         RuleFor(command => command.Prompt)
             .NotNull()
             .NotEmpty().WithMessage("Prompt must not be empty.")
@@ -14,14 +11,5 @@ public class ApplyRecipeEditFromPromptCommandValidator : AbstractValidator<Apply
 
         RuleFor(command => command.Recipe)
             .NotNull();
-
-        RuleFor(command => command.Recipe.Id)
-            .NotEmpty()
-            .Equal(command => command.RecipeId)
-            .WithMessage("Recipe id must match the route id.");
-
-        RuleFor(command => command.Recipe.Title)
-            .NotEmpty()
-            .When(command => command.Recipe is not null);
     }
 }
