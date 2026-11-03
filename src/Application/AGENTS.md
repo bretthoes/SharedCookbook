@@ -6,7 +6,7 @@ Use cases live here: mediator-pattern commands/queries, FluentValidation, DTOs, 
 
 ## Feature folder layout
 
-Each bounded context is a top-level folder (e.g. `Recipes/`, `Cookbooks/`, `Users/`). Inside:
+Each feature is a top-level folder (e.g. `Recipes/`, `RecipeDrafting/`, `Cookbooks/`, `Users/`). `Recipes/` is the recipe aggregate (create, update, delete, query, "I made this"). `RecipeDrafting/` turns a URL, image, voice transcript, or prompt into an unsaved recipe DTO. Inside a feature:
 
 | Subfolder | Contents |
 |-----------|----------|
@@ -19,6 +19,8 @@ Each bounded context is a top-level folder (e.g. `Recipes/`, `Cookbooks/`, `User
 **Example paths:**
 
 - `Recipes/Commands/CreateRecipe/CreateRecipe.cs`
+- `Recipes/Commands/RecordRecipeMade/RecordRecipeMade.cs`
+- `RecipeDrafting/Commands/ParseRecipeFromUrl/ParseRecipeFromUrl.cs`
 - `Recipes/Commands/CreateRecipe/CreateRecipeCommandValidator.cs`
 - `Recipes/Queries/GetRecipe/GetRecipe.cs`
 - `Recipes/Queries/GetRecipe/GetDetailedDtoByIdDbQuery.cs`

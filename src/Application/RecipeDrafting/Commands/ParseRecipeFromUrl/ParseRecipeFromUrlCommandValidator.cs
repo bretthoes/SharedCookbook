@@ -1,4 +1,4 @@
-﻿namespace SharedCookbook.Application.Recipes.Commands.ParseRecipeFromUrl;
+﻿namespace SharedCookbook.Application.RecipeDrafting.Commands.ParseRecipeFromUrl;
 
 public class ParseRecipeFromUrlCommandValidator : AbstractValidator<ParseRecipeFromUrlCommand>
 {

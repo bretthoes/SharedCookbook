@@ -1,7 +1,7 @@
 using SharedCookbook.Application.Common.Performance;
 using SharedCookbook.Application.Cookbooks.Commands.CreateCookbook;
 using SharedCookbook.Application.Images.Commands.CreateImages;
-using SharedCookbook.Application.Recipes.Commands.ParseRecipeFromVoice;
+using SharedCookbook.Application.RecipeDrafting.Commands.ParseRecipeFromVoice;
 
 namespace SharedCookbook.Application.UnitTests.Common.Behaviours;
 

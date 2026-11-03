@@ -1,6 +1,6 @@
 using SharedCookbook.Application.Common.Performance;
 
-namespace SharedCookbook.Application.Recipes.Commands.ParseRecipeFromVoice;
+namespace SharedCookbook.Application.RecipeDrafting.Commands.ParseRecipeFromVoice;
 
 [LongRunningRequest(LongRunningRequestCategory.ExternalApi)]
 public sealed record ParseRecipeFromVoiceCommand(string Transcript) : IRequest<CreateRecipeDto>;

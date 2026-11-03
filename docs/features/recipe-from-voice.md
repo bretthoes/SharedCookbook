@@ -9,7 +9,7 @@ Implemented with **OpenAI Chat Completions** via [IAiRecipeParser](../../src/App
 ## Flow
 
 1. Client obtains a transcript locally (platform speech APIs).
-2. [ParseRecipeFromVoice](../../src/Application/Recipes/Commands/ParseRecipeFromVoice/ParseRecipeFromVoice.cs) sends the transcript to `OpenAiRecipeParser`.
+2. [ParseRecipeFromVoice](../../src/Application/RecipeDrafting/Commands/ParseRecipeFromVoice/ParseRecipeFromVoice.cs) sends the transcript to `OpenAiRecipeParser`.
 3. The parser uses a fixed system prompt and JSON response format to produce title, ingredients, directions, and optional times/servings.
 4. If the model decides the input is not a recipe, parsing fails with a clear error (no draft).
 5. Client reviews and saves via normal recipe create.
@@ -21,7 +21,7 @@ Endpoint: `POST /api/recipes/parse-from-voice` in [Recipes.cs](../../src/Web/End
 | Area | Path |
 |------|------|
 | HTTP endpoint | [src/Web/Endpoints/Recipes.cs](../../src/Web/Endpoints/Recipes.cs) |
-| Command | [src/Application/Recipes/Commands/ParseRecipeFromVoice/](../../src/Application/Recipes/Commands/ParseRecipeFromVoice/) |
+| Command | [src/Application/RecipeDrafting/Commands/ParseRecipeFromVoice/](../../src/Application/RecipeDrafting/Commands/ParseRecipeFromVoice/) |
 | OpenAI client + prompt | [OpenAiRecipeParser.cs](../../src/Infrastructure/Ai/OpenAiRecipeParser.cs) |
 | Config (`ApiKey`, `Model`) | `AiRecipeParserOptions` - default model `gpt-4o-mini`; [DependencyInjection.cs](../../src/Infrastructure/DependencyInjection.cs), secrets in [fly.md](../deploy/fly.md#secrets) |
 | Rate limit -> 429 | `RateLimitExceededException` in parser; handled in [CustomExceptionHandler.cs](../../src/Web/Infrastructure/CustomExceptionHandler.cs) |

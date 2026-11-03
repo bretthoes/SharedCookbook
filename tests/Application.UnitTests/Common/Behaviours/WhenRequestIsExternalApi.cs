@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 using SharedCookbook.Application.Common.Behaviours;
 using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Application.Contracts;
-using SharedCookbook.Application.Recipes.Commands.ParseRecipeFromVoice;
+using SharedCookbook.Application.RecipeDrafting.Commands.ParseRecipeFromVoice;
 
 namespace SharedCookbook.Application.UnitTests.Common.Behaviours;
 

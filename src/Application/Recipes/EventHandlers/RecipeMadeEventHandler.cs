@@ -1,4 +1,4 @@
-namespace SharedCookbook.Application.RecipeMakes.EventHandlers;
+namespace SharedCookbook.Application.Recipes.EventHandlers;
 
 public sealed class RecipeMadeEventHandler(INotificationFanOut fanOut)
     : INotificationHandler<RecipeMadeEvent>

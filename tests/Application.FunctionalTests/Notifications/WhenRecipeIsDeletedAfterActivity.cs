@@ -1,6 +1,6 @@
 using SharedCookbook.Application.Notifications.Queries.GetLatestNotification;
 using SharedCookbook.Application.Notifications.Queries.GetNotificationsWithPagination;
-using SharedCookbook.Application.RecipeMakes.Commands.RecordRecipeMade;
+using SharedCookbook.Application.Recipes.Commands.RecordRecipeMade;
 using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 using SharedCookbook.Application.Recipes.Commands.DeleteRecipe;
 using SharedCookbook.Application.FunctionalTests.Common;

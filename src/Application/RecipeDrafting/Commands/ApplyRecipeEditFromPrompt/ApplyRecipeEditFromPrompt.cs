@@ -1,6 +1,6 @@
 using SharedCookbook.Application.Common.Performance;
 
-namespace SharedCookbook.Application.Recipes.Commands.ApplyRecipeEditFromPrompt;
+namespace SharedCookbook.Application.RecipeDrafting.Commands.ApplyRecipeEditFromPrompt;
 
 [LongRunningRequest(LongRunningRequestCategory.ExternalApi)]
 public sealed record ApplyRecipeEditFromPromptCommand(

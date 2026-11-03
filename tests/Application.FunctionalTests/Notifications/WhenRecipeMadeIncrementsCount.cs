@@ -1,6 +1,6 @@
 using SharedCookbook.Application.Contracts;
 using SharedCookbook.Application.FunctionalTests.Common;
-using SharedCookbook.Application.RecipeMakes.Commands.RecordRecipeMade;
+using SharedCookbook.Application.Recipes.Commands.RecordRecipeMade;
 using SharedCookbook.Application.Recipes.Queries.GetRecipe;
 using SharedCookbook.Domain.Entities;
 

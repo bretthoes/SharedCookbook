@@ -1,4 +1,4 @@
-namespace SharedCookbook.Application.RecipeMakes.Commands.RecordRecipeMade;
+namespace SharedCookbook.Application.Recipes.Commands.RecordRecipeMade;
 
 public sealed record RecordRecipeMadeCommand(Guid RecipeId) : IRequest;
 

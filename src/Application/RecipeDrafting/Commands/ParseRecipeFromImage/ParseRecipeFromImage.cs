@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using SharedCookbook.Application.Common.Performance;
 
-namespace SharedCookbook.Application.Recipes.Commands.ParseRecipeFromImage;
+namespace SharedCookbook.Application.RecipeDrafting.Commands.ParseRecipeFromImage;
 
 [LongRunningRequest(LongRunningRequestCategory.ExternalApi)]
 public sealed record ParseRecipeFromImageCommand(IFormFile File) : IRequest<CreateRecipeDto>;

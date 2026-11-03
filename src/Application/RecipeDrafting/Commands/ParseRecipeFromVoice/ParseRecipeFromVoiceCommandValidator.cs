@@ -1,4 +1,4 @@
-namespace SharedCookbook.Application.Recipes.Commands.ParseRecipeFromVoice;
+namespace SharedCookbook.Application.RecipeDrafting.Commands.ParseRecipeFromVoice;
 
 public class ParseRecipeFromVoiceCommandValidator : AbstractValidator<ParseRecipeFromVoiceCommand>
 {

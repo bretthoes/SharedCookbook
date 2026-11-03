@@ -1,11 +1,11 @@
-using SharedCookbook.Application.RecipeMakes.Commands.RecordRecipeMade;
+using SharedCookbook.Application.RecipeDrafting.Commands.ApplyRecipeEditFromPrompt;
+using SharedCookbook.Application.RecipeDrafting.Commands.ParseRecipeFromImage;
+using SharedCookbook.Application.RecipeDrafting.Commands.ParseRecipeFromUrl;
+using SharedCookbook.Application.RecipeDrafting.Commands.ParseRecipeFromVoice;
+using SharedCookbook.Application.Recipes.Commands.ApplySavedRecipeEditFromPrompt;
 using SharedCookbook.Application.Recipes.Commands.CreateRecipe;
 using SharedCookbook.Application.Recipes.Commands.DeleteRecipe;
-using SharedCookbook.Application.Recipes.Commands.ParseRecipeFromImage;
-using SharedCookbook.Application.Recipes.Commands.ParseRecipeFromUrl;
-using SharedCookbook.Application.Recipes.Commands.ApplyRecipeEditFromPrompt;
-using SharedCookbook.Application.Recipes.Commands.ApplySavedRecipeEditFromPrompt;
-using SharedCookbook.Application.Recipes.Commands.ParseRecipeFromVoice;
+using SharedCookbook.Application.Recipes.Commands.RecordRecipeMade;
 using SharedCookbook.Application.Recipes.Commands.UpdateRecipe;
 using SharedCookbook.Application.Recipes.Queries.GetRecipe;
 using SharedCookbook.Application.Recipes.Queries.GetRecipesWithPagination;

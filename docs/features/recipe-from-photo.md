@@ -19,18 +19,18 @@ private static Task<CreateRecipeDto> ParseFromImage(ISender sender, [FromForm] I
 
 ### Command + handler
 
-[src/Application/Recipes/Commands/ParseRecipeFromImage/ParseRecipeFromImage.cs](../../src/Application/Recipes/Commands/ParseRecipeFromImage/ParseRecipeFromImage.cs)
+[src/Application/RecipeDrafting/Commands/ParseRecipeFromImage/ParseRecipeFromImage.cs](../../src/Application/RecipeDrafting/Commands/ParseRecipeFromImage/ParseRecipeFromImage.cs)
 
 The handler sends the uploaded image to `OpenAiRecipeImageParser`, which returns a structured `CreateRecipeDto` (title, ingredients, directions, optional times/servings). If the model decides the image is not a recipe, parsing fails with a clear error (no draft).
 
-Validation: [ParseRecipeFromImageCommandValidator.cs](../../src/Application/Recipes/Commands/ParseRecipeFromImage/ParseRecipeFromImageCommandValidator.cs) — max 10 MB, allowed image extensions.
+Validation: [ParseRecipeFromImageCommandValidator.cs](../../src/Application/RecipeDrafting/Commands/ParseRecipeFromImage/ParseRecipeFromImageCommandValidator.cs) — max 10 MB, allowed image extensions.
 
 ## Vision implementation
 
 | Area | Path |
 |------|------|
 | HTTP endpoint | [src/Web/Endpoints/Recipes.cs](../../src/Web/Endpoints/Recipes.cs) |
-| Command | [src/Application/Recipes/Commands/ParseRecipeFromImage/](../../src/Application/Recipes/Commands/ParseRecipeFromImage/) |
+| Command | [src/Application/RecipeDrafting/Commands/ParseRecipeFromImage/](../../src/Application/RecipeDrafting/Commands/ParseRecipeFromImage/) |
 | OpenAI client + prompt | [OpenAiRecipeImageParser.cs](../../src/Infrastructure/Ai/OpenAiRecipeImageParser.cs) |
 | Shared JSON schema + mapping | [OpenAiRecipeParsing.cs](../../src/Infrastructure/Ai/OpenAiRecipeParsing.cs) |
 | Config (`ApiKey`, `Model`) | `AiRecipeParserOptions` — default model `gpt-4o-mini` (vision-capable); [DependencyInjection.cs](../../src/Infrastructure/DependencyInjection.cs), secrets in [fly.md](../deploy/fly.md#secrets) |

@@ -1,4 +1,4 @@
-namespace SharedCookbook.Application.Recipes.Commands.ApplyRecipeEditFromPrompt;
+namespace SharedCookbook.Application.RecipeDrafting.Commands.ApplyRecipeEditFromPrompt;
 
 public class ApplyRecipeEditFromPromptCommandValidator : AbstractValidator<ApplyRecipeEditFromPromptCommand>
 {

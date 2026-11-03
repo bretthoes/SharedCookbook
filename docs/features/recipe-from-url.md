@@ -7,7 +7,7 @@ Implemented with the **Spoonacular** recipe-extract API via [IRecipeUrlParser](.
 ## Flow
 
 1. Client sends the recipe page URL (and optionally asks for video extraction).
-2. [ParseRecipeFromUrl](../../src/Application/Recipes/Commands/ParseRecipeFromUrl/ParseRecipeFromUrl.cs) delegates to the parser.
+2. [ParseRecipeFromUrl](../../src/Application/RecipeDrafting/Commands/ParseRecipeFromUrl/ParseRecipeFromUrl.cs) delegates to the parser.
 3. [SpoonacularApiParser](../../src/Infrastructure/RecipeUrlParser/SpoonacularApiParser.cs) calls Spoonacular’s extract endpoint, deserializes the response, and maps it to `CreateRecipeDto`.
 4. If Spoonacular returns an image URL, the parser tries to **re-host** it in our S3 bucket through [IImageUploader](../../src/Application/Common/Interfaces/IImageUploader.cs) (`S3ImageUploader`). Upload failure is logged and ignored so a bad image does not block the import.
 5. Client reviews the draft and saves via normal recipe create.
@@ -19,7 +19,7 @@ Endpoint: `POST /api/recipes/parse-from-url` in [Recipes.cs](../../src/Web/Endpo
 | Area | Path |
 |------|------|
 | HTTP endpoint | [src/Web/Endpoints/Recipes.cs](../../src/Web/Endpoints/Recipes.cs) |
-| Command | [src/Application/Recipes/Commands/ParseRecipeFromUrl/](../../src/Application/Recipes/Commands/ParseRecipeFromUrl/) |
+| Command | [src/Application/RecipeDrafting/Commands/ParseRecipeFromUrl/](../../src/Application/RecipeDrafting/Commands/ParseRecipeFromUrl/) |
 | Spoonacular client + mapping | [src/Infrastructure/RecipeUrlParser/](../../src/Infrastructure/RecipeUrlParser/) |
 | Config (`ApiKey`, `BaseUrl`) | `RecipeUrlParserOptions` - [DependencyInjection.cs](../../src/Infrastructure/DependencyInjection.cs), secrets in [fly.md](../deploy/fly.md#secrets) |
 | Image re-host | [S3ImageUploader](../../src/Infrastructure/FileStorage/S3ImageUploader.cs) |

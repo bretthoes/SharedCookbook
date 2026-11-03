@@ -1,5 +1,5 @@
 using SharedCookbook.Application.Notifications.Queries.GetNotificationsWithPagination;
-using SharedCookbook.Application.RecipeMakes.Commands.RecordRecipeMade;
+using SharedCookbook.Application.Recipes.Commands.RecordRecipeMade;
 using SharedCookbook.Application.FunctionalTests.Common;
 using SharedCookbook.Domain.Enums;
 

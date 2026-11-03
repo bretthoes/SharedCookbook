@@ -1,5 +1,8 @@
 using SharedCookbook.Application.Common.Performance;
 
+// TODO: Delete this folder once shipped clients no longer call POST /api/Recipes/{id}/apply-prompt.
+// The replacement is POST /api/Recipes/apply-prompt.
+
 namespace SharedCookbook.Application.Recipes.Commands.ApplySavedRecipeEditFromPrompt;
 
 [LongRunningRequest(LongRunningRequestCategory.ExternalApi)]
