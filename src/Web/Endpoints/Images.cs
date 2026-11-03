@@ -19,6 +19,7 @@ public class Images : EndpointGroupBase
             .ProducesProblem(StatusCodes.Status429TooManyRequests);
     }
 
+    // TODO string[] is convenient but maybe better to have a DTO class here
     private static Task<string[]> Upload(
         ISender sender,
         [FromForm] IFormFileCollection files,
