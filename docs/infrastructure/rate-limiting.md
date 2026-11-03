@@ -30,8 +30,6 @@ Shared quota across:
 | `POST /api/recipes/parse-from-voice` | OpenAI |
 | `POST /api/recipes/apply-prompt` | OpenAI |
 
-The previous paths (`parse-recipe-url`, `parse-recipe-img`, `parse-recipe-voice`, and `{id}/apply-prompt`) stay registered on the same policy until old clients are gone.
-
 **Tier-aware limits** — the policy reads the `subscription_tier` JWT claim and applies a different ceiling per tier:
 
 | Tier | Daily limit | Config key |

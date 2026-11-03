@@ -14,7 +14,7 @@ Implemented with **OpenAI Chat Completions** via [IAiRecipeParser](../../src/App
 4. If the model decides the input is not a recipe, parsing fails with a clear error (no draft).
 5. Client reviews and saves via normal recipe create.
 
-Endpoint: `POST /api/recipes/parse-from-voice` in [Recipes.cs](../../src/Web/Endpoints/Recipes.cs). `POST /api/recipes/parse-recipe-voice` remains as a deprecated alias.
+Endpoint: `POST /api/recipes/parse-from-voice` in [Recipes.cs](../../src/Web/Endpoints/Recipes.cs).
 
 ## Where to look in code
 
@@ -36,4 +36,4 @@ The system prompt and mapping logic live in `OpenAiRecipeParser` and shared `Ope
 
 ## Related imports
 
-Photo and URL import are documented in [recipe-from-photo.md](./recipe-from-photo.md) and [recipe-from-url.md](./recipe-from-url.md). All three are draft-only endpoints under `/api/recipes/parse-from-*`. The previous `/api/recipes/parse-recipe-*` paths remain as deprecated aliases.
+Photo and URL import are documented in [recipe-from-photo.md](./recipe-from-photo.md) and [recipe-from-url.md](./recipe-from-url.md). All three are draft-only endpoints under `/api/recipes/parse-from-*`.
