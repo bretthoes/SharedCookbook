@@ -37,6 +37,6 @@ public class WhenContributorMarksRecipeMade : BaseTestFixture
         Assert.That(_actionType, Is.EqualTo(CookbookNotificationActionType.RecipeMade));
 
     [Test]
-    public void OwnerNotificationIsImportantBecauseTheyAddedTheRecipe() =>
-        Assert.That(_ownerNotificationIsImportant, Is.True);
+    public void OwnerNotificationIsNotImportant() =>
+        Assert.That(_ownerNotificationIsImportant, Is.False);
 }

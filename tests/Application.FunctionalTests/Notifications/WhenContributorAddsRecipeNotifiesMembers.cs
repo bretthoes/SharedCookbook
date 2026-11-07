@@ -40,7 +40,8 @@ public class WhenContributorAddsRecipeNotifiesMembers : BaseTestFixture
         Assert.That(_ownerActionType, Is.EqualTo(CookbookNotificationActionType.NewRecipe));
 
     [Test]
-    public void OwnerNotificationIsImportant() => Assert.That(_ownerNotificationIsImportant, Is.True);
+    public void OwnerNotificationIsNotImportant() =>
+        Assert.That(_ownerNotificationIsImportant, Is.False);
 
     [Test]
     public void LatestNotificationShowsNewRecipe() =>

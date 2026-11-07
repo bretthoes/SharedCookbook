@@ -29,11 +29,7 @@ internal static class GetNotificationsDbQuery
                     SubjectDisplayName = n.SubjectDisplayName,
                     IsImportant = n.ActionType == CookbookNotificationActionType.MemberJoined
                                   || n.ActionType == CookbookNotificationActionType.MemberLeft
-                                  || n.ActionType == CookbookNotificationActionType.MemberRemoved
-                                  || n.ActionType == CookbookNotificationActionType.NewRecipe
-                                  || (n.ActionType == CookbookNotificationActionType.RecipeMade
-                                      && n.Recipe != null
-                                      && n.Recipe.CreatedBy == userId),
+                                  || n.ActionType == CookbookNotificationActionType.MemberRemoved,
                 })
                 .PaginatedListAsync(pageNumber, pageSize, ct);
 
@@ -55,11 +51,7 @@ internal static class GetNotificationsDbQuery
                     SubjectDisplayName = n.SubjectDisplayName,
                     IsImportant = n.ActionType == CookbookNotificationActionType.MemberJoined
                                   || n.ActionType == CookbookNotificationActionType.MemberLeft
-                                  || n.ActionType == CookbookNotificationActionType.MemberRemoved
-                                  || n.ActionType == CookbookNotificationActionType.NewRecipe
-                                  || (n.ActionType == CookbookNotificationActionType.RecipeMade
-                                      && n.Recipe != null
-                                      && n.Recipe.CreatedBy == userId),
+                                  || n.ActionType == CookbookNotificationActionType.MemberRemoved,
                 })
                 .FirstOrDefaultAsync(ct);
 
