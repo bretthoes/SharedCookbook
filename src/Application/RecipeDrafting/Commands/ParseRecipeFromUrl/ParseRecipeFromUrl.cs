@@ -15,6 +15,7 @@ public sealed class ParseRecipeCommandHandler(
         if (YouTubeImportUrls.IsLongForm(request.Url))
             throw new UnprocessableContentException(YouTubeImportUrls.LongFormMessage);
 
-        return recipeUrlParser.Parse(request.Url, request.ExtractFromVideo, ct);
+        var extractFromVideo = request.ExtractFromVideo && VideoRecipeUrls.UsesVideoExtraction(request.Url);
+        return recipeUrlParser.Parse(request.Url, extractFromVideo, ct);
     }
 }

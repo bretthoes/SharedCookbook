@@ -29,6 +29,6 @@ Direction text from Spoonacular uses `AnalyzedInstructionDirectionsParser` when 
 ## Operational notes
 
 - **Spoonacular API key** is required in every environment; without it, imports fail at the HTTP call.
-- **`extractFromVideo`** is passed through to Spoonacular when the client sets it - used for video-heavy recipe sites, not the common case.
+- **`extractFromVideo`** is forwarded only for TikTok, Instagram, Pinterest, and a YouTube Shorts link. Spoonacular charges the video rate whenever the flag is true, so a blog or any other page stays on the ordinary extract even if the client asks for video.
 - **Costs and quotas** are on Spoonacular’s side; this is the only paid third-party call in the recipe-import family besides OpenAI (voice).
 - Spoonacular failures surface as a generic HTTP error to the client; check logs for status code and reason phrase.
