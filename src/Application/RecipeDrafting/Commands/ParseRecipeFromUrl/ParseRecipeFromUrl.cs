@@ -1,4 +1,5 @@
 using SharedCookbook.Application.Common.Performance;
+using SharedCookbook.Application.RecipeDrafting;
 
 namespace SharedCookbook.Application.RecipeDrafting.Commands.ParseRecipeFromUrl;
 
@@ -10,5 +11,10 @@ public sealed class ParseRecipeCommandHandler(
     : IRequestHandler<ParseRecipeFromUrlCommand, CreateRecipeDto>
 {
     public Task<CreateRecipeDto> Handle(ParseRecipeFromUrlCommand request, CancellationToken ct = default)
-        => recipeUrlParser.Parse(request.Url, request.ExtractFromVideo, ct);
+    {
+        if (YouTubeImportUrls.IsLongForm(request.Url))
+            throw new UnprocessableContentException(YouTubeImportUrls.LongFormMessage);
+
+        return recipeUrlParser.Parse(request.Url, request.ExtractFromVideo, ct);
+    }
 }

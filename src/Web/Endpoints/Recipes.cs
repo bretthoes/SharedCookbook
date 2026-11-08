@@ -62,7 +62,8 @@ public class Recipes : EndpointGroupBase
             .ProducesProblem(StatusCodes.Status403Forbidden)
             .ProducesProblem(StatusCodes.Status404NotFound);
 
-        MapParse(ParseFromUrl, "/parse-from-url");
+        MapParse(ParseFromUrl, "/parse-from-url")
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity);
         MapParse(ParseFromImage, "/parse-from-image");
         MapParse(ParseFromVoice, "/parse-from-voice");
 
