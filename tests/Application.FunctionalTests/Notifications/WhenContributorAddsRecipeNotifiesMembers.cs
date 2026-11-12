@@ -15,6 +15,8 @@ public class WhenContributorAddsRecipeNotifiesMembers : BaseTestFixture
     private CookbookNotificationActionType _ownerActionType;
     private bool _ownerNotificationIsImportant;
     private string? _latestRecipeTitle;
+    private bool _contributorSeesOwnRecipe;
+    private bool _contributorIsActor;
 
     [SetUp]
     public async Task SetUp()
@@ -33,6 +35,12 @@ public class WhenContributorAddsRecipeNotifiesMembers : BaseTestFixture
         _ownerActionType = notification.ActionType;
         _ownerNotificationIsImportant = notification.IsImportant;
         _latestRecipeTitle = (await SendAsync(new GetLatestNotificationQuery()))?.RecipeTitle;
+
+        await CookbookPermissionScenario.ActAsContributor();
+        var ownPage = await SendAsync(new GetNotificationsWithPaginationQuery { PageSize = 50 });
+        var ownNotification = ownPage.Items.FirstOrDefault(n => n.ActionType == CookbookNotificationActionType.NewRecipe);
+        _contributorSeesOwnRecipe = ownNotification is not null;
+        _contributorIsActor = ownNotification?.ActorIsCurrentUser ?? false;
     }
 
     [Test]
@@ -46,4 +54,12 @@ public class WhenContributorAddsRecipeNotifiesMembers : BaseTestFixture
     [Test]
     public void LatestNotificationShowsNewRecipe() =>
         Assert.That(_latestRecipeTitle, Is.EqualTo("Fresh pasta"));
+
+    [Test]
+    public void ContributorSeesOwnRecipe() =>
+        Assert.That(_contributorSeesOwnRecipe, Is.True);
+
+    [Test]
+    public void ContributorIsTheActor() =>
+        Assert.That(_contributorIsActor, Is.True);
 }

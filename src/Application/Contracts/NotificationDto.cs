@@ -20,5 +20,9 @@ public sealed record NotificationDto
 
     public string? SubjectDisplayName { get; init; }
 
+    public bool ActorIsCurrentUser { get; init; }
+
+    public bool SubjectIsCurrentUser { get; init; }
+
     public bool IsImportant { get; init; }
 }

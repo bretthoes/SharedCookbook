@@ -27,6 +27,8 @@ internal static class GetNotificationsDbQuery
                     RecipeTitle        = n.Recipe != null ? n.Recipe.Title : null,
                     ActorDisplayName   = n.ActorDisplayName,
                     SubjectDisplayName = n.SubjectDisplayName,
+                    ActorIsCurrentUser = n.ActorUserId == userId,
+                    SubjectIsCurrentUser = n.SubjectUserId == userId,
                     IsImportant = n.ActionType == CookbookNotificationActionType.MemberJoined
                                   || n.ActionType == CookbookNotificationActionType.MemberLeft
                                   || n.ActionType == CookbookNotificationActionType.MemberRemoved,
@@ -49,6 +51,8 @@ internal static class GetNotificationsDbQuery
                     RecipeTitle        = n.Recipe != null ? n.Recipe.Title : null,
                     ActorDisplayName   = n.ActorDisplayName,
                     SubjectDisplayName = n.SubjectDisplayName,
+                    ActorIsCurrentUser = n.ActorUserId == userId,
+                    SubjectIsCurrentUser = n.SubjectUserId == userId,
                     IsImportant = n.ActionType == CookbookNotificationActionType.MemberJoined
                                   || n.ActionType == CookbookNotificationActionType.MemberLeft
                                   || n.ActionType == CookbookNotificationActionType.MemberRemoved,

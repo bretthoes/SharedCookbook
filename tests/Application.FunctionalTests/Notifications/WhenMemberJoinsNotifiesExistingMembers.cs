@@ -13,7 +13,9 @@ public class WhenMemberJoinsNotifiesExistingMembers : BaseTestFixture
 {
     private CookbookNotificationActionType _ownerActionType;
     private bool _ownerNotificationExists;
+    private bool _ownerIsActor;
     private bool _joiningUserReceivedNotification;
+    private bool _joiningUserIsSubject;
 
     [SetUp]
     public async Task SetUp()
@@ -42,22 +44,28 @@ public class WhenMemberJoinsNotifiesExistingMembers : BaseTestFixture
 
         _ownerNotificationExists = ownerNotification is not null;
         _ownerActionType = ownerNotification?.ActionType ?? CookbookNotificationActionType.Unknown;
+        _ownerIsActor = ownerNotification?.ActorIsCurrentUser ?? true;
 
-        // Invitee (joining user) checks their notifications
         await RunAsExistingUserAsync("invitee@test.local");
         var inviteePage = await SendAsync(new GetNotificationsWithPaginationQuery { PageSize = 50 });
-        _joiningUserReceivedNotification = inviteePage.Items.Any(n => n.ActionType == CookbookNotificationActionType.MemberJoined);
+        var inviteeNotification = inviteePage.Items.FirstOrDefault(n => n.ActionType == CookbookNotificationActionType.MemberJoined);
+        _joiningUserReceivedNotification = inviteeNotification is not null;
+        _joiningUserIsSubject = inviteeNotification?.SubjectIsCurrentUser ?? false;
     }
 
     [Test]
-    public void OwnerReceivesNotification() =>
-        Assert.That(_ownerNotificationExists, Is.True);
+    public void OwnerReceivesNotification() => Assert.That(_ownerNotificationExists, Is.True);
 
     [Test]
     public void OwnerNotificationIsMemberJoined() =>
         Assert.That(_ownerActionType, Is.EqualTo(CookbookNotificationActionType.MemberJoined));
 
     [Test]
-    public void JoiningUserDoesNotReceiveNotification() =>
-        Assert.That(_joiningUserReceivedNotification, Is.False);
+    public void OwnerIsNotTheActor() => Assert.That(_ownerIsActor, Is.False);
+
+    [Test]
+    public void JoiningUserSeesOwnJoin() => Assert.That(_joiningUserReceivedNotification, Is.True);
+
+    [Test]
+    public void JoiningUserIsTheSubject() => Assert.That(_joiningUserIsSubject, Is.True);
 }
