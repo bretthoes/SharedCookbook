@@ -32,7 +32,7 @@ dotnet test
 
 ## Technologies
 
-- [.NET 10](https://dotnet.microsoft.com/)
+- [.NET 11](https://dotnet.microsoft.com/)
 - [ASP.NET Core](https://learn.microsoft.com/aspnet/core)
 - [Entity Framework Core 10](https://learn.microsoft.com/ef/core)
 - [FluentValidation](https://fluentvalidation.net/)
