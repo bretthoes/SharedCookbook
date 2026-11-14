@@ -47,9 +47,13 @@ dotnet test
 
 ## Integrations
 
-- [Microsoft Azure](https://azure.microsoft.com/) – API & PostgreSQL hosting
+- [Fly.io](https://fly.io/) – API & PostgreSQL hosting
+- [GitHub Actions](https://github.com/features/actions) – CI and production deploys
 - [Amazon S3 (AWS)](https://aws.amazon.com/s3/) – Image storage
 - [Google Identity (OAuth)](https://developers.google.com/identity) – Single Sign-On
+- [Sign in with Apple](https://developer.apple.com/sign-in-with-apple/) – Single Sign-On
+- [Facebook Login](https://developers.facebook.com/docs/facebook-login/) – Single Sign-On
+- [RevenueCat](https://www.revenuecat.com/) – Subscription webhooks
 - [OpenAI](https://openai.com/) – Recipe parsing from voice and photos
 - [Spoonacular API](https://spoonacular.com/food-api) – Recipe parsing
 - [Mailgun](https://www.mailgun.com/) – Email delivery
