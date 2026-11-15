@@ -21,6 +21,16 @@ var app = builder.Build();
 
 await app.InitialiseDatabaseAsync();
 
+// Called first so it catches exceptions thrown by any middleware registered after it.
+// The empty lambda is required: without a fallback handler (or AddProblemDetails),
+// startup throws even though CustomExceptionHandler is registered.
+app.UseExceptionHandler(_ => { });
+
+// Called before HSTS and the rest of the pipeline. Behind the Fly proxy every request
+// arrives as plain HTTP; this restores the original https scheme (HSTS only sends its
+// header on HTTPS requests) and the real client IP (used by rate limiting).
+app.UseForwardedHeaders();
+
 if (app.Environment.IsProduction())
 {
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
@@ -43,9 +53,6 @@ app.UseSwaggerUi(settings =>
     settings.Path = "/api";
     settings.DocumentPath = "/api/specification.json";
 });
-
-
-app.UseExceptionHandler(_ => { });
 
 app.Map(pattern: "/", () => Results.Redirect(url: "/api"));
 
