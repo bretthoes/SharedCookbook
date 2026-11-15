@@ -1,4 +1,5 @@
-﻿using NSwag;
+﻿using Microsoft.AspNetCore.HttpOverrides;
+using NSwag;
 using NSwag.Generation.Processors.Security;
 using SharedCookbook.Application.Common.Interfaces;
 using SharedCookbook.Infrastructure.Data;
@@ -16,6 +17,16 @@ public static class DependencyInjection
 
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddHttpClient();
+
+        // Fly.io's edge proxy terminates TLS and connects from addresses that are not fixed, so
+        // trust its X-Forwarded-* headers. Without this, every anonymous caller shares the proxy's
+        // IP in the rate limiter and generated links (email confirmation) use http.
+        builder.Services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            options.KnownIPNetworks.Clear();
+            options.KnownProxies.Clear();
+        });
         
         builder.Services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>();

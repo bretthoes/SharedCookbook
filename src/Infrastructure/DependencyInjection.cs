@@ -67,6 +67,10 @@ public static class DependencyInjection
         {
             options.SignIn.RequireConfirmedEmail = true;
             options.User.RequireUniqueEmail = true;
+            // The user name is the email address, so allow every ASCII character that RFC 5322
+            // permits in the local part. The default set rejects addresses like o'brien@example.com.
+            options.User.AllowedUserNameCharacters =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@.-_+!#$%&'*/=?^`{|}~";
         });
 
         builder.Services.AddAuthorizationBuilder();
@@ -80,6 +84,7 @@ public static class DependencyInjection
 
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddTransient<IIdentityService, IdentityService>();
+        builder.Services.AddTransient<ExternalAccountLinker>();
         builder.Services.AddTransient<IExternalLoginService, ExternalLoginService>();
         builder.Services.AddTransient<ISignInPrincipalFactory, SignInPrincipalFactory>();
         builder.Services.Configure<GoogleAuthOptions>(
