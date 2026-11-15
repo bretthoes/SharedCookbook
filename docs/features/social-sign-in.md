@@ -12,10 +12,10 @@ There is no separate “OAuth redirect” flow in this API - the app obtains pro
    - `POST /api/users/login-apple`
    - `POST /api/users/login-facebook`
 3. Command handler ([LoginWithGoogle](../../src/Application/Users/Commands/LoginWithGoogle/LoginWithGoogle.cs), etc.) calls [ExternalLoginService](../../src/Infrastructure/Identity/ExternalLoginService.cs).
-4. Service validates the token with the provider, then **find or create** user:
+4. Service validates the token with the provider, then [ExternalAccountLinker](../../src/Infrastructure/Identity/ExternalAccountLinker.cs) **finds or creates** the user:
    - Existing external login -> return user id
-   - Existing email, new provider -> link login
-   - New user -> create account with confirmed email and random password (never shown to user)
+   - Existing email, new provider -> link login, but only if the provider verified the email (Google `email_verified`, Apple `email_verified`; Facebook gives no signal, so it never links to an existing account). If the existing account was never confirmed, its password is removed and the email is marked confirmed, because whoever set that password never proved they own the address.
+   - New user -> create account with confirmed email and no password (they can add one later through forgot password)
 5. [SignInPrincipalFactory](../../src/Infrastructure/Identity/SignInPrincipalFactory.cs) builds claims; endpoint returns `Results.SignIn` with `IdentityConstants.BearerScheme`.
 
 Endpoints are in [Users.cs](../../src/Web/Endpoints/Users.cs). Standard Identity registration/password routes also exist via `MapIdentityApi<ApplicationUser>()`.

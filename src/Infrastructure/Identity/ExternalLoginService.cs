@@ -1,6 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text.Json;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
@@ -16,6 +15,7 @@ namespace SharedCookbook.Infrastructure.Identity;
 
 public class ExternalLoginService(
     UserManager<ApplicationUser> userManager,
+    ExternalAccountLinker accountLinker,
     IOptions<GoogleAuthOptions> googleOptions,
     IOptions<AppleAuthOptions> appleOptions,
     IOptions<FacebookAuthOptions> facebookOptions,
@@ -72,13 +72,15 @@ public class ExternalLoginService(
         string? email = payload.Email;
         string? subject = payload.Subject;
 
-        if (string.IsNullOrEmpty(email))
+        if (!string.IsNullOrWhiteSpace(email))
         {
-            logger.LogWarning("LoginWithGoogle: Token validated but did not contain email");
-            return Result<string>.Failure(["Google token did not contain email."]);
+            return await accountLinker.FindOrCreateUserAsync(GoogleLoginProvider, subject, email,
+                payload.EmailVerified);
         }
 
-        return await FindOrCreateUserAsync(GoogleLoginProvider, subject, email);
+        logger.LogWarning("LoginWithGoogle: Token validated but did not contain email");
+        return Result<string>.Failure(["Google token did not contain email."]);
+
     }
 
     public async Task<Result<string>> LoginWithAppleAsync(string identityToken, CancellationToken ct = default)
@@ -111,10 +113,10 @@ public class ExternalLoginService(
             return Result<string>.Failure(["Invalid or expired Apple token."]);
         }
 
-        string? subject = FindClaim(principal, "sub", ClaimTypes.NameIdentifier);
-        string? email = FindClaim(principal, "email", ClaimTypes.Email);
+        string? subject = principal.FindFirst("sub")?.Value;
+        string? email = principal.FindFirst("email")?.Value;
 
-        if (string.IsNullOrEmpty(subject))
+        if (string.IsNullOrWhiteSpace(subject))
         {
             logger.LogWarning("LoginWithApple: Token validated but did not contain subject");
             return Result<string>.Failure(["Apple token did not contain subject."]);
@@ -122,18 +124,24 @@ public class ExternalLoginService(
 
         // Apple includes email only on the first authorization. Later sign-ins still include
         // the stable subject, which is how we find the account created the first time.
-        var existing = await userManager.FindByLoginAsync(AppleLoginProvider, subject);
-        if (existing != null)
-            return Result<string>.Success(existing.Id);
-
-        if (string.IsNullOrEmpty(email))
+        if (string.IsNullOrWhiteSpace(email))
         {
+            var existing = await userManager.FindByLoginAsync(AppleLoginProvider, subject);
+            if (existing is not null)
+                return Result<string>.Success(existing.Id);
+
             logger.LogWarning(
                 "LoginWithApple: No account for subject and token did not contain email");
             return Result<string>.Failure(["Apple token did not contain email."]);
         }
 
-        return await FindOrCreateUserAsync(AppleLoginProvider, subject, email);
+        // Apple sends email_verified as either a boolean or the string "true".
+        bool isEmailVerified = string.Equals(
+            principal.FindFirst("email_verified")?.Value,
+            "true",
+            StringComparison.OrdinalIgnoreCase);
+
+        return await accountLinker.FindOrCreateUserAsync(AppleLoginProvider, subject, email, isEmailVerified);
     }
 
     public async Task<Result<string>> LoginWithFacebookAsync(string accessToken, CancellationToken ct = default)
@@ -205,63 +213,7 @@ public class ExternalLoginService(
             return Result<string>.Failure(["Facebook profile did not contain a user ID."]);
         }
 
-        return await FindOrCreateUserAsync(FacebookLoginProvider, subject, email);
-    }
-
-    private async Task<Result<string>> FindOrCreateUserAsync(string loginProvider, string subject, string email)
-    {
-        var user = await userManager.FindByLoginAsync(loginProvider, providerKey: subject);
-        if (user != null)
-            return Result<string>.Success(user.Id);
-
-        user = await userManager.FindByEmailAsync(email);
-        if (user != null)
-        {
-            var addLoginResult = await userManager.AddLoginAsync(
-                user,
-                new UserLoginInfo(loginProvider, providerKey: subject, loginProvider));
-            return !addLoginResult.Succeeded
-                ? Result<string>.Failure(addLoginResult.Errors.Select(error => error.Description).ToArray())
-                : Result<string>.Success(user.Id);
-        }
-
-        user = new ApplicationUser
-        {
-            UserName = email,
-            Email = email,
-            EmailConfirmed = true,
-        };
-
-        string password = GenerateSecureRandomPassword();
-        var createResult = await userManager.CreateAsync(user, password);
-        if (!createResult.Succeeded)
-            return Result<string>.Failure(createResult.Errors.Select(error => error.Description).ToArray());
-
-        var linkResult = await userManager.AddLoginAsync(
-            user,
-            new UserLoginInfo(loginProvider, providerKey: subject, loginProvider));
-        if (!linkResult.Succeeded)
-        {
-            await userManager.DeleteAsync(user);
-            return Result<string>.Failure(linkResult.Errors.Select(error => error.Description).ToArray());
-        }
-
-        return Result<string>.Success(user.Id);
-    }
-
-    private static string? FindClaim(ClaimsPrincipal principal, string shortName, string mappedName) =>
-        principal.FindFirst(shortName)?.Value
-        ?? principal.FindFirst(mappedName)?.Value;
-
-    private static string GenerateSecureRandomPassword()
-    {
-        const int length = 32;
-        const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
-        var bytes = new byte[length * 4];
-        RandomNumberGenerator.Fill(bytes);
-        var result = new char[length];
-        for (var i = 0; i < length; i++)
-            result[i] = validChars[(int)(BitConverter.ToUInt32(bytes, startIndex: i * 4) % validChars.Length)];
-        return new string(result);
+        // The Graph API does not say whether the email was verified.
+        return await accountLinker.FindOrCreateUserAsync(FacebookLoginProvider, subject, email, isEmailVerified: false);
     }
 }

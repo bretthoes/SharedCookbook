@@ -22,8 +22,28 @@ public class EmailSender(
 
         var requestBody = GetRequestBody(options.Value.From, email, subject, htmlMessage);
         using var content = new FormUrlEncodedContent(requestBody);
-        using var response = await client.PostAsync($"v3/{options.Value.Domain}/messages", content);
 
+        // Identity sends the confirmation email after the account is created. Throwing here
+        // would turn a successful registration into a 500 the client cannot recover from.
+        HttpResponseMessage response;
+        try
+        {
+            response = await client.PostAsync($"v3/{options.Value.Domain}/messages", content);
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+        {
+            logger.LogError(ex, "SharedCookbook Email failed to send: transport error");
+            return;
+        }
+
+        using (response)
+        {
+            await LogFailureAsync(response);
+        }
+    }
+
+    private async Task LogFailureAsync(HttpResponseMessage response)
+    {
         if (!response.IsSuccessStatusCode)
         {
             string body = await response.Content.ReadAsStringAsync();
