@@ -12,4 +12,9 @@ public static class RateLimitPolicyNames
     /// Daily quota for direct image uploads to S3.
     /// </summary>
     public const string ImageUploadDaily = nameof(ImageUploadDaily);
+
+    /// <summary>
+    /// Per-client limit on Identity endpoints that send email (register, resend, forgot password).
+    /// </summary>
+    public const string AccountEmail = nameof(AccountEmail);
 }

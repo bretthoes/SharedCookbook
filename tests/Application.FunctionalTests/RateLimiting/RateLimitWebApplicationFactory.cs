@@ -37,6 +37,7 @@ internal sealed class RateLimitWebApplicationFactory(DbConnection connection)
                 [$"{RecipeParsingRateLimitOptions.SectionName}:DailyLimit"] = TestDailyLimit.ToString(),
                 [$"{RecipeParsingRateLimitOptions.SectionName}:FreeDailyLimit"] = TestDailyLimit.ToString(),
                 [$"{ImageUploadRateLimitOptions.SectionName}:DailyLimit"] = TestDailyLimit.ToString(),
+                [$"{AccountEmailRateLimitOptions.SectionName}:PermitLimit"] = TestDailyLimit.ToString(),
             });
         });
 

@@ -6,6 +6,7 @@ using SharedCookbook.Application.Users.Commands.LoginWithGoogle;
 using SharedCookbook.Application.Users.Commands.UpdateUser;
 using SharedCookbook.Application.Users.Queries;
 using SharedCookbook.Infrastructure.Identity;
+using SharedCookbook.Web.Infrastructure.RateLimiting;
 
 namespace SharedCookbook.Web.Endpoints;
 
@@ -40,7 +41,8 @@ public class Users : EndpointGroupBase
             .Produces(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status401Unauthorized);
 
-        builder.MapIdentityApi<ApplicationUser>();
+        builder.MapIdentityApi<ApplicationUser>()
+            .RequireRateLimiting(RateLimitPolicyNames.AccountEmail);
     }
 
     private static async Task<IResult> LoginGoogle(
