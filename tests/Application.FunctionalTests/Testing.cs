@@ -153,6 +153,14 @@ public class Testing
         _userId = null;
     }
 
+    internal static async Task<TResult> UseServiceAsync<TService, TResult>(Func<TService, Task<TResult>> action)
+        where TService : notnull
+    {
+        using var scope = _scopeFactory.CreateScope();
+
+        return await action(scope.ServiceProvider.GetRequiredService<TService>());
+    }
+
     internal static async Task<TEntity?> FindAsync<TEntity>(params object[] keyValues) where TEntity : class
     {
         using var scope = _scopeFactory.CreateScope();
