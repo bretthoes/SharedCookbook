@@ -4,17 +4,21 @@ public static class MembershipQueryExtensions
 {
     extension(IQueryable<CookbookMembership> query)
     {
+        // TODO find something appropriate to do with this. seems like a valid extension.
         public IQueryable<CookbookMembership> HasCookbookId(Guid cookbookId) =>
             query.Where(membership => membership.CookbookId == cookbookId);
 
+        // TODO make this its own db query file near its usage
         public Task<bool> ExistsFor(Guid cookbookId,
             string userId,
             CancellationToken ct = default) 
             => query.HasCookbookId(cookbookId).ForUserId(userId).AsNoTracking().AnyAsync(ct);
 
+        // TODO make this its own db query file near its usage
         public Task<CookbookMembership> GetByCookbookAndUser(Guid cookbookId, string userId, CancellationToken ct = default) =>
             query.FindForUserOrThrowAsync(cookbookId, userId, ct);
 
+        // TODO make this its own db query file near its usage
         public Task<CookbookMembership?> FindForUserAsync(Guid cookbookId, string userId, CancellationToken ct = default) =>
             query.ForCookbookAndUser(cookbookId, userId).SingleOrDefaultAsync(ct);
 
@@ -31,8 +35,4 @@ public static class MembershipQueryExtensions
         private IQueryable<CookbookMembership> ForCookbookAndUser(Guid cookbookId, string userId) =>
             query.HasCookbookId(cookbookId).ForUserId(userId);
     }
-
-    public static IQueryable<MembershipDto> OrderByName(
-        this IQueryable<MembershipDto> query)
-        => query.OrderByDescending(dto => dto.Name);
 }

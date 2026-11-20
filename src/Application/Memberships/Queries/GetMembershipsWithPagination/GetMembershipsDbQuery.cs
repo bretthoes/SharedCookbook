@@ -19,7 +19,7 @@ internal static class GetMembershipsDbQuery
                     Tier = membership.Tier,
                     Name = membership.DisplayName,
                 })
-                .OrderByName()
+                .OrderByDescending(dto => dto.Name)
                 .PaginatedListAsync(pageNumber, pageSize, ct);
     }
 }
