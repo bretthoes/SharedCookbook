@@ -14,6 +14,40 @@ Implemented with the **Spoonacular** recipe-extract API via [IRecipeUrlParser](.
 
 Endpoint: `POST /api/recipes/parse-from-url` in [Recipes.cs](../../src/Web/Endpoints/Recipes.cs).
 
+## Parse decisions
+
+[ParseRecipeFromUrl](../../src/Application/RecipeDrafting/Commands/ParseRecipeFromUrl/ParseRecipeFromUrl.cs) rejects a long-form YouTube link before Spoonacular is called. `extractFromVideo` is sent as true only when the client set the flag and [VideoRecipeUrls](../../src/Application/RecipeDrafting/VideoRecipeUrls.cs) matches the host: TikTok, Instagram, Pinterest, `pin.it`, or a YouTube Shorts path (`/shorts`). Every other URL, including a blog whose client asked for video, uses the ordinary page extract. The response is an unsaved `CreateRecipeDto`.
+
+```mermaid
+flowchart TD
+    start(["POST /api/recipes/parse-from-url"]) --> longForm{Long-form YouTube?}
+    longForm -->|yes| reject(["422 Only YouTube Shorts are allowed"])
+    longForm -->|no| videoFlag{Client asked for video and the host qualifies?}
+    videoFlag -->|yes| extractVideo["Spoonacular extract, extractFromVideo true"]
+    videoFlag -->|no| extractPage["Spoonacular extract, extractFromVideo false"]
+    extractVideo --> http
+    extractPage --> http
+    http{Spoonacular returned success?}
+    http -->|no| fail([Fail the import])
+    http -->|yes| directions{Analyzed instructions present?}
+    directions -->|yes| analyzed[One direction per analyzed step]
+    directions -->|no| raw[Split instructions on blank lines]
+    raw --> numbered{One block with several numbered steps?}
+    numbered -->|yes| splitSteps[Split on the step numbers]
+    numbered -->|no| image
+    analyzed --> image
+    splitSteps --> image
+    image{Valid image URL?}
+    image -->|no| draft([Return draft with no image])
+    image -->|yes| upload[Re-host the image in S3]
+    upload --> uploaded{Upload result?}
+    uploaded -->|succeeded| draftWithImage([Return draft with the S3 image])
+    uploaded -->|request cancelled| abort([Abort the request])
+    uploaded -->|other failure| draft
+```
+
+Long-form YouTube is `youtube.com`, `youtube-nocookie.com`, or `youtu.be` when the path is outside `/shorts`. Directions come from `AnalyzedInstructionDirectionsParser` when Spoonacular returned analyzed steps, and from `RawInstructionDirectionsParser` otherwise. A failed S3 upload is logged and the draft still returns, with no image. Cancellation of the request is rethrown.
+
 ## Where to look in code
 
 | Area | Path |
@@ -29,6 +63,6 @@ Direction text from Spoonacular uses `AnalyzedInstructionDirectionsParser` when 
 ## Operational notes
 
 - **Spoonacular API key** is required in every environment; without it, imports fail at the HTTP call.
-- **`extractFromVideo`** is forwarded only for TikTok, Instagram, Pinterest, and a YouTube Shorts link. Spoonacular charges the video rate whenever the flag is true, so a blog or any other page stays on the ordinary extract even if the client asks for video.
+- **`extractFromVideo`** is forwarded only for TikTok, Instagram, Pinterest, `pin.it`, and a YouTube Shorts link. Spoonacular charges the video rate whenever the flag is true, so a blog or any other page stays on the ordinary extract even if the client asks for video.
 - **Costs and quotas** are on Spoonacular’s side; this is the only paid third-party call in the recipe-import family besides OpenAI (voice).
 - Spoonacular failures surface as a generic HTTP error to the client; check logs for status code and reason phrase.

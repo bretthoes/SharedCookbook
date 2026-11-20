@@ -20,6 +20,61 @@ There is no separate “OAuth redirect” flow in this API - the app obtains pro
 
 Endpoints are in [Users.cs](../../src/Web/Endpoints/Users.cs). Standard Identity registration/password routes also exist via `MapIdentityApi<ApplicationUser>()`.
 
+## Account resolution
+
+The chart starts once [ExternalLoginService](../../src/Infrastructure/Identity/ExternalLoginService.cs) has accepted the token from the provider. Google’s ID token passed `GoogleJsonWebSignature.ValidateAsync` with this server’s ClientId. Apple’s identity token passed signature, issuer, and bundle-id checks against Apple’s OIDC keys. Facebook’s access token passed `debug_token` (`is_valid` and this app’s id). A missing token, a bad signature, or the wrong app stops before the chart. Google, Facebook, and Apple-with-email then call [FindOrCreateUserAsync](../../src/Infrastructure/Identity/ExternalAccountLinker.cs). Apple with no email returns the user already stored for that `sub`, or it fails. Facebook enters the shared lookup with `isEmailVerified: false`. Google and Apple pass `email_verified` from the token.
+
+```mermaid
+flowchart TD
+    start([Provider accepted the token]) --> provider{Provider}
+
+    provider -->|Google| googleEmail{Email claim in the ID token?}
+    googleEmail -->|no| failNoEmail([Fail, no email])
+    googleEmail -->|yes| byLogin
+
+    provider -->|Facebook| facebookEmail{Email from Graph /me?}
+    facebookEmail -->|no| failNoEmail
+    facebookEmail -->|yes| facebookId{User id from Graph /me?}
+    facebookId -->|no| failNoId([Fail, no user id])
+    facebookId -->|yes, unverified| byLogin
+
+    provider -->|Apple| appleSub{sub claim in the identity token?}
+    appleSub -->|no| failNoSub([Fail, no subject])
+    appleSub -->|yes| appleEmail{Email claim in the identity token?}
+    appleEmail -->|no| appleLogin{"FindByLogin Apple, sub"}
+    appleLogin -->|found| userId([Return user id])
+    appleLogin -->|missing| failNoEmail
+    appleEmail -->|yes| byLogin
+
+    subgraph linker [FindOrCreateUserAsync]
+        byLogin{"FindByLogin provider, subject"}
+        byLogin -->|found| userId
+        byLogin -->|missing| byEmail{FindByEmail}
+        byEmail -->|missing| create["Create user, email confirmed, no password"]
+        create --> created{Create succeeded?}
+        created -->|no| fail([Fail])
+        created -->|yes| addNew[AddLogin]
+        addNew --> newLinked{AddLogin succeeded?}
+        newLinked -->|yes| userId
+        newLinked -->|no| rollback[Delete the new user]
+        rollback --> fail
+
+        byEmail -->|found| verified{Provider verified the email?}
+        verified -->|no| failUnverified([Fail, email not verified])
+        verified -->|yes| confirmed{EmailConfirmed?}
+        confirmed -->|yes| addExisting[AddLogin]
+        confirmed -->|no| claim["Remove password if set, mark email confirmed"]
+        claim --> claimed{Claim succeeded?}
+        claimed -->|no| fail
+        claimed -->|yes| addExisting
+        addExisting --> existingLinked{AddLogin succeeded?}
+        existingLinked -->|yes| userId
+        existingLinked -->|no| fail
+    end
+```
+
+Google is the Gmail / Google sign-in path. It joins the shared lookup once the ID token contains an email. An existing login for that provider and subject returns immediately, so a later sign-in still resolves when the token omits the email. Linking onto an address that already has an account requires `email_verified`, which is why Facebook stops at that decision. When the local account is still unconfirmed, the verified provider login removes its password and marks the email confirmed before `AddLogin`. A new address becomes a confirmed account with no password. If `AddLogin` fails after that create, the new user is deleted.
+
 ## Provider validation (where complexity lives)
 
 All logic is centralized in [ExternalLoginService.cs](../../src/Infrastructure/Identity/ExternalLoginService.cs):

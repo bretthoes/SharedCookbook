@@ -22,6 +22,87 @@ This doc covers **share links** only.
 
 Endpoints: [InvitationTokens.cs](../../src/Web/Endpoints/InvitationTokens.cs). All routes require authorization - the recipient must be logged in to preview or accept.
 
+## Token lifecycle
+
+`InvitationToken.IssueNewToken` enters `Active`. Accept and reject are the only transitions out, and both are guarded by `IsRedeemable` (`Active`, and `Created` strictly inside the past 14 days). A failed guard leaves the row `Active`. `Accepted` and `Rejected` are terminal: `Accept` and `Reject` do nothing unless the current status is `Active`.
+
+`Revoked`, `Error`, and `Unknown` exist on `InvitationStatus`. This command never writes them. [InvitationResponder](../../src/Infrastructure/InvitationResponder.cs) throws `NotSupportedException` for any decision other than accept or reject (a repeat of the current status returns without a write).
+
+```mermaid
+stateDiagram-v2
+    [*] --> Active : IssueNewToken
+
+    Active --> Accepted : accept [IsRedeemable] / InvitationAcceptedEvent
+    Active --> Rejected : reject [IsRedeemable]
+
+    note right of Active
+        IsRedeemable stays false after the window.
+        Status remains Active.
+        Created at or after now also fails the guard.
+    end note
+```
+
+On accept, [InvitationAcceptedEventHandler](../../src/Application/Invitations/EventHandlers/InvitationAcceptedEventHandler.cs) adds a `CookbookMembership` when that user does not already belong to the cookbook. Reject raises no domain event.
+
+## Redeem sequence
+
+`PUT /api/invitationtokens/{token}` runs the checks in this order. Digest verification and the 14-day window are separate: the factory only compares the secret, then the handler reads `IsRedeemable`. Preview (`GET`) loads by public id and returns the cookbook summary; the secret and `IsRedeemable` are checked on this redeem path.
+
+```mermaid
+sequenceDiagram
+    actor Recipient
+    participant Handler as UpdateInvitationToken
+    participant Factory as IInvitationTokenFactory
+    participant Token as InvitationToken
+    participant Responder as InvitationResponder
+    participant DB as Database
+    participant OnAccept as InvitationAcceptedEventHandler
+
+    Recipient->>Handler: PUT {publicId}.{secret}, NewStatus
+    Handler->>Handler: TokenLink.Parse
+    Handler->>DB: GetByPublicId(publicId)
+    alt no row
+        DB-->>Handler: none
+        Handler-->>Recipient: 404 Not Found
+    else row found
+        DB-->>Handler: InvitationToken
+        Handler->>Factory: Verify(secret, digest)
+        alt digest mismatch
+            Factory-->>Handler: false
+            Handler-->>Recipient: 409 Conflict
+        else digest matches
+            Factory-->>Handler: true
+            Handler->>Token: IsRedeemable
+            alt outside the window or not Active
+                Token-->>Handler: false
+                Handler-->>Recipient: 409 Conflict
+            else redeemable
+                Token-->>Handler: true
+                alt NewStatus is Accepted
+                    Handler->>Responder: Respond(Accepted)
+                    Responder->>Token: Accept(now, userId)
+                    Note over Token: Status = Accepted<br/>raises InvitationAcceptedEvent
+                    Responder->>DB: SaveChanges
+                    Note over DB,OnAccept: DispatchDomainEventsInterceptor publishes before the write
+                    DB->>OnAccept: InvitationAcceptedEvent
+                    opt no membership for this user and cookbook
+                        OnAccept->>DB: add CookbookMembership
+                    end
+                    Handler-->>Recipient: 204 No Content
+                else NewStatus is Rejected
+                    Handler->>Responder: Respond(Rejected)
+                    Responder->>Token: Reject(now)
+                    Note over Token: Status = Rejected<br/>no domain event
+                    Responder->>DB: SaveChanges
+                    Handler-->>Recipient: 204 No Content
+                end
+            end
+        end
+    end
+```
+
+`SaveChanges` publishes domain events in `DispatchDomainEventsInterceptor` before the write, so the membership insert joins that same save. `TokenDigestMismatchException` and `TokenIsNotRedeemableException` are both `ConflictException` (409).
+
 ## Security model
 
 - Raw secret is **never persisted** - only SHA-256(salt ‖ code) via [Sha256TokenFactory](../../src/Infrastructure/Security/Sha256TokenFactory.cs).
