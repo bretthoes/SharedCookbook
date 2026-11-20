@@ -25,4 +25,15 @@ internal static class GetCookbooksDbQuery
                 })
                 .PaginatedListAsync(pageNumber, pageSize, ct);
     }
+
+    extension(IQueryable<Cookbook> cookbooks)
+    {
+        private IQueryable<Cookbook> ForMember(string? userId)
+            => string.IsNullOrWhiteSpace(userId)
+                ? cookbooks.Where(_ => false)
+                : cookbooks.Where(cookbook => cookbook.Memberships.Any(membership => membership.CreatedBy == userId));
+
+        private IQueryable<Cookbook> OrderByTitle()
+            => cookbooks.OrderBy(cookbook => cookbook.Title);
+    }
 }
