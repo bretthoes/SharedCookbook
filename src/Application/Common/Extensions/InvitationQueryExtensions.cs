@@ -8,27 +8,8 @@ public static class InvitationQueryExtensions
         InvitationStatus status)
         => query.Where(invitation => invitation.RecipientPersonId == userId && invitation.Status == status);
     
-    public static Task<CookbookInvitation?> FirstLinkInviteWithTokens(
-        this IQueryable<CookbookInvitation> query,
-        Guid cookbookId,
-        CancellationToken ct = default) =>
-        query
-            .ForCookbook(cookbookId)
-            .LinkStyle()
-            .IsSent()
-            .FirstOrDefaultAsync(ct);
-    
     public static IQueryable<InvitationDto> OrderByMostRecentlyCreated(this IQueryable<InvitationDto> invitations) =>
         invitations.OrderByDescending(invitation => invitation.Created);
-    
-    private static IQueryable<CookbookInvitation> ForCookbook(this IQueryable<CookbookInvitation> q, Guid cookbookId) =>
-        q.Where(invitation => invitation.CookbookId == cookbookId);
-
-    private static IQueryable<CookbookInvitation> LinkStyle(this IQueryable<CookbookInvitation> q) =>
-        q.Where(invitation => invitation.RecipientPersonId == null);
-
-    private static IQueryable<CookbookInvitation> IsSent(this IQueryable<CookbookInvitation> q) =>
-        q.Where(invitation => invitation.Status == InvitationStatus.Active);
     
     public static Task<bool> HasActiveInvite(
         this IQueryable<CookbookInvitation> invitations,
