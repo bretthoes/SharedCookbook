@@ -21,8 +21,8 @@ internal static class GetInvitationsDbQuery
                     Created       = invitation.Created,
                     CookbookId    = invitation.CookbookId,
                     CookbookTitle = invitation.Cookbook != null ? invitation.Cookbook.Title : "",
-                    CookbookImage = invitation.Cookbook != null && invitation.Cookbook.Image != null && invitation.Cookbook.Image != "" // TODO simplify this nonsense with a helper
-                                        ? imageBaseUrl + invitation.Cookbook.Image
+                    CookbookImage = invitation.Cookbook != null && invitation.Cookbook.Image != null
+                                        ? invitation.Cookbook.Image.EnsurePrefixUrl(imageBaseUrl)
                                         : "",
                     SenderName    = invitation.SenderDisplayName,
                 })
@@ -31,17 +31,5 @@ internal static class GetInvitationsDbQuery
         
         private IQueryable<CookbookInvitation> GetInvitationsForUserByStatus(string? userId, InvitationStatus status)
             => query.Where(invitation => invitation.RecipientPersonId == userId && invitation.Status == status);
-        
-        // TODO move to another class, since this is a separate query
-        public Task<bool> HasActiveInvite(
-            Guid cookbookId,
-            string recipientPersonId,
-            CancellationToken ct = default)
-            => query
-                .AsNoTracking()
-                .AnyAsync(invitation =>
-                    invitation.CookbookId == cookbookId 
-                    && invitation.RecipientPersonId == recipientPersonId
-                    && invitation.Status == InvitationStatus.Active, ct);
     }
 }

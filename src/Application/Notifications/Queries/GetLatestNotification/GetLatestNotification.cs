@@ -1,5 +1,3 @@
-using SharedCookbook.Application.Notifications.Queries.GetNotificationsWithPagination;
-
 namespace SharedCookbook.Application.Notifications.Queries.GetLatestNotification;
 
 public sealed record GetLatestNotificationQuery : IRequest<NotificationDto?>;

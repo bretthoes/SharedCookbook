@@ -21,5 +21,8 @@ internal static class GetMembershipsDbQuery
                 })
                 .OrderByDescending(dto => dto.Name)
                 .PaginatedListAsync(pageNumber, pageSize, ct);
+
+        private IQueryable<CookbookMembership> HasCookbookId(Guid cookbookId) =>
+            query.Where(membership => membership.CookbookId == cookbookId);
     }
 }

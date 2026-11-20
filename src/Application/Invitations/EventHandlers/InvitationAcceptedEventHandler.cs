@@ -1,3 +1,5 @@
+using SharedCookbook.Application.Invitations.Queries.ExistsFor;
+
 namespace SharedCookbook.Application.Invitations.EventHandlers;
 
 public class InvitationAcceptedEventHandler(

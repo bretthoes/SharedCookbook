@@ -1,4 +1,6 @@
-﻿namespace SharedCookbook.Application.Memberships.Commands.UpdateMembership;
+﻿using SharedCookbook.Application.Memberships.Queries.FindForUser;
+
+namespace SharedCookbook.Application.Memberships.Commands.UpdateMembership;
 
 public sealed record UpdateMembershipCommand(Guid Id, MembershipTier Tier) : IRequest;
 

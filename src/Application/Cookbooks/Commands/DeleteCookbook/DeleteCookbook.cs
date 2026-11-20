@@ -1,4 +1,6 @@
-﻿namespace SharedCookbook.Application.Cookbooks.Commands.DeleteCookbook;
+﻿using SharedCookbook.Application.Memberships.Queries.FindForUser;
+
+namespace SharedCookbook.Application.Cookbooks.Commands.DeleteCookbook;
 
 public record DeleteCookbookCommand(Guid Id) : IRequest;
 

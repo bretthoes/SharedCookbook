@@ -1,3 +1,5 @@
+using SharedCookbook.Application.Memberships.Queries.FindForUser;
+
 namespace SharedCookbook.Application.Recipes.Commands.RecordRecipeMade;
 
 public sealed record RecordRecipeMadeCommand(Guid RecipeId) : IRequest;

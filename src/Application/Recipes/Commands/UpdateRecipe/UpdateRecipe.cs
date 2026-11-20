@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Options;
 using SharedCookbook.Application.Common.Mappings;
 using SharedCookbook.Application.Images.Commands.CreateImages;
+using SharedCookbook.Application.Memberships.Queries.FindForUser;
 using SharedCookbook.Domain.ValueObjects;
 
 namespace SharedCookbook.Application.Recipes.Commands.UpdateRecipe;

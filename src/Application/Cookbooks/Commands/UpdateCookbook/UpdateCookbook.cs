@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using SharedCookbook.Application.Images.Commands.CreateImages;
+using SharedCookbook.Application.Memberships.Queries.FindForUser;
 
 namespace SharedCookbook.Application.Cookbooks.Commands.UpdateCookbook;
 
