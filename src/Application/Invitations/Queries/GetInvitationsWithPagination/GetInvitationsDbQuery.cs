@@ -26,7 +26,22 @@ internal static class GetInvitationsDbQuery
                                         : "",
                     SenderName    = invitation.SenderDisplayName,
                 })
-                .OrderByMostRecentlyCreated()
+                .OrderByDescending(invitation => invitation.Created)
                 .PaginatedListAsync(pageNumber, pageSize, ct);
+        
+        private IQueryable<CookbookInvitation> GetInvitationsForUserByStatus(string? userId, InvitationStatus status)
+            => query.Where(invitation => invitation.RecipientPersonId == userId && invitation.Status == status);
+        
+        // TODO move to another class, since this is a separate query
+        public Task<bool> HasActiveInvite(
+            Guid cookbookId,
+            string recipientPersonId,
+            CancellationToken ct = default)
+            => query
+                .AsNoTracking()
+                .AnyAsync(invitation =>
+                    invitation.CookbookId == cookbookId 
+                    && invitation.RecipientPersonId == recipientPersonId
+                    && invitation.Status == InvitationStatus.Active, ct);
     }
 }

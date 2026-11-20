@@ -1,4 +1,6 @@
-﻿namespace SharedCookbook.Application.Invitations.Commands.CreateInvitation;
+﻿using SharedCookbook.Application.Invitations.Queries.GetInvitationsWithPagination;
+
+namespace SharedCookbook.Application.Invitations.Commands.CreateInvitation;
 
 public sealed record CreateInvitationCommand(Guid CookbookId, string Email) : IRequest<Guid>;
 
