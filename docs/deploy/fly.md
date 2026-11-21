@@ -117,10 +117,10 @@ fly secrets set `
   "ImageUploadOptions__AwsAccessKeyId=..." `
   "ImageUploadOptions__AwsSecretAccessKey=..." `
   "ImageUploadOptions__Region=us-east-1" `
-  "EmailApiOptions__ApiKey=..." `
-  "EmailApiOptions__BaseUrl=..." `
-  "EmailApiOptions__Domain=..." `
-  "EmailApiOptions__From=..." `
+  "MailgunApiOptions__ApiKey=..." `
+  "MailgunApiOptions__BaseUrl=..." `
+  "MailgunApiOptions__Domain=..." `
+  "MailgunApiOptions__From=..." `
   "RecipeUrlParserOptions__ApiKey=..." `
   "RecipeUrlParserOptions__BaseUrl=..." `
   "AiRecipeParserOptions__ApiKey=..." `
