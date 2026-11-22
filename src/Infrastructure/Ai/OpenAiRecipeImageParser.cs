@@ -66,16 +66,15 @@ public sealed class OpenAiRecipeImageParser : IAiRecipeImageParser
         if (!string.IsNullOrWhiteSpace(file.ContentType) && file.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
             return file.ContentType;
 
-        return Path.GetExtension(file.FileName).ToLowerInvariant() switch
+        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        return extension switch
         {
             ".jpg" or ".jpeg" => "image/jpeg",
             ".png" => "image/png",
             ".bmp" => "image/bmp",
             ".webp" => "image/webp",
-            ".heic" => "image/heic",
-            ".heif" => "image/heif",
             ".tiff" or ".tif" => "image/tiff",
-            _ => "image/jpeg",
+            _ => throw new InvalidOperationException($"No media type is mapped for '{extension}'."),
         };
     }
 }
