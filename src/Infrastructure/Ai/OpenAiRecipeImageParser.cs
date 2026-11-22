@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using OpenAI;
 using OpenAI.Chat;
+using SharedCookbook.Application.Common;
 using SharedCookbook.Application.Common.Interfaces;
 
 namespace SharedCookbook.Infrastructure.Ai;
@@ -55,26 +56,9 @@ public sealed class OpenAiRecipeImageParser : IAiRecipeImageParser
             new SystemChatMessage(SystemPrompt),
             new UserChatMessage(
                 ChatMessageContentPart.CreateTextPart("Extract the recipe from this image."),
-                ChatMessageContentPart.CreateImagePart(imageBytes, GetMediaType(file))),
+                ChatMessageContentPart.CreateImagePart(imageBytes, ImageUtilities.GetMediaType(file.FileName))),
         ];
 
         return await OpenAiRecipeParsing.CompleteChatAsync(_chatClient, messages, InvalidContentMessage, ct);
-    }
-
-    private static string GetMediaType(IFormFile file)
-    {
-        if (!string.IsNullOrWhiteSpace(file.ContentType) && file.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
-            return file.ContentType;
-
-        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-        return extension switch
-        {
-            ".jpg" or ".jpeg" => "image/jpeg",
-            ".png" => "image/png",
-            ".bmp" => "image/bmp",
-            ".webp" => "image/webp",
-            ".tiff" or ".tif" => "image/tiff",
-            _ => throw new InvalidOperationException($"No media type is mapped for '{extension}'."),
-        };
     }
 }
