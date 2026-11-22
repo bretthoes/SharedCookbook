@@ -1,10 +1,14 @@
-﻿namespace SharedCookbook.Application.InvitationTokens.Queries.GetInvitationToken;
+﻿using Microsoft.Extensions.Options;
+using SharedCookbook.Application.Images.Commands.CreateImages;
+
+namespace SharedCookbook.Application.InvitationTokens.Queries.GetInvitationToken;
 
 public record GetInvitationTokenQuery(string Token) : IRequest<InvitationDto>;
 
 public class GetInvitationPreviewQueryHandler(
     IApplicationDbContext context,
-    IIdentityService service)
+    IIdentityService service,
+    IOptions<ImageUploadOptions> options)
     : IRequestHandler<GetInvitationTokenQuery, InvitationDto>
 {
     public async Task<InvitationDto> Handle(GetInvitationTokenQuery query, CancellationToken ct = default)
@@ -26,10 +30,10 @@ public class GetInvitationPreviewQueryHandler(
         return new InvitationDto
         {
             Id = token.Id,
-            CookbookId = token.Cookbook?.Id,
+            CookbookId = token.Cookbook.Id,
             SenderName = name,
-            CookbookImage = token.Cookbook?.Image,
-            CookbookTitle = token.Cookbook?.Title ?? string.Empty,
+            CookbookImage = token.Cookbook.Image?.EnsurePrefixUrl(options.Value.ImageBaseUrl),
+            CookbookTitle = token.Cookbook.Title,
         };
     }
 }
