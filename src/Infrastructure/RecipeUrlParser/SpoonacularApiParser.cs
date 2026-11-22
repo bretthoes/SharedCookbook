@@ -43,10 +43,14 @@ public sealed class SpoonacularApiParser(
 
         if (!response.IsSuccessStatusCode)
         {
+            string body = await response.Content.ReadAsStringAsync(ct);
             logger.LogError(
-                "Failed to parse recipe from URL: {StatusCode} {ReasonPhrase}",
+                "Failed to parse recipe from URL {RecipeUrl} extractFromVideo={ExtractFromVideo}: {StatusCode} {ReasonPhrase}. Body: {Body}",
+                url,
+                extractFromVideo,
                 response.StatusCode,
-                response.ReasonPhrase);
+                response.ReasonPhrase,
+                body);
 
             throw new HttpRequestException("Failed to fetch or parse the recipe from the URL.");
         }
