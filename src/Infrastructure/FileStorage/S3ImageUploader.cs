@@ -30,7 +30,7 @@ public class S3ImageUploader(IOptions<ImageUploadOptions> storage, IHttpClientFa
             ct.ThrowIfCancellationRequested();
 
             await using var stream = files[i].OpenReadStream();
-            await using var image = await ProcessToSquareAsync(stream, ct);
+            await using var image = await ProcessAsync(stream, square: false, ct);
 
             string key = ImageUtilities.GetUniqueFileName(image.Extension);
             await transferUtility.UploadAsync(new TransferUtilityUploadRequest
@@ -56,7 +56,7 @@ public class S3ImageUploader(IOptions<ImageUploadOptions> storage, IHttpClientFa
 
         await using var stream = await DownloadImageFromUrl(url, ct)
             ?? throw new ImageDownloadFailedException(url);
-        await using var img = await ProcessToSquareAsync(stream, ct);
+        await using var img = await ProcessAsync(stream, square: true, ct);
 
         var key = ImageUtilities.GetUniqueFileName(img.Extension);
         await transferUtility.UploadAsync(new TransferUtilityUploadRequest
@@ -75,11 +75,17 @@ public class S3ImageUploader(IOptions<ImageUploadOptions> storage, IHttpClientFa
 
     private BasicAWSCredentials GetCredentials() => new(storage.Value.AwsAccessKeyId, storage.Value.AwsSecretAccessKey);
 
-    private static async Task<ProcessedImage> ProcessToSquareAsync(
+    /// <summary>
+    /// User uploads keep the aspect the app already cropped (cookbook covers are 3:4,
+    /// recipe photos are square). URL imports are center-cropped to a square because
+    /// those photos were not framed by the user.
+    /// </summary>
+    private static async Task<ProcessedImage> ProcessAsync(
         Stream input,
+        bool square,
         CancellationToken ct = default)
     {
-        const int targetSizePixels = 1024; // square edge
+        const int maxEdge = 1024;
         const string outputFormat = "webp"; // "webp" | "jpeg" | "png"
         const int quality = 80; // 1..100
 
@@ -91,9 +97,9 @@ public class S3ImageUploader(IOptions<ImageUploadOptions> storage, IHttpClientFa
             context.AutoOrient();
             context.Resize(new ResizeOptions
             {
-                Mode = ResizeMode.Crop,
+                Mode = square ? ResizeMode.Crop : ResizeMode.Max,
                 Position = AnchorPositionMode.Center,
-                Size = new Size(width: targetSizePixels, height: targetSizePixels)
+                Size = new Size(width: maxEdge, height: maxEdge)
             });
         });
 
