@@ -15,18 +15,9 @@ public sealed class UpdateMembershipCommandHandler(IApplicationDbContext context
         var actorMembership = await context.CookbookMemberships.FindForUserAsync(membershipToUpdate.CookbookId, user.Id, ct)
             ?? throw new ForbiddenAccessException();
 
-        if (!actorMembership.CanApplyTierUpdate(membershipToUpdate, command.Tier))
+        if (!actorMembership.TryApplyTierUpdate(membershipToUpdate, command.Tier))
             throw new ForbiddenAccessException();
-
-        membershipToUpdate.SetTier(command.Tier);
-
-        if (PromotingNewOwner(command))
-            actorMembership.SetTier(MembershipTier.Contributor);
-
-        membershipToUpdate.AddDomainEvent(new MembershipUpdatedEvent(membershipToUpdate));
 
         await context.SaveChangesAsync(ct);
     }
-
-    private static bool PromotingNewOwner(UpdateMembershipCommand command) => command.Tier == MembershipTier.Owner;
 }
