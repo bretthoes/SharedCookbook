@@ -8,7 +8,7 @@ public sealed class Cookbook : BaseAuditableEntity
         set
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(value);
-            ArgumentOutOfRangeException.ThrowIfGreaterThan(value.Length, Constraints.TitleMaxLength, value);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(value.Length, Constraints.TitleMaxLength, nameof(Title));
 
             field = value;
         }
@@ -20,7 +20,7 @@ public sealed class Cookbook : BaseAuditableEntity
         set
         {
             if (value is not null)
-                ArgumentOutOfRangeException.ThrowIfGreaterThan(value.Length, Constraints.ImageMaxLength, value);
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(value.Length, Constraints.ImageMaxLength, nameof(Image));
             
             field = value;
         }
@@ -43,8 +43,6 @@ public sealed class Cookbook : BaseAuditableEntity
             Memberships = [CookbookMembership.NewOwner(creatorId, ownerDisplayName)],
         };
 
-        cookbook.AddDomainEvent(new CookbookCreatedEvent(cookbook));
-        
         return cookbook;
     }
     
