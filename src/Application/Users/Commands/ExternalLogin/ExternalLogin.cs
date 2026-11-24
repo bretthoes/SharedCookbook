@@ -12,26 +12,21 @@ public sealed class ExternalLoginCommandHandler(
     ISignInPrincipalFactory signInPrincipalFactory)
     : IRequestHandler<ExternalLoginCommand, Result<ClaimsPrincipal>>
 {
-    public Task<Result<ClaimsPrincipal>> Handle(ExternalLoginCommand request, CancellationToken ct = default) =>
-        SignInAsync(LoginAsync(request, ct), ct);
-
-    private Task<Result<string>> LoginAsync(ExternalLoginCommand request, CancellationToken ct)
+    public async Task<Result<ClaimsPrincipal>> Handle(ExternalLoginCommand request, CancellationToken ct = default)
     {
         var provider = providers.FirstOrDefault(candidate => candidate.Provider == request.Provider);
-        return provider is null
-            ? Task.FromResult(Result<string>.Failure(["Provider must be Google, Apple, or Facebook."]))
-            : provider.LoginAsync(request.Token, ct);
-    }
+        if (provider is null)
+            return Result<ClaimsPrincipal>.Failure(["Provider must be Google, Apple, or Facebook."]);
 
-    private async Task<Result<ClaimsPrincipal>> SignInAsync(Task<Result<string>> login, CancellationToken ct)
-    {
-        var loginResult = await login;
-        if (!loginResult.Succeeded)
-            return Result<ClaimsPrincipal>.Failure(loginResult.Errors);
+        var login = await provider.LoginAsync(request.Token, ct);
+        if (!login.Succeeded)
+            return Result<ClaimsPrincipal>.Failure(login.Errors);
 
-        var principal = await signInPrincipalFactory.CreatePrincipalForUserIdAsync(loginResult.Value!, ct);
-        return principal is null
-            ? Result<ClaimsPrincipal>.Failure(["User not found."])
-            : Result<ClaimsPrincipal>.Success(principal);
+        var userId = login.Value!;
+        var principal = await signInPrincipalFactory.CreatePrincipalForUserIdAsync(userId, ct);
+        if (principal is null)
+            return Result<ClaimsPrincipal>.Failure(["User not found."]);
+
+        return Result<ClaimsPrincipal>.Success(principal);
     }
 }
