@@ -43,7 +43,7 @@ Application and Domain code must not take a dependency on `ApplicationUser`. Bou
 | **Web**            | Current HTTP principal      | [CurrentUser](../../src/Web/Services/CurrentUser.cs) implements `IUser` (`Id`, `Roles`)                                                                                              |
 | **Application**    | Use cases                   | `IUser` for “who is calling”; `IIdentityService` for lookups and account mutations (email, display name, create/delete)                                                              |
 | **Application**    | Read models that join users | `IIdentityRepository` — see below                                                                                                                                                    |
-| **Infrastructure** | Persistence + Identity APIs | `ApplicationUser`, `UserManager<ApplicationUser>`, `IdentityService`, `ExternalLoginService`                                                                                         |
+| **Infrastructure** | Persistence + Identity APIs | `ApplicationUser`, `UserManager<ApplicationUser>`, `IdentityService`, `GoogleExternalLogin`, `AppleExternalLogin`, `FacebookExternalLogin`                                         |
 | **Domain**         | Ownership and audit         | **String user ids** on auditable entities (`CreatedBy`, `LastModifiedBy`) and invitation fields (`RecipientPersonId`); no navigation properties to `ApplicationUser` on domain types |
 
 

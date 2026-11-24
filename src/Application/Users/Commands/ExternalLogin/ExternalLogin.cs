@@ -5,29 +5,23 @@ using SharedCookbook.Application.Common.Security;
 namespace SharedCookbook.Application.Users.Commands.ExternalLogin;
 
 [AllowAnonymous]
-public sealed record LoginWithGoogleCommand(string IdToken) : IRequest<Result<ClaimsPrincipal>>;
-
-[AllowAnonymous]
-public sealed record LoginWithAppleCommand(string IdentityToken) : IRequest<Result<ClaimsPrincipal>>;
-
-[AllowAnonymous]
-public sealed record LoginWithFacebookCommand(string AccessToken) : IRequest<Result<ClaimsPrincipal>>;
+public sealed record ExternalLoginCommand(ExternalLoginProvider Provider, string Token) : IRequest<Result<ClaimsPrincipal>>;
 
 public sealed class ExternalLoginCommandHandler(
-    IExternalLoginService externalLoginService,
+    IEnumerable<IExternalLoginProvider> providers,
     ISignInPrincipalFactory signInPrincipalFactory)
-    : IRequestHandler<LoginWithGoogleCommand, Result<ClaimsPrincipal>>,
-        IRequestHandler<LoginWithAppleCommand, Result<ClaimsPrincipal>>,
-        IRequestHandler<LoginWithFacebookCommand, Result<ClaimsPrincipal>>
+    : IRequestHandler<ExternalLoginCommand, Result<ClaimsPrincipal>>
 {
-    public Task<Result<ClaimsPrincipal>> Handle(LoginWithGoogleCommand request, CancellationToken ct = default) =>
-        SignInAsync(externalLoginService.LoginWithGoogleAsync(request.IdToken, ct), ct);
+    public Task<Result<ClaimsPrincipal>> Handle(ExternalLoginCommand request, CancellationToken ct = default) =>
+        SignInAsync(LoginAsync(request, ct), ct);
 
-    public Task<Result<ClaimsPrincipal>> Handle(LoginWithAppleCommand request, CancellationToken ct = default) =>
-        SignInAsync(externalLoginService.LoginWithAppleAsync(request.IdentityToken, ct), ct);
-
-    public Task<Result<ClaimsPrincipal>> Handle(LoginWithFacebookCommand request, CancellationToken ct = default) =>
-        SignInAsync(externalLoginService.LoginWithFacebookAsync(request.AccessToken, ct), ct);
+    private Task<Result<string>> LoginAsync(ExternalLoginCommand request, CancellationToken ct)
+    {
+        var provider = providers.FirstOrDefault(candidate => candidate.Provider == request.Provider);
+        return provider is null
+            ? Task.FromResult(Result<string>.Failure(["Provider must be Google, Apple, or Facebook."]))
+            : provider.LoginAsync(request.Token, ct);
+    }
 
     private async Task<Result<ClaimsPrincipal>> SignInAsync(Task<Result<string>> login, CancellationToken ct)
     {

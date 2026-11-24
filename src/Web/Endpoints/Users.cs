@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Identity;
 using SharedCookbook.Application.Common.Models;
 using SharedCookbook.Application.Users.Commands.DeleteAccount;
@@ -29,37 +30,18 @@ public class Users : EndpointGroupBase
             .Produces<DisplayNameDto>()
             .ProducesProblem(StatusCodes.Status401Unauthorized);
 
-        builder.MapPost(LoginGoogle, pattern: "/login-google")
-            .Produces(StatusCodes.Status200OK)
-            .ProducesProblem(StatusCodes.Status401Unauthorized);
-
-        builder.MapPost(LoginApple, pattern: "/login-apple")
-            .Produces(StatusCodes.Status200OK)
-            .ProducesProblem(StatusCodes.Status401Unauthorized);
-
-        builder.MapPost(LoginFacebook, pattern: "/login-facebook")
-            .Produces(StatusCodes.Status200OK)
-            .ProducesProblem(StatusCodes.Status401Unauthorized);
+        builder.MapPost(LoginExternal, pattern: "/login-external")
+            .Produces<AccessTokenResponse>(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem();
 
         builder.MapIdentityApi<ApplicationUser>()
             .RequireRateLimiting(RateLimitPolicyNames.AccountEmail);
     }
 
-    private static Task<IResult> LoginGoogle(
+    private static Task<IResult> LoginExternal(
         ISender sender,
-        [FromBody] LoginWithGoogleCommand command,
-        CancellationToken ct = default) =>
-        SignInAsync(sender, command, ct);
-
-    private static Task<IResult> LoginApple(
-        ISender sender,
-        [FromBody] LoginWithAppleCommand command,
-        CancellationToken ct = default) =>
-        SignInAsync(sender, command, ct);
-
-    private static Task<IResult> LoginFacebook(
-        ISender sender,
-        [FromBody] LoginWithFacebookCommand command,
+        [FromBody] ExternalLoginCommand command,
         CancellationToken ct = default) =>
         SignInAsync(sender, command, ct);
 

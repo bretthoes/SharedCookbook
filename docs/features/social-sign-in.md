@@ -2,16 +2,13 @@
 
 Users sign in with **Google**, **Apple**, or **Facebook** from the mobile app. Each provider returns a token to the client; the API validates that token, finds or creates a local user, and issues an **ASP.NET Core Identity bearer** session (same scheme as password login).
 
-There is no separate “OAuth redirect” flow in this API - the app obtains provider tokens natively and posts them to dedicated login endpoints.
+There is no separate “OAuth redirect” flow in this API. The app obtains a provider token natively and posts it to one login endpoint, naming the provider in the body.
 
 ## Flow
 
 1. Mobile SDK completes provider sign-in and yields an ID token (Google/Apple) or access token (Facebook).
-2. Client calls one of:
-   - `POST /api/users/login-google`
-   - `POST /api/users/login-apple`
-   - `POST /api/users/login-facebook`
-3. Command handler ([ExternalLogin](../../src/Application/Users/Commands/ExternalLogin/ExternalLogin.cs)) calls [ExternalLoginService](../../src/Infrastructure/Identity/ExternalLoginService.cs).
+2. Client calls `POST /api/users/login-external` with `{ "provider": "Google" | "Apple" | "Facebook", "token": "..." }`. The provider is `ExternalLoginProvider`. A value outside that enum, or a blank token, is a validation error.
+3. Command handler ([ExternalLogin](../../src/Application/Users/Commands/ExternalLogin/ExternalLogin.cs)) calls the [IExternalLoginProvider](../../src/Application/Users/Commands/ExternalLogin/IExternalLoginProvider.cs) for that provider.
 4. Service validates the token with the provider, then [ExternalAccountLinker](../../src/Infrastructure/Identity/ExternalAccountLinker.cs) **finds or creates** the user:
    - Existing external login -> return user id
    - Existing email, new provider -> link login, but only if the provider verified the email (Google `email_verified`, Apple `email_verified`; Facebook gives no signal, so it never links to an existing account). If the existing account was never confirmed, its password is removed and the email is marked confirmed, because whoever set that password never proved they own the address.
@@ -22,7 +19,7 @@ Endpoints are in [Users.cs](../../src/Web/Endpoints/Users.cs). Standard Identity
 
 ## Account resolution
 
-The chart starts once [ExternalLoginService](../../src/Infrastructure/Identity/ExternalLoginService.cs) has accepted the token from the provider. Google’s ID token passed `GoogleJsonWebSignature.ValidateAsync` with this server’s ClientId. Apple’s identity token passed signature, issuer, and bundle-id checks against Apple’s OIDC keys. Facebook’s access token passed `debug_token` (`is_valid` and this app’s id). A missing token, a bad signature, or the wrong app stops before the chart. Google, Facebook, and Apple-with-email then call [FindOrCreateUserAsync](../../src/Infrastructure/Identity/ExternalAccountLinker.cs). Apple with no email returns the user already stored for that `sub`, or it fails. Facebook enters the shared lookup with `isEmailVerified: false`. Google and Apple pass `email_verified` from the token.
+The chart starts once the provider class ([GoogleExternalLogin](../../src/Infrastructure/Identity/GoogleExternalLogin.cs), [AppleExternalLogin](../../src/Infrastructure/Identity/AppleExternalLogin.cs), or [FacebookExternalLogin](../../src/Infrastructure/Identity/FacebookExternalLogin.cs)) has accepted the token. Google’s ID token passed `GoogleJsonWebSignature.ValidateAsync` with this server’s ClientId. Apple’s identity token passed signature, issuer, and bundle-id checks against Apple’s OIDC keys. Facebook’s access token passed `debug_token` (`is_valid` and this app’s id). A missing token, a bad signature, or the wrong app stops before the chart. Google, Facebook, and Apple-with-email then call [FindOrCreateUserAsync](../../src/Infrastructure/Identity/ExternalAccountLinker.cs). Apple with no email returns the user already stored for that `sub`, or it fails. Facebook enters the shared lookup with `isEmailVerified: false`. Google and Apple pass `email_verified` from the token.
 
 ```mermaid
 flowchart TD
@@ -77,7 +74,7 @@ Google is the Gmail / Google sign-in path. It joins the shared lookup once the I
 
 ## Provider validation (where complexity lives)
 
-All logic is centralized in [ExternalLoginService.cs](../../src/Infrastructure/Identity/ExternalLoginService.cs):
+Each provider validates its own token:
 
 | Provider | Validation approach |
 |----------|---------------------|
@@ -105,5 +102,6 @@ Production values are Fly secrets (`Authentication__Google__ClientId`, etc.) - [
 |------|------|
 | Endpoints | [src/Web/Endpoints/Users.cs](../../src/Web/Endpoints/Users.cs) |
 | Commands | [ExternalLogin.cs](../../src/Application/Users/Commands/ExternalLogin/ExternalLogin.cs) |
-| Token validation + user provisioning | [ExternalLoginService.cs](../../src/Infrastructure/Identity/ExternalLoginService.cs) |
+| Token validation | [GoogleExternalLogin.cs](../../src/Infrastructure/Identity/GoogleExternalLogin.cs), [AppleExternalLogin.cs](../../src/Infrastructure/Identity/AppleExternalLogin.cs), [FacebookExternalLogin.cs](../../src/Infrastructure/Identity/FacebookExternalLogin.cs) |
+| User provisioning | [ExternalAccountLinker.cs](../../src/Infrastructure/Identity/ExternalAccountLinker.cs) |
 | Options types | [GoogleAuthOptions](../../src/Infrastructure/Identity/GoogleAuthOptions.cs), [AppleAuthOptions](../../src/Infrastructure/Identity/AppleAuthOptions.cs), [FacebookAuthOptions](../../src/Infrastructure/Identity/FacebookAuthOptions.cs) |

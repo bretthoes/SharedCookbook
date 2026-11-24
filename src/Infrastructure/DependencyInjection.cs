@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SharedCookbook.Application.Common.Interfaces;
+using SharedCookbook.Application.Users.Commands.ExternalLogin;
 using SharedCookbook.Application.Images.Commands.CreateImages;
 using SharedCookbook.Domain.Constants;
 using SharedCookbook.Infrastructure.Data;
@@ -85,7 +86,9 @@ public static class DependencyInjection
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddTransient<IIdentityService, IdentityService>();
         builder.Services.AddTransient<ExternalAccountLinker>();
-        builder.Services.AddTransient<IExternalLoginService, ExternalLoginService>();
+        builder.Services.AddTransient<IExternalLoginProvider, GoogleExternalLogin>();
+        builder.Services.AddTransient<IExternalLoginProvider, AppleExternalLogin>();
+        builder.Services.AddTransient<IExternalLoginProvider, FacebookExternalLogin>();
         builder.Services.AddTransient<ISignInPrincipalFactory, SignInPrincipalFactory>();
         builder.Services.Configure<GoogleAuthOptions>(
             builder.Configuration.GetSection(GoogleAuthOptions.SectionName));

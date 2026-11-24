@@ -2,7 +2,7 @@
 
 namespace SharedCookbook.Application.Common.Interfaces
 {
-    // TODO: Identity (this service and IExternalLoginService) returns Result / Result<T>.
+    // TODO: Identity (this service and IExternalLoginProvider) returns Result / Result<T>.
     // The rest of the application throws NotFoundException, ForbiddenAccessException, and
     // ValidationException. These two error styles should be unified.
     public interface IIdentityService

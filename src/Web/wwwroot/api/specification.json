@@ -2299,18 +2299,18 @@
         }
       }
     },
-    "/api/Users/login-google": {
+    "/api/Users/login-external": {
       "post": {
         "tags": [
           "Users"
         ],
-        "operationId": "UsersLoginGoogle",
+        "operationId": "UsersLoginExternal",
         "requestBody": {
           "x-name": "command",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/LoginWithGoogleCommand"
+                "$ref": "#/components/schemas/ExternalLoginCommand"
               }
             }
           },
@@ -2319,77 +2319,24 @@
         },
         "responses": {
           "200": {
-            "description": ""
-          },
-          "401": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/AccessTokenResponse"
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/api/Users/login-apple": {
-      "post": {
-        "tags": [
-          "Users"
-        ],
-        "operationId": "UsersLoginApple",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginWithAppleCommand"
-              }
-            }
           },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          },
-          "401": {
+          "400": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/api/Users/login-facebook": {
-      "post": {
-        "tags": [
-          "Users"
-        ],
-        "operationId": "UsersLoginFacebook",
-        "requestBody": {
-          "x-name": "command",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginWithFacebookCommand"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": ""
           },
           "401": {
             "description": "",
@@ -3875,49 +3822,6 @@
           }
         }
       },
-      "LoginWithGoogleCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "idToken": {
-            "type": "string"
-          }
-        }
-      },
-      "LoginWithAppleCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "identityToken": {
-            "type": "string"
-          }
-        }
-      },
-      "LoginWithFacebookCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "accessToken": {
-            "type": "string"
-          }
-        }
-      },
-      "RegisterRequest": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "email",
-          "password"
-        ],
-        "properties": {
-          "email": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          }
-        }
-      },
       "AccessTokenResponse": {
         "type": "object",
         "additionalProperties": false,
@@ -3938,6 +3842,48 @@
             "format": "int64"
           },
           "refreshToken": {
+            "type": "string"
+          }
+        }
+      },
+      "ExternalLoginCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "provider": {
+            "$ref": "#/components/schemas/ExternalLoginProvider"
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "ExternalLoginProvider": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "Google",
+          "Apple",
+          "Facebook"
+        ],
+        "enum": [
+          "Google",
+          "Apple",
+          "Facebook"
+        ]
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
             "type": "string"
           }
         }
