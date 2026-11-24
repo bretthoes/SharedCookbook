@@ -17,18 +17,44 @@ public class WhenNewOwner
     public void ShouldBeOwner() { Assert.That(_actual.IsOwner, Is.True); }
 
     [Test]
-    public void AndDemotedThenShouldHaveContributorTier()
+    public void TransferringOwnershipShouldDemoteToContributor()
     {
-        var owner = CookbookMembership.NewOwner(It.IsAny<string>(), displayName: null);
-        owner.Demote();
+        var owner = CookbookMembership.NewOwner(creatorId: "owner", displayName: null);
+        var member = CookbookMembership.New(Guid.NewGuid(), userId: "member", displayName: null, MembershipTier.Contributor);
+
+        owner.TryApplyTierUpdate(member, MembershipTier.Owner);
+
         Assert.That(owner.Tier, Is.EqualTo(MembershipTier.Contributor));
     }
 
     [Test]
-    public void AndDemotedThenShouldNotBeOwner()
+    public void TransferringOwnershipShouldPromoteTheTarget()
     {
-        var owner = CookbookMembership.NewOwner(It.IsAny<string>(), displayName: null);
-        owner.Demote();
-        Assert.That(owner.IsOwner, Is.False);
+        var owner = CookbookMembership.NewOwner(creatorId: "owner", displayName: null);
+        var member = CookbookMembership.New(Guid.NewGuid(), userId: "member", displayName: null, MembershipTier.Contributor);
+
+        owner.TryApplyTierUpdate(member, MembershipTier.Owner);
+
+        Assert.That(member.IsOwner, Is.True);
+    }
+
+    [Test]
+    public void RefusedTierUpdateShouldReportFailure()
+    {
+        var actor = CookbookMembership.New(Guid.NewGuid(), userId: "actor", displayName: null, MembershipTier.Contributor);
+        var target = CookbookMembership.New(Guid.NewGuid(), userId: "target", displayName: null, MembershipTier.Viewer);
+
+        Assert.That(actor.TryApplyTierUpdate(target, MembershipTier.Admin), Is.False);
+    }
+
+    [Test]
+    public void RefusedTierUpdateShouldLeaveTheTargetUnchanged()
+    {
+        var actor = CookbookMembership.New(Guid.NewGuid(), userId: "actor", displayName: null, MembershipTier.Contributor);
+        var target = CookbookMembership.New(Guid.NewGuid(), userId: "target", displayName: null, MembershipTier.Viewer);
+
+        actor.TryApplyTierUpdate(target, MembershipTier.Admin);
+
+        Assert.That(target.Tier, Is.EqualTo(MembershipTier.Viewer));
     }
 }

@@ -10,8 +10,9 @@ public class WhenNewDefaultPromoted
     [OneTimeSetUp]
     public void OneTimeSetup()
     {
-        _actual = CookbookMembership.NewDefault(cookbookId: Guid.NewGuid(), It.IsAny<string>(), It.IsAny<string>());
-        _actual.SetTier(MembershipTier.Owner);
+        var owner = CookbookMembership.NewOwner(creatorId: "owner", displayName: null);
+        _actual = CookbookMembership.NewDefault(cookbookId: Guid.NewGuid(), userId: "member", displayName: null);
+        owner.TryApplyTierUpdate(_actual, MembershipTier.Owner);
     }
 
     [Test]

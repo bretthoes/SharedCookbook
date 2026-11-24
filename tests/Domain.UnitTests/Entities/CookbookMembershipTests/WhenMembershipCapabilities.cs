@@ -7,9 +7,7 @@ public class WhenMembershipCapabilities
 {
     private static CookbookMembership WithTier(MembershipTier tier, string userId = "user")
     {
-        var membership = CookbookMembership.NewDefault(cookbookId: Guid.NewGuid(), userId: userId, It.IsAny<string>());
-        membership.SetTier(tier);
-        return membership;
+        return CookbookMembership.New(cookbookId: Guid.NewGuid(), userId: userId, displayName: null, tier);
     }
 
     [Test]

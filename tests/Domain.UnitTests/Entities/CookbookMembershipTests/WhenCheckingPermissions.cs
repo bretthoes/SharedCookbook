@@ -9,12 +9,8 @@ public class WhenCheckingPermissions
     private const string ActorUserId = "actor-user";
     private const string OtherUserId = "other-user";
 
-    private static CookbookMembership Member(string userId, MembershipTier tier)
-    {
-        var membership = CookbookMembership.NewDefault(cookbookId: Guid.NewGuid(), userId: userId, It.IsAny<string>());
-        membership.SetTier(tier);
-        return membership;
-    }
+    private static CookbookMembership Member(string userId, MembershipTier tier) =>
+        CookbookMembership.New(cookbookId: Guid.NewGuid(), userId: userId, displayName: null, tier);
 
     private static Recipe RecipeBy(string userId) => new()
     {
