@@ -7,7 +7,7 @@ public sealed class IngredientCategory : BaseAuditableEntity
         get;
         init
         {
-            ArgumentOutOfRangeException.ThrowIfGreaterThan(value.Length, Constraints.TitleMaxLength, value);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(value.Length, Constraints.TitleMaxLength, nameof(Title));
             field = value;
         }
     }

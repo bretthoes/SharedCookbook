@@ -16,7 +16,6 @@ public class DeleteRecipeCommandHandler(IApplicationDbContext context, IUser use
             throw new ForbiddenAccessException();
 
         context.Recipes.Remove(recipeToDelete);
-        recipeToDelete.AddDomainEvent(new RecipeDeletedEvent(recipeToDelete.Id));
 
         await context.SaveChangesAsync(ct);
     }

@@ -10,8 +10,6 @@ public sealed class DeleteInvitationCommandHandler(IApplicationDbContext context
 
         context.CookbookInvitations.Remove(invitation);
 
-        invitation.AddDomainEvent(new InvitationDeletedEvent(invitation));
-
         await context.SaveChangesAsync(ct);
     }
 }

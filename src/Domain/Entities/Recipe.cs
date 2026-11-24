@@ -18,7 +18,15 @@ public sealed class Recipe : BaseAuditableEntity
 
     public int? Servings { get; set; }
 
-    public int MadeCount { get; set; }
+    public int MadeCount { get; private set; }
+
+    public void RecordMade(string actorUserId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(actorUserId);
+
+        MadeCount++;
+        AddDomainEvent(new RecipeMadeEvent(Id, CookbookId, actorUserId));
+    }
 
     public required Timing Timing { get; set; }
 

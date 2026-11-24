@@ -35,7 +35,6 @@ public sealed class CreateInvitationCommandHandler(
         var invitation = CookbookInvitation.Create(command.CookbookId, recipientId, actorMembership.DisplayName);
 
         context.CookbookInvitations.Add(invitation);
-        invitation.AddDomainEvent(new InvitationCreatedEvent(invitation));
         await context.SaveChangesAsync(ct);
 
         return invitation.Id;

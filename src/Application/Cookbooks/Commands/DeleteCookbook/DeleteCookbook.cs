@@ -17,7 +17,6 @@ public class DeleteCookbookCommandHandler(IApplicationDbContext context, IUser u
             throw new ForbiddenAccessException();
 
         context.Cookbooks.Remove(cookbook);
-        cookbook.AddDomainEvent(new CookbookDeletedEvent(cookbook));
 
         await context.SaveChangesAsync(ct);
     }

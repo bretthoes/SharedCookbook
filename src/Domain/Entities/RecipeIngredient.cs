@@ -7,7 +7,7 @@ public sealed class RecipeIngredient
         get;
         init
         {
-            ArgumentOutOfRangeException.ThrowIfGreaterThan(value.Length, Constraints.NameMaxLength, value);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(value.Length, Constraints.NameMaxLength, nameof(Name));
             field = value;
         }
     }

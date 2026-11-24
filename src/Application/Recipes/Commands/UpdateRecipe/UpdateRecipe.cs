@@ -64,8 +64,6 @@ public sealed class UpdateRecipeCommandHandler(
         foreach (var image in command.Recipe.Images.ToEntities(options.Value.ImageBaseUrl))
             recipe.Images.Add(image);
 
-        recipe.AddDomainEvent(new RecipeUpdatedEvent(recipe.Id));
-
         await context.SaveChangesAsync(ct);
 
         return recipe.Id;

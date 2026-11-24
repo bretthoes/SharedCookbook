@@ -25,8 +25,6 @@ public sealed class UpdateCookbookCommandHandler(
         cookbook.Title = request.Title ?? string.Empty;
         cookbook.Image = request.Image?.StripPrefixUrl(options.Value.ImageBaseUrl);
 
-        cookbook.AddDomainEvent(new CookbookUpdatedEvent(cookbook));
-        
         return await context.SaveChangesAsync(ct);
     }
 }

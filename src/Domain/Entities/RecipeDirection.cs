@@ -7,7 +7,7 @@ public sealed class RecipeDirection
         get;
         init
         {
-            ArgumentOutOfRangeException.ThrowIfGreaterThan(value.Length, Constraints.TextMaxLength, value);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(value.Length, Constraints.TextMaxLength, nameof(Text));
             field = value;
         }
     }
@@ -28,7 +28,7 @@ public sealed class RecipeDirection
         init
         {
             if (value is not null)
-                ArgumentOutOfRangeException.ThrowIfGreaterThan(value.Length, Constraints.ImageMaxLength, value);
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(value.Length, Constraints.ImageMaxLength, nameof(Image));
 
             field = value;
         }

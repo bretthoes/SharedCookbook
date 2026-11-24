@@ -21,7 +21,6 @@ public sealed class CreateCookbookCommandHandler(
         var cookbook = Cookbook.Create(request.Title, user.Id, image, displayName);
         
         await context.Cookbooks.AddAsync(cookbook, ct);
-        cookbook.AddDomainEvent(new CookbookCreatedEvent(cookbook));
         await context.SaveChangesAsync(ct);
 
         return cookbook.Id;
