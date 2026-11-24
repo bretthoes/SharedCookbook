@@ -2,7 +2,7 @@
 
 /// <summary>
 /// A user's membership in a cookbook. Permissions are derived from <see cref="MembershipTier"/>.
-/// Tier changes are governed by <see cref="CanApplyTierUpdate"/>.
+/// Tier changes go through <see cref="TryApplyTierUpdate"/>.
 /// </summary>
 public sealed class CookbookMembership : BaseAuditableEntity
 {
@@ -31,20 +31,46 @@ public sealed class CookbookMembership : BaseAuditableEntity
     public bool CanApplyTierUpdate(CookbookMembership target, MembershipTier proposedTier) =>
         !IsSameMember(target) && CanAssignTierTo(target, proposedTier);
 
-    public void Demote() => SetTier(MembershipTier.Contributor);
+    /// <summary>
+    /// Applies <paramref name="proposedTier"/> to <paramref name="target"/> when this member is allowed to.
+    /// Transferring ownership demotes this member to contributor.
+    /// </summary>
+    public bool TryApplyTierUpdate(CookbookMembership target, MembershipTier proposedTier)
+    {
+        ArgumentNullException.ThrowIfNull(target);
 
-    public void SetTier(MembershipTier tier) => Tier = tier;
+        if (!CanApplyTierUpdate(target, proposedTier))
+            return false;
+
+        target.SetTier(proposedTier);
+
+        if (proposedTier == MembershipTier.Owner)
+            SetTier(MembershipTier.Contributor);
+
+        return true;
+    }
+
+    /// <summary>
+    /// Makes this member the owner when the current owner is leaving the cookbook.
+    /// </summary>
+    public void AssumeOwnership() => SetTier(MembershipTier.Owner);
+
+    private void SetTier(MembershipTier tier) => Tier = tier;
 
     public static CookbookMembership NewOwner(string creatorId, string? displayName) =>
         new() { Tier = MembershipTier.Owner, CreatedBy = creatorId, DisplayName = displayName };
 
-    public static CookbookMembership NewDefault(Guid cookbookId, string? userId, string? displayName) => new()
-    {
-        CookbookId = cookbookId,
-        Tier = MembershipTier.Contributor,
-        CreatedBy = userId,
-        DisplayName = displayName
-    };
+    public static CookbookMembership NewDefault(Guid cookbookId, string? userId, string? displayName) =>
+        New(cookbookId, userId, displayName, MembershipTier.Contributor);
+
+    public static CookbookMembership New(Guid cookbookId, string? userId, string? displayName, MembershipTier tier) =>
+        new()
+        {
+            CookbookId = cookbookId,
+            Tier = tier,
+            CreatedBy = userId,
+            DisplayName = displayName
+        };
 
     private bool CanRemoveOtherMember(CookbookMembership target) =>
         Tier switch

@@ -2,6 +2,9 @@ using SharedCookbook.Application.Common.Models;
 
 namespace SharedCookbook.Application.Common.Interfaces;
 
+// TODO: Returns Result<T>, while the rest of the application throws
+// NotFoundException, ForbiddenAccessException, and ValidationException.
+// See the same note on IIdentityService. These two error styles should be unified.
 public interface IExternalLoginService
 {
     /// <summary>

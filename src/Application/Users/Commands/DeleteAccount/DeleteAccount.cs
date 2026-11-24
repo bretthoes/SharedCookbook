@@ -56,7 +56,7 @@ public sealed class DeleteAccountCommandHandler(
                 .OrderByDescending(membership => membership.Tier)
                 .ThenBy(membership => membership.Created)
                 .First();
-            successor.SetTier(MembershipTier.Owner);
+            successor.AssumeOwnership();
         }
 
         await context.SaveChangesAsync(ct);

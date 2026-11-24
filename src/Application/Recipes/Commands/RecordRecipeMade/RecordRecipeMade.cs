@@ -11,16 +11,15 @@ public sealed class RecordRecipeMadeCommandHandler(
 {
     public async Task Handle(RecordRecipeMadeCommand request, CancellationToken ct = default)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(user.Id);
+        var userId = user.Id;
+        ArgumentException.ThrowIfNullOrWhiteSpace(userId);
 
         var recipe = await context.Recipes.FindOrThrowAsync(request.RecipeId, ct);
 
-        _ = await context.CookbookMemberships.FindForUserAsync(recipe.CookbookId, user.Id, ct)
+        _ = await context.CookbookMemberships.FindForUserAsync(recipe.CookbookId, userId, ct)
             ?? throw new ForbiddenAccessException();
 
-        recipe.MadeCount++;
-
-        recipe.AddDomainEvent(new RecipeMadeEvent(recipe.Id, recipe.CookbookId, user.Id));
+        recipe.RecordMade(userId);
 
         await context.SaveChangesAsync(ct);
     }

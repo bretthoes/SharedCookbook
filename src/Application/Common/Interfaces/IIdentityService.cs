@@ -2,6 +2,9 @@
 
 namespace SharedCookbook.Application.Common.Interfaces
 {
+    // TODO: Identity (this service and IExternalLoginService) returns Result / Result<T>.
+    // The rest of the application throws NotFoundException, ForbiddenAccessException, and
+    // ValidationException. These two error styles should be unified.
     public interface IIdentityService
     {
         Task<(string? Email, string? DisplayName)?> FindByEmailAsync(string email, CancellationToken ct = default);
