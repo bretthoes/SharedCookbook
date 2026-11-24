@@ -38,7 +38,7 @@ Domain events implement `Domain.Common.INotification`. They are **not** raised f
 
 1. Handler calls `entity.AddDomainEvent(...)` and `SaveChanges`.
 2. [DispatchDomainEventsInterceptor](../../src/Infrastructure/Data/Interceptors/DispatchDomainEventsInterceptor.cs) runs **before** the save, clears events on tracked `BaseEntity` instances, and calls `IMediator.Publish` for each.
-3. [EventHandlers/](../../src/Application/) types implement `INotificationHandler<TEvent>` for side effects (logging, notifications, etc.).
+3. [EventHandlers/](../../src/Application/) types implement `INotificationHandler<TEvent>` for side effects (notifications, membership creation).
 
 Handlers run **in-process** and **before** the transaction commits. Keep event handlers small; heavy work belongs in explicit commands or background jobs if that becomes necessary.
 

@@ -1,8 +1,8 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using SharedCookbook.Application.Common.Models;
 using SharedCookbook.Application.Users.Commands.DeleteAccount;
-using SharedCookbook.Application.Users.Commands.LoginWithApple;
-using SharedCookbook.Application.Users.Commands.LoginWithFacebook;
-using SharedCookbook.Application.Users.Commands.LoginWithGoogle;
+using SharedCookbook.Application.Users.Commands.ExternalLogin;
 using SharedCookbook.Application.Users.Commands.UpdateUser;
 using SharedCookbook.Application.Users.Queries;
 using SharedCookbook.Infrastructure.Identity;
@@ -45,32 +45,28 @@ public class Users : EndpointGroupBase
             .RequireRateLimiting(RateLimitPolicyNames.AccountEmail);
     }
 
-    private static async Task<IResult> LoginGoogle(
+    private static Task<IResult> LoginGoogle(
         ISender sender,
         [FromBody] LoginWithGoogleCommand command,
-        CancellationToken ct = default)
-    {
-        var result = await sender.Send(command, ct);
-        return result.Succeeded
-            ? Results.SignIn(result.Value!, authenticationScheme: IdentityConstants.BearerScheme)
-            : Results.Unauthorized();
-    }
+        CancellationToken ct = default) =>
+        SignInAsync(sender, command, ct);
 
-    private static async Task<IResult> LoginApple(
+    private static Task<IResult> LoginApple(
         ISender sender,
         [FromBody] LoginWithAppleCommand command,
-        CancellationToken ct = default)
-    {
-        var result = await sender.Send(command, ct);
-        return result.Succeeded
-            ? Results.SignIn(result.Value!, authenticationScheme: IdentityConstants.BearerScheme)
-            : Results.Unauthorized();
-    }
+        CancellationToken ct = default) =>
+        SignInAsync(sender, command, ct);
 
-    private static async Task<IResult> LoginFacebook(
+    private static Task<IResult> LoginFacebook(
         ISender sender,
         [FromBody] LoginWithFacebookCommand command,
-        CancellationToken ct = default)
+        CancellationToken ct = default) =>
+        SignInAsync(sender, command, ct);
+
+    private static async Task<IResult> SignInAsync(
+        ISender sender,
+        IRequest<Result<ClaimsPrincipal>> command,
+        CancellationToken ct)
     {
         var result = await sender.Send(command, ct);
         return result.Succeeded

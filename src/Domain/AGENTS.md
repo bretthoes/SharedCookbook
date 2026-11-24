@@ -9,7 +9,7 @@ Persistence details stay in `Infrastructure/Data/Configurations/`. A new column 
 | Folder | Contents |
 | --- | --- |
 | `Entities/` | Aggregates and children: `Cookbook`, `Recipe`, `CookbookMembership`, invitations, notifications |
-| `ValueObjects/` | `Timing`, `DietaryTags`, `MealTypes`, `TokenDigest`, `Colour` |
+| `ValueObjects/` | `Timing`, `DietaryTags`, `MealTypes`, `TokenDigest` |
 | `Enums/` | `MembershipTier`, `InvitationStatus`, `CookbookNotificationActionType` |
 | `Events/` | `BaseEvent` subclasses raised with `AddDomainEvent` |
 | `Exceptions/` | Domain rule failures (`InvitationException`, hash/salt length) |
@@ -26,7 +26,7 @@ Invariants live on the entity: guarded setters, factory methods, and permission 
 
 ## Events
 
-Raise events from the entity or the factory (`cookbook.AddDomainEvent(...)`). They dispatch on `SaveChanges` (`DispatchDomainEventsInterceptor`). React in `Application/**/EventHandlers/` with `INotificationHandler<T>`.
+Raise events from the entity or the factory (`Accept` raises `InvitationAcceptedEvent`). They dispatch on `SaveChanges` (`DispatchDomainEventsInterceptor`). React in `Application/**/EventHandlers/` with `INotificationHandler<T>`. Only raise an event that has a handler.
 
 ## Tests
 

@@ -11,7 +11,7 @@ There is no separate “OAuth redirect” flow in this API - the app obtains pro
    - `POST /api/users/login-google`
    - `POST /api/users/login-apple`
    - `POST /api/users/login-facebook`
-3. Command handler ([LoginWithGoogle](../../src/Application/Users/Commands/LoginWithGoogle/LoginWithGoogle.cs), etc.) calls [ExternalLoginService](../../src/Infrastructure/Identity/ExternalLoginService.cs).
+3. Command handler ([ExternalLogin](../../src/Application/Users/Commands/ExternalLogin/ExternalLogin.cs)) calls [ExternalLoginService](../../src/Infrastructure/Identity/ExternalLoginService.cs).
 4. Service validates the token with the provider, then [ExternalAccountLinker](../../src/Infrastructure/Identity/ExternalAccountLinker.cs) **finds or creates** the user:
    - Existing external login -> return user id
    - Existing email, new provider -> link login, but only if the provider verified the email (Google `email_verified`, Apple `email_verified`; Facebook gives no signal, so it never links to an existing account). If the existing account was never confirmed, its password is removed and the email is marked confirmed, because whoever set that password never proved they own the address.
@@ -104,6 +104,6 @@ Production values are Fly secrets (`Authentication__Google__ClientId`, etc.) - [
 | Area | Path |
 |------|------|
 | Endpoints | [src/Web/Endpoints/Users.cs](../../src/Web/Endpoints/Users.cs) |
-| Commands | [src/Application/Users/Commands/LoginWith*/](../../src/Application/Users/Commands/) |
+| Commands | [ExternalLogin.cs](../../src/Application/Users/Commands/ExternalLogin/ExternalLogin.cs) |
 | Token validation + user provisioning | [ExternalLoginService.cs](../../src/Infrastructure/Identity/ExternalLoginService.cs) |
 | Options types | [GoogleAuthOptions](../../src/Infrastructure/Identity/GoogleAuthOptions.cs), [AppleAuthOptions](../../src/Infrastructure/Identity/AppleAuthOptions.cs), [FacebookAuthOptions](../../src/Infrastructure/Identity/FacebookAuthOptions.cs) |

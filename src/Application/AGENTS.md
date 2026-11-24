@@ -12,7 +12,7 @@ Each feature is a top-level folder (e.g. `Recipes/`, `RecipeDrafting/`, `Cookboo
 |-----------|----------|
 | `Commands/<Name>/` | `*Command` record, `*CommandHandler`, optional `*CommandValidator` |
 | `Queries/<Name>/` | `*Query` record, `*QueryHandler`; optional `*DbQuery.cs` for LINQ projections |
-| `EventHandlers/` | `INotificationHandler<TDomainEvent>` (side effects, logging) |
+| `EventHandlers/` | `INotificationHandler<TDomainEvent>` (side effects) |
 
 **Naming:** command/query types end with `Command` / `Query`; validators end with `CommandValidator` / `QueryValidator`. Handlers are `sealed class`es implementing `IRequestHandler<,>`.
 
@@ -24,7 +24,7 @@ Each feature is a top-level folder (e.g. `Recipes/`, `RecipeDrafting/`, `Cookboo
 - `Recipes/Commands/CreateRecipe/CreateRecipeCommandValidator.cs`
 - `Recipes/Queries/GetRecipe/GetRecipe.cs`
 - `Recipes/Queries/GetRecipe/GetDetailedDtoByIdDbQuery.cs`
-- `Cookbooks/EventHandlers/CookbookCreatedEventHandler.cs`
+- `Recipes/EventHandlers/RecipeCreatedEventHandler.cs`
 
 ## Adding a command or query
 
