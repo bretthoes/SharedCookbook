@@ -28,7 +28,7 @@ public abstract class BaseInvitation : BaseAuditableEntity
     /// Rejects an active invitation. Does nothing when the invitation is not active.
     /// Does not raise a domain event.
     /// </summary>
-    public virtual void Reject(DateTimeOffset timestamp)
+    public void Reject(DateTimeOffset timestamp)
     {
         if (!IsActive) return;
 

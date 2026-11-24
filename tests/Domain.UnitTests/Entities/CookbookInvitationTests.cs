@@ -71,13 +71,13 @@ public class CookbookInvitationTests
     }
 
     [Test]
-    public void DomainEventsNotEmptyAfterReject()
+    public void RejectDoesNotRaiseADomainEvent()
     {
         var sut = CookbookInvitation.Create(cookbookId: It.IsAny<Guid>(), recipientId: It.IsAny<string>(), displayName: null);
 
         sut.Reject(timestamp: It.IsAny<DateTimeOffset>());
 
-        Assert.That(sut.DomainEvents, Is.Not.Empty);
+        Assert.That(sut.DomainEvents, Is.Empty);
     }
     
     [Test]
